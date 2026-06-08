@@ -1,0 +1,210 @@
+table ModelerScenario
+	lineageTag: b9099fa6-2184-4262-abff-b79d2f520e00
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 68c69b3f-0cf8-4de9-b9b8-cee1eb9e155a
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 912c1650-6104-4359-8278-0b8493874208
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UserId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 4df6612d-e83d-4b7b-8e58-65a1f5195094
+		summarizeBy: none
+		sourceColumn: UserId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentModelId
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: b3c340f1-56d9-42ea-b71c-c95e0846ffc3
+		summarizeBy: none
+		sourceColumn: ParentModelId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Personal
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: aa3c95f7-8aec-4076-b921-539f226a934c
+		summarizeBy: none
+		sourceColumn: Personal
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalPlans
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: b7828755-520e-47fc-aba6-79971edb7d5f
+		summarizeBy: sum
+		sourceColumn: TotalPlans
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalCheckedPlans
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: 82a06b6a-fe60-4a7e-ad61-6181234ee7e8
+		summarizeBy: sum
+		sourceColumn: TotalCheckedPlans
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommitDetails_CommittedOn
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Committed
+		lineageTag: 00f27927-3686-4823-be50-cea1258dd2a7
+		summarizeBy: none
+		sourceColumn: CommitDetails_CommittedOn
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommitDetails_CommittedBy
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: fa274ecd-9c11-47f1-a973-abb92858cb42
+		summarizeBy: none
+		sourceColumn: CommitDetails_CommittedBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommitDetails_Committed
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 8c3fb0c0-5597-49ad-9e9d-5f8ab6077c09
+		summarizeBy: none
+		sourceColumn: CommitDetails_Committed
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalBenefits
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: d63012eb-40aa-4039-a62f-f88e901feeba
+		summarizeBy: sum
+		sourceColumn: TotalBenefits
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TargetBenefits
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: ad83701e-fadf-4453-8241-be813ef4c513
+		summarizeBy: sum
+		sourceColumn: TargetBenefits
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TotalBudget
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 5cfe5f3c-66e5-4989-b3fe-cb6b24f5c052
+		summarizeBy: sum
+		sourceColumn: TotalBudget
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TargetBudget
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: adffbd5d-cc5e-4584-a6b8-eae0e1cbb40f
+		summarizeBy: sum
+		sourceColumn: TargetBudget
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TotalCommittedEffort
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: 6bbc2541-369f-404c-9513-7d5653b31649
+		summarizeBy: sum
+		sourceColumn: TotalCommittedEffort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TargetCommittedEffort
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 6fd30854-07fb-46b4-80f7-05882f0b0b2b
+		summarizeBy: sum
+		sourceColumn: TargetCommittedEffort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition ModelerScenario = m
+		mode: import
+		queryGroup: 'Portfolio Modeler'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    ModelerScenario_table = Source{[Name="ModelerScenario",Signature="table"]}[Data]
+				in
+				    ModelerScenario_table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

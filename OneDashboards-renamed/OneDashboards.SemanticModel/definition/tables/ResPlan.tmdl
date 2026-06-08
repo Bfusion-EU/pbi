@@ -1,0 +1,164 @@
+table ResPlan
+	lineageTag: e25086b2-a823-4427-85c6-b957373d5f6e
+
+	column Id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 1085cd5e-a91f-4735-9154-3ef174e9a246
+		summarizeBy: none
+		sourceColumn: Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostTypeId
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: e22ff734-6e69-4157-91a8-f31fc5006a27
+		summarizeBy: none
+		sourceColumn: CostTypeId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: d095e0ff-3e63-445c-99e3-6de5526c265d
+		summarizeBy: none
+		sourceColumn: CostType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 88067a9c-0156-42f5-8577-83ba3cbec18d
+		summarizeBy: none
+		sourceColumn: WorkPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\Misc
+		lineageTag: 6a45518b-492b-4530-9515-1b284ba498d8
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hours
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: 62366c78-b36e-46a4-9177-5000ac213fb7
+		summarizeBy: sum
+		sourceColumn: Hours
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ResourceId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 3c62d4d9-37fb-4538-aec4-c27a7c1e38cb
+		summarizeBy: none
+		sourceColumn: ResourceId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceName
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: b9b0b4fd-c2c1-47c8-bbc2-741d7beca7e0
+		summarizeBy: none
+		sourceColumn: ResourceName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: d6de98bb-dbdb-499f-9724-b26a660bfcd9
+		summarizeBy: none
+		sourceColumn: State
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectManagerStatus
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 25bacf90-a63f-4b12-89d5-db3391449179
+		summarizeBy: none
+		sourceColumn: ProjectManagerStatus
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceManagerStatus
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 3b34fb28-2cdf-4a0c-ab06-a9994f40f3cf
+		summarizeBy: none
+		sourceColumn: ResourceManagerStatus
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Notes
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 707f8733-c13d-45a6-862a-76d24ea08196
+		summarizeBy: none
+		sourceColumn: Notes
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExpenseType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 952d16d9-e6d6-4e50-b558-eef04b461970
+		summarizeBy: none
+		sourceColumn: ExpenseType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ResPlan = m
+		mode: import
+		queryGroup: 'Resource Mgmt'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    ResPlan_table = Source{[Name="ResPlan",Signature="table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(ResPlan_table,{{"Date", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

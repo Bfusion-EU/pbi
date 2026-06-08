@@ -1,0 +1,266 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "445dd8abde2a301ca2a5",
+  "position": {
+    "x": 0,
+    "y": 694.9367088607595,
+    "z": 0,
+    "height": 1020.253164556962,
+    "width": 1981.0126582278481,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "bfusionCriticalChain7B4F2A8C19D6E03A",
+    "query": {
+      "queryState": {
+        "taskId": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Id"
+                }
+              },
+              "queryRef": "Tasks.Id",
+              "nativeQueryRef": "Id"
+            }
+          ]
+        },
+        "projectId": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "Id"
+                }
+              },
+              "queryRef": "Plans.Id",
+              "nativeQueryRef": "Id1"
+            }
+          ]
+        },
+        "taskName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "Tasks.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "duration": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Tasks"
+                        }
+                      },
+                      "Property": "Duration"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.Duration)",
+              "nativeQueryRef": "Sum of Duration"
+            }
+          ]
+        },
+        "predecessors": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Predecessors"
+                }
+              },
+              "queryRef": "Tasks.Predecessors",
+              "nativeQueryRef": "Predecessors"
+            }
+          ]
+        },
+        "resource": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Resources"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "Resources.Name",
+              "nativeQueryRef": "Name1"
+            }
+          ]
+        },
+        "startDate": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "StartDate"
+                }
+              },
+              "queryRef": "Tasks.StartDate",
+              "nativeQueryRef": "StartDate"
+            }
+          ]
+        },
+        "percentComplete": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Tasks"
+                        }
+                      },
+                      "Property": "PercentDone"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.PercentDone)",
+              "nativeQueryRef": "Sum of PercentDone"
+            }
+          ]
+        },
+        "resourceDemand": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task | Total Effort"
+                }
+              },
+              "queryRef": "_Measures.Tasks - Total Effort",
+              "nativeQueryRef": "Tasks - Total Effort"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Tasks"
+                  }
+                },
+                "Property": "StartDate"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwODQyNjQ3LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfN2E4YmVhOTIyZTkwIiwidmVyIjozLCJ2aXMiOlsiYmZ1c2lvbmJlbmVmaXRzcmVhbGl6YXRpb24iLCJiZnVzaW9uY2FwYWNpdHlwbGFubmluZyIsImJmdXNpb25jb25zdHJhaW50c2Fua2V5IiwiYmZ1c2lvbmNyaXRpY2FsY2hhaW4iLCJiZnVzaW9uY3JpdGljYWxwYXRoZGlhZ3JhbSIsImJmdXNpb25lZmZpY2llbnRmcm9udGllciIsImJmdXNpb25ldm1hY3Rpb25tYXRyaXgiLCJiZnVzaW9uZmluYW5jaWFsa3BpbmFycmF0aXZlIiwiYmZ1c2lvbmZpbmFuY2lhbG92ZXJ2aWV3IiwiYmZ1c2lvbmZpbmFuY2lhbHNjdXJ2ZSIsImJmdXNpb25mdGVkZWNpc2lvbmJvYXJkIiwiYmZ1c2lvbmhpZXJhcmNoaWNhbGdhbnR0IiwiYmZ1c2lvbmthbmJhbmJvYXJkIiwiYmZ1c2lvbmtwaWdyaWQiLCJiZnVzaW9ubmF2aWdhdGlvbm1lbnUiLCJiZnVzaW9ub3Jnc3RydWN0dXJlIiwiYmZ1c2lvbnBhcmV0b2FuYWx5c2lzIiwiYmZ1c2lvbnBvcnRmb2xpbzM2MCIsImJmdXNpb25wb3J0Zm9saW9oZWFsdGhtYXRyaXgiLCJiZnVzaW9ucG9ydGZvbGlvcmlza21hdHJpeCIsInBvcnRmb2xpb3JvYWRtYXAiLCJiZnVzaW9ucG9ydGZvbGlvc3VtbWFyeWtwaSIsImJmdXNpb25wcm9qZWN0bGlmZWN5Y2xlIiwiYmZ1c2lvbnByb2plY3RzdGF0dXNjYXJkIiwiYmZ1c2lvbnJlc291cmNlYWxpZ25tZW50c3RyYXRlZ3kiLCJiZnVzaW9ucmVzb3VyY2Vjb25zdHJhaW50c2VxdWVuY2luZyIsImJmdXNpb25yZXNvdXJjZWVmZmljaWVuY3licmVha2Rvd24iLCJiZnVzaW9ucmVzb3VyY2Vmb3JlY2FzdCIsImJmdXNpb25yZXNvdXJjZWdhcGFuYWx5c2lzIiwiYmZ1c2lvbnJlc291cmNlaGVhdG1hcCIsImJmdXNpb25yZXNvdXJjZWtwaSIsImJmdXNpb25yaXNrbWF0cml4ZXh0IiwiYmZ1c2lvbnJpc2tyYWRhcmNoYXJ0IiwiYmZ1c2lvbnNjZW5hcmlvcmFkYXIiLCJiZnVzaW9uc2VsZWN0aW9ud2F0ZXJmYWxsIiwiYmZ1c2lvbnNlbnNpdGl2aXR5dG9ybmFkbyIsImJmdXNpb25zdGF0dXN0cmVuZHNwYXJrbGluZSIsImJmdXNpb25zdHJhdGVnaWNzdW5idXJzdCIsImJmdXNpb25zdW5rY29zdGRlY2lzaW9uYm9hcmQiLCJiZnVzaW9udGFza2twaWJvYXJkIiwiYmZ1c2lvbndhdGVybGluZW1vZGVsZXIiXX0.dtv5ZppNrSskG0o7RVt1CRkyPugWMPY6rAHXl7bqZ63k0fBNQwBOD-p0HJYLP4_1Dfne8VPxlavudk5hv0hFkxEybzahw_5xB30lO2XoDxhGHIjxB29QrulXJzVWwZVuOVM4B17uJvGElLvAuHknIZAgIbQBnXsVmYvOCEVA63Fo6aNFM43ocH5-zd4zkLM5RXvkO2Rp5OFvFCthcN8NxwvrvT2IKx05hYwrCquC3rdRbRTfkfHZC5GJzBm8AQF0QBLqQnybxKfsu-bFPWFRuuAa7MaYU3ZOyNIEy_hZla2lOcKQsTocWZrXREqEvrhsEkdQ9fAUOqiIqqeK8t_fvQ'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "display": [
+        {
+          "properties": {
+            "capacity": {
+              "expr": {
+                "Literal": {
+                  "Value": "55D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "chain": [
+        {
+          "properties": {
+            "barHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "5D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

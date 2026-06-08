@@ -1,0 +1,45 @@
+/// Parameter dimension for Sensitivity Tornado visual — each row is one sensitivity bar.
+table _Modeler_SensitivityParams
+	lineageTag: 27eef41b-d4da-429a-8971-7816ce9a59c7
+
+	column Parameter
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: d9907859-9bd2-411c-8470-a240007c0fa2
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Parameter]
+
+	column Variation
+		dataType: double
+		displayFolder: Attributes\Misc
+		lineageTag: 4f0a23b3-deb6-446a-9108-be5aca05a34d
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Variation]
+
+	column SortOrder
+		dataType: int64
+		displayFolder: Attributes\Misc
+		lineageTag: 4acae705-05fd-4a2d-a0bb-03150e211152
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [SortOrder]
+
+	partition _Modeler_SensitivityParams = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "Parameter",  STRING,
+				    "Variation",  DOUBLE,
+				    "SortOrder",  INTEGER,
+				    {
+				        {"Budget Constraint",      0.20, 1},
+				        {"Benefits Target",        0.20, 2},
+				        {"Committed Effort Limit", 0.15, 3},
+				        {"Selected Plan Count",    0.25, 4},
+				        {"Budget Utilization",     0.20, 5}
+				    }
+				)
+

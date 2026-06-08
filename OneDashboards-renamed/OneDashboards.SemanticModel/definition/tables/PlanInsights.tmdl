@@ -1,0 +1,120 @@
+table PlanInsights
+	lineageTag: 4f710d34-5d92-46ea-8f5b-94260606ecb5
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 303045ff-4f17-4dfb-8b94-919bfa061417
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 80d2e1cf-6f92-4287-bced-5e1a62b883f3
+		summarizeBy: none
+		sourceColumn: WorkPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Plan
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: de681f5a-42c6-40e3-9a01-3dd5a9b15c94
+		summarizeBy: none
+		sourceColumn: Plan
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Level
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: f95830ff-75d5-4074-9b5f-f1c1dbdadd52
+		summarizeBy: sum
+		sourceColumn: Level
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCompliance
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 279d6c58-7a6c-4acc-b04c-066f26c59856
+		summarizeBy: none
+		sourceColumn: IsCompliance
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResultText
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 9ca447c4-4585-4fcd-b86d-e4e0eeb25229
+		summarizeBy: none
+		sourceColumn: ResultText
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Details
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: d0adbd47-4f8e-4b90-b9b6-6fcc24fec308
+		summarizeBy: none
+		sourceColumn: Details
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Result
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: f03813f6-42ba-4801-b9e8-e6df748c03f3
+		summarizeBy: none
+		sourceColumn: Result
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResultValues
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 6c2e9458-4a18-499f-8cec-fb5385fdd251
+		summarizeBy: none
+		sourceColumn: ResultValues
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PlanInsights = m
+		mode: import
+		queryGroup: Plans
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    PlanInsights_table = Source{[Name="PlanInsights",Signature="table"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(PlanInsights_table,{"InsightId"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

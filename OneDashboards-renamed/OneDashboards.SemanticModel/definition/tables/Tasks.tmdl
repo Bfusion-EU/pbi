@@ -1,0 +1,1275 @@
+table Tasks
+	lineageTag: b5649cea-39b6-428e-960d-da5b838cf321
+
+	column Id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 8f0bc379-3c4e-4bc8-9e55-3e7ba4a102dd
+		summarizeBy: none
+		sourceColumn: Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 26702872-6735-444b-976d-3c0a86f7266d
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Created
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\System
+		lineageTag: a7a218dc-a3db-4a3e-8825-6a8024df502f
+		summarizeBy: none
+		sourceColumn: Created
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Modified
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\System
+		lineageTag: 8da17dc7-f374-4921-b6f8-43c1717c9aa1
+		summarizeBy: none
+		sourceColumn: Modified
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 7b512524-3ad1-4daa-bc2e-eb32a3710a86
+		summarizeBy: none
+		sourceColumn: PlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentTaskId
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 2de618b3-6993-49df-b48b-1670d85a6089
+		summarizeBy: none
+		sourceColumn: ParentTaskId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Leaf
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: a2e860ee-a088-4965-9716-869ac6fbff6f
+		summarizeBy: none
+		sourceColumn: Leaf
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inactive
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 3d19c77b-e91b-4e45-8bb4-b29fedbf2dc4
+		summarizeBy: none
+		sourceColumn: Inactive
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: c17e143a-0eba-4e94-a32e-8fe4bb2c86b4
+		summarizeBy: none
+		sourceColumn: WorkType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Assignment
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: b1938bce-2378-4e98-ba45-a94bb8d78cd2
+		summarizeBy: none
+		sourceColumn: Assignment
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: 8273dafd-d7bf-4610-af09-cb9cdc8f4b66
+		summarizeBy: none
+		sourceColumn: Status
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Complete
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: e4a914fe-3c42-4526-b95f-67c7a10148d8
+		summarizeBy: none
+		sourceColumn: Complete
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 260959fa-f517-4607-9953-53249a531b8e
+		summarizeBy: sum
+		sourceColumn: EstimatedCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EstimatedRevenue
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 3111bdda-bbc0-40a5-8d61-fbe7d658f949
+		summarizeBy: sum
+		sourceColumn: EstimatedRevenue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column State
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: 8ca4f6cb-a686-4272-98ba-1b01f380697d
+		summarizeBy: none
+		sourceColumn: State
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetHours
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: 7421d765-1568-4dc3-9516-b39c6043cb52
+		summarizeBy: sum
+		sourceColumn: TimesheetHours
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Priority
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: faa04580-a876-4b79-b128-290c15891fe0
+		summarizeBy: none
+		sourceColumn: Priority
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TaskStatus
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: 958f4883-09dc-4f5c-b121-a21525621f23
+		summarizeBy: none
+		sourceColumn: TaskStatus
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StatusNotes
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: c3e99b5f-67ea-4210-b72b-8e67fa892abb
+		summarizeBy: none
+		sourceColumn: StatusNotes
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingEffort
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: dfe5db99-1e1c-444c-b347-5e51f45199cb
+		summarizeBy: sum
+		sourceColumn: RemainingEffort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ActualCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: c790ad56-d1e4-4e05-b6ef-34acc15dedd0
+		summarizeBy: sum
+		sourceColumn: ActualCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column RemainingCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 099ce8dc-7a1f-4aea-86cc-2639728e5bde
+		summarizeBy: sum
+		sourceColumn: RemainingCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ActualRevenue
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: c2c89762-344d-4ea8-a778-761eaa38ec67
+		summarizeBy: sum
+		sourceColumn: ActualRevenue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column RemainingRevenue
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 908e9873-bef5-4188-9101-cb00398da129
+		summarizeBy: sum
+		sourceColumn: RemainingRevenue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Points
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: f00525b9-6c4c-46a1-832a-ad6a4d0f9865
+		summarizeBy: sum
+		sourceColumn: Points
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Description
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: f7191964-791a-43a2-a0dc-f6ae8348cd74
+		summarizeBy: none
+		sourceColumn: Description
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Impact
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 0fd2cbe9-9323-426a-840b-c8c744c54a1b
+		summarizeBy: none
+		sourceColumn: Impact
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 23d70362-541d-41a4-a094-744aec5c4a5d
+		summarizeBy: none
+		sourceColumn: Category
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskStage
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: 268ff9fa-4589-4fbe-9519-82734f334ed5
+		summarizeBy: none
+		sourceColumn: RiskStage
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mitigation
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 48fbdaad-82c4-437e-a284-855290fd3188
+		summarizeBy: none
+		sourceColumn: Mitigation
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostImpact
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 10b688e6-05c2-463a-8016-b76ae840e7da
+		summarizeBy: sum
+		sourceColumn: CostImpact
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TopicArea
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: dad494a5-5bfc-42af-9eba-b15a17d8aefe
+		summarizeBy: none
+		sourceColumn: TopicArea
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DecisionDate
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		displayFolder: Dates\Lifecycle
+		lineageTag: bc794a2e-478c-4b19-9203-b2290339d773
+		summarizeBy: none
+		sourceColumn: DecisionDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column DecisionImpact
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 66f32f88-12b0-4760-b938-41efce0ab20d
+		summarizeBy: none
+		sourceColumn: DecisionImpact
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DecisionMakers
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: adb30c94-0fc6-4d19-8849-1b8bbe92bd30
+		summarizeBy: none
+		sourceColumn: DecisionMakers
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShowinReports
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 42b41b27-1832-4fe9-aba0-698665aa62b8
+		summarizeBy: none
+		sourceColumn: ShowinReports
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MSPWBS
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 651e8529-ab19-4214-a5c8-3171fa028ef5
+		summarizeBy: none
+		sourceColumn: MSPWBS
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contingency
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 0a198b5c-f6ae-4edf-aa98-ce7310c56d62
+		summarizeBy: none
+		sourceColumn: Contingency
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Resolution
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 4203ce1c-7efa-4b2f-93bb-09e066aeafae
+		summarizeBy: none
+		sourceColumn: Resolution
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Exposure
+		dataType: double
+		displayFolder: Values\Risk
+		lineageTag: 80b70142-84e0-40a3-ba4a-69c8bf0edb51
+		summarizeBy: sum
+		sourceColumn: Exposure
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Probability
+		dataType: double
+		displayFolder: Values\Risk
+		lineageTag: fd21895e-84f8-4177-b8c9-e728efcd30c7
+		summarizeBy: sum
+		sourceColumn: Probability
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Risk
+		dataType: string
+		displayFolder: Attributes\Risk
+		lineageTag: b2d22e04-4932-4342-b6cf-8b2d6a2c81b5
+		summarizeBy: none
+		sourceColumn: Risk
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ItemType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: fd781a17-0457-44c3-8c9f-627ef245c110
+		summarizeBy: none
+		sourceColumn: ItemType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessValue
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 32bc0380-d4f3-4840-bee3-d85ce9c79454
+		summarizeBy: none
+		sourceColumn: BusinessValue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column BaselinePercentDone
+		dataType: double
+		displayFolder: Values\Performance
+		lineageTag: 8736a339-2044-467c-9df4-a03cb3ac5f19
+		summarizeBy: sum
+		sourceColumn: BaselinePercentDone
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column BaselineEndDate
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Baseline
+		lineageTag: 883883e3-f0b5-4cf6-a9d4-ef403eb117de
+		summarizeBy: none
+		sourceColumn: BaselineEndDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column BaselineEffort
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: 0de506c1-81e9-4add-b88c-c1cb55b61811
+		summarizeBy: sum
+		sourceColumn: BaselineEffort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column BaselineStartDate
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Baseline
+		lineageTag: 19eb03fd-be9d-4998-ac62-083c554cb5f6
+		summarizeBy: none
+		sourceColumn: BaselineStartDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column BaselineRemainingEffort
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: 4d29b6bb-00a2-4da3-8325-8c2c8fc69072
+		summarizeBy: sum
+		sourceColumn: BaselineRemainingEffort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ChargeType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 066e600f-790a-48d9-b60c-a3cbf3f048f2
+		summarizeBy: none
+		sourceColumn: ChargeType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FixedCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 326db53a-b160-42d9-b22d-a35e4655339b
+		summarizeBy: sum
+		sourceColumn: FixedCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Rate
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: 235ad4ee-8990-42f7-a0f3-f6973013654c
+		summarizeBy: sum
+		sourceColumn: Rate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Deadline
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Planned
+		lineageTag: 12519b93-7483-4beb-bff9-c80c456cb6ff
+		summarizeBy: none
+		sourceColumn: Deadline
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DeadlineCalc
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: f2a6dd05-600d-4e8b-b150-f2e73c7a8d48
+		summarizeBy: sum
+		sourceColumn: DeadlineCalc
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column critical
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 09436b4f-775d-4547-bf73-e6f9bfc3eacf
+		summarizeBy: none
+		sourceColumn: critical
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FixedBudget
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 4ca1e7ce-77d9-4609-b737-4f2706c6ca76
+		summarizeBy: sum
+		sourceColumn: FixedBudget
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column BudgetUsed
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: e03d17f8-042c-41e4-af5b-08fb6ce51b66
+		summarizeBy: sum
+		sourceColumn: BudgetUsed
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EstimatedProfit
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 6b1a8641-7c5e-48a7-808b-3352f900d6ef
+		summarizeBy: sum
+		sourceColumn: EstimatedProfit
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ProfitVariance
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 5f835824-248e-4704-b984-cea64c6a7ae5
+		summarizeBy: sum
+		sourceColumn: ProfitVariance
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ChargeableHours
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: e1ffd286-108b-438c-82c6-9636c31d0e17
+		summarizeBy: sum
+		sourceColumn: ChargeableHours
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column RemainingChargeableEffort
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: efa26907-0c64-402a-aabe-8bd314157c10
+		summarizeBy: sum
+		sourceColumn: RemainingChargeableEffort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LaborRevenue
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 77b974cf-f598-4410-94bc-2bfc7ade0e97
+		summarizeBy: sum
+		sourceColumn: LaborRevenue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LaborCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 0c9eb11c-f84b-48b7-b5cc-7adbf07c5fcf
+		summarizeBy: sum
+		sourceColumn: LaborCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TotalActualCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 9e4ee755-e1a5-4e03-a055-7b62ffcc930a
+		summarizeBy: sum
+		sourceColumn: TotalActualCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TotalActualRevenue
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: ef9ee8a1-2891-4cf9-ad20-cae5290bb331
+		summarizeBy: sum
+		sourceColumn: TotalActualRevenue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ActualProfit
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: c82d380c-2b8e-4751-9019-620eb60b6cfd
+		summarizeBy: sum
+		sourceColumn: ActualProfit
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Margin
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 973c5875-fe0a-43b9-8fdc-0b4117892cee
+		summarizeBy: sum
+		sourceColumn: Margin
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ActualMargin
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 8e450146-85c2-4b62-a581-b8290dfa42e5
+		summarizeBy: sum
+		sourceColumn: ActualMargin
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MarginVariance
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 61ee16bd-8115-403d-923b-ae58791be2b6
+		summarizeBy: sum
+		sourceColumn: MarginVariance
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column WorkItemIdentifier
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: e16f3531-99d8-4056-9a41-856b31002915
+		summarizeBy: none
+		sourceColumn: WorkItemIdentifier
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartDate
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		displayFolder: Dates\Planned
+		lineageTag: 1c7b1d49-c19e-4dd2-8ea2-f35438afcf00
+		summarizeBy: none
+		sourceColumn: StartDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column EndDate
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		displayFolder: Dates\Planned
+		lineageTag: 70598961-085d-43cc-829b-818499809c0d
+		summarizeBy: none
+		sourceColumn: EndDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Effort
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: b38bc848-3dda-4615-98d4-9c2b84165912
+		summarizeBy: sum
+		sourceColumn: Effort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Duration
+		dataType: double
+		displayFolder: Values\Performance
+		lineageTag: 6c8181f4-1bf2-492e-b961-f27f291015af
+		summarizeBy: sum
+		sourceColumn: Duration
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PercentDone
+		dataType: double
+		displayFolder: Values\Performance
+		lineageTag: fb57d102-ac76-4ab8-acfd-10c106f1782c
+		summarizeBy: sum
+		sourceColumn: PercentDone
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column taskorder
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: dc6233c1-d442-41c7-99f0-82c76dbb1928
+		summarizeBy: sum
+		sourceColumn: taskorder
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column WBS
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: a3677f99-d209-4163-bc3b-1cfbb7d4498d
+		summarizeBy: none
+		sourceColumn: WBS
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Milestone
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 0e8cbc7a-ae33-4a0d-8277-530c67d1485f
+		summarizeBy: none
+		sourceColumn: Milestone
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DurationUnit
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: f7ece3df-1365-4956-b823-b31a8566f131
+		summarizeBy: none
+		sourceColumn: DurationUnit
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShowInTimeline
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 01008c06-03e8-4715-a12a-d4d0d5022724
+		summarizeBy: none
+		sourceColumn: ShowInTimeline
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Overdue Tasks' = IF(Tasks[EndDate]<TODAY(),[Task | Task Count])
+		dataType: int64
+		displayFolder: Values
+		lineageTag: a76a493a-47db-4d75-99ee-1e7a7aca3b65
+		summarizeBy: sum
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 377c9603-a235-45f3-ad25-7e061a3d4a92
+		summarizeBy: sum
+		sourceColumn: TotalCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Owner
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 051595ad-9166-4562-ad77-b8b0271b4e1b
+		summarizeBy: none
+		sourceColumn: Owner
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingLaborCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 282f1235-d4e2-49f4-9df9-d9835f7fabdf
+		summarizeBy: sum
+		sourceColumn: RemainingLaborCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NonLaborCost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 27f73cfe-078c-472e-83c0-6ca8fbb8f5a5
+		summarizeBy: sum
+		sourceColumn: NonLaborCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Note
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 03edcfb3-48e1-4475-bdab-6097fed852c1
+		summarizeBy: none
+		sourceColumn: Note
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Probability Category' = ```
+			SWITCH(
+			    TRUE(),
+			    Tasks[Probability] >= 75, "(1) Critical",
+			    Tasks[Probability] >= 50, "(2) High",
+			    Tasks[Probability] >= 25, "(3) Medium",
+			    "(4) Low"
+			)
+			
+			
+			```
+		dataType: string
+		lineageTag: 189ff560-f324-45dc-b0a3-132fdaa62e30
+		summarizeBy: none
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Predecessors =
+			
+			CONCATENATEX(
+			    RELATEDTABLE(TaskDependency),
+			    TaskDependency[From],
+			    ","
+			)
+		dataType: string
+		lineageTag: 8b92f2d2-b91b-4102-a30d-f005a33a7aed
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+	column PredecessorTypes =
+			
+			CONCATENATEX(
+			    RELATEDTABLE(TaskDependency),
+			    TaskDependency[From] & ":" & TaskDependency[Type],
+			    ","
+			)
+		dataType: string
+		lineageTag: 1f1fef6a-a59e-44c9-ae58-4bd733dbf824
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+	column 'Slack (days)' = ```
+			VAR CurrentEnd = Tasks[EndDate]
+			VAR CurrentId = Tasks[id]
+			VAR SuccessorMinStart = 
+			    MINX(
+			        FILTER(TaskDependency, TaskDependency[From] = CurrentId),
+			        VAR SuccId = TaskDependency[To]
+			        RETURN LOOKUPVALUE(Tasks[StartDate], Tasks[id], SuccId)
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(SuccessorMinStart),
+			        BLANK(),
+			        MAX(0, DATEDIFF(CurrentEnd, SuccessorMinStart, DAY))
+			    )
+			```
+		dataType: int64
+		lineageTag: b60650c8-63fd-4f69-8f7c-3a54b7aa1dab
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+	column Financial_a0671c7b03f4cf89bda76ba3612c14cb
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 925e59ba-c6f8-4512-b0ab-adc87cef8175
+		summarizeBy: none
+		sourceColumn: Financial_a0671c7b03f4cf89bda76ba3612c14cb
+
+		annotation SummarizationSetBy = Automatic
+
+	column Urgency
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 20a495aa-d275-4a68-9ce8-e423ba2eac1e
+		summarizeBy: none
+		sourceColumn: Urgency
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskMagnitude
+		dataType: string
+		displayFolder: Attributes\Risk
+		lineageTag: 203bf338-e07b-4e6b-9be6-74d9a788463f
+		summarizeBy: none
+		sourceColumn: RiskMagnitude
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskTO
+		dataType: string
+		displayFolder: Attributes\Risk
+		lineageTag: bb61e4cf-4b73-49f2-b169-1b325cef8181
+		summarizeBy: none
+		sourceColumn: RiskTO
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskResponse
+		dataType: string
+		displayFolder: Attributes\Risk
+		lineageTag: e2535c7e-9a32-44de-b6c5-73f167260aeb
+		summarizeBy: none
+		sourceColumn: RiskResponse
+
+		annotation SummarizationSetBy = Automatic
+
+	column Severity
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: e5efaec6-d3c2-443d-a0d6-4598c24953c1
+		summarizeBy: none
+		sourceColumn: Severity
+
+		annotation SummarizationSetBy = Automatic
+
+	column Severity_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: 8f3c12ab-33cf-44ae-bdc8-af35c39cf7c3
+		summarizeBy: none
+		sourceColumn: Severity_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Occurence
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: dcb7aa83-1cce-465a-987a-fde0f731d9de
+		summarizeBy: none
+		sourceColumn: Occurence
+
+		annotation SummarizationSetBy = Automatic
+
+	column MitigationActions
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 08c7bef3-1e01-408d-a23a-d3641f617a43
+		summarizeBy: none
+		sourceColumn: MitigationActions
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProbabilityPostMitigation
+		dataType: double
+		displayFolder: Values\Risk
+		lineageTag: 92c8a394-f24b-4644-b4b7-630b4dfa5cab
+		summarizeBy: sum
+		sourceColumn: ProbabilityPostMitigation
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EffectivenessLevel
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: cf4a2560-81ac-4d31-be31-d206f9752cba
+		summarizeBy: none
+		sourceColumn: EffectivenessLevel
+
+		annotation SummarizationSetBy = Automatic
+
+	column Detection
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 4e86bc72-0d6d-4347-862d-59ebc495a4df
+		summarizeBy: none
+		sourceColumn: Detection
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: f56da8c5-fc8b-45a8-98d5-1640c06ee529
+		summarizeBy: none
+		sourceColumn: RiskType
+
+		annotation SummarizationSetBy = Automatic
+
+	column RPN
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: bb6d9da2-3b2a-4ff2-92c7-e1118a24aa38
+		summarizeBy: sum
+		sourceColumn: RPN
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ParentName = LOOKUPVALUE ( Tasks[Name], Tasks[Id], Tasks[ParentTaskId] )
+		dataType: string
+		displayFolder: Attributes
+		lineageTag: 32e7b36c-0e22-4e2c-bdf5-a5a2c6e3cbfe
+		isDataTypeInferred
+
+	partition Tasks = m
+		mode: import
+		queryGroup: Scheduling
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Tasks_table = Source{[Name="Tasks",Signature="table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Tasks_table,{{"Created", type date}, {"Modified", type date}, {"StartDate", type date}, {"EndDate", type date}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"WorkTypeId", "ModifiedBy", "CreatedBy"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

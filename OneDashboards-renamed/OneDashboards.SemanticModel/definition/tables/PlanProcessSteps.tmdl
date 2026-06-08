@@ -1,0 +1,119 @@
+table PlanProcessSteps
+	lineageTag: 5bc0d723-7c35-4ef3-b1c8-82057e80e474
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 192e8fab-f4c2-411d-8643-7f8f465a40d3
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 6ad0f5e7-a1cf-4843-9c44-28aa10750479
+		summarizeBy: none
+		sourceColumn: WorkPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StepId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 70e4b46c-f90a-41eb-a23a-399277d508cc
+		summarizeBy: none
+		sourceColumn: StepId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StepName
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: e8163a8d-908e-45e2-b59e-d2d90d1061b8
+		summarizeBy: none
+		sourceColumn: StepName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Start
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Planned
+		lineageTag: 71c5126c-929d-4a55-bc6d-af8346bcbd21
+		summarizeBy: none
+		sourceColumn: Start
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column End
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Planned
+		lineageTag: e41e437e-c7bf-4a38-9058-e7578ac91109
+		summarizeBy: none
+		sourceColumn: End
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ApprovalState
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: c1778aff-798c-4ea4-b7e4-f8b86dd7ed6f
+		summarizeBy: none
+		sourceColumn: ApprovalState
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StepState
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: fb2034cd-48af-4146-bf06-fb98157fc51d
+		summarizeBy: none
+		sourceColumn: StepState
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Comments
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: b073cd6a-103a-4965-a46e-74d937adc869
+		summarizeBy: none
+		sourceColumn: Comments
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PlanProcessSteps = m
+		mode: import
+		queryGroup: Process
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    PlanProcessSteps_table = Source{[Name="PlanProcessSteps",Signature="table"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(PlanProcessSteps_table,{"StepStarter", "StepApprover"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

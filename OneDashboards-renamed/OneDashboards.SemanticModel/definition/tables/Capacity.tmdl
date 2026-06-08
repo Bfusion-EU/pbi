@@ -1,0 +1,71 @@
+table Capacity
+	lineageTag: 8ef09281-c029-40de-a208-b7e393c83516
+
+	column ResourceId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: b97842c8-0b2c-4fdc-9dc6-23cef057d3d5
+		summarizeBy: none
+		sourceColumn: ResourceId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		displayFolder: Dates\Misc
+		lineageTag: 8a63d433-a5bb-4d30-bd0c-278fc0722441
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Capacity
+		dataType: double
+		displayFolder: Values\Capacity
+		lineageTag: 895dd041-0fd9-4dbf-864e-b89bef0d02d8
+		summarizeBy: sum
+		sourceColumn: Capacity
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Units
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: 7b92fb3a-6147-483d-a4e4-b37f5d960026
+		summarizeBy: sum
+		sourceColumn: Units
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Capacity = m
+		mode: import
+		queryGroup: 'Resource Mgmt'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Capacity_table = Source{[Name="Capacity",Signature="table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Capacity_table,{{"Date", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

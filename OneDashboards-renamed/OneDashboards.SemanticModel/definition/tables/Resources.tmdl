@@ -1,0 +1,395 @@
+table Resources
+	lineageTag: 21dd6ff8-7bc2-4390-9bfd-4bbecd4e13a6
+
+	column UserId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 0b47609c-c422-47ac-a6f2-c1be325cbc16
+		summarizeBy: none
+		sourceColumn: UserId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: d27fc820-c655-4223-99e3-8eab71e9a3c0
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Email
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 60bec5d1-b464-46b8-83f9-f85a394d9cb8
+		summarizeBy: none
+		sourceColumn: Email
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Generic
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: e198185c-ccf9-4449-95e8-69c921f1bd1b
+		summarizeBy: none
+		sourceColumn: Generic
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inactive
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 854682f6-dfba-4917-8faa-77332ac6f889
+		summarizeBy: none
+		sourceColumn: Inactive
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExternalId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 2e89535f-4617-441a-a2b3-246a4787b1b5
+		summarizeBy: none
+		sourceColumn: ExternalId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OnePlanSecurityGroup
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: c44861b0-cde9-4308-8e50-ddaf7ab66610
+		summarizeBy: none
+		sourceColumn: OnePlanSecurityGroup
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Permissions
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 73529dba-c5c8-45fb-be5e-789a1cab8772
+		summarizeBy: none
+		sourceColumn: Permissions
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: double
+		displayFolder: Values\Counts
+		lineageTag: d0b6a0bd-07eb-4a56-a6c8-8660b81a3aed
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Office365Id
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 6ea95b03-0139-4e7a-9f63-4c33ae4603a6
+		summarizeBy: none
+		sourceColumn: Office365Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Department_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: cbbb4486-9011-49e8-8c33-479504c9df5e
+		summarizeBy: none
+		sourceColumn: Department_Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Role_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: 205eeb83-730e-4504-ac65-8d490b74c83e
+		summarizeBy: none
+		sourceColumn: Role_Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 79023f73-cfc4-45e8-8709-e459498e0cb1
+		summarizeBy: sum
+		sourceColumn: Cost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Rate
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: 1a50a506-501b-4f5c-abd2-4bfe5e615bf6
+		summarizeBy: sum
+		sourceColumn: Rate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Manager
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: fd8598c3-750e-4e1b-b4ea-43bcfaeef0bb
+		summarizeBy: none
+		sourceColumn: Manager
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Manager_DisplayName
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 0854e686-7594-4624-ac67-6ee6336a8f87
+		summarizeBy: none
+		sourceColumn: Manager_DisplayName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetsAdmin
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Timesheet
+		lineageTag: 2f91aa16-9f3f-489c-aebf-9bb24c9e6ab4
+		summarizeBy: none
+		sourceColumn: TimesheetsAdmin
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetManager
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 7dc89253-2e9a-42b2-90af-e4d0d1d4a002
+		summarizeBy: none
+		sourceColumn: TimesheetManager
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetManager_DisplayName
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 8f22f574-16e6-4276-a0cf-d0f31622ce2e
+		summarizeBy: none
+		sourceColumn: TimesheetManager_DisplayName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Insights_Compliance
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: 45dbac9c-ac26-40df-9632-87c25948d4b7
+		summarizeBy: sum
+		sourceColumn: Insights_Compliance
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Insights_Problems
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: f298acbc-e793-43f3-aba8-3545890c670e
+		summarizeBy: sum
+		sourceColumn: Insights_Problems
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Insights_Warnings
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: ed92a859-e571-4c55-88d7-e2a369d988fa
+		summarizeBy: sum
+		sourceColumn: Insights_Warnings
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column AvailableFrom
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Misc
+		lineageTag: 35444e0b-007d-46d0-b8c0-7cbf12980ab1
+		summarizeBy: none
+		sourceColumn: AvailableFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column AvailableTo
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Misc
+		lineageTag: 070f305f-215b-4eee-9a6e-e272150cda60
+		summarizeBy: none
+		sourceColumn: AvailableTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'User Flag' = IF(Resources[Generic]=False, "User", "Generic")
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: a9d2b4ca-d15c-4089-a613-a944b432dac0
+		summarizeBy: none
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OP_Financial_ResourceType_Id
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: c9163a5a-23e2-43ac-bdce-7cfd7fab12f3
+		summarizeBy: none
+		sourceColumn: OP_Financial_ResourceType_Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OP_Financial_ResourceType_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: e6fe7035-5b72-4551-8ac6-af2970b7044b
+		summarizeBy: none
+		sourceColumn: OP_Financial_ResourceType_Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column NonLaborCost_Id
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: 310cea7c-933d-4923-90d3-0d5ef93e6e64
+		summarizeBy: none
+		sourceColumn: NonLaborCost_Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column NonLaborCost_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: c39b6782-fbd0-4d4c-a89b-2e4fab7cc4f9
+		summarizeBy: none
+		sourceColumn: NonLaborCost_Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UtilizationGoal
+		dataType: double
+		displayFolder: Values\Capacity
+		lineageTag: 6592ade0-7729-4466-8cc7-b9a0cda7a20d
+		summarizeBy: sum
+		sourceColumn: UtilizationGoal
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Financial_a0671c7b03f4cf89bda76ba3612c14cb_Id
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: f0a22ea9-5aa4-461c-93a8-44695378f063
+		summarizeBy: none
+		sourceColumn: Financial_a0671c7b03f4cf89bda76ba3612c14cb_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Financial_a0671c7b03f4cf89bda76ba3612c14cb_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: 3bb36779-de82-4aa8-b8a1-33aa4d571d9d
+		summarizeBy: none
+		sourceColumn: Financial_a0671c7b03f4cf89bda76ba3612c14cb_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Resources = m
+		mode: import
+		queryGroup: 'Resource Mgmt'
+		source =
+				/*
+				    Creator: BFusion
+				    Version: 1.3
+				    Date: 2025-03-07
+				*/
+				
+				let
+				    // Fetch data from OData source
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				
+				    // Extract the "Resources" table from the OData feed
+				    Resources_table = Source{[Name="Resources", Signature="table"]}[Data],
+				
+				    #"Removed Columns" = Table.RemoveColumns(Resources_table,{"Department_Id", "Role_Id"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

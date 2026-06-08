@@ -1,0 +1,75 @@
+table ResourceCostTable
+	lineageTag: d52830a9-15b0-4be0-a888-74f1f555fb9a
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: f8684c49-1f94-44d6-bdfc-3ed2258cc466
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UserID
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 998bd0b1-5f93-4927-ab01-f0219aa0e06d
+		summarizeBy: none
+		sourceColumn: UserID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartDate
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Planned
+		lineageTag: 824f8931-e49c-449a-9ebc-0df1956124c0
+		summarizeBy: none
+		sourceColumn: StartDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EndDate
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Planned
+		lineageTag: 738a6347-3222-4499-a21c-1d5e835a2a9b
+		summarizeBy: none
+		sourceColumn: EndDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: 74db1b1d-f022-4249-8b32-27c604d562f0
+		summarizeBy: sum
+		sourceColumn: Cost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition ResourceCostTable = m
+		mode: import
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    ResourceCostTable_table = Source{[Name="ResourceCostTable",Signature="table"]}[Data]
+				in
+				    ResourceCostTable_table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,50 @@
+table SecurityGroups
+	lineageTag: 9a214262-af64-40db-b6db-37680b0c9c64
+
+	column Id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: e345f1db-0a21-49d5-b2e8-98b1fa9e2713
+		summarizeBy: none
+		sourceColumn: Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 70c7ab27-2d0d-4fc7-a749-cfba2ff5ba8a
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column License
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 721f71bf-c2fa-4f3c-b600-11559e5c4e88
+		summarizeBy: none
+		sourceColumn: License
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SecurityGroups = m
+		mode: import
+		queryGroup: General
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    SecurityGroups_table = Source{[Name="SecurityGroups",Signature="table"]}[Data]
+				in
+				    SecurityGroups_table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

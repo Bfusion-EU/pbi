@@ -1,0 +1,132 @@
+relationship AutoDetected_221b3dd7-0935-4363-ba58-fd7fb7f1e306
+	fromColumn: Assignments.UserId
+	toColumn: Resources.UserId
+
+relationship AutoDetected_c604dc7b-b40c-4c17-a7cb-002f99a826d1
+	fromColumn: Teams.UserId
+	toColumn: Resources.UserId
+
+relationship 78340cd7-08f4-48c7-e64c-033acaba77b3
+	crossFilteringBehavior: bothDirections
+	fromColumn: Assignments.TaskId
+	toColumn: Tasks.Id
+
+relationship 85a68fc6-ba36-0dad-51d5-402d55dfc5d5
+	fromColumn: ResPlan.ResourceId
+	toColumn: Resources.UserId
+
+relationship 7fd23ea6-a9c3-c7b1-dacb-788ee3fcff14
+	fromColumn: Resources.OnePlanSecurityGroup
+	toColumn: SecurityGroups.Id
+
+relationship 58bc4eab-7096-1765-27c9-7b5766e029f3
+	fromColumn: ResPlan.Date
+	toColumn: Calendar.Date
+
+relationship 3e2c570d-1547-a30b-c362-04f6e59f19d7
+	fromColumn: Capacity.Date
+	toColumn: Calendar.Date
+
+relationship 39420ed4-27ee-c71f-adc2-dcd8303567f1
+	fromColumn: Costs.Date
+	toColumn: Calendar.Date
+
+relationship 357aba2c-9c62-0b79-893a-56056815a1a1
+	fromColumn: ResPlanLog.PostDate
+	toColumn: Calendar.Date
+
+relationship 99b6a8fa-18fa-f3ce-3365-828d28bfb684
+	fromColumn: RateTable.ResourceId
+	toColumn: Resources.UserId
+
+relationship 01b0c24d-0bc8-f17b-5bec-f1a82b411cf2
+	fromColumn: Activities.TaskId
+	toColumn: Tasks.Id
+
+relationship 8292f7b7-b714-ba87-1526-de14f6124cef
+	fromColumn: ModelerScenarioPlan.ParentScenarioId
+	toColumn: ModelerScenario.id
+
+relationship 515b238a-92ac-d14a-b232-a19641a00e80
+	fromColumn: ModelerScenario.ParentModelId
+	toColumn: ModelerModel.id
+
+relationship 36614eb9-7fd2-36a3-a04b-fa7082802d3f
+	fromColumn: StatusReports.Report_ReportEnd
+	toColumn: Calendar.Date
+
+relationship 4e1b39cc-0e9f-4dcf-b2ca-051ddfdbc893
+	fromColumn: StatusReports.Manager
+	toColumn: Resources.UserId
+
+relationship b894b782-b7e2-c82f-ed1d-1ce85c11c9b1
+	fromColumn: Capacity.ResourceId
+	toColumn: Resources.UserId
+
+relationship 23c87c50-c283-722b-edd8-0ed4324dccc2
+	fromColumn: Costs.WorkPlanId
+	toColumn: Plans.Id
+
+relationship 9d5f9ebb-0fce-a266-2d7e-9ed264a6273e
+	fromColumn: PlanProcessSteps.WorkPlanId
+	toColumn: Plans.Id
+
+relationship 07cfdd83-4b7b-cff4-b6f0-bcbeacde73e9
+	fromColumn: Tasks.PlanId
+	toColumn: Plans.Id
+
+relationship 16849a13-f4a2-4e81-e852-5d3b749f7afd
+	fromColumn: Plan_Objective.PlanId
+	toColumn: Plans.Id
+
+relationship 000e611e-708e-87e5-cdb0-a4a985ee5e6d
+	fromColumn: StatusReports.Report_WorkPlanId
+	toColumn: Plans.Id
+
+relationship a7c3aa3e-4f8d-1d7f-a85e-1ccc7a8bc0fb
+	fromColumn: ResPlan.WorkPlanId
+	toColumn: Plans.Id
+
+relationship bf0a6bec-18cc-8281-c2a7-b3d49f30b1dc
+	fromColumn: ModelerModel.Description
+	toColumn: Plans.Id
+
+relationship c9435205-d904-88d9-01d5-4be155f86c58
+	fromColumn: Plan_KeyResult.PlanId
+	toColumn: Plans.Id
+
+relationship 450776b1-af73-751c-4e57-853ef51b87be
+	fromColumn: PlanInsights.WorkPlanId
+	toColumn: Plans.Id
+
+relationship AutoDetected_b48b4e3f-b3e8-4303-a844-88ba2b81a971
+	fromColumn: ProcessSteps.Index
+	toColumn: Calendar.Index
+
+relationship f10d4fd9-8800-23bd-9ea1-c9273e5b8744
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Plans.Id
+	toColumn: Plan_Projects.Id
+
+relationship 5f6a23ec-e5f1-66db-55b7-37bbc4565a17
+	fromColumn: TimeOff.UserId
+	toColumn: Resources.UserId
+
+relationship cf20d84a-8dfc-d173-3e28-784983ba21aa
+	fromColumn: TaskDependency.To
+	toColumn: Tasks.Id
+
+relationship 62838ba0-ceef-3558-c239-b3115ea8cd4f
+	isActive: false
+	fromColumn: TaskDependency.From
+	toColumn: Tasks.Id
+
+relationship 4607a2eb-3d11-abaa-e4a3-626ceeff50be
+	fromColumn: Plans.PlanType_Program_Id
+	toColumn: Plan_Programs.Id
+
+relationship e9d113b7-57fd-5cb7-831f-3a6c696d161c
+	fromColumn: Plan_Programs.PlanType_EnterpriseProject_Id
+	toColumn: Plan_Portfolio.Id
+

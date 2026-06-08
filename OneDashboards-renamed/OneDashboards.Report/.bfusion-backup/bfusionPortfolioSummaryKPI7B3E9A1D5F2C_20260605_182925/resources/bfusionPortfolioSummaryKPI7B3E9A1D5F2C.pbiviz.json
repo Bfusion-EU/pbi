@@ -1,0 +1,552 @@
+{
+  "visual": {
+    "name": "bfusionPortfolioSummaryKPI",
+    "displayName": "BFUSION Portfolio Summary KPI",
+    "guid": "bfusionPortfolioSummaryKPI7B3E9A1D5F2C",
+    "visualClassName": "Visual",
+    "version": "1.0.0.0",
+    "description": "Aggregate KPI cards showing portfolio-level metrics: project counts, budget totals, completion average, and health distribution breakdowns.",
+    "supportUrl": "https://bfusion.eu",
+    "gitHubUrl": ""
+  },
+  "author": {
+    "name": "BFUSION",
+    "email": "info@bfusion.eu"
+  },
+  "apiVersion": "5.11.0",
+  "style": "style/visual.less",
+  "stringResources": {},
+  "capabilities": {
+    "supportsLandingPage": true,
+    "dataRoles": [
+      {
+        "displayName": "Project Name",
+        "name": "projectName",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "State",
+        "name": "state",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Overall Health",
+        "name": "overallHealth",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Schedule Health",
+        "name": "scheduleHealth",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Financial Health",
+        "name": "financialHealth",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Scope Health",
+        "name": "scopeHealth",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Effort Health",
+        "name": "effortHealth",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Issue Health",
+        "name": "issueHealth",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Change Health",
+        "name": "changeHealth",
+        "kind": "Grouping"
+      },
+      {
+        "displayName": "Budget",
+        "name": "budget",
+        "kind": "Measure"
+      },
+      {
+        "displayName": "Actuals",
+        "name": "actuals",
+        "kind": "Measure",
+        "description": "Actual cost — drives Budget vs Actuals gauge"
+      },
+      {
+        "displayName": "% Done",
+        "name": "pctDone",
+        "kind": "Measure"
+      },
+      {
+        "displayName": "Benefits",
+        "name": "benefits",
+        "kind": "Measure"
+      },
+      {
+        "displayName": "BFusion License Token",
+        "name": "licenseToken",
+        "kind": "GroupingOrMeasure",
+        "description": "Bind to the single-cell BFusionLicense[Key] column in your model"
+      }
+    ],
+    "dataViewMappings": [
+      {
+        "table": {
+          "rows": {
+            "select": [
+              {
+                "bind": {
+                  "to": "projectName"
+                }
+              },
+              {
+                "bind": {
+                  "to": "state"
+                }
+              },
+              {
+                "bind": {
+                  "to": "overallHealth"
+                }
+              },
+              {
+                "bind": {
+                  "to": "scheduleHealth"
+                }
+              },
+              {
+                "bind": {
+                  "to": "financialHealth"
+                }
+              },
+              {
+                "bind": {
+                  "to": "scopeHealth"
+                }
+              },
+              {
+                "bind": {
+                  "to": "effortHealth"
+                }
+              },
+              {
+                "bind": {
+                  "to": "issueHealth"
+                }
+              },
+              {
+                "bind": {
+                  "to": "changeHealth"
+                }
+              },
+              {
+                "bind": {
+                  "to": "budget"
+                }
+              },
+              {
+                "bind": {
+                  "to": "actuals"
+                }
+              },
+              {
+                "bind": {
+                  "to": "pctDone"
+                }
+              },
+              {
+                "bind": {
+                  "to": "benefits"
+                }
+              },
+              {
+                "bind": {
+                  "to": "licenseToken"
+                }
+              }
+            ],
+            "dataReductionAlgorithm": {
+              "top": {
+                "count": 10000
+              }
+            }
+          }
+        }
+      }
+    ],
+    "objects": {
+      "colorSettings": {
+        "displayName": "RAG Colors",
+        "properties": {
+          "onTrackColor": {
+            "displayName": "On Track",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "atRiskColor": {
+            "displayName": "At Risk",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "offTrackColor": {
+            "displayName": "Off Track",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "cardSettings": {
+        "displayName": "Card Appearance",
+        "properties": {
+          "accentColor": {
+            "displayName": "Accent Color",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "showHealthBreakdown": {
+            "displayName": "Show Health Breakdown",
+            "type": {
+              "bool": true
+            }
+          }
+        }
+      },
+      "gaugeSettings": {
+        "displayName": "Financial Gauges",
+        "properties": {
+          "showGauges": {
+            "displayName": "Show Gauges",
+            "type": {
+              "bool": true
+            }
+          },
+          "budgetColor": {
+            "displayName": "Budget Color",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "actualsColor": {
+            "displayName": "Actuals Color",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "benefitsColor": {
+            "displayName": "Benefits Color",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "currencyPrefix": {
+            "displayName": "Currency Prefix",
+            "type": {
+              "text": true
+            }
+          }
+        }
+      },
+      "fontSettings": {
+        "displayName": "Font",
+        "properties": {
+          "fontFamily": {
+            "displayName": "Font Family",
+            "type": {
+              "enumeration": [
+                {
+                  "displayName": "Segoe UI",
+                  "value": "Segoe UI"
+                },
+                {
+                  "displayName": "Arial",
+                  "value": "Arial"
+                },
+                {
+                  "displayName": "Calibri",
+                  "value": "Calibri"
+                },
+                {
+                  "displayName": "Trebuchet MS",
+                  "value": "Trebuchet MS"
+                },
+                {
+                  "displayName": "Verdana",
+                  "value": "Verdana"
+                },
+                {
+                  "displayName": "Tahoma",
+                  "value": "Tahoma"
+                }
+              ]
+            }
+          },
+          "kpiValueFontSize": {
+            "displayName": "KPI Value Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "kpiLabelFontSize": {
+            "displayName": "KPI Label Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "kpiSubtitleFontSize": {
+            "displayName": "KPI Subtitle Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "cardBandMetaFontSize": {
+            "displayName": "Card Band Meta Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "sectionTitleFontSize": {
+            "displayName": "Panel Title Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "panelSubtitleFontSize": {
+            "displayName": "Panel Subtitle Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "columnTitleFontSize": {
+            "displayName": "Column Title Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "barLabelFontSize": {
+            "displayName": "Bar Label Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "barValueFontSize": {
+            "displayName": "Bar Value Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "statValueFontSize": {
+            "displayName": "Stat Tile Value Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "statLabelFontSize": {
+            "displayName": "Stat Tile Label Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "statCaptionFontSize": {
+            "displayName": "Stat Tile Caption Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "legendFontSize": {
+            "displayName": "Legend Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "miniLabelFontSize": {
+            "displayName": "Breakdown Label Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "miniCountFontSize": {
+            "displayName": "Breakdown Count Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "gaugeValueFontSize": {
+            "displayName": "Gauge Value Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "gaugeLabelFontSize": {
+            "displayName": "Gauge Label Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "gaugeSubtitleFontSize": {
+            "displayName": "Gauge Subtitle Font Size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "gaugeTickFontSize": {
+            "displayName": "Gauge Tick Font Size",
+            "type": {
+              "numeric": true
+            }
+          }
+        }
+      },
+      "licenseSettings": {
+        "displayName": "License",
+        "properties": {
+          "licenseKey": {
+            "displayName": "License Key",
+            "description": "Paste your BFusion license key here. Contact info@bfusion.eu for a license.",
+            "type": {
+              "text": true
+            }
+          }
+        }
+      },
+      "header": {
+        "displayName": "Header",
+        "properties": {
+          "title": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Title"
+          },
+          "subtitle": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Subtitle"
+          },
+          "titleFontSize": {
+            "type": {
+              "numeric": true
+            },
+            "displayName": "Title Font Size"
+          },
+          "subtitleFontSize": {
+            "type": {
+              "numeric": true
+            },
+            "displayName": "Subtitle Font Size"
+          },
+          "showInfoButton": {
+            "type": {
+              "bool": true
+            },
+            "displayName": "Show Info Button"
+          },
+          "infoTitle": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Info — Title"
+          },
+          "infoDescription": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Info — Description"
+          },
+          "infoBullets": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Info — How-to-read (one bullet per line)"
+          }
+        }
+      },
+      "insightPanel": {
+        "displayName": "Insight Panel",
+        "properties": {
+          "showInsights": {
+            "type": {
+              "bool": true
+            },
+            "displayName": "Show Insights"
+          },
+          "showSmartInsights": {
+            "type": {
+              "bool": true
+            },
+            "displayName": "Show Smart Insights"
+          },
+          "fontSize": {
+            "type": {
+              "numeric": true
+            },
+            "displayName": "Insight Font Size"
+          },
+          "headerFontSize": {
+            "type": {
+              "numeric": true
+            },
+            "displayName": "Insight Header Font Size"
+          },
+          "accentColor": {
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            },
+            "displayName": "Accent Color"
+          }
+        }
+      }
+    },
+    "supportsMultiVisualSelection": true,
+    "privileges": []
+  },
+  "content": {
+    "js": "var bfusionPortfolioSummaryKPI7B3E9A1D5F2C;(()=>{\"use strict\";var e={132(e,t,i){i.d(t,{RR:()=>s,jM:()=>r,zr:()=>o});var a=i(848);function r(e){if(!e)return;if(\"1\"===e.getAttribute(\"data-rendered\"))return;e.setAttribute(\"data-rendered\",\"1\");const t=document.createElement(\"div\");t.className=\"bfusion-landing\";const i=document.createElement(\"div\");i.className=\"bfusion-landing__logo-container\";const r=document.createElement(\"img\");r.src=a,r.alt=\"BFusion\",r.className=\"bfusion-landing__logo\",i.appendChild(r);const s=document.createElement(\"div\");s.className=\"bfusion-landing__text-container\";const o=document.createElement(\"h3\");o.className=\"bfusion-landing__title\",o.textContent=\"Portfolio Summary KPI\";const l=document.createElement(\"p\");l.className=\"bfusion-landing__description\",l.appendChild(document.createTextNode(\"Please drag the \")),l.appendChild(n(\"Project Name\")),l.appendChild(document.createTextNode(\" and \")),l.appendChild(n(\"Overall Health\")),l.appendChild(document.createTextNode(\" fields into the visual. Optionally add \")),l.appendChild(n(\"Budget\")),l.appendChild(document.createTextNode(\", \")),l.appendChild(n(\"% Done\")),l.appendChild(document.createTextNode(\", and \")),l.appendChild(n(\"Health KPIs\")),l.appendChild(document.createTextNode(\" for a complete portfolio summary.\"));const c=document.createElement(\"div\");c.className=\"bfusion-landing__separator\";const d=document.createElement(\"div\");d.className=\"bfusion-landing__metadata\",d.appendChild(n(\"Version:\")),d.appendChild(document.createTextNode(\" 1.0.0\"));const u=document.createElement(\"div\");for(u.className=\"bfusion-landing__metadata\",u.appendChild(n(\"Author:\")),u.appendChild(document.createTextNode(\" BFUSION (info@bfusion.eu)\")),s.appendChild(o),s.appendChild(l),s.appendChild(c),s.appendChild(d),s.appendChild(u),t.appendChild(i),t.appendChild(s);e.firstChild;)e.removeChild(e.firstChild);e.appendChild(t)}function n(e){const t=document.createElement(\"strong\");return t.textContent=e,t}function s(e){if(e){for(;e.firstChild;)e.removeChild(e.firstChild);e.removeAttribute(\"data-rendered\")}}function o(e){if(!e)return;if(\"empty\"===e.getAttribute(\"data-rendered\"))return;for(;e.firstChild;)e.removeChild(e.firstChild);e.setAttribute(\"data-rendered\",\"empty\");const t=document.createElement(\"div\");t.className=\"bfusion-empty\";const i=document.createElement(\"div\");i.className=\"bfusion-empty__message\",i.textContent=\"No data retrieved within the current context\",t.appendChild(i),e.appendChild(t)}},487(e,t,i){i.d(t,{M0:()=>u,Mj:()=>m,WB:()=>d,h1:()=>f});var a=i(120),r=i(882),n=i(848);const s={foundation:1,pro:2,premium:3},o=\"premium\",l={state:\"no_key\",valid:!1,locked:!0,clientName:\"\",expiresOn:\"\",tier:\"\",requiredTier:o,trial:!1,errorReason:\"No license key\"};let c=null;function d(e,t){const i=e=>{if(!Array.isArray(e))return\"\";for(const t of e){if(null==t)continue;const e=String(t).trim();if(e.length>0)return e}return\"\"},a=e=>!!(e&&e.roles&&e.roles.licenseToken);try{const t=e?.categorical;if(t){for(const e of t.categories||[])if(a(e?.source)){const t=i(e.values);if(t)return t}for(const e of t.values||[])if(a(e?.source)){const t=i(e.values);if(t)return t}}const r=e?.table;if(r&&Array.isArray(r.columns)&&Array.isArray(r.rows)){const e=r.columns.findIndex(e=>a(e));if(e>=0)for(const t of r.rows){if(!t)continue;const i=t[e];if(null==i)continue;const a=String(i).trim();if(a.length>0)return a}}const n=e?.single;if(n&&(a(n?.source)||a(n?.values?.[0]?.source))){const e=n.value;if(null!=e){const t=String(e).trim();if(t.length>0)return t}}const s=e?.matrix;if(s&&Array.isArray(s.valueSources)){const e=s.valueSources.findIndex(e=>a(e));if(e>=0){const t=i=>{if(!i)return\"\";if(i.values&&\"object\"==typeof i.values)for(const t of Object.keys(i.values)){const a=i.values[t];if(!a)continue;const r=a.valueSourceIndex;if((void 0===r?Number(t)===e:r===e)&&null!==a.value&&void 0!==a.value){const e=String(a.value).trim();if(e.length>0)return e}}if(Array.isArray(i.children))for(const e of i.children){const i=t(e);if(i)return i}return\"\"},i=t(s.rows?.root);if(i)return i}}const o=(e?.metadata?.columns||[]).findIndex(e=>a(e));if(o>=0){if(r&&Array.isArray(r.rows))for(const e of r.rows){if(!e)continue;const t=e[o];if(null==t)continue;const i=String(t).trim();if(i.length>0)return i}if(t&&Array.isArray(t.values))for(const e of t.values)if(e?.source?.index===o){const t=i(e.values);if(t)return t}}}catch{}return(t||\"\").trim()}async function u(e){if(!e||0===e.trim().length)return{...l};e=e.trim();try{const t=await async function(){return c||(c=await(0,r.jU)(\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl0vhdB+tcX5tQqkTy2by\\nwP+mylZi/au8cbO+Gx22Z5haSAUajqktoOb5jn2+fmz0KlDI7iKlPOFRj15R0vGs\\njGfME1emIrGHUhpZqNOqPcwbi4Y/Rlzl5EaL+yf7kUUGD1QZSqYXewJ5hge9NRQP\\nFb2ZlanSs4IyMJTdhFcx1Cy5OaNrHpbHGJgiREOTK4b+g4w4RDlx3b3Tf4MqDARc\\nrqGJzDRejzBGX7VuLTnPgD13bid18oU7WOyvdkp04Qb/U5C3Q4Lm8sDWpU8z19sR\\n9SJI1Yn5SJ3w3RfdpQQQNLR35tXw9aJoiviI7o6bu7IuOz2FDzjkbOU0K+5BDrny\\nUwIDAQAB\\n-----END PUBLIC KEY-----\",\"RS256\"),c)}(),{payload:i}=await(0,a.V)(e,t,{issuer:\"bfusion.eu\",audience:\"bfusion-visual\",algorithms:[\"RS256\"],clockTolerance:60});if(2!==i.ver)return h(\"Unsupported license version (expected v2)\");const n=String(i.sub||\"\"),l=Number(i.exp||0),d=String(i.tier||\"\").toLowerCase(),u=Boolean(i.trial);return d in s?s[d]<s[o]?{state:\"wrong_tier\",valid:!1,locked:!0,clientName:n,expiresOn:p(l),tier:d,requiredTier:o,trial:u,errorReason:\"Requires \"+o+\" tier (key is \"+d+\")\"}:{state:u?\"valid_trial\":\"valid\",valid:!0,locked:!1,clientName:n,expiresOn:p(l),tier:d,requiredTier:o,trial:u,errorReason:\"\"}:h(\"License has unknown tier: \"+d)}catch(t){const i=t?.code||\"\";if(\"ERR_JWT_EXPIRED\"===i){const t=function(e){try{const t=e.split(\".\");return 3!==t.length?{}:JSON.parse(atob(t[1].replace(/-/g,\"+\").replace(/_/g,\"/\")))}catch{return{}}}(e);return{state:\"expired\",valid:!1,locked:!0,clientName:t.sub||\"\",expiresOn:p(t.exp||0),tier:t.tier||\"\",requiredTier:o,trial:Boolean(t.trial),errorReason:\"License expired\"}}return h(\"ERR_JWS_SIGNATURE_VERIFICATION_FAILED\"===i?\"Invalid signature\":\"ERR_JWT_CLAIM_VALIDATION_FAILED\"===i?\"Claim validation failed\":\"Invalid license key\")}}function h(e){return{state:\"invalid\",valid:!1,locked:!0,clientName:\"\",expiresOn:\"\",tier:\"\",requiredTier:o,trial:!1,errorReason:e}}function p(e){return e?new Date(1e3*e).toISOString().split(\"T\")[0]:\"—\"}function A(){if(\"undefined\"==typeof document)return;if(document.getElementById(\"bfusion-license-styles\"))return;const e=document.createElement(\"style\");e.id=\"bfusion-license-styles\",e.textContent='\\n.bfusion-license-badge{position:absolute;left:6px;bottom:6px;font:11px/1.3 \"Segoe UI\",system-ui,sans-serif;padding:3px 8px;border-radius:3px;z-index:10;pointer-events:none;}\\n.bfusion-license-badge--trial{background:rgba(232,97,26,.92);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);}\\n.bfusion-license-badge--licensed{background:transparent;color:#b0b0b0;box-shadow:none;}\\n.bfusion-license-badge em{opacity:.85;font-style:normal;}\\n.bfusion-trial-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5;}\\n.bfusion-trial-watermark__text{font:600 28px/1 \"Segoe UI\",system-ui,sans-serif;color:rgba(232,97,26,.20);letter-spacing:.15em;transform:rotate(-22deg);text-transform:uppercase;}\\n.bfusion-locked-overlay{position:absolute;inset:0;background:rgba(248,249,251,.96);backdrop-filter:saturate(0.3) blur(2px);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:\"Segoe UI\",system-ui,sans-serif;color:#1f2937;}\\n.bfusion-locked-overlay__inner{text-align:center;padding:32px 48px 24px;max-width:480px;background:#fff;border-radius:8px;border-top:3px solid #E8611A;}\\n.bfusion-locked-overlay__logo{width:120px;max-width:35%;height:auto;margin:0 auto 20px;display:block;border-radius:16px;overflow:hidden;}\\n.bfusion-locked-overlay__lock{font-size:24px;color:#E8611A;margin-bottom:6px;}\\n.bfusion-locked-overlay__title{font-size:20px;font-weight:600;color:#0f172a;margin-bottom:8px;letter-spacing:.01em;}\\n.bfusion-locked-overlay__subtitle{font-size:13px;color:#475569;line-height:1.6;margin-bottom:16px;}\\n.bfusion-locked-overlay__cta{font-size:12px;color:#64748b;border-top:1px solid #f1f5f9;padding-top:12px;}\\n.bfusion-locked-overlay__cta a{color:#E8611A;text-decoration:none;}\\n.bfusion-locked-overlay__cta a:hover{text-decoration:underline;}\\n',document.head.appendChild(e)}function f(e,t){A();const i=e.querySelector(\".bfusion-license-badge\");if(i&&i.remove(),t.locked)return;const a=document.createElement(\"div\"),r=t.trial?\"bfusion-license-badge--trial\":\"bfusion-license-badge--licensed\";a.className=\"bfusion-license-badge bfusion-license-badge--valid \"+r;const n=t.trial?\" <em>(TRIAL)</em>\":\"\";a.innerHTML='<span class=\"bfusion-license-badge__icon\">&#x2713;</span><span class=\"bfusion-license-badge__text\">Licensed to: <strong>'+g(t.clientName)+\"</strong> | \"+g(t.tier)+n+\" | Expires: \"+g(t.expiresOn)+\"</span>\",e.appendChild(a)}function m(e,t){!function(e,t){A();const i=\"bfusion-trial-watermark\",a=e.querySelector(\".\"+i);if(a&&a.remove(),\"valid_trial\"!==t.state)return;const r=document.createElement(\"div\");r.className=i,r.innerHTML='<div class=\"bfusion-trial-watermark__text\">TRIAL · expires '+g(t.expiresOn)+\"</div>\",e.appendChild(r)}(e,t),function(e,t){A();const i=\"bfusion-locked-overlay\",a=e.querySelector(\".\"+i);if(a&&a.remove(),!t.locked)return;const r=function(e){switch(e.state){case\"no_key\":default:return\"Visual locked\";case\"expired\":return\"License expired\";case\"wrong_tier\":return\"Tier upgrade required\";case\"invalid\":return\"Invalid license\"}}(t),s=function(e){switch(e.state){case\"no_key\":return\"Bind a BFusion License Token to enable this visual\";case\"expired\":return\"Expired on \"+e.expiresOn;case\"wrong_tier\":return\"This visual requires \"+e.requiredTier+\" tier\";case\"invalid\":return e.errorReason;default:return\"\"}}(t),o=document.createElement(\"div\");o.className=i,o.innerHTML='<div class=\"bfusion-locked-overlay__inner\"><img class=\"bfusion-locked-overlay__logo\" src=\"'+n+'\" alt=\"BFUSION\" /><div class=\"bfusion-locked-overlay__lock\">&#x1F512;</div><div class=\"bfusion-locked-overlay__title\">'+g(r)+'</div><div class=\"bfusion-locked-overlay__subtitle\">'+g(s)+'</div><div class=\"bfusion-locked-overlay__cta\">Contact <a href=\"mailto:info@bfusion.eu\">info@bfusion.eu</a></div></div>',e.appendChild(o)}(e,t)}function g(e){const t=document.createElement(\"div\");return t.textContent=String(e??\"\"),t.innerHTML}},58(e,t,i){i.d(t,{b:()=>n});var a=i(132),r=i(487);class n{_bfLicenseKey=\"\";_bfLastDataToken=\"\";_bfLicenseResult;_bfBadgeContainer=null;target;cardContainer;landingContainer;host;selectionManager;onTrackColor=\"#22c55e\";atRiskColor=\"#f59e0b\";offTrackColor=\"#ef4444\";naColor=\"#e5e7eb\";accentColor=\"#E8612A\";showHealthBreakdown=!0;showGauges=!0;budgetColor=\"#3b82f6\";actualsColor=\"#0ea5e9\";benefitsColor=\"#8b5cf6\";currencyPrefix=\"$\";fontFamily=\"Segoe UI\";kpiValueFontSize=28;kpiLabelFontSize=11;kpiSubtitleFontSize=11;cardBandMetaFontSize=10;sectionTitleFontSize=12;panelSubtitleFontSize=11;columnTitleFontSize=11;barLabelFontSize=11;barValueFontSize=11;statValueFontSize=20;statLabelFontSize=11;statCaptionFontSize=10;legendFontSize=11;miniLabelFontSize=11;miniCountFontSize=10;gaugeValueFontSize=22;gaugeLabelFontSize=11;gaugeSubtitleFontSize=10;gaugeTickFontSize=8;headerTitle=\"\";headerSubtitle=\"\";headerTitleFontSize=13;headerSubtitleFontSize=10;headerShowInfoButton=!0;headerInfoTitle=\"Portfolio Summary KPI\";headerInfoDescription=\"Aggregated portfolio-level KPIs: project counts, health distribution, and financial gauges (budget, actuals, benefits, variance).\";headerInfoBullets=\"Top row shows project counts and overall On Track / At Risk / Off Track totals\\nBudget vs Actuals donut = Actuals ÷ Budget (consumption %)\\nBenefit / Cost Ratio = Benefits ÷ Budget (1.0× = breakeven, 2.0× = double return)\\nNet Benefit = Benefits − Budget (raw currency gain or loss)\\nNet ROI half-gauge = (Benefits − Budget) ÷ Budget, scaled −100% to +200%\\nHealth Distribution bar maps the share of projects in each RAG state\\nHealth by Dimension breaks down Schedule / Financial / Scope / Effort / Issues / Changes\";insightShow=!0;insightShowSmart=!0;insightFontSize=11;insightHeaderFontSize=12;insightAccentColor=\"#E8612A\";headerBar;headerTitleEl;headerSubtitleEl;headerInfoBtn;headerInfoPop;constructor(e){this.host=e.host,this.selectionManager=this.host.createSelectionManager(),this.target=e.element,this.target.classList.add(\"bfusion-root\",\"bfusion-psk\"),this.landingContainer=document.createElement(\"div\"),this.landingContainer.className=\"bfusion-landing-wrap\",this.target.appendChild(this.landingContainer),this.headerBar=document.createElement(\"div\"),this.headerBar.className=\"psk-header\",this.headerBar.style.display=\"none\";const t=document.createElement(\"div\");t.className=\"psk-header__titles\",this.headerTitleEl=document.createElement(\"div\"),this.headerTitleEl.className=\"psk-header__title\",this.headerSubtitleEl=document.createElement(\"div\"),this.headerSubtitleEl.className=\"psk-header__subtitle\",t.appendChild(this.headerTitleEl),t.appendChild(this.headerSubtitleEl),this.headerInfoBtn=document.createElement(\"button\"),this.headerInfoBtn.className=\"psk-header__info\",this.headerInfoBtn.setAttribute(\"type\",\"button\"),this.headerInfoBtn.setAttribute(\"aria-label\",\"Show info\"),this.headerInfoBtn.textContent=\"i\",this.headerInfoPop=document.createElement(\"div\"),this.headerInfoPop.className=\"psk-header__info-pop\",this.headerInfoPop.style.display=\"none\",this.headerBar.appendChild(t),this.headerBar.appendChild(this.headerInfoBtn),this.headerBar.appendChild(this.headerInfoPop),this.target.appendChild(this.headerBar),this.headerInfoBtn.addEventListener(\"click\",e=>{e.stopPropagation();const t=\"none\"!==this.headerInfoPop.style.display;this.headerInfoPop.style.display=t?\"none\":\"block\"}),document.addEventListener(\"click\",e=>{const t=e.target;this.headerInfoPop.contains(t)||t===this.headerInfoBtn||(this.headerInfoPop.style.display=\"none\")}),this.cardContainer=document.createElement(\"div\"),this.cardContainer.className=\"bfusion-kpi-wrap\",this.target.appendChild(this.cardContainer),this.showLanding(),this._bfBadgeContainer=document.createElement(\"div\"),this._bfBadgeContainer.className=\"bfusion-license-badge-wrap\",(this.target||e?.element||document.body).appendChild(this._bfBadgeContainer)}update(e){{const t=e?.dataViews?.[0],i=t?.metadata?.objects?.licenseSettings,a=i?String(i.licenseKey||\"\"):this._bfLicenseKey;a&&(this._bfLicenseKey=a);const n=(0,r.WB)(e?.dataViews?.[0],this._bfLicenseKey||\"\");n&&(this._bfLastDataToken=n),(0,r.M0)(n||this._bfLastDataToken).then(e=>{this._bfLicenseResult=e,this._bfBadgeContainer&&(0,r.h1)(this._bfBadgeContainer,e);const t=this.target||this.element||this.rootElement;t&&(0,r.Mj)(t,e)})}if(!e.dataViews||0===e.dataViews.length||!e.dataViews[0].table)return void this.showLanding();const t=e.dataViews[0].table,i={};if(t.columns.forEach((e,t)=>{for(const a of Object.keys(e.roles||{}))i[a]=t}),void 0===i.projectName)return void this.showLanding();const a=e.dataViews?.[0]?.table;if(!a||!a.rows||0===a.rows.length)return void this.showEmptyDataMessage();this.hideLanding(),this.readSettings(e),this.applyCssVariables(),this.renderHeader();const n=(e,t)=>void 0!==i[t]?String(e[i[t]]??\"\"):\"\",s=(e,t)=>void 0!==i[t]?Number(e[i[t]]??0):0,o=t.rows.length;let l=o;void 0!==i.state&&(l=t.rows.filter(e=>{const t=n(e,\"state\").toLowerCase();return\"active\"===t||\"in progress\"===t||\"approved\"===t||\"\"===t}).length);const c=void 0!==i.budget;let d=0;if(c)for(const e of t.rows)d+=s(e,\"budget\");const u=void 0!==i.actuals;let h=0;if(u)for(const e of t.rows)h+=s(e,\"actuals\");const p=void 0!==i.benefits;let A=0;if(p)for(const e of t.rows)A+=s(e,\"benefits\");const f=void 0!==i.pctDone;let m=0;if(f&&o>0){let e=0;for(const i of t.rows)e+=s(i,\"pctDone\");m=e/o}const g=e=>{const a={onTrack:0,atRisk:0,offTrack:0,na:0,total:0};if(void 0===i[e])return a;for(const i of t.rows){const t=this.parseStatus(n(i,e));\"On Track\"===t?a.onTrack++:\"At Risk\"===t?a.atRisk++:\"Off Track\"===t?a.offTrack++:a.na++,a.total++}return a},b=g(\"overallHealth\"),y=[];for(const e of[{role:\"scheduleHealth\",label:\"Schedule\"},{role:\"financialHealth\",label:\"Financial\"},{role:\"scopeHealth\",label:\"Scope\"},{role:\"effortHealth\",label:\"Effort\"},{role:\"issueHealth\",label:\"Issues\"},{role:\"changeHealth\",label:\"Changes\"}])void 0!==i[e.role]&&y.push({...e,counts:g(e.role)});const S=e.viewport?.width||980;this.target.classList.remove(\"psk-wide\",\"psk-medium\",\"psk-narrow\"),S>=980?this.target.classList.add(\"psk-wide\"):S>=720?this.target.classList.add(\"psk-medium\"):this.target.classList.add(\"psk-narrow\");let k=\"\";k+='<div class=\"psk-row psk-row--primary\">';const v=o>0?Math.round(l/o*100):0;if(k+=this.renderCard(\"Total Projects\",String(o),void 0!==i.state?`${l} active · ${o-l} other`:`${o} in portfolio`,void 0!==i.state?v:100,this.accentColor,void 0!==i.state?`${v}% active`:\"\"),b.total>0){const e=Math.round(b.onTrack/b.total*100);k+=this.renderCard(\"On Track\",`${e}%`,`${b.onTrack} of ${b.total} projects`,e,this.onTrackColor,\"\");const t=Math.round(b.atRisk/b.total*100);k+=this.renderCard(\"At Risk\",String(b.atRisk),b.atRisk>0?`${t}% of portfolio`:\"no projects at risk\",t,this.atRiskColor,\"\");const i=Math.round(b.offTrack/b.total*100);k+=this.renderCard(\"Off Track\",String(b.offTrack),b.offTrack>0?`${i}% critical`:\"no critical projects\",i,this.offTrackColor,\"\")}if(f){const e=Math.round(m);k+=this.renderCard(\"Avg Completion\",`${e}%`,e>=70?\"portfolio on pace\":e>=40?\"mid-flight\":\"early stage\",e,\"#2F8F83\",\"\")}if(k+=\"</div>\",this.showGauges&&(c||u||p)){const e=c&&p&&d>0?A/d:null,t=c&&p&&d>0?(A-d)/d*100:null,i=c&&u&&d>0?h/d*100:null,a=c&&u?d-h:null,r=c&&p?A-d:null,n=Math.max(c?d:0,u?h:0,p?A:0);if(k+='<div class=\"psk-panel\">',k+='<div class=\"psk-panel__head\">',k+='<span class=\"psk-panel__title\">Financial Health</span>',k+='<span class=\"psk-panel__head-sub\">Budget vs Actuals vs Benefits, ROI signals</span>',k+=\"</div>\",k+='<div class=\"psk-panel__body\">',k+='<div class=\"psk-fin\">',k+='<div class=\"psk-fin__left\">',k+=\"<div>\",k+='<div class=\"psk-fin__col-title\">Portfolio totals</div>',k+='<div class=\"psk-bars\">',c&&(k+=this.renderBarRow(\"Budget\",d,n,this.budgetColor)),u&&(k+=this.renderBarRow(\"Actuals\",h,n,this.actualsColor)),p&&(k+=this.renderBarRow(\"Benefits\",A,n,this.benefitsColor)),k+=\"</div>\",k+=\"</div>\",null!==t||null!==a&&c&&d>0||null!==r){if(k+=\"<div>\",k+='<div class=\"psk-fin__col-title\">Investment signals</div>',k+='<div class=\"psk-stats\">',null!==t&&(k+='<div class=\"psk-stat\">',k+=`<div class=\"psk-stat__val\" style=\"color:${t>=20?this.onTrackColor:t>=0?this.atRiskColor:this.offTrackColor};\">${t>=0?\"+\":\"\"}${Math.round(t)}%</div>`,k+='<div class=\"psk-stat__label\">Net ROI</div>',k+='<div class=\"psk-stat__caption\">portfolio</div>',k+=\"</div>\"),null!==a&&c&&d>0){const e=a/d*100;k+='<div class=\"psk-stat\">',k+=`<div class=\"psk-stat__val\" style=\"color:${a>=0?this.onTrackColor:this.offTrackColor};\">${e>=0?\"+\":\"\"}${e.toFixed(1)}%</div>`,k+='<div class=\"psk-stat__label\">Variance</div>',k+='<div class=\"psk-stat__caption\">vs budget</div>',k+=\"</div>\"}null!==r&&(k+='<div class=\"psk-stat\">',k+=`<div class=\"psk-stat__val\" style=\"color:${r>=0?this.onTrackColor:this.offTrackColor};\">${r>=0?\"+\":\"−\"}${this.fmtCurrency(Math.abs(r))}</div>`,k+='<div class=\"psk-stat__label\">Net Benefit</div>',k+='<div class=\"psk-stat__caption\">vs total</div>',k+=\"</div>\"),k+=\"</div>\",k+=\"</div>\"}if(k+=\"</div>\",k+='<div class=\"psk-fin__gauges\">',k+=\"<div>\",null!==e){const t=Math.max(0,Math.min(100,100*e/200*100)),i=e>=1?this.onTrackColor:e>=.8?this.atRiskColor:this.offTrackColor;k+=this.renderDonutGauge(\"Benefit / Cost Ratio\",t,`${e.toFixed(2)}×`,\"Benefits ÷ Budget\",i)}else if(null!==i){const e=i>100?this.offTrackColor:i>=85?this.atRiskColor:this.onTrackColor;k+=this.renderDonutGauge(\"Budget Consumed\",Math.min(100,i),`${Math.round(i)}%`,\"Actuals ÷ Budget\",e)}if(k+=\"</div>\",k+=\"<div>\",null!==t){const e=t>=20?this.onTrackColor:t>=0?this.atRiskColor:this.offTrackColor,i=t>=0?\"+\":\"\";k+=this.renderHalfGauge(\"Net ROI\",t,-100,200,`${i}${Math.round(t)}%`,\"(Benefits − Budget) ÷ Budget\",e)}k+=\"</div>\",k+=\"</div>\",k+=\"</div>\",k+=\"</div>\",k+=\"</div>\"}if(b.total>0&&(k+='<div class=\"psk-panel\">',k+='<div class=\"psk-panel__head\">',k+='<span class=\"psk-panel__title\">Health Distribution</span>',k+='<span class=\"psk-panel__head-sub\">Share of portfolio by RAG state</span>',k+=\"</div>\",k+='<div class=\"psk-panel__body\">',k+='<div class=\"psk-distrib\">',k+='<div class=\"psk-distrib__bar\">',k+=this.renderDistribSegment(b.onTrack,b.total,this.onTrackColor,\"On Track\"),k+=this.renderDistribSegment(b.atRisk,b.total,this.atRiskColor,\"At Risk\"),k+=this.renderDistribSegment(b.offTrack,b.total,this.offTrackColor,\"Off Track\"),k+=this.renderDistribSegment(b.na,b.total,this.naColor,\"N/A\"),k+=\"</div>\",k+='<div class=\"psk-distrib__legend\">',k+=this.renderLegendItem(this.onTrackColor,\"On Track\",b.onTrack,b.total),k+=this.renderLegendItem(this.atRiskColor,\"At Risk\",b.atRisk,b.total),k+=this.renderLegendItem(this.offTrackColor,\"Off Track\",b.offTrack,b.total),b.na>0&&(k+=this.renderLegendItem(this.naColor,\"N/A\",b.na,b.total)),k+=\"</div>\",k+=\"</div>\",k+=\"</div></div>\"),this.showHealthBreakdown&&y.length>0){k+='<div class=\"psk-panel\">',k+='<div class=\"psk-panel__head\">',k+='<span class=\"psk-panel__title\">Health by Dimension</span>',k+='<span class=\"psk-panel__head-sub\">Schedule · Financial · Scope · Effort · Issues · Changes</span>',k+=\"</div>\",k+='<div class=\"psk-panel__body\">',k+='<div class=\"psk-breakdown__grid\">';for(const e of y)k+='<div class=\"psk-mini\">',k+=`<div class=\"psk-mini__label\">${this.esc(e.label)}</div>`,k+='<div class=\"psk-mini__bar\">',k+=this.renderDistribSegment(e.counts.onTrack,e.counts.total,this.onTrackColor,\"On Track\"),k+=this.renderDistribSegment(e.counts.atRisk,e.counts.total,this.atRiskColor,\"At Risk\"),k+=this.renderDistribSegment(e.counts.offTrack,e.counts.total,this.offTrackColor,\"Off Track\"),k+=this.renderDistribSegment(e.counts.na,e.counts.total,this.naColor,\"N/A\"),k+=\"</div>\",k+='<div class=\"psk-mini__counts\">',k+=`<span style=\"color:${this.onTrackColor};\">${e.counts.onTrack}</span>`,k+=`<span style=\"color:${this.atRiskColor};\">${e.counts.atRisk}</span>`,k+=`<span style=\"color:${this.offTrackColor};\">${e.counts.offTrack}</span>`,k+=\"</div>\",k+=\"</div>\";k+=\"</div>\",k+=\"</div></div>\"}this.cardContainer.innerHTML=k}renderCard(e,t,i,a,r,n){const s=Math.max(0,Math.min(100,a));let o=`<div class=\"psk-card\" style=\"--psk-card-color:${r};\">`;return o+='<div class=\"psk-card__band\">',o+=`<span class=\"psk-card__band-title\">${this.esc(e)}</span>`,n&&(o+=`<span class=\"psk-card__band-meta\">${this.esc(n)}</span>`),o+=\"</div>\",o+='<div class=\"psk-card__body\">',o+=`<div class=\"psk-card__value\">${this.esc(t)}</div>`,i&&(o+=`<div class=\"psk-card__sub\">${this.esc(i)}</div>`),o+=`<div class=\"psk-card__pbar\"><div class=\"psk-card__pbar-fill\" style=\"width:${s}%;\"></div></div>`,o+=\"</div></div>\",o}renderBarRow(e,t,i,a){const r=i>0?Math.max(2,Math.min(100,t/i*100)):0;let n='<div class=\"psk-bars__row\">';return n+=`<span class=\"psk-bars__label\">${this.esc(e)}</span>`,n+='<div class=\"psk-bars__track\">',n+=`<div class=\"psk-bars__fill\" style=\"width:${r}%;background:${a};\"></div>`,n+=\"</div>\",n+=`<span class=\"psk-bars__val\">${this.esc(this.fmtCurrency(t))}</span>`,n+=\"</div>\",n}renderDonutGauge(e,t,i,a,r){const n=Math.max(0,Math.min(100,t)),s=2*Math.PI*42,o=s-n/100*s;let l='<div class=\"psk-gauge\">';return l+=`<div class=\"psk-gauge__label\">${this.esc(e)}</div>`,l+=`<svg class=\"psk-gauge__svg\" viewBox=\"0 0 110 110\" role=\"img\" aria-label=\"${this.esc(e)}: ${this.esc(i)}\">`,l+='<circle class=\"psk-gauge__ring-bg\" cx=\"55\" cy=\"55\" r=\"42\"></circle>',l+='<circle class=\"psk-gauge__ring-fg\" cx=\"55\" cy=\"55\" r=\"42\" ',l+=`stroke=\"${r}\" stroke-dasharray=\"${s.toFixed(2)}\" stroke-dashoffset=\"${o.toFixed(2)}\" `,l+='transform=\"rotate(-90 55 55)\"></circle>',l+=`<text class=\"psk-gauge__center\" x=\"55\" y=\"55\" fill=\"${r}\">${this.esc(i)}</text>`,l+=\"</svg>\",a&&(l+=`<div class=\"psk-gauge__subtitle\">${this.esc(a)}</div>`),l+=\"</div>\",l}renderHalfGauge(e,t,i,a,r,n,s){const o=42*Math.PI,l=o*(1-(Math.max(i,Math.min(a,t))-i)/(a-i)),c=(0-i)/(a-i),d=Math.PI*(1-c),u=55+42*Math.cos(d),h=60-42*Math.sin(d),p=55+36*Math.cos(d),A=60-36*Math.sin(d),f=\"M 13 60 A 42 42 0 0 1 97 60\",m=i<0&&a>0;let g='<div class=\"psk-gauge psk-gauge--half\">';return g+=`<div class=\"psk-gauge__label\">${this.esc(e)}</div>`,g+=`<svg class=\"psk-gauge__svg psk-gauge__svg--half\" viewBox=\"0 0 110 72\" role=\"img\" aria-label=\"${this.esc(e)}: ${this.esc(r)}\">`,g+=`<path d=\"${f}\" fill=\"none\" stroke=\"#F1F5F9\" stroke-width=\"10\" stroke-linecap=\"round\"/>`,g+=`<path d=\"${f}\" fill=\"none\" stroke=\"${s}\" stroke-width=\"10\" stroke-linecap=\"round\" `,g+=`stroke-dasharray=\"${o.toFixed(2)}\" stroke-dashoffset=\"${l.toFixed(2)}\"/>`,m&&(g+=`<line x1=\"${p.toFixed(1)}\" y1=\"${A.toFixed(1)}\" x2=\"${u.toFixed(1)}\" y2=\"${h.toFixed(1)}\" stroke=\"#94A3B8\" stroke-width=\"1.5\"/>`,g+=`<text x=\"${u.toFixed(1)}\" y=\"${(h-4).toFixed(1)}\" class=\"psk-gauge__tick\" text-anchor=\"middle\">0</text>`),g+=`<text x=\"8\" y=\"70\" class=\"psk-gauge__tick\" text-anchor=\"start\">${this.esc(this.fmtPctTick(i))}</text>`,g+=`<text x=\"102\" y=\"70\" class=\"psk-gauge__tick\" text-anchor=\"end\">${this.esc(this.fmtPctTick(a))}</text>`,g+=`<text class=\"psk-gauge__center\" x=\"55\" y=\"54\" fill=\"${s}\">${this.esc(r)}</text>`,g+=\"</svg>\",n&&(g+=`<div class=\"psk-gauge__subtitle\">${this.esc(n)}</div>`),g+=\"</div>\",g}fmtPctTick(e){return`${e>0?\"+\":\"\"}${e}%`}renderDistribSegment(e,t,i,a){if(e<=0||t<=0)return\"\";const r=e/t*100;return`<div class=\"psk-seg\" style=\"width:${r}%;background:${i};\" title=\"${this.esc(a)}: ${e} (${Math.round(r)}%)\"></div>`}renderLegendItem(e,t,i,a){const r=a>0?Math.round(i/a*100):0;return`<span class=\"psk-legend-item\"><span class=\"psk-legend-dot\" style=\"background:${e};\"></span>${this.esc(t)} <strong>${i}</strong> · ${r}%</span>`}parseStatus(e){if(!e)return\"N/A\";const t=e.toLowerCase();return t.includes(\"on track\")?\"On Track\":t.includes(\"at risk\")?\"At Risk\":t.includes(\"off track\")?\"Off Track\":\"N/A\"}fmtNum(e){return Math.abs(e)>=1e6?(e/1e6).toFixed(1)+\"M\":Math.abs(e)>=1e3?(e/1e3).toFixed(1)+\"K\":e.toLocaleString(void 0,{maximumFractionDigits:0})}fmtCurrency(e){return(this.currencyPrefix||\"\")+this.fmtNum(e)}esc(e){const t=document.createElement(\"div\");return t.appendChild(document.createTextNode(e)),t.innerHTML}escapeHtml(e){return e.replace(/&/g,\"&amp;\").replace(/</g,\"&lt;\").replace(/>/g,\"&gt;\").replace(/\"/g,\"&quot;\").replace(/'/g,\"&#39;\")}showLanding(){this.cardContainer.style.display=\"none\",this.headerBar.style.display=\"none\",this.landingContainer.style.display=\"flex\",(0,a.jM)(this.landingContainer)}showEmptyDataMessage(){this.cardContainer.style.display=\"none\",this.headerBar.style.display=\"none\",this.landingContainer.style.display=\"flex\",(0,a.zr)(this.landingContainer)}hideLanding(){this.cardContainer.style.display=\"block\",this.landingContainer.style.display=\"none\",(0,a.RR)(this.landingContainer)}readSettings(e){const t=e.dataViews?.[0]?.metadata?.objects;if(t){if(t.colorSettings){const e=t.colorSettings;e.onTrackColor&&(this.onTrackColor=e.onTrackColor.solid.color),e.atRiskColor&&(this.atRiskColor=e.atRiskColor.solid.color),e.offTrackColor&&(this.offTrackColor=e.offTrackColor.solid.color)}if(t.cardSettings){const e=t.cardSettings;e.accentColor&&(this.accentColor=e.accentColor.solid.color),void 0!==e.showHealthBreakdown&&(this.showHealthBreakdown=e.showHealthBreakdown)}if(t.gaugeSettings){const e=t.gaugeSettings;void 0!==e.showGauges&&(this.showGauges=e.showGauges),e.budgetColor&&(this.budgetColor=e.budgetColor.solid.color),e.actualsColor&&(this.actualsColor=e.actualsColor.solid.color),e.benefitsColor&&(this.benefitsColor=e.benefitsColor.solid.color),null!=e.currencyPrefix&&(this.currencyPrefix=String(e.currencyPrefix))}if(t.fontSettings){const e=t.fontSettings;null!=e.fontFamily&&(this.fontFamily=String(e.fontFamily)),null!=e.kpiValueFontSize&&(this.kpiValueFontSize=Number(e.kpiValueFontSize)),null!=e.kpiLabelFontSize&&(this.kpiLabelFontSize=Number(e.kpiLabelFontSize)),null!=e.kpiSubtitleFontSize&&(this.kpiSubtitleFontSize=Number(e.kpiSubtitleFontSize)),null!=e.cardBandMetaFontSize&&(this.cardBandMetaFontSize=Number(e.cardBandMetaFontSize)),null!=e.sectionTitleFontSize&&(this.sectionTitleFontSize=Number(e.sectionTitleFontSize)),null!=e.panelSubtitleFontSize&&(this.panelSubtitleFontSize=Number(e.panelSubtitleFontSize)),null!=e.columnTitleFontSize&&(this.columnTitleFontSize=Number(e.columnTitleFontSize)),null!=e.barLabelFontSize&&(this.barLabelFontSize=Number(e.barLabelFontSize)),null!=e.barValueFontSize&&(this.barValueFontSize=Number(e.barValueFontSize)),null!=e.statValueFontSize&&(this.statValueFontSize=Number(e.statValueFontSize)),null!=e.statLabelFontSize&&(this.statLabelFontSize=Number(e.statLabelFontSize)),null!=e.statCaptionFontSize&&(this.statCaptionFontSize=Number(e.statCaptionFontSize)),null!=e.legendFontSize&&(this.legendFontSize=Number(e.legendFontSize)),null!=e.miniLabelFontSize&&(this.miniLabelFontSize=Number(e.miniLabelFontSize)),null!=e.miniCountFontSize&&(this.miniCountFontSize=Number(e.miniCountFontSize)),null!=e.gaugeValueFontSize&&(this.gaugeValueFontSize=Number(e.gaugeValueFontSize)),null!=e.gaugeLabelFontSize&&(this.gaugeLabelFontSize=Number(e.gaugeLabelFontSize)),null!=e.gaugeSubtitleFontSize&&(this.gaugeSubtitleFontSize=Number(e.gaugeSubtitleFontSize)),null!=e.gaugeTickFontSize&&(this.gaugeTickFontSize=Number(e.gaugeTickFontSize))}if(t.header){const e=t.header;null!=e.title&&(this.headerTitle=String(e.title)),null!=e.subtitle&&(this.headerSubtitle=String(e.subtitle)),null!=e.titleFontSize&&(this.headerTitleFontSize=Number(e.titleFontSize)),null!=e.subtitleFontSize&&(this.headerSubtitleFontSize=Number(e.subtitleFontSize)),null!=e.showInfoButton&&(this.headerShowInfoButton=e.showInfoButton),null!=e.infoTitle&&(this.headerInfoTitle=String(e.infoTitle)),null!=e.infoDescription&&(this.headerInfoDescription=String(e.infoDescription)),null!=e.infoBullets&&(this.headerInfoBullets=String(e.infoBullets))}if(t.insightPanel){const e=t.insightPanel;null!=e.showInsights&&(this.insightShow=e.showInsights),null!=e.showSmartInsights&&(this.insightShowSmart=e.showSmartInsights),null!=e.fontSize&&(this.insightFontSize=Number(e.fontSize)),null!=e.headerFontSize&&(this.insightHeaderFontSize=Number(e.headerFontSize)),e.accentColor&&(this.insightAccentColor=e.accentColor.solid.color)}}}applyCssVariables(){const e=this.target.style;e.setProperty(\"--psk-font-family\",this.fontFamily),e.setProperty(\"--psk-kpi-value-font\",this.kpiValueFontSize+\"px\"),e.setProperty(\"--psk-kpi-label-font\",this.kpiLabelFontSize+\"px\"),e.setProperty(\"--psk-kpi-subtitle-font\",this.kpiSubtitleFontSize+\"px\"),e.setProperty(\"--psk-card-band-meta-font\",this.cardBandMetaFontSize+\"px\"),e.setProperty(\"--psk-section-title-font\",this.sectionTitleFontSize+\"px\"),e.setProperty(\"--psk-panel-subtitle-font\",this.panelSubtitleFontSize+\"px\"),e.setProperty(\"--psk-column-title-font\",this.columnTitleFontSize+\"px\"),e.setProperty(\"--psk-bar-label-font\",this.barLabelFontSize+\"px\"),e.setProperty(\"--psk-bar-value-font\",this.barValueFontSize+\"px\"),e.setProperty(\"--psk-stat-value-font\",this.statValueFontSize+\"px\"),e.setProperty(\"--psk-stat-label-font\",this.statLabelFontSize+\"px\"),e.setProperty(\"--psk-stat-caption-font\",this.statCaptionFontSize+\"px\"),e.setProperty(\"--psk-legend-font\",this.legendFontSize+\"px\"),e.setProperty(\"--psk-mini-label-font\",this.miniLabelFontSize+\"px\"),e.setProperty(\"--psk-mini-count-font\",this.miniCountFontSize+\"px\"),e.setProperty(\"--psk-gauge-value-font\",this.gaugeValueFontSize+\"px\"),e.setProperty(\"--psk-gauge-label-font\",this.gaugeLabelFontSize+\"px\"),e.setProperty(\"--psk-gauge-subtitle-font\",this.gaugeSubtitleFontSize+\"px\"),e.setProperty(\"--psk-gauge-tick-font\",this.gaugeTickFontSize+\"px\"),e.setProperty(\"--psk-header-title-font\",this.headerTitleFontSize+\"px\"),e.setProperty(\"--psk-header-subtitle-font\",this.headerSubtitleFontSize+\"px\"),e.setProperty(\"--psk-insight-font\",this.insightFontSize+\"px\"),e.setProperty(\"--psk-insight-header-font\",this.insightHeaderFontSize+\"px\"),e.setProperty(\"--psk-insight-accent\",this.insightAccentColor)}renderHeader(){const e=!!this.headerTitle&&this.headerTitle.trim().length>0,t=!!this.headerSubtitle&&this.headerSubtitle.trim().length>0,i=e||t||this.headerShowInfoButton;if(this.headerBar.style.display=i?\"flex\":\"none\",i&&(this.headerTitleEl.textContent=e?this.headerTitle:\"\",this.headerTitleEl.style.display=e?\"block\":\"none\",this.headerSubtitleEl.textContent=t?this.headerSubtitle:\"\",this.headerSubtitleEl.style.display=t?\"block\":\"none\",this.headerInfoBtn.style.display=this.headerShowInfoButton?\"inline-flex\":\"none\",this.headerShowInfoButton)){const e=(this.headerInfoBullets||\"\").split(/\\r?\\n/).map(e=>e.trim()).filter(e=>e.length>0),t=e.length?`<ul>${e.map(e=>`<li>${this.escapeHtml(e)}</li>`).join(\"\")}</ul>`:\"\",i=this.escapeHtml(this.headerInfoTitle||\"\"),a=this.escapeHtml(this.headerInfoDescription||\"\");this.headerInfoPop.innerHTML=(i?`<div class=\"psk-info-pop__title\">${i}</div>`:\"\")+(a?`<div class=\"psk-info-pop__desc\">${a}</div>`:\"\")+t}}enumerateObjectInstances(e){const t=e.objectName,i=[];return\"licenseSettings\"===t?[{objectName:t,selector:null,properties:{licenseKey:this._bfLicenseKey}}]:(\"colorSettings\"===t&&i.push({objectName:t,properties:{onTrackColor:this.onTrackColor,atRiskColor:this.atRiskColor,offTrackColor:this.offTrackColor},selector:null}),\"cardSettings\"===t&&i.push({objectName:t,properties:{accentColor:this.accentColor,showHealthBreakdown:this.showHealthBreakdown},selector:null}),\"gaugeSettings\"===t&&i.push({objectName:t,properties:{showGauges:this.showGauges,budgetColor:this.budgetColor,actualsColor:this.actualsColor,benefitsColor:this.benefitsColor,currencyPrefix:this.currencyPrefix},selector:null}),\"fontSettings\"===t&&i.push({objectName:t,properties:{fontFamily:this.fontFamily,kpiValueFontSize:this.kpiValueFontSize,kpiLabelFontSize:this.kpiLabelFontSize,kpiSubtitleFontSize:this.kpiSubtitleFontSize,cardBandMetaFontSize:this.cardBandMetaFontSize,sectionTitleFontSize:this.sectionTitleFontSize,panelSubtitleFontSize:this.panelSubtitleFontSize,columnTitleFontSize:this.columnTitleFontSize,barLabelFontSize:this.barLabelFontSize,barValueFontSize:this.barValueFontSize,statValueFontSize:this.statValueFontSize,statLabelFontSize:this.statLabelFontSize,statCaptionFontSize:this.statCaptionFontSize,legendFontSize:this.legendFontSize,miniLabelFontSize:this.miniLabelFontSize,miniCountFontSize:this.miniCountFontSize,gaugeValueFontSize:this.gaugeValueFontSize,gaugeLabelFontSize:this.gaugeLabelFontSize,gaugeSubtitleFontSize:this.gaugeSubtitleFontSize,gaugeTickFontSize:this.gaugeTickFontSize},selector:null}),\"header\"===t&&i.push({objectName:t,properties:{title:this.headerTitle,subtitle:this.headerSubtitle,titleFontSize:this.headerTitleFontSize,subtitleFontSize:this.headerSubtitleFontSize,showInfoButton:this.headerShowInfoButton,infoTitle:this.headerInfoTitle,infoDescription:this.headerInfoDescription,infoBullets:this.headerInfoBullets},selector:null}),\"insightPanel\"===t&&i.push({objectName:t,properties:{showInsights:this.insightShow,showSmartInsights:this.insightShowSmart,fontSize:this.insightFontSize,headerFontSize:this.insightHeaderFontSize,accentColor:this.insightAccentColor},selector:null}),i)}}},848(e){e.exports=\"data:image/jpeg;base64,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\"},973(e,t,i){i.d(t,{B:()=>s});var a=i(623),r=i(817),n=i(203);async function s(e,t,i){if(e instanceof Uint8Array&&(e=n.D0.decode(e)),\"string\"!=typeof e)throw new r.Ye(\"Compact JWS must be a string or Uint8Array\");const{0:s,1:o,2:l,length:c}=e.split(\".\");if(3!==c)throw new r.Ye(\"Invalid Compact JWS\");const d=await(0,a.Z)({payload:o,protected:s,signature:l},t,i),u={payload:d.payload,protectedHeader:d.protectedHeader};return\"function\"==typeof t?{...u,key:d.key}:u}},623(e,t,i){i.d(t,{Z:()=>p});var a=i(96),r=i(456),n=i(817),s=i(203),o=i(214),l=i(135),c=i(38),d=i(12),u=i(22),h=i(751);async function p(e,t,i){if(!(0,l.Gv)(e))throw new n.Ye(\"Flattened JWS must be an object\");if(void 0===e.protected&&void 0===e.header)throw new n.Ye('Flattened JWS must have either of the \"protected\" or \"header\" members');if(void 0!==e.protected&&\"string\"!=typeof e.protected)throw new n.Ye(\"JWS Protected Header incorrect type\");if(void 0===e.payload)throw new n.Ye(\"JWS Payload missing\");if(\"string\"!=typeof e.signature)throw new n.Ye(\"JWS Signature missing or incorrect type\");if(void 0!==e.header&&!(0,l.Gv)(e.header))throw new n.Ye(\"JWS Unprotected Header incorrect type\");let p={};if(e.protected)try{const t=(0,a.D)(e.protected);p=JSON.parse(s.D0.decode(t))}catch{throw new n.Ye(\"JWS Protected Header is invalid\")}if(!(0,l.fz)(p,e.header))throw new n.Ye(\"JWS Protected and JWS Unprotected Header Parameter names must be disjoint\");const A={...p,...e.header};let f=!0;if((0,d.n)(n.Ye,new Map([[\"b64\",!0]]),i?.crit,p,A).has(\"b64\")&&(f=p.b64,\"boolean\"!=typeof f))throw new n.Ye('The \"b64\" (base64url-encode payload) Header Parameter must be a boolean');const{alg:m}=A;if(\"string\"!=typeof m||!m)throw new n.Ye('JWS \"alg\" (Algorithm) Header Parameter missing or invalid');const g=i&&(0,u.F)(\"algorithms\",i.algorithms);if(g&&!g.has(m))throw new n.Rb('\"alg\" (Algorithm) Header Parameter value not allowed');if(f){if(\"string\"!=typeof e.payload)throw new n.Ye(\"JWS Payload must be a string\")}else if(\"string\"!=typeof e.payload&&!(e.payload instanceof Uint8Array))throw new n.Ye(\"JWS Payload must be a string or an Uint8Array instance\");let b=!1;\"function\"==typeof t&&(t=await t(p,e),b=!0),(0,c.y)(m,t,\"verify\");const y=(0,s.xW)(void 0!==e.protected?(0,s.lF)(e.protected):new Uint8Array,(0,s.lF)(\".\"),\"string\"==typeof e.payload?f?(0,s.lF)(e.payload):s.Rd.encode(e.payload):e.payload),S=(0,o.h2)(e.signature,\"signature\",n.Ye),k=await(0,h.l)(t,m);if(!await(0,r.MX)(m,k,S,y))throw new n.h2;let v;v=f?(0,o.h2)(e.payload,\"payload\",n.Ye):\"string\"==typeof e.payload?s.Rd.encode(e.payload):e.payload;const w={payload:v};return void 0!==e.protected&&(w.protectedHeader=p),void 0!==e.header&&(w.unprotectedHeader=e.header),b?{...w,key:k}:w}},120(e,t,i){i.d(t,{V:()=>s});var a=i(973),r=i(799),n=i(817);async function s(e,t,i){const s=await(0,a.B)(e,t,i);if(s.protectedHeader.crit?.includes(\"b64\")&&!1===s.protectedHeader.b64)throw new n.Dp(\"JWTs MUST NOT use unencoded payload\");const o={payload:(0,r.k6)(s.protectedHeader,s.payload,i),protectedHeader:s.protectedHeader};return\"function\"==typeof t?{...o,key:s.key}:o}},882(e,t,i){i.d(t,{jU:()=>r});var a=i(886);async function r(e,t,i){if(\"string\"!=typeof e||0!==e.indexOf(\"-----BEGIN PUBLIC KEY-----\"))throw new TypeError('\"spki\" must be SPKI formatted string');return(0,a.sc)(e,t,i)}},886(e,t,i){i.d(t,{sc:()=>c});var a=i(248),r=i(817);const n=(e,t)=>{if(e.byteLength!==t.length)return!1;for(let i=0;i<e.byteLength;i++)if(e[i]!==t[i])return!1;return!0},s=e=>{const t=e.data[e.pos++];if(128&t){const i=127&t;let a=0;for(let t=0;t<i;t++)a=a<<8|e.data[e.pos++];return a}return t},o=(e,t,i)=>{if(e.data[e.pos++]!==t)throw new Error(i)},l=(e,t)=>{const i=e.data.subarray(e.pos,e.pos+t);return e.pos+=t,i},c=(e,t,i)=>{const c=((e,t)=>(0,a.y)(e.replace(t,\"\")))(e,/(?:-----(?:BEGIN|END) PUBLIC KEY-----|\\s)/g);let d=i;return t?.startsWith?.(\"ECDH-ES\")&&(d||={},d.getNamedCurve=e=>{const t={data:e,pos:0};return function(e){o(e,48,\"Invalid SPKI structure\"),s(e),o(e,48,\"Expected algorithm identifier\");s(e)}(t),(e=>{const t=(e=>{o(e,6,\"Expected algorithm OID\");const t=s(e);return l(e,t)})(e);if(n(t,[43,101,110]))return\"X25519\";if(!n(t,[42,134,72,206,61,2,1]))throw new Error(\"Unsupported key algorithm\");o(e,6,\"Expected curve OID\");const i=s(e),a=l(e,i);for(const{name:e,oid:t}of[{name:\"P-256\",oid:[42,134,72,206,61,3,1,7]},{name:\"P-384\",oid:[43,129,4,0,34]},{name:\"P-521\",oid:[43,129,4,0,35]}])if(n(a,t))return e;throw new Error(\"Unsupported named curve\")})(t)}),(async(e,t,i,a)=>{let n,s;const o=\"spki\"===e,l=()=>o?[\"verify\"]:[\"sign\"];switch(i){case\"PS256\":case\"PS384\":case\"PS512\":n={name:\"RSA-PSS\",hash:`SHA-${i.slice(-3)}`},s=l();break;case\"RS256\":case\"RS384\":case\"RS512\":n={name:\"RSASSA-PKCS1-v1_5\",hash:`SHA-${i.slice(-3)}`},s=l();break;case\"RSA-OAEP\":case\"RSA-OAEP-256\":case\"RSA-OAEP-384\":case\"RSA-OAEP-512\":n={name:\"RSA-OAEP\",hash:`SHA-${parseInt(i.slice(-3),10)||1}`},s=o?[\"encrypt\",\"wrapKey\"]:[\"decrypt\",\"unwrapKey\"];break;case\"ES256\":case\"ES384\":case\"ES512\":n={name:\"ECDSA\",namedCurve:{ES256:\"P-256\",ES384:\"P-384\",ES512:\"P-521\"}[i]},s=l();break;case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":try{const e=a.getNamedCurve(t);n=\"X25519\"===e?{name:\"X25519\"}:{name:\"ECDH\",namedCurve:e}}catch(e){throw new r.T0(\"Invalid or unsupported key format\")}s=o?[]:[\"deriveBits\"];break;case\"Ed25519\":case\"EdDSA\":n={name:\"Ed25519\"},s=l();break;case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":n={name:i},s=l();break;default:throw new r.T0('Invalid or unsupported \"alg\" (Algorithm) value')}return crypto.subtle.importKey(e,t,n,a?.extractable??!!o,s)})(\"spki\",c,t,d)}},248(e,t,i){function a(e){if(Uint8Array.fromBase64)return Uint8Array.fromBase64(e);const t=atob(e),i=new Uint8Array(t.length);for(let e=0;e<t.length;e++)i[e]=t.charCodeAt(e);return i}i.d(t,{y:()=>a})},203(e,t,i){i.d(t,{D0:()=>r,Rd:()=>a,lF:()=>s,xW:()=>n});const a=new TextEncoder,r=new TextDecoder;function n(...e){const t=e.reduce((e,{length:t})=>e+t,0),i=new Uint8Array(t);let a=0;for(const t of e)i.set(t,a),a+=t.length;return i}function s(e){const t=new Uint8Array(e.length);for(let i=0;i<e.length;i++){const a=e.charCodeAt(i);if(a>127)throw new TypeError(\"non-ASCII string encountered in encode()\");t[i]=a}return t}},38(e,t,i){i.d(t,{y:()=>l});var a=i(584),r=i(561),n=i(135);const s=e=>e?.[Symbol.toStringTag],o=(e,t,i)=>{if(void 0!==t.use){let e;switch(i){case\"sign\":case\"verify\":e=\"sig\";break;case\"encrypt\":case\"decrypt\":e=\"enc\"}if(t.use!==e)throw new TypeError(`Invalid key for this operation, its \"use\" must be \"${e}\" when present`)}if(void 0!==t.alg&&t.alg!==e)throw new TypeError(`Invalid key for this operation, its \"alg\" must be \"${e}\" when present`);if(Array.isArray(t.key_ops)){let a;switch(!0){case\"sign\"===i||\"verify\"===i:case\"dir\"===e:case e.includes(\"CBC-HS\"):a=i;break;case e.startsWith(\"PBES2\"):a=\"deriveBits\";break;case/^A\\d{3}(?:GCM)?(?:KW)?$/.test(e):a=!e.includes(\"GCM\")&&e.endsWith(\"KW\")?\"encrypt\"===i?\"wrapKey\":\"unwrapKey\":i;break;case\"encrypt\"===i&&e.startsWith(\"RSA\"):a=\"wrapKey\";break;case\"decrypt\"===i:a=e.startsWith(\"RSA\")?\"unwrapKey\":\"deriveBits\"}if(a&&!1===t.key_ops?.includes?.(a))throw new TypeError(`Invalid key for this operation, its \"key_ops\" must include \"${a}\" when present`)}return!0};function l(e,t,i){switch(e.substring(0,2)){case\"A1\":case\"A2\":case\"di\":case\"HS\":case\"PB\":((e,t,i)=>{if(!(t instanceof Uint8Array)){if(n.ll(t)){if(n.t9(t)&&o(e,t,i))return;throw new TypeError('JSON Web Key for symmetric algorithms must have JWK \"kty\" (Key Type) equal to \"oct\" and the JWK \"k\" (Key Value) present')}if(!(0,r.P2)(t))throw new TypeError((0,a.t)(e,t,\"CryptoKey\",\"KeyObject\",\"JSON Web Key\",\"Uint8Array\"));if(\"secret\"!==t.type)throw new TypeError(`${s(t)} instances for symmetric algorithms must be of type \"secret\"`)}})(e,t,i);break;default:((e,t,i)=>{if(n.ll(t))switch(i){case\"decrypt\":case\"sign\":if(n.W2(t)&&o(e,t,i))return;throw new TypeError(\"JSON Web Key for this operation must be a private JWK\");case\"encrypt\":case\"verify\":if(n.M3(t)&&o(e,t,i))return;throw new TypeError(\"JSON Web Key for this operation must be a public JWK\")}if(!(0,r.P2)(t))throw new TypeError((0,a.t)(e,t,\"CryptoKey\",\"KeyObject\",\"JSON Web Key\"));if(\"secret\"===t.type)throw new TypeError(`${s(t)} instances for asymmetric algorithms must not be of type \"secret\"`);if(\"public\"===t.type)switch(i){case\"sign\":throw new TypeError(`${s(t)} instances for asymmetric algorithm signing must be of type \"private\"`);case\"decrypt\":throw new TypeError(`${s(t)} instances for asymmetric algorithm decryption must be of type \"private\"`)}if(\"private\"===t.type)switch(i){case\"verify\":throw new TypeError(`${s(t)} instances for asymmetric algorithm verifying must be of type \"public\"`);case\"encrypt\":throw new TypeError(`${s(t)} instances for asymmetric algorithm encryption must be of type \"public\"`)}})(e,t,i)}}},158(e,t,i){i.d(t,{Y:()=>s});const a=(e,t=\"algorithm.name\")=>new TypeError(`CryptoKey does not support this operation, its ${t} must be ${e}`),r=(e,t)=>e.name===t;function n(e,t){var i;if(i=e.hash,parseInt(i.name.slice(4),10)!==t)throw a(`SHA-${t}`,\"algorithm.hash\")}function s(e,t,i){switch(t){case\"HS256\":case\"HS384\":case\"HS512\":if(!r(e.algorithm,\"HMAC\"))throw a(\"HMAC\");n(e.algorithm,parseInt(t.slice(2),10));break;case\"RS256\":case\"RS384\":case\"RS512\":if(!r(e.algorithm,\"RSASSA-PKCS1-v1_5\"))throw a(\"RSASSA-PKCS1-v1_5\");n(e.algorithm,parseInt(t.slice(2),10));break;case\"PS256\":case\"PS384\":case\"PS512\":if(!r(e.algorithm,\"RSA-PSS\"))throw a(\"RSA-PSS\");n(e.algorithm,parseInt(t.slice(2),10));break;case\"Ed25519\":case\"EdDSA\":if(!r(e.algorithm,\"Ed25519\"))throw a(\"Ed25519\");break;case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":if(!r(e.algorithm,t))throw a(t);break;case\"ES256\":case\"ES384\":case\"ES512\":{if(!r(e.algorithm,\"ECDSA\"))throw a(\"ECDSA\");const i=function(e){switch(e){case\"ES256\":return\"P-256\";case\"ES384\":return\"P-384\";case\"ES512\":return\"P-521\";default:throw new Error(\"unreachable\")}}(t);if(e.algorithm.namedCurve!==i)throw a(i,\"algorithm.namedCurve\");break}default:throw new TypeError(\"CryptoKey does not support this operation\")}!function(e,t){if(t&&!e.usages.includes(t))throw new TypeError(`CryptoKey does not support this operation, its usages must include ${t}.`)}(e,i)}},214(e,t,i){i.d(t,{h2:()=>r});var a=i(96);function r(e,t,i){try{return(0,a.D)(e)}catch{throw new i(`Failed to base64url decode the ${t}`)}}Symbol()},584(e,t,i){function a(e,t,...i){if((i=i.filter(Boolean)).length>2){const t=i.pop();e+=`one of type ${i.join(\", \")}, or ${t}.`}else 2===i.length?e+=`one of type ${i[0]} or ${i[1]}.`:e+=`of type ${i[0]}.`;return null==t?e+=` Received ${t}`:\"function\"==typeof t&&t.name?e+=` Received function ${t.name}`:\"object\"==typeof t&&null!=t&&t.constructor?.name&&(e+=` Received an instance of ${t.constructor.name}`),e}i.d(t,{X:()=>r,t:()=>n});const r=(e,...t)=>a(\"Key must be \",e,...t),n=(e,t,...i)=>a(`Key for the ${e} algorithm must be `,t,...i)},561(e,t,i){i.d(t,{D2:()=>r,P2:()=>n,R7:()=>a});const a=e=>{if(\"CryptoKey\"===e?.[Symbol.toStringTag])return!0;try{return e instanceof CryptoKey}catch{return!1}},r=e=>\"KeyObject\"===e?.[Symbol.toStringTag],n=e=>a(e)||r(e)},947(e,t,i){i.d(t,{x:()=>n});var a=i(817);const r='Invalid or unsupported JWK \"alg\" (Algorithm) Parameter value';async function n(e){if(!e.alg)throw new TypeError('\"alg\" argument is required when \"jwk.alg\" is not present');const{algorithm:t,keyUsages:i}=function(e){let t,i;switch(e.kty){case\"AKP\":switch(e.alg){case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":t={name:e.alg},i=e.priv?[\"sign\"]:[\"verify\"];break;default:throw new a.T0(r)}break;case\"RSA\":switch(e.alg){case\"PS256\":case\"PS384\":case\"PS512\":t={name:\"RSA-PSS\",hash:`SHA-${e.alg.slice(-3)}`},i=e.d?[\"sign\"]:[\"verify\"];break;case\"RS256\":case\"RS384\":case\"RS512\":t={name:\"RSASSA-PKCS1-v1_5\",hash:`SHA-${e.alg.slice(-3)}`},i=e.d?[\"sign\"]:[\"verify\"];break;case\"RSA-OAEP\":case\"RSA-OAEP-256\":case\"RSA-OAEP-384\":case\"RSA-OAEP-512\":t={name:\"RSA-OAEP\",hash:`SHA-${parseInt(e.alg.slice(-3),10)||1}`},i=e.d?[\"decrypt\",\"unwrapKey\"]:[\"encrypt\",\"wrapKey\"];break;default:throw new a.T0(r)}break;case\"EC\":switch(e.alg){case\"ES256\":case\"ES384\":case\"ES512\":t={name:\"ECDSA\",namedCurve:{ES256:\"P-256\",ES384:\"P-384\",ES512:\"P-521\"}[e.alg]},i=e.d?[\"sign\"]:[\"verify\"];break;case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":t={name:\"ECDH\",namedCurve:e.crv},i=e.d?[\"deriveBits\"]:[];break;default:throw new a.T0(r)}break;case\"OKP\":switch(e.alg){case\"Ed25519\":case\"EdDSA\":t={name:\"Ed25519\"},i=e.d?[\"sign\"]:[\"verify\"];break;case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":t={name:e.crv},i=e.d?[\"deriveBits\"]:[];break;default:throw new a.T0(r)}break;default:throw new a.T0('Invalid or unsupported JWK \"kty\" (Key Type) Parameter value')}return{algorithm:t,keyUsages:i}}(e),n={...e};return\"AKP\"!==n.kty&&delete n.alg,delete n.use,crypto.subtle.importKey(\"jwk\",n,t,e.ext??(!e.d&&!e.priv),e.key_ops??i)}},799(e,t,i){i.d(t,{k6:()=>c});var a=i(817),r=i(203),n=i(135);const s=/^(\\+|\\-)? ?(\\d+|\\d+\\.\\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)(?: (ago|from now))?$/i;function o(e){const t=s.exec(e);if(!t||t[4]&&t[1])throw new TypeError(\"Invalid time period format\");const i=parseFloat(t[2]);let a;switch(t[3].toLowerCase()){case\"sec\":case\"secs\":case\"second\":case\"seconds\":case\"s\":a=Math.round(i);break;case\"minute\":case\"minutes\":case\"min\":case\"mins\":case\"m\":a=Math.round(60*i);break;case\"hour\":case\"hours\":case\"hr\":case\"hrs\":case\"h\":a=Math.round(3600*i);break;case\"day\":case\"days\":case\"d\":a=Math.round(86400*i);break;case\"week\":case\"weeks\":case\"w\":a=Math.round(604800*i);break;default:a=Math.round(31557600*i)}return\"-\"===t[1]||\"ago\"===t[4]?-a:a}const l=e=>e.includes(\"/\")?e.toLowerCase():`application/${e.toLowerCase()}`;function c(e,t,i={}){let s;try{s=JSON.parse(r.D0.decode(t))}catch{}if(!(0,n.Gv)(s))throw new a.Dp(\"JWT Claims Set must be a top-level JSON object\");const{typ:c}=i;if(c&&(\"string\"!=typeof e.typ||l(e.typ)!==l(c)))throw new a.ie('unexpected \"typ\" JWT header value',s,\"typ\",\"check_failed\");const{requiredClaims:d=[],issuer:u,subject:h,audience:p,maxTokenAge:A}=i,f=[...d];void 0!==A&&f.push(\"iat\"),void 0!==p&&f.push(\"aud\"),void 0!==h&&f.push(\"sub\"),void 0!==u&&f.push(\"iss\");for(const e of new Set(f.reverse()))if(!(e in s))throw new a.ie(`missing required \"${e}\" claim`,s,e,\"missing\");if(u&&!(Array.isArray(u)?u:[u]).includes(s.iss))throw new a.ie('unexpected \"iss\" claim value',s,\"iss\",\"check_failed\");if(h&&s.sub!==h)throw new a.ie('unexpected \"sub\" claim value',s,\"sub\",\"check_failed\");if(p&&(g=\"string\"==typeof p?[p]:p,!(\"string\"==typeof(m=s.aud)?g.includes(m):Array.isArray(m)&&g.some(Set.prototype.has.bind(new Set(m))))))throw new a.ie('unexpected \"aud\" claim value',s,\"aud\",\"check_failed\");var m,g;let b;switch(typeof i.clockTolerance){case\"string\":b=o(i.clockTolerance);break;case\"number\":b=i.clockTolerance;break;case\"undefined\":b=0;break;default:throw new TypeError(\"Invalid clockTolerance option type\")}const{currentDate:y}=i,S=(k=y||new Date,Math.floor(k.getTime()/1e3));var k;if((void 0!==s.iat||A)&&\"number\"!=typeof s.iat)throw new a.ie('\"iat\" claim must be a number',s,\"iat\",\"invalid\");if(void 0!==s.nbf){if(\"number\"!=typeof s.nbf)throw new a.ie('\"nbf\" claim must be a number',s,\"nbf\",\"invalid\");if(s.nbf>S+b)throw new a.ie('\"nbf\" claim timestamp check failed',s,\"nbf\",\"check_failed\")}if(void 0!==s.exp){if(\"number\"!=typeof s.exp)throw new a.ie('\"exp\" claim must be a number',s,\"exp\",\"invalid\");if(s.exp<=S-b)throw new a.n('\"exp\" claim timestamp check failed',s,\"exp\",\"check_failed\")}if(A){const e=S-s.iat;if(e-b>(\"number\"==typeof A?A:o(A)))throw new a.n('\"iat\" claim timestamp check failed (too far in the past)',s,\"iat\",\"check_failed\");if(e<0-b)throw new a.ie('\"iat\" claim timestamp check failed (it should be in the past)',s,\"iat\",\"check_failed\")}return s}},751(e,t,i){i.d(t,{l:()=>d});var a=i(135),r=i(96),n=i(947),s=i(561);const o=\"given KeyObject instance cannot be used for this algorithm\";let l;const c=async(e,t,i,a=!1)=>{l||=new WeakMap;let r=l.get(e);if(r?.[i])return r[i];const s=await(0,n.x)({...t,alg:i});return a&&Object.freeze(e),r?r[i]=s:l.set(e,{[i]:s}),s};async function d(e,t){if(e instanceof Uint8Array)return e;if((0,s.R7)(e))return e;if((0,s.D2)(e)){if(\"secret\"===e.type)return e.export();if(\"toCryptoKey\"in e&&\"function\"==typeof e.toCryptoKey)try{return((e,t)=>{l||=new WeakMap;let i=l.get(e);if(i?.[t])return i[t];const a=\"public\"===e.type,r=!!a;let n;if(\"x25519\"===e.asymmetricKeyType){switch(t){case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":break;default:throw new TypeError(o)}n=e.toCryptoKey(e.asymmetricKeyType,r,a?[]:[\"deriveBits\"])}if(\"ed25519\"===e.asymmetricKeyType){if(\"EdDSA\"!==t&&\"Ed25519\"!==t)throw new TypeError(o);n=e.toCryptoKey(e.asymmetricKeyType,r,[a?\"verify\":\"sign\"])}switch(e.asymmetricKeyType){case\"ml-dsa-44\":case\"ml-dsa-65\":case\"ml-dsa-87\":if(t!==e.asymmetricKeyType.toUpperCase())throw new TypeError(o);n=e.toCryptoKey(e.asymmetricKeyType,r,[a?\"verify\":\"sign\"])}if(\"rsa\"===e.asymmetricKeyType){let i;switch(t){case\"RSA-OAEP\":i=\"SHA-1\";break;case\"RS256\":case\"PS256\":case\"RSA-OAEP-256\":i=\"SHA-256\";break;case\"RS384\":case\"PS384\":case\"RSA-OAEP-384\":i=\"SHA-384\";break;case\"RS512\":case\"PS512\":case\"RSA-OAEP-512\":i=\"SHA-512\";break;default:throw new TypeError(o)}if(t.startsWith(\"RSA-OAEP\"))return e.toCryptoKey({name:\"RSA-OAEP\",hash:i},r,a?[\"encrypt\"]:[\"decrypt\"]);n=e.toCryptoKey({name:t.startsWith(\"PS\")?\"RSA-PSS\":\"RSASSA-PKCS1-v1_5\",hash:i},r,[a?\"verify\":\"sign\"])}if(\"ec\"===e.asymmetricKeyType){const i=new Map([[\"prime256v1\",\"P-256\"],[\"secp384r1\",\"P-384\"],[\"secp521r1\",\"P-521\"]]).get(e.asymmetricKeyDetails?.namedCurve);if(!i)throw new TypeError(o);const s={ES256:\"P-256\",ES384:\"P-384\",ES512:\"P-521\"};s[t]&&i===s[t]&&(n=e.toCryptoKey({name:\"ECDSA\",namedCurve:i},r,[a?\"verify\":\"sign\"])),t.startsWith(\"ECDH-ES\")&&(n=e.toCryptoKey({name:\"ECDH\",namedCurve:i},r,a?[]:[\"deriveBits\"]))}if(!n)throw new TypeError(o);return i?i[t]=n:l.set(e,{[t]:n}),n})(e,t)}catch(e){if(e instanceof TypeError)throw e}let i=e.export({format:\"jwk\"});return c(e,i,t)}if((0,a.ll)(e))return e.k?(0,r.D)(e.k):c(e,e,t,!0);throw new Error(\"unreachable\")}},456(e,t,i){i.d(t,{MX:()=>s});var a=i(817),r=i(158),n=i(584);async function s(e,t,i,s){const o=await async function(e,t,i){if(t instanceof Uint8Array){if(!e.startsWith(\"HS\"))throw new TypeError((0,n.X)(t,\"CryptoKey\",\"KeyObject\",\"JSON Web Key\"));return crypto.subtle.importKey(\"raw\",t,{hash:`SHA-${e.slice(-3)}`,name:\"HMAC\"},!1,[i])}return(0,r.Y)(t,e,i),t}(e,t,\"verify\");!function(e,t){if(e.startsWith(\"RS\")||e.startsWith(\"PS\")){const{modulusLength:i}=t.algorithm;if(\"number\"!=typeof i||i<2048)throw new TypeError(`${e} requires key modulusLength to be 2048 bits or larger`)}}(e,o);const l=function(e,t){const i=`SHA-${e.slice(-3)}`;switch(e){case\"HS256\":case\"HS384\":case\"HS512\":return{hash:i,name:\"HMAC\"};case\"PS256\":case\"PS384\":case\"PS512\":return{hash:i,name:\"RSA-PSS\",saltLength:parseInt(e.slice(-3),10)>>3};case\"RS256\":case\"RS384\":case\"RS512\":return{hash:i,name:\"RSASSA-PKCS1-v1_5\"};case\"ES256\":case\"ES384\":case\"ES512\":return{hash:i,name:\"ECDSA\",namedCurve:t.namedCurve};case\"Ed25519\":case\"EdDSA\":return{name:\"Ed25519\"};case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":return{name:e};default:throw new a.T0(`alg ${e} is not supported either by JOSE or your javascript runtime`)}}(e,o.algorithm);try{return await crypto.subtle.verify(l,o,i,s)}catch{return!1}}},135(e,t,i){function a(e){if(\"object\"!=typeof(t=e)||null===t||\"[object Object]\"!==Object.prototype.toString.call(e))return!1;var t;if(null===Object.getPrototypeOf(e))return!0;let i=e;for(;null!==Object.getPrototypeOf(i);)i=Object.getPrototypeOf(i);return Object.getPrototypeOf(e)===i}function r(...e){const t=e.filter(Boolean);if(0===t.length||1===t.length)return!0;let i;for(const e of t){const t=Object.keys(e);if(i&&0!==i.size)for(const e of t){if(i.has(e))return!1;i.add(e)}else i=new Set(t)}return!0}i.d(t,{Gv:()=>a,M3:()=>o,W2:()=>s,fz:()=>r,ll:()=>n,t9:()=>l});const n=e=>a(e)&&\"string\"==typeof e.kty,s=e=>\"oct\"!==e.kty&&(\"AKP\"===e.kty&&\"string\"==typeof e.priv||\"string\"==typeof e.d),o=e=>\"oct\"!==e.kty&&void 0===e.d&&void 0===e.priv,l=e=>\"oct\"===e.kty&&\"string\"==typeof e.k},22(e,t,i){function a(e,t){if(void 0!==t&&(!Array.isArray(t)||t.some(e=>\"string\"!=typeof e)))throw new TypeError(`\"${e}\" option must be an array of strings`);if(t)return new Set(t)}i.d(t,{F:()=>a})},12(e,t,i){i.d(t,{n:()=>r});var a=i(817);function r(e,t,i,r,n){if(void 0!==n.crit&&void 0===r?.crit)throw new e('\"crit\" (Critical) Header Parameter MUST be integrity protected');if(!r||void 0===r.crit)return new Set;if(!Array.isArray(r.crit)||0===r.crit.length||r.crit.some(e=>\"string\"!=typeof e||0===e.length))throw new e('\"crit\" (Critical) Header Parameter MUST be an array of non-empty strings when present');let s;s=void 0!==i?new Map([...Object.entries(i),...t.entries()]):t;for(const t of r.crit){if(!s.has(t))throw new a.T0(`Extension Header Parameter \"${t}\" is not recognized`);if(void 0===n[t])throw new e(`Extension Header Parameter \"${t}\" is missing`);if(s.get(t)&&void 0===r[t])throw new e(`Extension Header Parameter \"${t}\" MUST be integrity protected`)}return new Set(r.crit)}},96(e,t,i){i.d(t,{D:()=>n});var a=i(203),r=i(248);function n(e){if(Uint8Array.fromBase64)return Uint8Array.fromBase64(\"string\"==typeof e?e:a.D0.decode(e),{alphabet:\"base64url\"});let t=e;t instanceof Uint8Array&&(t=a.D0.decode(t)),t=t.replace(/-/g,\"+\").replace(/_/g,\"/\");try{return(0,r.y)(t)}catch{throw new TypeError(\"The input to be decoded is not correctly encoded.\")}}},817(e,t,i){i.d(t,{Dp:()=>c,Rb:()=>s,T0:()=>o,Ye:()=>l,h2:()=>d,ie:()=>r,n:()=>n});class a extends Error{static code=\"ERR_JOSE_GENERIC\";code=\"ERR_JOSE_GENERIC\";constructor(e,t){super(e,t),this.name=this.constructor.name,Error.captureStackTrace?.(this,this.constructor)}}class r extends a{static code=\"ERR_JWT_CLAIM_VALIDATION_FAILED\";code=\"ERR_JWT_CLAIM_VALIDATION_FAILED\";claim;reason;payload;constructor(e,t,i=\"unspecified\",a=\"unspecified\"){super(e,{cause:{claim:i,reason:a,payload:t}}),this.claim=i,this.reason=a,this.payload=t}}class n extends a{static code=\"ERR_JWT_EXPIRED\";code=\"ERR_JWT_EXPIRED\";claim;reason;payload;constructor(e,t,i=\"unspecified\",a=\"unspecified\"){super(e,{cause:{claim:i,reason:a,payload:t}}),this.claim=i,this.reason=a,this.payload=t}}class s extends a{static code=\"ERR_JOSE_ALG_NOT_ALLOWED\";code=\"ERR_JOSE_ALG_NOT_ALLOWED\"}class o extends a{static code=\"ERR_JOSE_NOT_SUPPORTED\";code=\"ERR_JOSE_NOT_SUPPORTED\"}class l extends a{static code=\"ERR_JWS_INVALID\";code=\"ERR_JWS_INVALID\"}class c extends a{static code=\"ERR_JWT_INVALID\";code=\"ERR_JWT_INVALID\"}Symbol.asyncIterator;class d extends a{static code=\"ERR_JWS_SIGNATURE_VERIFICATION_FAILED\";code=\"ERR_JWS_SIGNATURE_VERIFICATION_FAILED\";constructor(e=\"signature verification failed\",t){super(e,t)}}}},t={};function i(a){var r=t[a];if(void 0!==r)return r.exports;var n=t[a]={exports:{}};return e[a](n,n.exports,i),n.exports}i.d=(e,t)=>{for(var a in t)i.o(t,a)&&!i.o(e,a)&&Object.defineProperty(e,a,{enumerable:!0,get:t[a]})},i.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),i.r=e=>{\"undefined\"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:\"Module\"}),Object.defineProperty(e,\"__esModule\",{value:!0})};var a={};(()=>{i.r(a),i.d(a,{default:()=>n});var e=i(58),t=window.powerbi,r={name:\"bfusionPortfolioSummaryKPI7B3E9A1D5F2C\",displayName:\"BFUSION Portfolio Summary KPI\",class:\"Visual\",apiVersion:\"5.11.0\",create:t=>{if(e.b)return new e.b(t);throw\"Visual instance not found\"},createModalDialog:(e,t,i)=>{const a=globalThis.dialogRegistry;e in a&&new a[e](t,i)},custom:!0};void 0!==t&&(t.visuals=t.visuals||{},t.visuals.plugins=t.visuals.plugins||{},t.visuals.plugins.bfusionPortfolioSummaryKPI7B3E9A1D5F2C=r);const n=r})(),bfusionPortfolioSummaryKPI7B3E9A1D5F2C=a})();",
+    "css": "/* ========================================================================== */\n/* BFUSION Portfolio Summary KPI — Modern 360°-style layout                  */\n/* ========================================================================== */\n.bfusion-root {\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  font-family: var(--psk-font-family, \"Segoe UI\"), wf_segoe-ui_normal, helvetica, arial, sans-serif;\n  background-color: #FFFFFF;\n  position: relative;\n  color: #1F2937;\n}\n.bfusion-root *,\n.bfusion-root *:before,\n.bfusion-root *:after {\n  box-sizing: border-box;\n}\n.bfusion-psk {\n  display: flex;\n  flex-direction: column;\n  padding-bottom: 24px;\n  /* license badge clear-zone */\n}\n/* ========================================================================== */\n/* Header bar (title + subtitle + info button)                                */\n/* ========================================================================== */\n.psk-header {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  padding: 10px 18px 8px 18px;\n  border-bottom: 1px solid #E5E7EB;\n  background: #FFFFFF;\n  position: relative;\n}\n.psk-header__titles {\n  flex: 1 1 auto;\n  min-width: 0;\n}\n.psk-header__title {\n  font-weight: 700;\n  color: #1F2937;\n  letter-spacing: 0.1px;\n  line-height: 1.2;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  font-size: var(--psk-header-title-font, 13px);\n}\n.psk-header__subtitle {\n  margin-top: 2px;\n  color: #6B7280;\n  font-weight: 400;\n  line-height: 1.3;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  font-size: var(--psk-header-subtitle-font, 10px);\n}\n.psk-header__info {\n  flex: 0 0 auto;\n  width: 20px;\n  height: 20px;\n  border-radius: 50%;\n  border: 1px solid #E5E7EB;\n  background: #fff;\n  color: #6B7280;\n  font-style: italic;\n  font-weight: 700;\n  font-size: 11px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n  transition: all 0.15s ease;\n}\n.psk-header__info:hover {\n  color: #fff;\n  background: #E8612A;\n  border-color: #E8612A;\n  transform: scale(1.05);\n}\n.psk-header__info-pop {\n  position: absolute;\n  top: calc(100% + 6px);\n  right: 12px;\n  z-index: 30;\n  width: 320px;\n  max-width: calc(100% - 24px);\n  background: #fff;\n  border: 1px solid #E5E7EB;\n  border-radius: 8px;\n  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);\n  padding: 12px 14px;\n  color: #1F2937;\n  line-height: 1.45;\n  font-size: var(--psk-insight-font, 11px);\n}\n.psk-header__info-pop ul {\n  margin: 8px 0 0 0;\n  padding-left: 18px;\n}\n.psk-header__info-pop ul li {\n  margin: 3px 0;\n  color: #6B7280;\n}\n.psk-info-pop__title {\n  font-weight: 700;\n  color: #1F2937;\n  margin-bottom: 4px;\n}\n.psk-info-pop__desc {\n  color: #6B7280;\n}\n/* ========================================================================== */\n/* Wrap                                                                       */\n/* ========================================================================== */\n.bfusion-kpi-wrap {\n  width: 100%;\n  padding: 14px 18px 4px 18px;\n  display: block;\n  background: #FFFFFF;\n}\n.psk-row {\n  margin-bottom: 14px;\n}\n.psk-row--primary {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));\n  gap: 10px;\n}\n/* ========================================================================== */\n/* Modern KPI cards — top-band design                                         */\n/* ========================================================================== */\n.psk-card {\n  --psk-card-color: #1F2A44;\n  background: #FFFFFF;\n  border: 1px solid #E5E7EB;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transition: box-shadow 0.2s ease, transform 0.15s ease;\n  min-height: 120px;\n}\n.psk-card:hover {\n  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);\n  transform: translateY(-1px);\n}\n.psk-card__band {\n  background: var(--psk-card-color);\n  color: #FFFFFF;\n  padding: 8px 12px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 6px;\n  min-height: 30px;\n}\n.psk-card__band-title {\n  font-size: var(--psk-kpi-label-font, 11px);\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 0.6px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.psk-card__band-meta {\n  font-size: var(--psk-card-band-meta-font, 10px);\n  font-weight: 600;\n  color: rgba(255, 255, 255, 0.85);\n  white-space: nowrap;\n}\n.psk-card__body {\n  padding: 12px 14px 12px 14px;\n  flex: 1 1 auto;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  min-width: 0;\n}\n.psk-card__value {\n  font-size: var(--psk-kpi-value-font, 28px);\n  font-weight: 700;\n  line-height: 1.1;\n  color: #1F2937;\n  font-variant-numeric: tabular-nums;\n}\n.psk-card__sub {\n  font-size: var(--psk-kpi-subtitle-font, 11px);\n  color: #6B7280;\n  line-height: 1.4;\n}\n.psk-card__pbar {\n  margin-top: auto;\n  height: 4px;\n  background: #F1F5F9;\n  border-radius: 2px;\n  overflow: hidden;\n}\n.psk-card__pbar-fill {\n  height: 100%;\n  border-radius: 2px;\n  background: var(--psk-card-color);\n  transition: width 0.3s ease;\n}\n/* ========================================================================== */\n/* Section panel — navy header band + body                                    */\n/* ========================================================================== */\n.psk-panel {\n  background: #FFFFFF;\n  border: 1px solid #E5E7EB;\n  border-radius: 8px;\n  overflow: hidden;\n  margin-bottom: 14px;\n}\n.psk-panel__head {\n  background: linear-gradient(90deg, #F1F4F8 0%, #E9EEF4 100%);\n  color: #1F2937;\n  padding: 10px 16px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  border-bottom: 1px solid #E5E7EB;\n}\n.psk-panel__title {\n  font-size: var(--psk-section-title-font, 12px);\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 0.8px;\n  color: #1F2937;\n}\n.psk-panel__head-sub {\n  font-size: var(--psk-panel-subtitle-font, 11px);\n  color: #6B7280;\n  font-weight: 500;\n  text-align: right;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 60%;\n}\n.psk-panel__body {\n  padding: 14px 16px 16px 16px;\n  background: #FFFFFF;\n}\n/* ========================================================================== */\n/* Financial panel layout                                                     */\n/* ========================================================================== */\n.psk-fin {\n  display: grid;\n  grid-template-columns: 1.2fr 1fr;\n  gap: 18px;\n  align-items: start;\n}\n.psk-fin__left {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.psk-fin__gauges {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 12px;\n  align-items: start;\n  padding-top: 4px;\n}\n.psk-fin__col-title {\n  font-size: var(--psk-column-title-font, 11px);\n  color: #6B7280;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n  font-weight: 700;\n  margin-bottom: 8px;\n}\n/* Horizontal bars (Budget / Actuals / Benefits) */\n.psk-bars {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n.psk-bars__row {\n  display: grid;\n  grid-template-columns: 70px 1fr auto;\n  align-items: center;\n  gap: 10px;\n}\n.psk-bars__label {\n  font-size: var(--psk-bar-label-font, 11px);\n  color: #1F2937;\n  font-weight: 500;\n}\n.psk-bars__track {\n  height: 14px;\n  background: #F1F5F9;\n  border-radius: 4px;\n  overflow: hidden;\n  position: relative;\n}\n.psk-bars__fill {\n  height: 100%;\n  border-radius: 4px;\n  transition: width 0.4s ease;\n}\n.psk-bars__val {\n  font-size: var(--psk-bar-value-font, 11px);\n  color: #1F2937;\n  font-weight: 700;\n  font-variant-numeric: tabular-nums;\n  min-width: 56px;\n  text-align: right;\n}\n/* Donut / Half-gauge centerpiece */\n.psk-fin__center {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  gap: 6px;\n}\n/* Stat tiles row */\n.psk-stats {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  gap: 8px;\n}\n.psk-stat {\n  background: #F8FAFC;\n  border: 1px solid #E5E7EB;\n  border-radius: 6px;\n  padding: 10px 8px;\n  text-align: center;\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n}\n.psk-stat__val {\n  font-size: var(--psk-stat-value-font, 20px);\n  font-weight: 700;\n  line-height: 1.1;\n  font-variant-numeric: tabular-nums;\n  color: #1F2937;\n}\n.psk-stat__label {\n  font-size: var(--psk-stat-label-font, 11px);\n  color: #6B7280;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n  font-weight: 600;\n}\n.psk-stat__caption {\n  font-size: var(--psk-stat-caption-font, 10px);\n  color: #9CA3AF;\n  margin-top: 2px;\n}\n/* Gauges (donut + half-gauge SVGs) */\n.psk-gauge {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  text-align: center;\n  gap: 4px;\n}\n.psk-gauge__label {\n  font-size: var(--psk-gauge-label-font, 11px);\n  font-weight: 600;\n  color: #6B7280;\n  text-transform: uppercase;\n  letter-spacing: 0.4px;\n}\n.psk-gauge__svg {\n  width: 100%;\n  max-width: 150px;\n  height: auto;\n  display: block;\n}\n.psk-gauge__svg--half {\n  max-width: 170px;\n}\n.psk-gauge__subtitle {\n  font-size: var(--psk-gauge-subtitle-font, 10px);\n  color: #6B7280;\n  line-height: 1.3;\n}\n.psk-gauge__ring-bg {\n  fill: none;\n  stroke: #F1F5F9;\n  stroke-width: 10;\n}\n.psk-gauge__ring-fg {\n  fill: none;\n  stroke-width: 10;\n  stroke-linecap: round;\n  transition: stroke-dashoffset 0.6s ease;\n}\n.psk-gauge__center {\n  font-size: var(--psk-gauge-value-font, 22px);\n  font-weight: 700;\n  fill: #1F2937;\n  text-anchor: middle;\n  dominant-baseline: central;\n  font-variant-numeric: tabular-nums;\n}\n.psk-gauge__tick {\n  font-size: var(--psk-gauge-tick-font, 8px);\n  fill: #9CA3AF;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n}\n/* ========================================================================== */\n/* Health distribution panel                                                  */\n/* ========================================================================== */\n.psk-distrib {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n.psk-distrib__bar {\n  display: flex;\n  height: 22px;\n  border-radius: 6px;\n  overflow: hidden;\n  background: #F1F5F9;\n  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.02);\n}\n.psk-seg {\n  height: 100%;\n  transition: width 0.4s ease;\n  cursor: default;\n}\n.psk-seg:hover {\n  opacity: 0.85;\n}\n.psk-distrib__legend {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n.psk-legend-item {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  font-size: var(--psk-legend-font, 11px);\n  color: #1F2937;\n  font-weight: 500;\n}\n.psk-legend-item strong {\n  font-weight: 700;\n  color: #1F2937;\n  font-variant-numeric: tabular-nums;\n}\n.psk-legend-dot {\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  flex-shrink: 0;\n}\n/* ========================================================================== */\n/* Health breakdown grid                                                      */\n/* ========================================================================== */\n.psk-breakdown__grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 10px;\n}\n.psk-mini {\n  background: #F8FAFC;\n  border: 1px solid #E5E7EB;\n  border-radius: 6px;\n  padding: 10px 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.psk-mini__label {\n  font-size: var(--psk-mini-label-font, 11px);\n  font-weight: 700;\n  color: #1F2937;\n  text-transform: uppercase;\n  letter-spacing: 0.4px;\n}\n.psk-mini__bar {\n  display: flex;\n  height: 8px;\n  border-radius: 4px;\n  overflow: hidden;\n  background: #F1F5F9;\n}\n.psk-mini__counts {\n  display: flex;\n  justify-content: space-between;\n  font-size: var(--psk-mini-count-font, 10px);\n  font-weight: 700;\n  font-variant-numeric: tabular-nums;\n}\n/* ========================================================================== */\n/* Responsive narrow                                                          */\n/* ========================================================================== */\n.bfusion-psk.psk-narrow .psk-fin {\n  grid-template-columns: 1fr;\n}\n.bfusion-psk.psk-narrow .psk-fin__gauges {\n  grid-template-columns: 1fr 1fr;\n}\n.bfusion-psk.psk-narrow .psk-stats {\n  grid-template-columns: 1fr 1fr 1fr;\n}\n.bfusion-psk.psk-narrow .psk-row--primary {\n  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));\n}\n.bfusion-psk.psk-medium .psk-fin {\n  grid-template-columns: 1fr 1fr;\n}\n.bfusion-psk.psk-medium .psk-fin__gauges {\n  grid-template-columns: 1fr 1fr;\n}\n/* ========================================================================== */\n/* Landing Page                                                               */\n/* ========================================================================== */\n.bfusion-landing-wrap {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  background-color: #FFFFFF;\n}\n.bfusion-landing {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  max-width: 420px;\n  padding: 20px;\n  box-sizing: border-box;\n  text-align: center;\n}\n.bfusion-landing__logo-container {\n  width: 130px;\n  height: 84px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: #E8612A;\n  border-radius: 12px;\n  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);\n  margin-bottom: 24px;\n  overflow: hidden;\n}\n.bfusion-landing__logo {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n}\n.bfusion-landing__text-container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  width: 100%;\n}\n.bfusion-landing__title {\n  font-size: 15px;\n  font-weight: 600;\n  color: #242424;\n  margin: 0 0 14px 0;\n  padding: 0;\n  line-height: 1.2;\n}\n.bfusion-landing__description {\n  font-size: 11.5px;\n  font-weight: 400;\n  color: #666666;\n  margin: 0;\n  padding: 0;\n  line-height: 1.5;\n}\n.bfusion-landing__description strong {\n  font-weight: 600;\n  color: #444444;\n}\n.bfusion-landing__separator {\n  width: 60%;\n  height: 1px;\n  background-color: #EAEAEA;\n  margin: 20px 0;\n}\n.bfusion-landing__metadata {\n  font-size: 10.5px;\n  color: #8C8C8C;\n  margin-bottom: 4px;\n  font-weight: 400;\n  line-height: 1.4;\n}\n.bfusion-landing__metadata strong {\n  font-weight: 600;\n  color: #707070;\n}\n/* ========================================================================== */\n/* License Badge & Watermark                                                  */\n/* ========================================================================== */\n.bfusion-license-badge-wrap {\n  position: absolute;\n  bottom: 4px;\n  left: 8px;\n  z-index: 20;\n  pointer-events: none;\n}\n.bfusion-license-badge {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  padding: 3px 10px;\n  border-radius: 4px;\n  font-size: 9px;\n  font-family: \"Segoe UI\", wf_segoe-ui_normal, helvetica, arial, sans-serif;\n  line-height: 1.3;\n  pointer-events: auto;\n  max-width: 380px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bfusion-license-badge--valid {\n  background: rgba(5, 150, 105, 0.08);\n  border: 1px solid rgba(5, 150, 105, 0.25);\n  color: #059669;\n}\n.bfusion-license-badge--invalid {\n  background: rgba(220, 38, 38, 0.06);\n  border: 1px solid rgba(220, 38, 38, 0.2);\n  color: #DC2626;\n}\n.bfusion-license-badge__icon {\n  font-size: 11px;\n  flex-shrink: 0;\n}\n.bfusion-license-badge__text {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bfusion-license-badge__text strong {\n  font-weight: 600;\n}\n.bfusion-watermark {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 15;\n  pointer-events: none;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: repeating-linear-gradient(-45deg, transparent, transparent 120px, rgba(220, 38, 38, 0.03) 120px, rgba(220, 38, 38, 0.03) 122px);\n}\n.bfusion-watermark__content {\n  text-align: center;\n  opacity: 0.18;\n  user-select: none;\n  transform: rotate(-18deg);\n}\n.bfusion-watermark__title {\n  font-size: 56px;\n  font-weight: 900;\n  color: #DC2626;\n  letter-spacing: 12px;\n  line-height: 1;\n  font-family: \"Segoe UI\", sans-serif;\n}\n.bfusion-watermark__subtitle {\n  font-size: 16px;\n  font-weight: 600;\n  color: #DC2626;\n  margin-top: 6px;\n  letter-spacing: 3px;\n  text-transform: uppercase;\n  font-family: \"Segoe UI\", sans-serif;\n}\n.bfusion-watermark__link {\n  font-size: 11px;\n  color: #9CA3AF;\n  margin-top: 12px;\n  font-family: \"Segoe UI\", sans-serif;\n}\n/* ========================================================================== */\n/* Empty Data State                                                           */\n/* ========================================================================== */\n.bfusion-empty {\n  display: flex;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n  justify-content: center;\n  padding: 20px 24px 28px 24px;\n  box-sizing: border-box;\n}\n.bfusion-empty__message {\n  font-size: 12px;\n  color: #94a3b8;\n  font-weight: 400;\n  text-align: center;\n  letter-spacing: 0.2px;\n}\n\n",
+    "iconBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAASKSURBVHhe7ZyvUxtRFIVXIpF14MhbmAFZiaxE4lpZt7uZChx1lSimMhJZSV3/BGRlFGxiGtMZJJ230LTcfRRuk/Nu8t45M5/Z3exhuF/2J0NRLCnTqjxoq93DtirftY37SED432+1ezhpBq/lDKJlfLq10TaD40njRm3t2klT3hEj6vJ2UpcXXozph/KVnNVS01Y7237ovR+CrA61u/RHYzm7hTKr9jenw/Kss00WkhXFjZZyRPDnmknjZv0CsvL4L2zljuRMXxx/XuG3fv1p6/JEzvbZ+CtOuSOyzriRnPGTuand+/4OyPrjPslZ99LdY/Kwnyz+9l3OfB5/1cgLvsSpy9snbxO7Wz35AZIc06b8ImdfXA/3Bjz054M/1T8SwFshNyIp467mw/dP+vobkPR5eKHUPfDprSSp45/1dAL4t0lyJcmA2n2/F4C3ftnycO/fX0Hy4OFtX38FyYPCvy6UC0k+FJNqUMuFJB/42jdzKEDmUIDMoQAL8uP87d3Pr+dLx+9XdiGgAAvih4WI36/sQkABFoQCZA4FyBwKkDkUIHMoQOZQgMyhAJlDATKHAmQOBcgcCpA5FCBzKEDmUIAVJOY7er8cEb9f2YUgSQFiDiVmFwIKoEhoKDG7EFAARUJDidmFgAIoEhpKzC4EFECR0FBidiGgAIqEhhKzCwEFUCQ0lJhdCCiAIqGhxOxCQAEUCQ0lZhcCCqBIaCgxuxBQAEVCQ4nZhYACKBIaSswuBBRAkdBQYnYhoACKhIYSswsBBVAkNJSYXQgogCKhocTsQkABFAkNJWYXAgqgSGgoMbsQUABFQkOJ2YWAAigSGkrMLgQUQJHQUGJ2IYgmQKp/qRuzC0E0AWL+olLtQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQkABFLHuQhBNgJj/KTTVLgTRBCCrCQXIHAqQOUVblydyIcmHom0Gx3IhyYeirXYP5UKSD0Vb7WzLhSQfCh+5kOTDbwG+yRUkfdratZ0AvBPIFTfqBLge7g36K0nq3DTlm06A+9OAu5IbkHTxh//x6dbGHwEqdyQ3IglTDer58OcS1O6ytyFJEHclZ99lWpUH/Y1JclTuSM5+Hn9o6H2AJMN0WJ7JmfcybcrP8oMkAWp3KWcdjL865PVAarirWbW/KWf9ZDoJGjfq74isHbW7VA3/7/CaYL150Tn/udy/MuaDojVj/M+r/f/Jwx+PjANlZGVws+BDnmXGm+XvFPzjxP4PQOLjZpO6vPBf0EePd1+QX64Smx0n0audAAAAAElFTkSuQmCC"
+  },
+  "visualEntryPoint": "",
+  "externalJS": [],
+  "assets": {
+    "icon": "assets/icon.png"
+  }
+}

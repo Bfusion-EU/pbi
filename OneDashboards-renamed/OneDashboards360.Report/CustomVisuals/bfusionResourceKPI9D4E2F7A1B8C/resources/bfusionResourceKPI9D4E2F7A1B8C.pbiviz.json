@@ -1,0 +1,724 @@
+{
+  "visual": {
+    "name": "bfusionResourceKPI",
+    "displayName": "BFUSION Resource KPI",
+    "guid": "bfusionResourceKPI9D4E2F7A1B8C",
+    "visualClassName": "Visual",
+    "version": "1.0.2.0",
+    "description": "Responsive resource KPI card dashboard showing capacity, demand, allocation, availability, time-off, overallocation, allocation-distribution breakdown, and Utilization + Bench Ratio gauges with dynamic insight panel.",
+    "supportUrl": "https://bfusion.eu",
+    "gitHubUrl": ""
+  },
+  "author": {
+    "name": "BFUSION",
+    "email": "info@bfusion.eu"
+  },
+  "apiVersion": "5.11.0",
+  "style": "style/visual.less",
+  "stringResources": {},
+  "capabilities": {
+    "supportsLandingPage": true,
+    "dataRoles": [
+      {
+        "displayName": "Capacity (hrs)",
+        "name": "capacity",
+        "kind": "Measure",
+        "description": "Total resource capacity in hours — SUM(Capacity[Capacity])."
+      },
+      {
+        "displayName": "Committed (hrs)",
+        "name": "committed",
+        "kind": "Measure",
+        "description": "Committed/scheduled demand hours."
+      },
+      {
+        "displayName": "Forecast (hrs)",
+        "name": "forecast",
+        "kind": "Measure",
+        "description": "Forecast demand hours."
+      },
+      {
+        "displayName": "FTE",
+        "name": "fte",
+        "kind": "Measure",
+        "description": "Full-time equivalent count."
+      },
+      {
+        "displayName": "Availability (hrs)",
+        "name": "availability",
+        "kind": "Measure",
+        "description": "Available hours (Capacity − all demand)."
+      },
+      {
+        "displayName": "Netto Capacity (hrs)",
+        "name": "nettoCapacity",
+        "kind": "Measure",
+        "description": "Capacity minus committed minus time-off."
+      },
+      {
+        "displayName": "Time Off (hrs)",
+        "name": "timeOff",
+        "kind": "Measure",
+        "description": "Total time-off hours."
+      },
+      {
+        "displayName": "Total Resources",
+        "name": "totalResources",
+        "kind": "Measure",
+        "description": "Count of active resources."
+      },
+      {
+        "displayName": "Allocated Resources",
+        "name": "allocatedResources",
+        "kind": "Measure",
+        "description": "Count of resources with scheduled allocation."
+      },
+      {
+        "displayName": "Overallocated Resources",
+        "name": "overallocatedResources",
+        "kind": "Measure",
+        "description": "Count of resources >100% in any month."
+      },
+      {
+        "displayName": "Under-utilized Resources",
+        "name": "underutilizedResources",
+        "kind": "Measure",
+        "description": "Count of resources with peak <25% across months."
+      },
+      {
+        "displayName": "Bucket: 0%",
+        "name": "bucket0",
+        "kind": "Measure",
+        "description": "Resources with 0% peak monthly allocation."
+      },
+      {
+        "displayName": "Bucket: <25%",
+        "name": "bucket25",
+        "kind": "Measure",
+        "description": "Resources with peak >0% and <25%."
+      },
+      {
+        "displayName": "Bucket: 25-50%",
+        "name": "bucket50",
+        "kind": "Measure",
+        "description": "Resources with peak 25%–50%."
+      },
+      {
+        "displayName": "Bucket: 50-75%",
+        "name": "bucket75",
+        "kind": "Measure",
+        "description": "Resources with peak 50%–75%."
+      },
+      {
+        "displayName": "Bucket: 75-100%",
+        "name": "bucket100",
+        "kind": "Measure",
+        "description": "Resources with peak 75%–100%."
+      },
+      {
+        "displayName": "Bucket: >100%",
+        "name": "bucketOver",
+        "kind": "Measure",
+        "description": "Resources with peak >100%."
+      },
+      {
+        "displayName": "Top Overalloc Name",
+        "name": "topOverallocName",
+        "kind": "Grouping",
+        "description": "Name of the most overallocated resource (optional)."
+      },
+      {
+        "displayName": "Top Overalloc Peak %",
+        "name": "topOverallocPeak",
+        "kind": "Measure",
+        "description": "Peak allocation % of the most overallocated resource (as decimal, e.g. 1.45 = 145%)."
+      },
+      {
+        "displayName": "BFusion License Token",
+        "name": "licenseToken",
+        "kind": "GroupingOrMeasure",
+        "description": "Bind to the single-cell BFusionLicense[Key] column in your model"
+      }
+    ],
+    "dataViewMappings": [
+      {
+        "conditions": [
+          {
+            "capacity": {
+              "max": 1
+            },
+            "committed": {
+              "max": 1
+            },
+            "forecast": {
+              "max": 1
+            },
+            "fte": {
+              "max": 1
+            },
+            "availability": {
+              "max": 1
+            },
+            "nettoCapacity": {
+              "max": 1
+            },
+            "timeOff": {
+              "max": 1
+            },
+            "totalResources": {
+              "max": 1
+            },
+            "allocatedResources": {
+              "max": 1
+            },
+            "overallocatedResources": {
+              "max": 1
+            },
+            "underutilizedResources": {
+              "max": 1
+            },
+            "bucket0": {
+              "max": 1
+            },
+            "bucket25": {
+              "max": 1
+            },
+            "bucket50": {
+              "max": 1
+            },
+            "bucket75": {
+              "max": 1
+            },
+            "bucket100": {
+              "max": 1
+            },
+            "bucketOver": {
+              "max": 1
+            },
+            "topOverallocName": {
+              "max": 1
+            },
+            "topOverallocPeak": {
+              "max": 1
+            }
+          }
+        ],
+        "table": {
+          "rows": {
+            "select": [
+              {
+                "bind": {
+                  "to": "capacity"
+                }
+              },
+              {
+                "bind": {
+                  "to": "committed"
+                }
+              },
+              {
+                "bind": {
+                  "to": "forecast"
+                }
+              },
+              {
+                "bind": {
+                  "to": "fte"
+                }
+              },
+              {
+                "bind": {
+                  "to": "availability"
+                }
+              },
+              {
+                "bind": {
+                  "to": "nettoCapacity"
+                }
+              },
+              {
+                "bind": {
+                  "to": "timeOff"
+                }
+              },
+              {
+                "bind": {
+                  "to": "totalResources"
+                }
+              },
+              {
+                "bind": {
+                  "to": "allocatedResources"
+                }
+              },
+              {
+                "bind": {
+                  "to": "overallocatedResources"
+                }
+              },
+              {
+                "bind": {
+                  "to": "underutilizedResources"
+                }
+              },
+              {
+                "bind": {
+                  "to": "bucket0"
+                }
+              },
+              {
+                "bind": {
+                  "to": "bucket25"
+                }
+              },
+              {
+                "bind": {
+                  "to": "bucket50"
+                }
+              },
+              {
+                "bind": {
+                  "to": "bucket75"
+                }
+              },
+              {
+                "bind": {
+                  "to": "bucket100"
+                }
+              },
+              {
+                "bind": {
+                  "to": "bucketOver"
+                }
+              },
+              {
+                "bind": {
+                  "to": "topOverallocName"
+                }
+              },
+              {
+                "bind": {
+                  "to": "topOverallocPeak"
+                }
+              },
+              {
+                "bind": {
+                  "to": "licenseToken"
+                }
+              }
+            ],
+            "dataReductionAlgorithm": {
+              "top": {
+                "count": 1
+              }
+            }
+          }
+        }
+      }
+    ],
+    "objects": {
+      "cardColors": {
+        "displayName": "Card Accent Colors",
+        "properties": {
+          "capacityColor": {
+            "displayName": "Capacity",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "committedColor": {
+            "displayName": "Committed",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "forecastColor": {
+            "displayName": "Forecast",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "fteColor": {
+            "displayName": "FTE",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "availabilityColor": {
+            "displayName": "Availability",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "nettoColor": {
+            "displayName": "Netto Capacity",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "timeOffColor": {
+            "displayName": "Time Off",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "overallocColor": {
+            "displayName": "Overallocated",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "displayOptions": {
+        "displayName": "Display Options",
+        "properties": {
+          "showDistributionBar": {
+            "displayName": "Show Allocation Distribution",
+            "type": {
+              "bool": true
+            }
+          },
+          "showInsightPanel": {
+            "displayName": "Show Insight Panel",
+            "type": {
+              "bool": true
+            }
+          },
+          "hoursPerDay": {
+            "displayName": "Hours per Day",
+            "description": "Used to convert hours to days (default 8).",
+            "type": {
+              "numeric": true
+            }
+          }
+        }
+      },
+      "gauges": {
+        "displayName": "Gauges",
+        "description": "Utilization and Bench Ratio semi-circle gauges.",
+        "properties": {
+          "showUtilizationGauge": {
+            "displayName": "Show Utilization Gauge",
+            "type": {
+              "bool": true
+            }
+          },
+          "showBenchGauge": {
+            "displayName": "Show Bench Ratio Gauge",
+            "type": {
+              "bool": true
+            }
+          },
+          "utilLowMax": {
+            "displayName": "Utilization — Low/Medium threshold (%)",
+            "description": "Below this % the status is LOW. Default 60.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "utilHighMin": {
+            "displayName": "Utilization — Medium/High threshold (%)",
+            "description": "At or above this % the status is HIGH. Default 85.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "utilMax": {
+            "displayName": "Utilization — Gauge scale max (%)",
+            "description": "Right end of the utilization gauge arc. Default 150.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "benchLowMax": {
+            "displayName": "Bench — Low/Medium threshold (%)",
+            "description": "Below this % the bench assessment is Low. Default 15.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "benchHighMin": {
+            "displayName": "Bench — Medium/High threshold (%)",
+            "description": "At or above this % the bench assessment is High. Default 35.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "benchMax": {
+            "displayName": "Bench — Gauge scale max (%)",
+            "description": "Right end of the bench gauge arc. Default 50.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "gaugeLowColor": {
+            "displayName": "Color — Low",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "gaugeMidColor": {
+            "displayName": "Color — Medium",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "gaugeHighColor": {
+            "displayName": "Color — High",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "gaugeValueFs": {
+            "displayName": "Gauge value font size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "gaugeTitleFs": {
+            "displayName": "Gauge title font size",
+            "type": {
+              "numeric": true
+            }
+          },
+          "gaugeRowFs": {
+            "displayName": "Gauge detail row font size",
+            "type": {
+              "numeric": true
+            }
+          }
+        }
+      },
+      "fontSizes": {
+        "displayName": "Font Sizes",
+        "description": "Font size (px) for each text element.",
+        "properties": {
+          "cardLabelFs": {
+            "displayName": "Card label",
+            "description": "Small label above each KPI value (e.g. 'Total Capacity').",
+            "type": {
+              "numeric": true
+            }
+          },
+          "cardValueFs": {
+            "displayName": "Card value",
+            "description": "Main KPI number (e.g. '4,232').",
+            "type": {
+              "numeric": true
+            }
+          },
+          "cardUnitFs": {
+            "displayName": "Card unit",
+            "description": "Unit shown next to the KPI value (e.g. 'hrs', 'resources').",
+            "type": {
+              "numeric": true
+            }
+          },
+          "cardSubFs": {
+            "displayName": "Card subtitle",
+            "description": "Secondary line under each KPI (e.g. '529 days · 83.5% allocated').",
+            "type": {
+              "numeric": true
+            }
+          },
+          "ringFs": {
+            "displayName": "Ring %",
+            "description": "Percentage label inside the donut ring.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "distribTitleFs": {
+            "displayName": "Distribution title",
+            "description": "Allocation Distribution title.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "distribSubtitleFs": {
+            "displayName": "Distribution subtitle & legend",
+            "description": "Subtitle line and the bucket legend below the bar.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "insightHeadlineFs": {
+            "displayName": "Insight headline",
+            "description": "Bold headline inside the Insight Panel rows.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "insightDetailFs": {
+            "displayName": "Insight detail",
+            "description": "Detail line under each insight headline.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "cardBandMetaFs": {
+            "displayName": "Card band meta",
+            "description": "Right-aligned small text inside each card's colored band.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "panelTitleFs": {
+            "displayName": "Panel title",
+            "description": "Section panel headings (e.g. 'RESOURCE HEALTH GAUGES').",
+            "type": {
+              "numeric": true
+            }
+          },
+          "panelSubFs": {
+            "displayName": "Panel subtitle",
+            "description": "Right-aligned subtitle in each section panel header.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "headerTitleFs": {
+            "displayName": "Header title",
+            "description": "Visual header bar title text.",
+            "type": {
+              "numeric": true
+            }
+          },
+          "headerSubtitleFs": {
+            "displayName": "Header subtitle",
+            "description": "Visual header bar subtitle text.",
+            "type": {
+              "numeric": true
+            }
+          }
+        }
+      },
+      "licenseSettings": {
+        "displayName": "License",
+        "properties": {
+          "licenseKey": {
+            "displayName": "License Key",
+            "description": "Paste your BFusion license key here. Contact info@bfusion.eu for a license.",
+            "type": {
+              "text": true
+            }
+          }
+        }
+      },
+      "header": {
+        "displayName": "Header",
+        "properties": {
+          "title": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Title"
+          },
+          "subtitle": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Subtitle"
+          },
+          "showInfoButton": {
+            "type": {
+              "bool": true
+            },
+            "displayName": "Show Info Button"
+          },
+          "infoTitle": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Info — Title"
+          },
+          "infoDescription": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Info — Description"
+          },
+          "infoBullets": {
+            "type": {
+              "text": true
+            },
+            "displayName": "Info — How-to-read (one bullet per line)"
+          }
+        }
+      },
+      "insightPanel": {
+        "displayName": "Insight Panel",
+        "properties": {
+          "showInsights": {
+            "type": {
+              "bool": true
+            },
+            "displayName": "Show Insights"
+          },
+          "showSmartInsights": {
+            "type": {
+              "bool": true
+            },
+            "displayName": "Show Smart Insights"
+          }
+        }
+      }
+    },
+    "privileges": []
+  },
+  "content": {
+    "js": "var bfusionResourceKPI9D4E2F7A1B8C;(()=>{\"use strict\";var e={12:(e,t,i)=>{i.d(t,{n:()=>r});var a=i(817);function r(e,t,i,r,s){if(void 0!==s.crit&&void 0===r?.crit)throw new e('\"crit\" (Critical) Header Parameter MUST be integrity protected');if(!r||void 0===r.crit)return new Set;if(!Array.isArray(r.crit)||0===r.crit.length||r.crit.some((e=>\"string\"!=typeof e||0===e.length)))throw new e('\"crit\" (Critical) Header Parameter MUST be an array of non-empty strings when present');let o;o=void 0!==i?new Map([...Object.entries(i),...t.entries()]):t;for(const t of r.crit){if(!o.has(t))throw new a.T0(`Extension Header Parameter \"${t}\" is not recognized`);if(void 0===s[t])throw new e(`Extension Header Parameter \"${t}\" is missing`);if(o.get(t)&&void 0===r[t])throw new e(`Extension Header Parameter \"${t}\" MUST be integrity protected`)}return new Set(r.crit)}},22:(e,t,i)=>{function a(e,t){if(void 0!==t&&(!Array.isArray(t)||t.some((e=>\"string\"!=typeof e))))throw new TypeError(`\"${e}\" option must be an array of strings`);if(t)return new Set(t)}i.d(t,{F:()=>a})},38:(e,t,i)=>{i.d(t,{y:()=>d});var a=i(584),r=i(561),s=i(135);const o=e=>e?.[Symbol.toStringTag],n=(e,t,i)=>{if(void 0!==t.use){let e;switch(i){case\"sign\":case\"verify\":e=\"sig\";break;case\"encrypt\":case\"decrypt\":e=\"enc\"}if(t.use!==e)throw new TypeError(`Invalid key for this operation, its \"use\" must be \"${e}\" when present`)}if(void 0!==t.alg&&t.alg!==e)throw new TypeError(`Invalid key for this operation, its \"alg\" must be \"${e}\" when present`);if(Array.isArray(t.key_ops)){let a;switch(!0){case\"sign\"===i||\"verify\"===i:case\"dir\"===e:case e.includes(\"CBC-HS\"):a=i;break;case e.startsWith(\"PBES2\"):a=\"deriveBits\";break;case/^A\\d{3}(?:GCM)?(?:KW)?$/.test(e):a=!e.includes(\"GCM\")&&e.endsWith(\"KW\")?\"encrypt\"===i?\"wrapKey\":\"unwrapKey\":i;break;case\"encrypt\"===i&&e.startsWith(\"RSA\"):a=\"wrapKey\";break;case\"decrypt\"===i:a=e.startsWith(\"RSA\")?\"unwrapKey\":\"deriveBits\"}if(a&&!1===t.key_ops?.includes?.(a))throw new TypeError(`Invalid key for this operation, its \"key_ops\" must include \"${a}\" when present`)}return!0},c=(e,t,i)=>{if(!(t instanceof Uint8Array)){if(s.ll(t)){if(s.t9(t)&&n(e,t,i))return;throw new TypeError('JSON Web Key for symmetric algorithms must have JWK \"kty\" (Key Type) equal to \"oct\" and the JWK \"k\" (Key Value) present')}if(!(0,r.P2)(t))throw new TypeError((0,a.t)(e,t,\"CryptoKey\",\"KeyObject\",\"JSON Web Key\",\"Uint8Array\"));if(\"secret\"!==t.type)throw new TypeError(`${o(t)} instances for symmetric algorithms must be of type \"secret\"`)}},l=(e,t,i)=>{if(s.ll(t))switch(i){case\"decrypt\":case\"sign\":if(s.W2(t)&&n(e,t,i))return;throw new TypeError(\"JSON Web Key for this operation must be a private JWK\");case\"encrypt\":case\"verify\":if(s.M3(t)&&n(e,t,i))return;throw new TypeError(\"JSON Web Key for this operation must be a public JWK\")}if(!(0,r.P2)(t))throw new TypeError((0,a.t)(e,t,\"CryptoKey\",\"KeyObject\",\"JSON Web Key\"));if(\"secret\"===t.type)throw new TypeError(`${o(t)} instances for asymmetric algorithms must not be of type \"secret\"`);if(\"public\"===t.type)switch(i){case\"sign\":throw new TypeError(`${o(t)} instances for asymmetric algorithm signing must be of type \"private\"`);case\"decrypt\":throw new TypeError(`${o(t)} instances for asymmetric algorithm decryption must be of type \"private\"`)}if(\"private\"===t.type)switch(i){case\"verify\":throw new TypeError(`${o(t)} instances for asymmetric algorithm verifying must be of type \"public\"`);case\"encrypt\":throw new TypeError(`${o(t)} instances for asymmetric algorithm encryption must be of type \"public\"`)}};function d(e,t,i){switch(e.substring(0,2)){case\"A1\":case\"A2\":case\"di\":case\"HS\":case\"PB\":c(e,t,i);break;default:l(e,t,i)}}},96:(e,t,i)=>{i.d(t,{D:()=>s});var a=i(203),r=i(248);function s(e){if(Uint8Array.fromBase64)return Uint8Array.fromBase64(\"string\"==typeof e?e:a.D0.decode(e),{alphabet:\"base64url\"});let t=e;t instanceof Uint8Array&&(t=a.D0.decode(t)),t=t.replace(/-/g,\"+\").replace(/_/g,\"/\");try{return(0,r.y)(t)}catch{throw new TypeError(\"The input to be decoded is not correctly encoded.\")}}},120:(e,t,i)=>{i.d(t,{V:()=>o});var a=i(973),r=i(799),s=i(817);async function o(e,t,i){const o=await(0,a.B)(e,t,i);if(o.protectedHeader.crit?.includes(\"b64\")&&!1===o.protectedHeader.b64)throw new s.Dp(\"JWTs MUST NOT use unencoded payload\");const n={payload:(0,r.k6)(o.protectedHeader,o.payload,i),protectedHeader:o.protectedHeader};return\"function\"==typeof t?{...n,key:o.key}:n}},132:(e,t,i)=>{i.d(t,{l:()=>u});var a=i(135),r=i(96),s=i(947),o=i(561);const n=\"given KeyObject instance cannot be used for this algorithm\";let c;const l=async(e,t,i,a=!1)=>{c||=new WeakMap;let r=c.get(e);if(r?.[i])return r[i];const o=await(0,s.x)({...t,alg:i});return a&&Object.freeze(e),r?r[i]=o:c.set(e,{[i]:o}),o},d=(e,t)=>{c||=new WeakMap;let i=c.get(e);if(i?.[t])return i[t];const a=\"public\"===e.type,r=!!a;let s;if(\"x25519\"===e.asymmetricKeyType){switch(t){case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":break;default:throw new TypeError(n)}s=e.toCryptoKey(e.asymmetricKeyType,r,a?[]:[\"deriveBits\"])}if(\"ed25519\"===e.asymmetricKeyType){if(\"EdDSA\"!==t&&\"Ed25519\"!==t)throw new TypeError(n);s=e.toCryptoKey(e.asymmetricKeyType,r,[a?\"verify\":\"sign\"])}switch(e.asymmetricKeyType){case\"ml-dsa-44\":case\"ml-dsa-65\":case\"ml-dsa-87\":if(t!==e.asymmetricKeyType.toUpperCase())throw new TypeError(n);s=e.toCryptoKey(e.asymmetricKeyType,r,[a?\"verify\":\"sign\"])}if(\"rsa\"===e.asymmetricKeyType){let i;switch(t){case\"RSA-OAEP\":i=\"SHA-1\";break;case\"RS256\":case\"PS256\":case\"RSA-OAEP-256\":i=\"SHA-256\";break;case\"RS384\":case\"PS384\":case\"RSA-OAEP-384\":i=\"SHA-384\";break;case\"RS512\":case\"PS512\":case\"RSA-OAEP-512\":i=\"SHA-512\";break;default:throw new TypeError(n)}if(t.startsWith(\"RSA-OAEP\"))return e.toCryptoKey({name:\"RSA-OAEP\",hash:i},r,a?[\"encrypt\"]:[\"decrypt\"]);s=e.toCryptoKey({name:t.startsWith(\"PS\")?\"RSA-PSS\":\"RSASSA-PKCS1-v1_5\",hash:i},r,[a?\"verify\":\"sign\"])}if(\"ec\"===e.asymmetricKeyType){const i=new Map([[\"prime256v1\",\"P-256\"],[\"secp384r1\",\"P-384\"],[\"secp521r1\",\"P-521\"]]).get(e.asymmetricKeyDetails?.namedCurve);if(!i)throw new TypeError(n);const o={ES256:\"P-256\",ES384:\"P-384\",ES512:\"P-521\"};o[t]&&i===o[t]&&(s=e.toCryptoKey({name:\"ECDSA\",namedCurve:i},r,[a?\"verify\":\"sign\"])),t.startsWith(\"ECDH-ES\")&&(s=e.toCryptoKey({name:\"ECDH\",namedCurve:i},r,a?[]:[\"deriveBits\"]))}if(!s)throw new TypeError(n);return i?i[t]=s:c.set(e,{[t]:s}),s};async function u(e,t){if(e instanceof Uint8Array)return e;if((0,o.R7)(e))return e;if((0,o.D2)(e)){if(\"secret\"===e.type)return e.export();if(\"toCryptoKey\"in e&&\"function\"==typeof e.toCryptoKey)try{return d(e,t)}catch(e){if(e instanceof TypeError)throw e}let i=e.export({format:\"jwk\"});return l(e,i,t)}if((0,a.ll)(e))return e.k?(0,r.D)(e.k):l(e,e,t,!0);throw new Error(\"unreachable\")}},135:(e,t,i)=>{i.d(t,{Gv:()=>r,M3:()=>c,W2:()=>n,fz:()=>s,ll:()=>o,t9:()=>l});const a=e=>\"object\"==typeof e&&null!==e;function r(e){if(!a(e)||\"[object Object]\"!==Object.prototype.toString.call(e))return!1;if(null===Object.getPrototypeOf(e))return!0;let t=e;for(;null!==Object.getPrototypeOf(t);)t=Object.getPrototypeOf(t);return Object.getPrototypeOf(e)===t}function s(...e){const t=e.filter(Boolean);if(0===t.length||1===t.length)return!0;let i;for(const e of t){const t=Object.keys(e);if(i&&0!==i.size)for(const e of t){if(i.has(e))return!1;i.add(e)}else i=new Set(t)}return!0}const o=e=>r(e)&&\"string\"==typeof e.kty,n=e=>\"oct\"!==e.kty&&(\"AKP\"===e.kty&&\"string\"==typeof e.priv||\"string\"==typeof e.d),c=e=>\"oct\"!==e.kty&&void 0===e.d&&void 0===e.priv,l=e=>\"oct\"===e.kty&&\"string\"==typeof e.k},158:(e,t,i)=>{i.d(t,{Y:()=>o});const a=(e,t=\"algorithm.name\")=>new TypeError(`CryptoKey does not support this operation, its ${t} must be ${e}`),r=(e,t)=>e.name===t;function s(e,t){var i;if(i=e.hash,parseInt(i.name.slice(4),10)!==t)throw a(`SHA-${t}`,\"algorithm.hash\")}function o(e,t,i){switch(t){case\"HS256\":case\"HS384\":case\"HS512\":if(!r(e.algorithm,\"HMAC\"))throw a(\"HMAC\");s(e.algorithm,parseInt(t.slice(2),10));break;case\"RS256\":case\"RS384\":case\"RS512\":if(!r(e.algorithm,\"RSASSA-PKCS1-v1_5\"))throw a(\"RSASSA-PKCS1-v1_5\");s(e.algorithm,parseInt(t.slice(2),10));break;case\"PS256\":case\"PS384\":case\"PS512\":if(!r(e.algorithm,\"RSA-PSS\"))throw a(\"RSA-PSS\");s(e.algorithm,parseInt(t.slice(2),10));break;case\"Ed25519\":case\"EdDSA\":if(!r(e.algorithm,\"Ed25519\"))throw a(\"Ed25519\");break;case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":if(!r(e.algorithm,t))throw a(t);break;case\"ES256\":case\"ES384\":case\"ES512\":{if(!r(e.algorithm,\"ECDSA\"))throw a(\"ECDSA\");const i=function(e){switch(e){case\"ES256\":return\"P-256\";case\"ES384\":return\"P-384\";case\"ES512\":return\"P-521\";default:throw new Error(\"unreachable\")}}(t);if(e.algorithm.namedCurve!==i)throw a(i,\"algorithm.namedCurve\");break}default:throw new TypeError(\"CryptoKey does not support this operation\")}!function(e,t){if(t&&!e.usages.includes(t))throw new TypeError(`CryptoKey does not support this operation, its usages must include ${t}.`)}(e,i)}},203:(e,t,i)=>{i.d(t,{D0:()=>r,Rd:()=>a,lF:()=>o,xW:()=>s});const a=new TextEncoder,r=new TextDecoder;function s(...e){const t=e.reduce(((e,{length:t})=>e+t),0),i=new Uint8Array(t);let a=0;for(const t of e)i.set(t,a),a+=t.length;return i}function o(e){const t=new Uint8Array(e.length);for(let i=0;i<e.length;i++){const a=e.charCodeAt(i);if(a>127)throw new TypeError(\"non-ASCII string encountered in encode()\");t[i]=a}return t}},214:(e,t,i)=>{i.d(t,{h2:()=>r});var a=i(96);function r(e,t,i){try{return(0,a.D)(e)}catch{throw new i(`Failed to base64url decode the ${t}`)}}Symbol()},226:(e,t,i)=>{i.d(t,{RR:()=>o,jM:()=>r,zr:()=>n});var a=i(848);function r(e){if(!e)return;if(\"1\"===e.getAttribute(\"data-rendered\"))return;e.setAttribute(\"data-rendered\",\"1\");const t=document.createElement(\"div\");t.className=\"bfusion-landing\";const i=document.createElement(\"div\");i.className=\"bfusion-landing__logo-container\";const r=document.createElement(\"img\");r.src=a,r.alt=\"BFusion\",r.className=\"bfusion-landing__logo\",i.appendChild(r);const o=document.createElement(\"div\");o.className=\"bfusion-landing__text-container\";const n=document.createElement(\"h3\");n.className=\"bfusion-landing__title\",n.textContent=\"Resource KPI\";const c=document.createElement(\"p\");c.className=\"bfusion-landing__description\",c.appendChild(document.createTextNode(\"Please drag \")),c.appendChild(s(\"Capacity\")),c.appendChild(document.createTextNode(\" and \")),c.appendChild(s(\"Committed\")),c.appendChild(document.createTextNode(\" measures into the visual. Optionally add \")),c.appendChild(s(\"Forecast\")),c.appendChild(document.createTextNode(\", \")),c.appendChild(s(\"FTE\")),c.appendChild(document.createTextNode(\", \")),c.appendChild(s(\"Availability\")),c.appendChild(document.createTextNode(\", \")),c.appendChild(s(\"Time Off\")),c.appendChild(document.createTextNode(\", resource counts, and allocation bucket measures for the full dashboard.\"));const l=document.createElement(\"div\");l.className=\"bfusion-landing__separator\";const d=document.createElement(\"div\");d.className=\"bfusion-landing__metadata\",d.appendChild(s(\"Version:\")),d.appendChild(document.createTextNode(\" 1.0.0\"));const u=document.createElement(\"div\");for(u.className=\"bfusion-landing__metadata\",u.appendChild(s(\"Author:\")),u.appendChild(document.createTextNode(\" BFUSION (info@bfusion.eu)\")),o.appendChild(n),o.appendChild(c),o.appendChild(l),o.appendChild(d),o.appendChild(u),t.appendChild(i),t.appendChild(o);e.firstChild;)e.removeChild(e.firstChild);e.appendChild(t)}function s(e){const t=document.createElement(\"strong\");return t.textContent=e,t}function o(e){if(e){for(;e.firstChild;)e.removeChild(e.firstChild);e.removeAttribute(\"data-rendered\")}}function n(e){if(!e)return;if(\"empty\"===e.getAttribute(\"data-rendered\"))return;for(;e.firstChild;)e.removeChild(e.firstChild);e.setAttribute(\"data-rendered\",\"empty\");const t=document.createElement(\"div\");t.className=\"bfusion-empty\";const i=document.createElement(\"div\");i.className=\"bfusion-empty__message\",i.textContent=\"No records for the current context\",t.appendChild(i),e.appendChild(t)}},248:(e,t,i)=>{function a(e){if(Uint8Array.fromBase64)return Uint8Array.fromBase64(e);const t=atob(e),i=new Uint8Array(t.length);for(let e=0;e<t.length;e++)i[e]=t.charCodeAt(e);return i}i.d(t,{y:()=>a})},456:(e,t,i)=>{i.d(t,{MX:()=>o});var a=i(817),r=i(158),s=i(584);async function o(e,t,i,o){const n=await async function(e,t,i){if(t instanceof Uint8Array){if(!e.startsWith(\"HS\"))throw new TypeError((0,s.X)(t,\"CryptoKey\",\"KeyObject\",\"JSON Web Key\"));return crypto.subtle.importKey(\"raw\",t,{hash:`SHA-${e.slice(-3)}`,name:\"HMAC\"},!1,[i])}return(0,r.Y)(t,e,i),t}(e,t,\"verify\");!function(e,t){if(e.startsWith(\"RS\")||e.startsWith(\"PS\")){const{modulusLength:i}=t.algorithm;if(\"number\"!=typeof i||i<2048)throw new TypeError(`${e} requires key modulusLength to be 2048 bits or larger`)}}(e,n);const c=function(e,t){const i=`SHA-${e.slice(-3)}`;switch(e){case\"HS256\":case\"HS384\":case\"HS512\":return{hash:i,name:\"HMAC\"};case\"PS256\":case\"PS384\":case\"PS512\":return{hash:i,name:\"RSA-PSS\",saltLength:parseInt(e.slice(-3),10)>>3};case\"RS256\":case\"RS384\":case\"RS512\":return{hash:i,name:\"RSASSA-PKCS1-v1_5\"};case\"ES256\":case\"ES384\":case\"ES512\":return{hash:i,name:\"ECDSA\",namedCurve:t.namedCurve};case\"Ed25519\":case\"EdDSA\":return{name:\"Ed25519\"};case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":return{name:e};default:throw new a.T0(`alg ${e} is not supported either by JOSE or your javascript runtime`)}}(e,n.algorithm);try{return await crypto.subtle.verify(c,n,i,o)}catch{return!1}}},561:(e,t,i)=>{i.d(t,{D2:()=>r,P2:()=>s,R7:()=>a});const a=e=>{if(\"CryptoKey\"===e?.[Symbol.toStringTag])return!0;try{return e instanceof CryptoKey}catch{return!1}},r=e=>\"KeyObject\"===e?.[Symbol.toStringTag],s=e=>a(e)||r(e)},584:(e,t,i)=>{function a(e,t,...i){if((i=i.filter(Boolean)).length>2){const t=i.pop();e+=`one of type ${i.join(\", \")}, or ${t}.`}else 2===i.length?e+=`one of type ${i[0]} or ${i[1]}.`:e+=`of type ${i[0]}.`;return null==t?e+=` Received ${t}`:\"function\"==typeof t&&t.name?e+=` Received function ${t.name}`:\"object\"==typeof t&&null!=t&&t.constructor?.name&&(e+=` Received an instance of ${t.constructor.name}`),e}i.d(t,{X:()=>r,t:()=>s});const r=(e,...t)=>a(\"Key must be \",e,...t),s=(e,t,...i)=>a(`Key for the ${e} algorithm must be `,t,...i)},604:(e,t,i)=>{i.d(t,{b:()=>s});var a=i(226),r=i(881);class s{_bfLicenseKey=\"\";_bfLastDataToken=\"\";_bfLicenseResult;_bfBadgeContainer=null;target;cardContainer;landingContainer;host;capacityColor=\"#185FA5\";committedColor=\"#854F0B\";forecastColor=\"#7C3AED\";fteColor=\"#0891b2\";availabilityColor=\"#059669\";nettoColor=\"#047857\";timeOffColor=\"#6366f1\";overallocColor=\"#dc2626\";showDistributionBar=!0;showInsightPanel=!0;hoursPerDay=8;showUtilizationGauge=!0;showBenchGauge=!0;utilLowMax=60;utilHighMin=85;utilMax=150;benchLowMax=15;benchHighMin=35;benchMax=50;gaugeLowColor=\"#10B981\";gaugeMidColor=\"#F59E0B\";gaugeHighColor=\"#DC2626\";gaugeValueFs=22;gaugeTitleFs=10;gaugeRowFs=11;cardLabelFs=11;cardValueFs=28;cardUnitFs=11;cardSubFs=11;cardBandMetaFs=10;ringFs=9;distribTitleFs=12;distribSubtitleFs=11;insightHeadlineFs=11;insightDetailFs=10;panelTitleFs=12;panelSubFs=11;headerTitleFs=13;headerSubtitleFs=10;headerTitle=\"\";headerSubtitle=\"\";headerShowInfoButton=!0;headerInfoTitle=\"Resource KPI\";headerInfoDescription=\"Capacity, demand, utilization and allocation snapshot for the current resource pool.\";headerInfoBullets=\"Top row: total capacity, committed and forecast demand, FTE count\\nGauges: utilization (committed ÷ capacity) and bench ratio (on-bench ÷ total)\\nSecond row: availability, netto capacity, time off and overallocated resources\\nAllocation Distribution buckets resources by their peak monthly load\\nInsights flag overallocated and unallocated resources\";headerBar;headerTitleEl;headerSubtitleEl;headerInfoBtn;headerInfoPop;constructor(e){this.host=e.host,this.target=e.element,this.target.classList.add(\"bfusion-root\",\"bfusion-rkpi\"),this.landingContainer=document.createElement(\"div\"),this.landingContainer.className=\"bfusion-landing-wrap\",this.target.appendChild(this.landingContainer),this.headerBar=document.createElement(\"div\"),this.headerBar.className=\"rkpi-header\",this.headerBar.style.display=\"none\";const t=document.createElement(\"div\");t.className=\"rkpi-header__titles\",this.headerTitleEl=document.createElement(\"div\"),this.headerTitleEl.className=\"rkpi-header__title\",this.headerSubtitleEl=document.createElement(\"div\"),this.headerSubtitleEl.className=\"rkpi-header__subtitle\",t.appendChild(this.headerTitleEl),t.appendChild(this.headerSubtitleEl),this.headerInfoBtn=document.createElement(\"button\"),this.headerInfoBtn.className=\"rkpi-header__info\",this.headerInfoBtn.setAttribute(\"type\",\"button\"),this.headerInfoBtn.setAttribute(\"aria-label\",\"Show info\"),this.headerInfoBtn.textContent=\"i\",this.headerInfoPop=document.createElement(\"div\"),this.headerInfoPop.className=\"rkpi-header__info-pop\",this.headerInfoPop.style.display=\"none\",this.headerBar.appendChild(t),this.headerBar.appendChild(this.headerInfoBtn),this.headerBar.appendChild(this.headerInfoPop),this.target.appendChild(this.headerBar),this.headerInfoBtn.addEventListener(\"click\",(e=>{e.stopPropagation();const t=\"none\"!==this.headerInfoPop.style.display;this.headerInfoPop.style.display=t?\"none\":\"block\"})),document.addEventListener(\"click\",(e=>{const t=e.target;this.headerInfoPop.contains(t)||t===this.headerInfoBtn||(this.headerInfoPop.style.display=\"none\")})),this.cardContainer=document.createElement(\"div\"),this.cardContainer.className=\"rkpi-wrap\",this.target.appendChild(this.cardContainer),this.showLanding(),this._bfBadgeContainer=document.createElement(\"div\"),this._bfBadgeContainer.className=\"bfusion-license-badge-wrap\",(this.target||e?.element||document.body).appendChild(this._bfBadgeContainer)}update(e){if(!e.dataViews||0===e.dataViews.length||!e.dataViews[0].table)return void this.showLanding();const t=e.dataViews[0].table,i={};if(t.columns.forEach(((e,t)=>{for(const a of Object.keys(e.roles||{}))i[a]=t})),void 0===i.capacity&&void 0===i.committed)return void this.showLanding();const a=e.dataViews?.[0]?.table;if(!a||!a.rows||0===a.rows.length)return void this.showEmptyDataMessage();this.hideLanding(),this.readSettings(e),this.applyFontSizeVars(),this.renderHeader();const s=e.viewport?.width||980;this.target.classList.remove(\"rkpi-wide\",\"rkpi-medium\",\"rkpi-narrow\"),s>=980?this.target.classList.add(\"rkpi-wide\"):s>=720?this.target.classList.add(\"rkpi-medium\"):this.target.classList.add(\"rkpi-narrow\");{const t=e?.dataViews?.[0],i=t?.metadata?.objects?.licenseSettings,a=i?String(i.licenseKey||\"\"):this._bfLicenseKey;a&&(this._bfLicenseKey=a),(0,r.M0)((0,r.WB)(e?.dataViews?.[0],this._bfLicenseKey||\"\")).then((e=>{this._bfLicenseResult=e,this._bfBadgeContainer&&(0,r.h1)(this._bfBadgeContainer,e);const t=this.target||this.element||this.rootElement;t&&(0,r.Mj)(t,e)}))}const o=t.rows[0],n=e=>void 0!==i[e]?Number(o[i[e]]??0):0,c={capacity:n(\"capacity\"),committed:n(\"committed\"),forecast:n(\"forecast\"),fte:n(\"fte\"),availability:n(\"availability\"),nettoCapacity:n(\"nettoCapacity\"),timeOff:n(\"timeOff\"),totalResources:n(\"totalResources\"),allocatedResources:n(\"allocatedResources\"),overallocatedResources:n(\"overallocatedResources\"),underutilizedResources:n(\"underutilizedResources\"),bucket0:n(\"bucket0\"),bucket25:n(\"bucket25\"),bucket50:n(\"bucket50\"),bucket75:n(\"bucket75\"),bucket100:n(\"bucket100\"),bucketOver:n(\"bucketOver\"),topOverallocName:(l=\"topOverallocName\",void 0!==i[l]?String(o[i[l]]??\"\"):\"\"),topOverallocPeak:n(\"topOverallocPeak\")};var l;const d=this.hoursPerDay,u=c.capacity>0?c.committed/c.capacity:0,h=c.capacity>0?c.forecast/c.capacity:0,p=c.capacity>0?c.availability/c.capacity:0,A=c.capacity>0?c.nettoCapacity/c.capacity:0,f=c.totalResources>0?c.overallocatedResources/c.totalResources:0,g=c.totalResources-c.allocatedResources,m=(Math.round(113.1*Math.min(u,1)*100),Math.round(113.1*Math.min(h,1)*100),f>=.3?\"#dc2626\":f>=.1?\"#d97706\":\"#059669\"),y=void 0!==i.availability||void 0!==i.nettoCapacity||void 0!==i.timeOff||void 0!==i.overallocatedResources,b=void 0!==i.bucket0||void 0!==i.bucket25||void 0!==i.bucket50||void 0!==i.bucket75||void 0!==i.bucket100||void 0!==i.bucketOver;let v=\"\";if(v+='<div class=\"rkpi-row rkpi-row--r1\">',void 0!==i.capacity&&(v+=this.renderModernCard(\"Total Capacity\",this.fmtN(c.capacity),\"hrs\",`${this.fmtN(c.capacity/d)} days`,Math.round(100*u),this.capacityColor,`${this.fmtPct(u)}% used`)),void 0!==i.committed&&(v+=this.renderModernCard(\"Committed Demand\",this.fmtN(c.committed),\"hrs\",`${this.fmtN(c.committed/d)} days · ${this.fmtPct(u)}% allocated`,Math.round(100*Math.min(1,u)),this.committedColor,\"\")),void 0!==i.forecast&&(v+=this.renderModernCard(\"Forecast Demand\",this.fmtN(c.forecast),\"hrs\",`${this.fmtN(c.forecast/d)} days · ${this.fmtPct(h)}% of cap`,Math.round(100*Math.min(1,h)),this.forecastColor,`${this.fmtPct(h)}%`)),void 0!==i.fte){const e=void 0!==i.totalResources?`${this.fmtN(c.totalResources)} active resources`:\"\",t=void 0!==i.totalResources&&c.totalResources>0?Math.round(c.allocatedResources/c.totalResources*100):100;v+=this.renderModernCard(\"FTE Equivalent\",c.fte.toFixed(1),\"\",e,t,this.fteColor,\"\")}v+=\"</div>\";const w=this.showUtilizationGauge&&void 0!==i.capacity&&void 0!==i.committed,S=this.showBenchGauge&&void 0!==i.totalResources&&void 0!==i.allocatedResources;if(w||S){if(v+='<div class=\"rkpi-panel\">',v+='<div class=\"rkpi-panel__head\">',v+='<span class=\"rkpi-panel__title\">Resource Health Gauges</span>',v+='<span class=\"rkpi-panel__head-sub\">Utilization &amp; bench-ratio with threshold bands</span>',v+=\"</div>\",v+='<div class=\"rkpi-panel__body\">',v+='<div class=\"rkpi-gauges-grid\">',w){const e=100*u,t=e<this.utilLowMax?\"LOW\":e>=this.utilHighMin?\"HIGH\":\"MED\",i=\"LOW\"===t?this.gaugeHighColor:\"HIGH\"===t?this.gaugeLowColor:this.gaugeMidColor,a=\"LOW\"===t?this.gaugeHighColor:\"HIGH\"===t?this.gaugeLowColor:this.gaugeMidColor,r=c.fte>0?c.committed/c.fte:0;v+=this.renderGaugeCard({title:\"UTILIZATION\",valuePct:e,valueColor:a,scaleMax:this.utilMax,midStart:this.utilLowMax,midEnd:this.utilHighMin,rows:[{label:\"Status\",value:t,valueColor:\"#fff\",isBadge:!0,badgeBg:i,dot:null},{label:\"Idle Capacity\",value:`${this.fmtN(c.availability)}h`,valueColor:this.availabilityColor,isBadge:!1,badgeBg:\"\",dot:this.availabilityColor},{label:\"Avg Load / FTE\",value:`${this.fmtN(r)}h`,valueColor:this.forecastColor,isBadge:!1,badgeBg:\"\",dot:this.forecastColor}]})}if(S){const e=Math.max(0,c.totalResources-c.allocatedResources),t=c.totalResources>0?e/c.totalResources*100:0,i=t<this.benchLowMax?\"Low\":t>=this.benchHighMin?\"High\":\"Medium\",a=\"Low\"===i?this.gaugeLowColor:\"High\"===i?this.gaugeHighColor:this.gaugeMidColor,r=\"Low\"===i?this.gaugeLowColor:\"High\"===i?this.gaugeHighColor:this.gaugeMidColor,s=c.totalResources>0?c.fte*(c.allocatedResources/c.totalResources):c.fte;v+=this.renderGaugeCard({title:\"BENCH RATIO\",valuePct:t,valueColor:r,scaleMax:this.benchMax,midStart:this.benchLowMax,midEnd:this.benchHighMin,rows:[{label:\"On Bench\",value:this.fmtN(e),valueColor:this.gaugeHighColor,isBadge:!1,badgeBg:\"\",dot:this.gaugeHighColor},{label:\"Deployed\",value:s.toFixed(1),valueColor:this.gaugeLowColor,isBadge:!1,badgeBg:\"\",dot:this.gaugeLowColor},{label:\"Assessment\",value:i,valueColor:a,isBadge:!1,badgeBg:\"\",dot:a}]})}v+=\"</div>\",v+=\"</div>\",v+=\"</div>\"}if(y){if(v+='<div class=\"rkpi-row rkpi-row--r2\">',void 0!==i.availability&&(v+=this.renderModernCard(\"Availability\",this.fmtN(c.availability),\"hrs\",`${this.fmtN(c.availability/d)} days · ${this.fmtPct(p)}% available`,Math.round(100*Math.min(1,p)),this.availabilityColor,\"\")),void 0!==i.nettoCapacity&&(v+=this.renderModernCard(\"Netto Capacity\",this.fmtN(c.nettoCapacity),\"hrs\",`${this.fmtN(c.nettoCapacity/d)} days · ${this.fmtPct(A)}% of gross`,Math.round(100*Math.min(1,A)),this.nettoColor,\"\")),void 0!==i.timeOff){const e=c.capacity>0?Math.round(c.timeOff/c.capacity*100):0;v+=this.renderModernCard(\"Time Off\",this.fmtN(c.timeOff),\"hrs\",`${this.fmtN(c.timeOff/d)} days booked`,e,this.timeOffColor,\"\")}void 0!==i.overallocatedResources&&(v+=this.renderModernCard(\"Overallocated\",this.fmtN(c.overallocatedResources),\"resources\",`${this.fmtPct(f)}% of pool >100% in any month`,Math.round(100*f),this.overallocColor,\"\")),v+=\"</div>\"}const E=b&&this.showDistributionBar,k=this.showInsightPanel;if(E||k){if(v+='<div class=\"rkpi-row--insights-grid\">',E){const e=[{count:c.bucket0,color:\"#9CA3AF\",label:\"0%\"},{count:c.bucket25,color:\"#FBBF24\",label:\"<25%\"},{count:c.bucket50,color:\"#F59E0B\",label:\"25–50%\"},{count:c.bucket75,color:\"#FB923C\",label:\"50–75%\"},{count:c.bucket100,color:\"#22C55E\",label:\"75–100%\"},{count:c.bucketOver,color:\"#EF4444\",label:\">100%\"}],t=c.totalResources||e.reduce(((e,t)=>e+t.count),0)||1;v+='<div class=\"rkpi-panel\">',v+='<div class=\"rkpi-panel__head\">',v+='<span class=\"rkpi-panel__title\">Allocation Distribution</span>',v+=`<span class=\"rkpi-panel__head-sub\">${this.fmtN(t)} resources · peak monthly load</span>`,v+=\"</div>\",v+='<div class=\"rkpi-panel__body\">',v+='<div class=\"rkpi-distrib\">',v+='<div class=\"rkpi-distrib__subtitle\">Each resource bucketed by their highest single-month allocation %</div>',v+='<div class=\"rkpi-distrib__bar\">';for(const i of e){const e=i.count/t*100;e>0&&(v+=`<div class=\"rkpi-distrib__seg\" style=\"width:${e.toFixed(1)}%;background:${i.color};\" title=\"${i.label}: ${this.fmtN(i.count)}\"></div>`)}v+=\"</div>\",v+='<div class=\"rkpi-distrib__legend\">';for(const t of e)v+=`<span class=\"rkpi-legend\"><span class=\"rkpi-legend__dot\" style=\"background:${t.color};\"></span>${this.esc(t.label)} <strong>${this.fmtN(t.count)}</strong></span>`;v+=\"</div>\",v+=\"</div>\",v+=\"</div></div>\"}if(k){const e=f>=.1,t=f>=.3;v+='<div class=\"rkpi-panel\">',v+='<div class=\"rkpi-panel__head\">',v+='<span class=\"rkpi-panel__title\">Pool Insights</span>',v+='<span class=\"rkpi-panel__head-sub\">Overallocation &amp; bench signals</span>',v+=\"</div>\",v+='<div class=\"rkpi-panel__body\">',v+='<div class=\"rkpi-insight\">',v+=`<div class=\"rkpi-insight__row\" style=\"background:${t?\"#FCEBEB\":e?\"#FAEEDA\":\"#E1F5EE\"};\">`,v+=`<div class=\"rkpi-insight__icon\" style=\"color:${m};\">${t||e?\"&#9888;\":\"&#10003;\"}</div>`,v+='<div class=\"rkpi-insight__text\">',v+=`<div class=\"rkpi-insight__headline\" style=\"color:${m};\">${t?\"Critical\":e?\"Warning\":\"Healthy\"}: ${this.fmtN(c.overallocatedResources)} overallocated (${this.fmtPct(f)}%)</div>`,c.overallocatedResources>0&&c.topOverallocName?v+=`<div class=\"rkpi-insight__detail\">Peak: ${this.esc(c.topOverallocName)} at ${Math.round(100*c.topOverallocPeak)}% in a single month</div>`:c.overallocatedResources>0?v+=`<div class=\"rkpi-insight__detail\">${this.fmtN(c.overallocatedResources)} resource(s) exceed 100% in at least one month</div>`:v+='<div class=\"rkpi-insight__detail\">No resource exceeds 100% in any month</div>',v+=\"</div></div>\";const a=g>0,r=a?\"#D97706\":\"#059669\";v+=`<div class=\"rkpi-insight__row\" style=\"background:${a?\"#FEF3C7\":\"#E1F5EE\"};\">`,v+=`<div class=\"rkpi-insight__icon\" style=\"color:${r};\">${a?\"&#9679;\":\"&#10003;\"}</div>`,v+='<div class=\"rkpi-insight__text\">',v+=`<div class=\"rkpi-insight__headline\" style=\"color:${r};\">${this.fmtN(g)} unallocated resources</div>`,void 0!==i.underutilizedResources&&(v+=`<div class=\"rkpi-insight__detail\">${this.fmtN(c.underutilizedResources)} under-utilized (peak &lt;25% across all months)</div>`),v+=\"</div></div>\",v+=\"</div>\",v+=\"</div></div>\"}v+=\"</div>\"}this.cardContainer.innerHTML=v}renderGaugeCard(e){const t=Math.max(e.scaleMax,1),i=e=>{return Math.PI*(1-(i=e,Math.max(0,Math.min(t,i))/t));var i},a=(e,t)=>({x:80+t*Math.cos(e),y:90-t*Math.sin(e)}),r=(e,t,r)=>{const s=i(e),o=i(t),n=a(s,70),c=a(o,70),l=a(s,56),d=a(o,56),u=Math.abs(s-o)>Math.PI?1:0;return`<path d=\"M ${n.x.toFixed(2)} ${n.y.toFixed(2)} A 70 70 0 ${u} 1 ${c.x.toFixed(2)} ${c.y.toFixed(2)} L ${d.x.toFixed(2)} ${d.y.toFixed(2)} A 56 56 0 ${u} 0 ${l.x.toFixed(2)} ${l.y.toFixed(2)} Z\" fill=\"${r}\"/>`},s=Math.min(e.midStart,t),o=Math.min(e.midEnd,t),n=i(e.valuePct),c=80+66*Math.cos(n),l=90-66*Math.sin(n),d=[0,t/2,t],u=d.map(((e,t)=>{const a=i(e),r=80+80*Math.cos(a),s=90-80*Math.sin(a),o=0===t?\"start\":t===d.length-1?\"end\":\"middle\";return`<text x=\"${r.toFixed(1)}\" y=\"${s.toFixed(1)}\" font-size=\"8\" fill=\"#6b7280\" text-anchor=\"${o}\" dominant-baseline=\"auto\">${Math.round(e)}%</text>`})).join(\"\");let h='<svg class=\"rkpi-gauge__svg\" viewBox=\"0 0 160 100\" preserveAspectRatio=\"xMidYMid meet\">';h+=r(0,t,\"#F1F3F5\"),h+=r(0,s,this.hexAlpha(this.gaugeLowColor,.85)),h+=r(s,o,this.hexAlpha(this.gaugeMidColor,.85)),h+=r(o,t,this.hexAlpha(this.gaugeHighColor,.85)),h+=u,h+=`<line x1=\"80\" y1=\"90\" x2=\"${c.toFixed(2)}\" y2=\"${l.toFixed(2)}\" stroke=\"#1F2937\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>`,h+='<circle cx=\"80\" cy=\"90\" r=\"3\" fill=\"#1F2937\"/>',h+=\"</svg>\";let p=\"\";for(const t of e.rows)p+='<div class=\"rkpi-gauge__row\">',p+=`<div class=\"rkpi-gauge__row-label\">${t.dot?`<span class=\"rkpi-gauge__dot\" style=\"background:${t.dot};\"></span>`:\"\"}${this.esc(t.label)}</div>`,t.isBadge?p+=`<div class=\"rkpi-gauge__row-value\"><span class=\"rkpi-gauge__badge\" style=\"background:${t.badgeBg};color:${t.valueColor};\">${this.esc(t.value)}</span></div>`:p+=`<div class=\"rkpi-gauge__row-value\" style=\"color:${t.valueColor};\">${this.esc(t.value)}</div>`,p+=\"</div>\";return`<div class=\"rkpi-gauge-card\"><div class=\"rkpi-gauge__title\">${this.esc(e.title)}</div><div class=\"rkpi-gauge__body\"><div class=\"rkpi-gauge__left\"><div class=\"rkpi-gauge__value\" style=\"color:${e.valueColor};\">${e.valuePct.toFixed(1)}%</div>`+h+\"</div>\"+`<div class=\"rkpi-gauge__right\">${p}</div></div></div>`}renderModernCard(e,t,i,a,r,s,o){const n=Math.max(0,Math.min(100,r));let c=`<div class=\"rkpi-card\" style=\"--rkpi-card-color:${s};\">`;return c+='<div class=\"rkpi-card__band\">',c+=`<span class=\"rkpi-card__band-title\">${this.esc(e)}</span>`,o&&(c+=`<span class=\"rkpi-card__band-meta\">${this.esc(o)}</span>`),c+=\"</div>\",c+='<div class=\"rkpi-card__body\">',c+=`<div class=\"rkpi-card__value\">${this.esc(t)}`,i&&(c+=`<span class=\"rkpi-card__unit\">${this.esc(i)}</span>`),c+=\"</div>\",a&&(c+=`<div class=\"rkpi-card__sub\">${this.esc(a)}</div>`),c+=`<div class=\"rkpi-card__pbar\"><div class=\"rkpi-card__pbar-fill\" style=\"width:${n}%;\"></div></div>`,c+=\"</div></div>\",c}hexAlpha(e,t){const i=/^#?([0-9a-f]{6})$/i.exec(e);if(!i)return e;const a=parseInt(i[1],16);return`rgba(${a>>16&255},${a>>8&255},${255&a},${t})`}renderRing(e,t,i,a,r,s){return`<svg class=\"rkpi-ring\" viewBox=\"0 0 44 44\"><circle cx=\"22\" cy=\"22\" r=\"18\" fill=\"none\" stroke=\"${a}\" stroke-width=\"4\"/><circle cx=\"22\" cy=\"22\" r=\"18\" fill=\"none\" stroke=\"${i}\" stroke-width=\"4\" stroke-dasharray=\"${e} 113.1\" stroke-linecap=\"round\" transform=\"rotate(-90 22 22)\"/><text x=\"22\" y=\"24\" text-anchor=\"middle\" font-size=\"${s}\" font-weight=\"600\" fill=\"${r}\">${t}%</text></svg>`}applyFontSizeVars(){const e=this.target.style;e.setProperty(\"--rkpi-fs-label\",`${this.cardLabelFs}px`),e.setProperty(\"--rkpi-fs-value\",`${this.cardValueFs}px`),e.setProperty(\"--rkpi-fs-unit\",`${this.cardUnitFs}px`),e.setProperty(\"--rkpi-fs-sub\",`${this.cardSubFs}px`),e.setProperty(\"--rkpi-fs-band-meta\",`${this.cardBandMetaFs}px`),e.setProperty(\"--rkpi-fs-distrib-title\",`${this.distribTitleFs}px`),e.setProperty(\"--rkpi-fs-distrib-sub\",`${this.distribSubtitleFs}px`),e.setProperty(\"--rkpi-fs-insight-headline\",`${this.insightHeadlineFs}px`),e.setProperty(\"--rkpi-fs-insight-detail\",`${this.insightDetailFs}px`),e.setProperty(\"--rkpi-fs-gauge-value\",`${this.gaugeValueFs}px`),e.setProperty(\"--rkpi-fs-gauge-title\",`${this.gaugeTitleFs}px`),e.setProperty(\"--rkpi-fs-gauge-row\",`${this.gaugeRowFs}px`),e.setProperty(\"--rkpi-fs-panel-title\",`${this.panelTitleFs}px`),e.setProperty(\"--rkpi-fs-panel-sub\",`${this.panelSubFs}px`),e.setProperty(\"--rkpi-fs-header-title\",`${this.headerTitleFs}px`),e.setProperty(\"--rkpi-fs-header-subtitle\",`${this.headerSubtitleFs}px`)}fmtN(e){if(null==e||isNaN(e))return\"0\";const t=Math.abs(e);return t>=1e6?(e/1e6).toFixed(1).replace(/\\.0$/,\"\")+\"M\":t>=1e4?(e/1e3).toFixed(1).replace(/\\.0$/,\"\")+\"K\":e.toLocaleString(\"en-US\",{maximumFractionDigits:0})}fmtPct(e){return(100*e).toFixed(1)}esc(e){const t=document.createElement(\"div\");return t.appendChild(document.createTextNode(e)),t.innerHTML}readSettings(e){const t=e.dataViews[0]?.metadata?.objects;if(!t)return;const i=t.cardColors;i&&(i.capacityColor&&(this.capacityColor=i.capacityColor.solid.color),i.committedColor&&(this.committedColor=i.committedColor.solid.color),i.forecastColor&&(this.forecastColor=i.forecastColor.solid.color),i.fteColor&&(this.fteColor=i.fteColor.solid.color),i.availabilityColor&&(this.availabilityColor=i.availabilityColor.solid.color),i.nettoColor&&(this.nettoColor=i.nettoColor.solid.color),i.timeOffColor&&(this.timeOffColor=i.timeOffColor.solid.color),i.overallocColor&&(this.overallocColor=i.overallocColor.solid.color));const a=t.displayOptions;a&&(void 0!==a.showDistributionBar&&(this.showDistributionBar=a.showDistributionBar),void 0!==a.showInsightPanel&&(this.showInsightPanel=a.showInsightPanel),void 0!==a.hoursPerDay&&a.hoursPerDay>0&&(this.hoursPerDay=a.hoursPerDay));const r=t.gauges;if(r){const e=(e,t,i,a)=>{const r=Number(e);return Number.isFinite(r)&&r>=i&&r<=a?r:t};void 0!==r.showUtilizationGauge&&(this.showUtilizationGauge=!!r.showUtilizationGauge),void 0!==r.showBenchGauge&&(this.showBenchGauge=!!r.showBenchGauge),void 0!==r.utilLowMax&&(this.utilLowMax=e(r.utilLowMax,this.utilLowMax,0,500)),void 0!==r.utilHighMin&&(this.utilHighMin=e(r.utilHighMin,this.utilHighMin,0,500)),void 0!==r.utilMax&&(this.utilMax=e(r.utilMax,this.utilMax,1,500)),void 0!==r.benchLowMax&&(this.benchLowMax=e(r.benchLowMax,this.benchLowMax,0,100)),void 0!==r.benchHighMin&&(this.benchHighMin=e(r.benchHighMin,this.benchHighMin,0,100)),void 0!==r.benchMax&&(this.benchMax=e(r.benchMax,this.benchMax,1,100)),r.gaugeLowColor&&r.gaugeLowColor.solid&&(this.gaugeLowColor=r.gaugeLowColor.solid.color),r.gaugeMidColor&&r.gaugeMidColor.solid&&(this.gaugeMidColor=r.gaugeMidColor.solid.color),r.gaugeHighColor&&r.gaugeHighColor.solid&&(this.gaugeHighColor=r.gaugeHighColor.solid.color),void 0!==r.gaugeValueFs&&(this.gaugeValueFs=e(r.gaugeValueFs,this.gaugeValueFs,6,96)),void 0!==r.gaugeTitleFs&&(this.gaugeTitleFs=e(r.gaugeTitleFs,this.gaugeTitleFs,6,96)),void 0!==r.gaugeRowFs&&(this.gaugeRowFs=e(r.gaugeRowFs,this.gaugeRowFs,6,96))}const s=t.fontSizes;if(s){const e=(e,t)=>{const i=Number(e);return Number.isFinite(i)&&i>=6&&i<=96?i:t};void 0!==s.cardLabelFs&&(this.cardLabelFs=e(s.cardLabelFs,this.cardLabelFs)),void 0!==s.cardValueFs&&(this.cardValueFs=e(s.cardValueFs,this.cardValueFs)),void 0!==s.cardUnitFs&&(this.cardUnitFs=e(s.cardUnitFs,this.cardUnitFs)),void 0!==s.cardSubFs&&(this.cardSubFs=e(s.cardSubFs,this.cardSubFs)),void 0!==s.cardBandMetaFs&&(this.cardBandMetaFs=e(s.cardBandMetaFs,this.cardBandMetaFs)),void 0!==s.ringFs&&(this.ringFs=e(s.ringFs,this.ringFs)),void 0!==s.distribTitleFs&&(this.distribTitleFs=e(s.distribTitleFs,this.distribTitleFs)),void 0!==s.distribSubtitleFs&&(this.distribSubtitleFs=e(s.distribSubtitleFs,this.distribSubtitleFs)),void 0!==s.insightHeadlineFs&&(this.insightHeadlineFs=e(s.insightHeadlineFs,this.insightHeadlineFs)),void 0!==s.insightDetailFs&&(this.insightDetailFs=e(s.insightDetailFs,this.insightDetailFs)),void 0!==s.panelTitleFs&&(this.panelTitleFs=e(s.panelTitleFs,this.panelTitleFs)),void 0!==s.panelSubFs&&(this.panelSubFs=e(s.panelSubFs,this.panelSubFs)),void 0!==s.headerTitleFs&&(this.headerTitleFs=e(s.headerTitleFs,this.headerTitleFs)),void 0!==s.headerSubtitleFs&&(this.headerSubtitleFs=e(s.headerSubtitleFs,this.headerSubtitleFs))}const o=t.header;o&&(null!=o.title&&(this.headerTitle=String(o.title)),null!=o.subtitle&&(this.headerSubtitle=String(o.subtitle)),null!=o.showInfoButton&&(this.headerShowInfoButton=!!o.showInfoButton),null!=o.infoTitle&&(this.headerInfoTitle=String(o.infoTitle)),null!=o.infoDescription&&(this.headerInfoDescription=String(o.infoDescription)),null!=o.infoBullets&&(this.headerInfoBullets=String(o.infoBullets)))}showLanding(){this.cardContainer.style.display=\"none\",this.headerBar&&(this.headerBar.style.display=\"none\"),this.landingContainer.style.display=\"flex\",(0,a.jM)(this.landingContainer)}showEmptyDataMessage(){this.cardContainer.style.display=\"none\",this.headerBar&&(this.headerBar.style.display=\"none\"),this.landingContainer.style.display=\"flex\",(0,a.zr)(this.landingContainer)}hideLanding(){this.cardContainer.style.display=\"block\",this.landingContainer.style.display=\"none\",(0,a.RR)(this.landingContainer)}renderHeader(){const e=!!this.headerTitle&&this.headerTitle.trim().length>0,t=!!this.headerSubtitle&&this.headerSubtitle.trim().length>0,i=e||t||this.headerShowInfoButton;if(this.headerBar.style.display=i?\"flex\":\"none\",i&&(this.headerTitleEl.textContent=e?this.headerTitle:\"\",this.headerTitleEl.style.display=e?\"block\":\"none\",this.headerSubtitleEl.textContent=t?this.headerSubtitle:\"\",this.headerSubtitleEl.style.display=t?\"block\":\"none\",this.headerInfoBtn.style.display=this.headerShowInfoButton?\"inline-flex\":\"none\",this.headerShowInfoButton)){const e=(this.headerInfoBullets||\"\").split(/\\r?\\n/).map((e=>e.trim())).filter((e=>e.length>0)),t=e.length?`<ul>${e.map((e=>`<li>${this.escapeHtml(e)}</li>`)).join(\"\")}</ul>`:\"\",i=this.escapeHtml(this.headerInfoTitle||\"\"),a=this.escapeHtml(this.headerInfoDescription||\"\");this.headerInfoPop.innerHTML=(i?`<div class=\"rkpi-info-pop__title\">${i}</div>`:\"\")+(a?`<div class=\"rkpi-info-pop__desc\">${a}</div>`:\"\")+t}}escapeHtml(e){return e.replace(/&/g,\"&amp;\").replace(/</g,\"&lt;\").replace(/>/g,\"&gt;\").replace(/\"/g,\"&quot;\").replace(/'/g,\"&#39;\")}enumerateObjectInstances(e){if(\"licenseSettings\"===e.objectName)return[{objectName:\"licenseSettings\",selector:null,properties:{licenseKey:this._bfLicenseKey}}];const t=e.objectName,i=[];return\"cardColors\"===t&&i.push({objectName:t,properties:{capacityColor:this.capacityColor,committedColor:this.committedColor,forecastColor:this.forecastColor,fteColor:this.fteColor,availabilityColor:this.availabilityColor,nettoColor:this.nettoColor,timeOffColor:this.timeOffColor,overallocColor:this.overallocColor},selector:null}),\"displayOptions\"===t&&i.push({objectName:t,properties:{showDistributionBar:this.showDistributionBar,showInsightPanel:this.showInsightPanel,hoursPerDay:this.hoursPerDay},selector:null}),\"gauges\"===t&&i.push({objectName:t,properties:{showUtilizationGauge:this.showUtilizationGauge,showBenchGauge:this.showBenchGauge,utilLowMax:this.utilLowMax,utilHighMin:this.utilHighMin,utilMax:this.utilMax,benchLowMax:this.benchLowMax,benchHighMin:this.benchHighMin,benchMax:this.benchMax,gaugeLowColor:this.gaugeLowColor,gaugeMidColor:this.gaugeMidColor,gaugeHighColor:this.gaugeHighColor,gaugeValueFs:this.gaugeValueFs,gaugeTitleFs:this.gaugeTitleFs,gaugeRowFs:this.gaugeRowFs},selector:null,validValues:{utilLowMax:{numberRange:{min:0,max:500}},utilHighMin:{numberRange:{min:0,max:500}},utilMax:{numberRange:{min:1,max:500}},benchLowMax:{numberRange:{min:0,max:100}},benchHighMin:{numberRange:{min:0,max:100}},benchMax:{numberRange:{min:1,max:100}},gaugeValueFs:{numberRange:{min:6,max:96}},gaugeTitleFs:{numberRange:{min:6,max:96}},gaugeRowFs:{numberRange:{min:6,max:96}}}}),\"fontSizes\"===t&&i.push({objectName:t,properties:{cardLabelFs:this.cardLabelFs,cardValueFs:this.cardValueFs,cardUnitFs:this.cardUnitFs,cardSubFs:this.cardSubFs,cardBandMetaFs:this.cardBandMetaFs,ringFs:this.ringFs,distribTitleFs:this.distribTitleFs,distribSubtitleFs:this.distribSubtitleFs,insightHeadlineFs:this.insightHeadlineFs,insightDetailFs:this.insightDetailFs,panelTitleFs:this.panelTitleFs,panelSubFs:this.panelSubFs,headerTitleFs:this.headerTitleFs,headerSubtitleFs:this.headerSubtitleFs},selector:null,validValues:{cardLabelFs:{numberRange:{min:6,max:96}},cardValueFs:{numberRange:{min:6,max:96}},cardUnitFs:{numberRange:{min:6,max:96}},cardSubFs:{numberRange:{min:6,max:96}},cardBandMetaFs:{numberRange:{min:6,max:96}},ringFs:{numberRange:{min:6,max:96}},distribTitleFs:{numberRange:{min:6,max:96}},distribSubtitleFs:{numberRange:{min:6,max:96}},insightHeadlineFs:{numberRange:{min:6,max:96}},insightDetailFs:{numberRange:{min:6,max:96}},panelTitleFs:{numberRange:{min:6,max:96}},panelSubFs:{numberRange:{min:6,max:96}},headerTitleFs:{numberRange:{min:6,max:96}},headerSubtitleFs:{numberRange:{min:6,max:96}}}}),\"header\"===t&&i.push({objectName:t,selector:null,properties:{title:this.headerTitle,subtitle:this.headerSubtitle,showInfoButton:this.headerShowInfoButton,infoTitle:this.headerInfoTitle,infoDescription:this.headerInfoDescription,infoBullets:this.headerInfoBullets}}),i}}},623:(e,t,i)=>{i.d(t,{Z:()=>p});var a=i(96),r=i(456),s=i(817),o=i(203),n=i(214),c=i(135),l=i(38),d=i(12),u=i(22),h=i(132);async function p(e,t,i){if(!(0,c.Gv)(e))throw new s.Ye(\"Flattened JWS must be an object\");if(void 0===e.protected&&void 0===e.header)throw new s.Ye('Flattened JWS must have either of the \"protected\" or \"header\" members');if(void 0!==e.protected&&\"string\"!=typeof e.protected)throw new s.Ye(\"JWS Protected Header incorrect type\");if(void 0===e.payload)throw new s.Ye(\"JWS Payload missing\");if(\"string\"!=typeof e.signature)throw new s.Ye(\"JWS Signature missing or incorrect type\");if(void 0!==e.header&&!(0,c.Gv)(e.header))throw new s.Ye(\"JWS Unprotected Header incorrect type\");let p={};if(e.protected)try{const t=(0,a.D)(e.protected);p=JSON.parse(o.D0.decode(t))}catch{throw new s.Ye(\"JWS Protected Header is invalid\")}if(!(0,c.fz)(p,e.header))throw new s.Ye(\"JWS Protected and JWS Unprotected Header Parameter names must be disjoint\");const A={...p,...e.header};let f=!0;if((0,d.n)(s.Ye,new Map([[\"b64\",!0]]),i?.crit,p,A).has(\"b64\")&&(f=p.b64,\"boolean\"!=typeof f))throw new s.Ye('The \"b64\" (base64url-encode payload) Header Parameter must be a boolean');const{alg:g}=A;if(\"string\"!=typeof g||!g)throw new s.Ye('JWS \"alg\" (Algorithm) Header Parameter missing or invalid');const m=i&&(0,u.F)(\"algorithms\",i.algorithms);if(m&&!m.has(g))throw new s.Rb('\"alg\" (Algorithm) Header Parameter value not allowed');if(f){if(\"string\"!=typeof e.payload)throw new s.Ye(\"JWS Payload must be a string\")}else if(\"string\"!=typeof e.payload&&!(e.payload instanceof Uint8Array))throw new s.Ye(\"JWS Payload must be a string or an Uint8Array instance\");let y=!1;\"function\"==typeof t&&(t=await t(p,e),y=!0),(0,l.y)(g,t,\"verify\");const b=(0,o.xW)(void 0!==e.protected?(0,o.lF)(e.protected):new Uint8Array,(0,o.lF)(\".\"),\"string\"==typeof e.payload?f?(0,o.lF)(e.payload):o.Rd.encode(e.payload):e.payload),v=(0,n.h2)(e.signature,\"signature\",s.Ye),w=await(0,h.l)(t,g);if(!await(0,r.MX)(g,w,v,b))throw new s.h2;let S;S=f?(0,n.h2)(e.payload,\"payload\",s.Ye):\"string\"==typeof e.payload?o.Rd.encode(e.payload):e.payload;const E={payload:S};return void 0!==e.protected&&(E.protectedHeader=p),void 0!==e.header&&(E.unprotectedHeader=e.header),y?{...E,key:w}:E}},799:(e,t,i)=>{i.d(t,{k6:()=>g});var a=i(817),r=i(203),s=i(135);const o=e=>Math.floor(e.getTime()/1e3),n=60,c=60*n,l=24*c,d=7*l,u=365.25*l,h=/^(\\+|\\-)? ?(\\d+|\\d+\\.\\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)(?: (ago|from now))?$/i;function p(e){const t=h.exec(e);if(!t||t[4]&&t[1])throw new TypeError(\"Invalid time period format\");const i=parseFloat(t[2]);let a;switch(t[3].toLowerCase()){case\"sec\":case\"secs\":case\"second\":case\"seconds\":case\"s\":a=Math.round(i);break;case\"minute\":case\"minutes\":case\"min\":case\"mins\":case\"m\":a=Math.round(i*n);break;case\"hour\":case\"hours\":case\"hr\":case\"hrs\":case\"h\":a=Math.round(i*c);break;case\"day\":case\"days\":case\"d\":a=Math.round(i*l);break;case\"week\":case\"weeks\":case\"w\":a=Math.round(i*d);break;default:a=Math.round(i*u)}return\"-\"===t[1]||\"ago\"===t[4]?-a:a}const A=e=>e.includes(\"/\")?e.toLowerCase():`application/${e.toLowerCase()}`,f=(e,t)=>\"string\"==typeof e?t.includes(e):!!Array.isArray(e)&&t.some(Set.prototype.has.bind(new Set(e)));function g(e,t,i={}){let n;try{n=JSON.parse(r.D0.decode(t))}catch{}if(!(0,s.Gv)(n))throw new a.Dp(\"JWT Claims Set must be a top-level JSON object\");const{typ:c}=i;if(c&&(\"string\"!=typeof e.typ||A(e.typ)!==A(c)))throw new a.ie('unexpected \"typ\" JWT header value',n,\"typ\",\"check_failed\");const{requiredClaims:l=[],issuer:d,subject:u,audience:h,maxTokenAge:g}=i,m=[...l];void 0!==g&&m.push(\"iat\"),void 0!==h&&m.push(\"aud\"),void 0!==u&&m.push(\"sub\"),void 0!==d&&m.push(\"iss\");for(const e of new Set(m.reverse()))if(!(e in n))throw new a.ie(`missing required \"${e}\" claim`,n,e,\"missing\");if(d&&!(Array.isArray(d)?d:[d]).includes(n.iss))throw new a.ie('unexpected \"iss\" claim value',n,\"iss\",\"check_failed\");if(u&&n.sub!==u)throw new a.ie('unexpected \"sub\" claim value',n,\"sub\",\"check_failed\");if(h&&!f(n.aud,\"string\"==typeof h?[h]:h))throw new a.ie('unexpected \"aud\" claim value',n,\"aud\",\"check_failed\");let y;switch(typeof i.clockTolerance){case\"string\":y=p(i.clockTolerance);break;case\"number\":y=i.clockTolerance;break;case\"undefined\":y=0;break;default:throw new TypeError(\"Invalid clockTolerance option type\")}const{currentDate:b}=i,v=o(b||new Date);if((void 0!==n.iat||g)&&\"number\"!=typeof n.iat)throw new a.ie('\"iat\" claim must be a number',n,\"iat\",\"invalid\");if(void 0!==n.nbf){if(\"number\"!=typeof n.nbf)throw new a.ie('\"nbf\" claim must be a number',n,\"nbf\",\"invalid\");if(n.nbf>v+y)throw new a.ie('\"nbf\" claim timestamp check failed',n,\"nbf\",\"check_failed\")}if(void 0!==n.exp){if(\"number\"!=typeof n.exp)throw new a.ie('\"exp\" claim must be a number',n,\"exp\",\"invalid\");if(n.exp<=v-y)throw new a.n('\"exp\" claim timestamp check failed',n,\"exp\",\"check_failed\")}if(g){const e=v-n.iat;if(e-y>(\"number\"==typeof g?g:p(g)))throw new a.n('\"iat\" claim timestamp check failed (too far in the past)',n,\"iat\",\"check_failed\");if(e<0-y)throw new a.ie('\"iat\" claim timestamp check failed (it should be in the past)',n,\"iat\",\"check_failed\")}return n}},817:(e,t,i)=>{i.d(t,{Dp:()=>l,Rb:()=>o,T0:()=>n,Ye:()=>c,h2:()=>d,ie:()=>r,n:()=>s});class a extends Error{static code=\"ERR_JOSE_GENERIC\";code=\"ERR_JOSE_GENERIC\";constructor(e,t){super(e,t),this.name=this.constructor.name,Error.captureStackTrace?.(this,this.constructor)}}class r extends a{static code=\"ERR_JWT_CLAIM_VALIDATION_FAILED\";code=\"ERR_JWT_CLAIM_VALIDATION_FAILED\";claim;reason;payload;constructor(e,t,i=\"unspecified\",a=\"unspecified\"){super(e,{cause:{claim:i,reason:a,payload:t}}),this.claim=i,this.reason=a,this.payload=t}}class s extends a{static code=\"ERR_JWT_EXPIRED\";code=\"ERR_JWT_EXPIRED\";claim;reason;payload;constructor(e,t,i=\"unspecified\",a=\"unspecified\"){super(e,{cause:{claim:i,reason:a,payload:t}}),this.claim=i,this.reason=a,this.payload=t}}class o extends a{static code=\"ERR_JOSE_ALG_NOT_ALLOWED\";code=\"ERR_JOSE_ALG_NOT_ALLOWED\"}class n extends a{static code=\"ERR_JOSE_NOT_SUPPORTED\";code=\"ERR_JOSE_NOT_SUPPORTED\"}class c extends a{static code=\"ERR_JWS_INVALID\";code=\"ERR_JWS_INVALID\"}class l extends a{static code=\"ERR_JWT_INVALID\";code=\"ERR_JWT_INVALID\"}Symbol.asyncIterator;class d extends a{static code=\"ERR_JWS_SIGNATURE_VERIFICATION_FAILED\";code=\"ERR_JWS_SIGNATURE_VERIFICATION_FAILED\";constructor(e=\"signature verification failed\",t){super(e,t)}}},848:e=>{e.exports=\"data:image/jpeg;base64,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\"},881:(e,t,i)=>{i.d(t,{M0:()=>A,Mj:()=>v,WB:()=>p,h1:()=>b});var a=i(882),r=i(120),s=i(848);const o=\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl0vhdB+tcX5tQqkTy2by\\nwP+mylZi/au8cbO+Gx22Z5haSAUajqktoOb5jn2+fmz0KlDI7iKlPOFRj15R0vGs\\njGfME1emIrGHUhpZqNOqPcwbi4Y/Rlzl5EaL+yf7kUUGD1QZSqYXewJ5hge9NRQP\\nFb2ZlanSs4IyMJTdhFcx1Cy5OaNrHpbHGJgiREOTK4b+g4w4RDlx3b3Tf4MqDARc\\nrqGJzDRejzBGX7VuLTnPgD13bid18oU7WOyvdkp04Qb/U5C3Q4Lm8sDWpU8z19sR\\n9SJI1Yn5SJ3w3RfdpQQQNLR35tXw9aJoiviI7o6bu7IuOz2FDzjkbOU0K+5BDrny\\nUwIDAQAB\\n-----END PUBLIC KEY-----\",n={foundation:1,pro:2,premium:3},c=\"foundation\",l=\"bfusionresourcekpi\",d=\"*\",u={state:\"no_key\",valid:!1,locked:!0,clientName:\"\",expiresOn:\"\",tier:\"\",requiredTier:c,trial:!1,errorReason:\"No license key\"};let h=null;function p(e,t){const i=e=>{if(!Array.isArray(e))return\"\";for(const t of e){if(null==t)continue;const e=String(t).trim();if(e.length>0)return e}return\"\"},a=e=>!!(e&&e.roles&&e.roles.licenseToken);try{const t=e?.categorical;if(t){for(const e of t.categories||[])if(a(e?.source)){const t=i(e.values);if(t)return t}for(const e of t.values||[])if(a(e?.source)){const t=i(e.values);if(t)return t}}const r=e?.table;if(r&&Array.isArray(r.columns)&&Array.isArray(r.rows)){const e=r.columns.findIndex((e=>a(e)));if(e>=0)for(const t of r.rows){if(!t)continue;const i=t[e];if(null==i)continue;const a=String(i).trim();if(a.length>0)return a}}const s=e?.single;if(s&&(a(s?.source)||a(s?.values?.[0]?.source))){const e=s.value;if(null!=e){const t=String(e).trim();if(t.length>0)return t}}const o=e?.matrix;if(o&&Array.isArray(o.valueSources)){const e=o.valueSources.findIndex((e=>a(e)));if(e>=0){const t=i=>{if(!i)return\"\";if(i.values&&\"object\"==typeof i.values)for(const t of Object.keys(i.values)){const a=i.values[t];if(!a)continue;const r=a.valueSourceIndex;if((void 0===r?Number(t)===e:r===e)&&null!==a.value&&void 0!==a.value){const e=String(a.value).trim();if(e.length>0)return e}}if(Array.isArray(i.children))for(const e of i.children){const i=t(e);if(i)return i}return\"\"},i=t(o.rows?.root);if(i)return i}}const n=(e?.metadata?.columns||[]).findIndex((e=>a(e)));if(n>=0){if(r&&Array.isArray(r.rows))for(const e of r.rows){if(!e)continue;const t=e[n];if(null==t)continue;const i=String(t).trim();if(i.length>0)return i}if(t&&Array.isArray(t.values))for(const e of t.values)if(e?.source?.index===n){const t=i(e.values);if(t)return t}}}catch{}return(t||\"\").trim()}async function A(e){if(!e||0===e.trim().length)return{...u};e=e.trim();try{const t=await async function(){return h||(h=await(0,a.jU)(o,\"RS256\"),h)}(),{payload:i}=await(0,r.V)(e,t,{issuer:\"bfusion.eu\",audience:\"bfusion-visual\",algorithms:[\"RS256\"],clockTolerance:60}),s=Number(i.ver);if(2!==s&&3!==s)return f(\"Unsupported license version (expected v2 or v3)\");const u=String(i.sub||\"\"),p=Number(i.exp||0),A=String(i.tier||\"\").toLowerCase(),m=Boolean(i.trial);if(!(A in n))return f(\"License has unknown tier: \"+A);if(n[A]<n[c])return{state:\"wrong_tier\",valid:!1,locked:!0,clientName:u,expiresOn:g(p),tier:A,requiredTier:c,trial:m,errorReason:\"Requires \"+c+\" tier (key is \"+A+\")\"};if(3===s){const e=i.vis,t=Array.isArray(e)?e.map((e=>String(e).toLowerCase())):[];if(!t.includes(d)&&!t.includes(l))return{state:\"wrong_visual\",valid:!1,locked:!0,clientName:u,expiresOn:g(p),tier:A,requiredTier:c,trial:m,errorReason:\"This visual (\"+l+\") is not included in your license\"}}return{state:m?\"valid_trial\":\"valid\",valid:!0,locked:!1,clientName:u,expiresOn:g(p),tier:A,requiredTier:c,trial:m,errorReason:\"\"}}catch(t){const i=t?.code||\"\";if(\"ERR_JWT_EXPIRED\"===i){const t=function(e){try{const t=e.split(\".\");return 3!==t.length?{}:JSON.parse(atob(t[1].replace(/-/g,\"+\").replace(/_/g,\"/\")))}catch{return{}}}(e);return{state:\"expired\",valid:!1,locked:!0,clientName:t.sub||\"\",expiresOn:g(t.exp||0),tier:t.tier||\"\",requiredTier:c,trial:Boolean(t.trial),errorReason:\"License expired\"}}return f(\"ERR_JWS_SIGNATURE_VERIFICATION_FAILED\"===i?\"Invalid signature\":\"ERR_JWT_CLAIM_VALIDATION_FAILED\"===i?\"Claim validation failed\":\"Invalid license key\")}}function f(e){return{state:\"invalid\",valid:!1,locked:!0,clientName:\"\",expiresOn:\"\",tier:\"\",requiredTier:c,trial:!1,errorReason:e}}function g(e){return e?new Date(1e3*e).toISOString().split(\"T\")[0]:\"—\"}const m='\\n.bfusion-license-badge{position:absolute;left:6px;bottom:6px;font:11px/1.3 \"Segoe UI\",system-ui,sans-serif;padding:3px 8px;border-radius:3px;z-index:10;pointer-events:none;}\\n.bfusion-license-badge--trial{background:rgba(232,97,26,.92);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);}\\n.bfusion-license-badge--licensed{background:transparent;color:#b0b0b0;box-shadow:none;}\\n.bfusion-license-badge em{opacity:.85;font-style:normal;}\\n.bfusion-trial-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5;}\\n.bfusion-trial-watermark__text{font:600 28px/1 \"Segoe UI\",system-ui,sans-serif;color:rgba(232,97,26,.20);letter-spacing:.15em;transform:rotate(-22deg);text-transform:uppercase;}\\n.bfusion-locked-overlay{position:absolute;inset:0;background:rgba(248,249,251,.96);backdrop-filter:saturate(0.3) blur(2px);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:\"Segoe UI\",system-ui,sans-serif;color:#1f2937;}\\n.bfusion-locked-overlay__inner{text-align:center;padding:32px 48px 24px;max-width:480px;background:#fff;border-radius:8px;border-top:3px solid #E8611A;}\\n.bfusion-locked-overlay__logo{width:120px;max-width:35%;height:auto;margin:0 auto 20px;display:block;border-radius:16px;overflow:hidden;}\\n.bfusion-locked-overlay__lock{font-size:24px;color:#E8611A;margin-bottom:6px;}\\n.bfusion-locked-overlay__title{font-size:20px;font-weight:600;color:#0f172a;margin-bottom:8px;letter-spacing:.01em;}\\n.bfusion-locked-overlay__subtitle{font-size:13px;color:#475569;line-height:1.6;margin-bottom:16px;}\\n.bfusion-locked-overlay__cta{font-size:12px;color:#64748b;border-top:1px solid #f1f5f9;padding-top:12px;}\\n.bfusion-locked-overlay__cta a{color:#E8611A;text-decoration:none;}\\n.bfusion-locked-overlay__cta a:hover{text-decoration:underline;}\\n';function y(){if(\"undefined\"==typeof document)return;if(document.getElementById(\"bfusion-license-styles\"))return;const e=document.createElement(\"style\");e.id=\"bfusion-license-styles\",e.textContent=m,document.head.appendChild(e)}function b(e,t){y();const i=e.querySelector(\".bfusion-license-badge\");if(i&&i.remove(),t.locked)return;const a=document.createElement(\"div\"),r=t.trial?\"bfusion-license-badge--trial\":\"bfusion-license-badge--licensed\";a.className=\"bfusion-license-badge bfusion-license-badge--valid \"+r;const s=t.trial?\" <em>(TRIAL)</em>\":\"\";a.innerHTML='<span class=\"bfusion-license-badge__icon\">&#x2713;</span><span class=\"bfusion-license-badge__text\">Licensed to: <strong>'+w(t.clientName)+\"</strong> | \"+w(t.tier)+s+\" | Expires: \"+w(t.expiresOn)+\"</span>\",e.appendChild(a)}function v(e,t){!function(e,t){y();const i=\"bfusion-trial-watermark\",a=e.querySelector(\".\"+i);if(a&&a.remove(),\"valid_trial\"!==t.state)return;const r=document.createElement(\"div\");r.className=i,r.innerHTML='<div class=\"bfusion-trial-watermark__text\">TRIAL · expires '+w(t.expiresOn)+\"</div>\",e.appendChild(r)}(e,t),function(e,t){y();const i=\"bfusion-locked-overlay\",a=e.querySelector(\".\"+i);if(a&&a.remove(),!t.locked)return;const r=function(e){switch(e.state){case\"no_key\":default:return\"Visual locked\";case\"expired\":return\"License expired\";case\"wrong_tier\":return\"Tier upgrade required\";case\"wrong_visual\":return\"Visual not licensed\";case\"invalid\":return\"Invalid license\"}}(t),o=function(e){switch(e.state){case\"no_key\":return\"Bind a BFusion License Token to enable this visual\";case\"expired\":return\"Expired on \"+e.expiresOn;case\"wrong_tier\":return\"This visual requires \"+e.requiredTier+\" tier\";case\"wrong_visual\":case\"invalid\":return e.errorReason;default:return\"\"}}(t),n=document.createElement(\"div\");n.className=i,n.innerHTML='<div class=\"bfusion-locked-overlay__inner\"><img class=\"bfusion-locked-overlay__logo\" src=\"'+s+'\" alt=\"BFUSION\" /><div class=\"bfusion-locked-overlay__lock\">&#x1F512;</div><div class=\"bfusion-locked-overlay__title\">'+w(r)+'</div><div class=\"bfusion-locked-overlay__subtitle\">'+w(o)+'</div><div class=\"bfusion-locked-overlay__cta\">Contact <a href=\"mailto:info@bfusion.eu\">info@bfusion.eu</a></div></div>',e.appendChild(n)}(e,t)}function w(e){const t=document.createElement(\"div\");return t.textContent=String(null==e?\"\":e),t.innerHTML}},882:(e,t,i)=>{i.d(t,{jU:()=>r});var a=i(886);async function r(e,t,i){if(\"string\"!=typeof e||0!==e.indexOf(\"-----BEGIN PUBLIC KEY-----\"))throw new TypeError('\"spki\" must be SPKI formatted string');return(0,a.sc)(e,t,i)}},886:(e,t,i)=>{i.d(t,{sc:()=>l});var a=i(248),r=i(817);const s=(e,t)=>{if(e.byteLength!==t.length)return!1;for(let i=0;i<e.byteLength;i++)if(e[i]!==t[i])return!1;return!0},o=e=>{const t=e.data[e.pos++];if(128&t){const i=127&t;let a=0;for(let t=0;t<i;t++)a=a<<8|e.data[e.pos++];return a}return t},n=(e,t,i)=>{if(e.data[e.pos++]!==t)throw new Error(i)},c=(e,t)=>{const i=e.data.subarray(e.pos,e.pos+t);return e.pos+=t,i},l=(e,t,i)=>{const l=((e,t)=>(0,a.y)(e.replace(t,\"\")))(e,/(?:-----(?:BEGIN|END) PUBLIC KEY-----|\\s)/g);let d=i;return t?.startsWith?.(\"ECDH-ES\")&&(d||={},d.getNamedCurve=e=>{const t={data:e,pos:0};return function(e){n(e,48,\"Invalid SPKI structure\"),o(e),n(e,48,\"Expected algorithm identifier\");o(e)}(t),(e=>{const t=(e=>{n(e,6,\"Expected algorithm OID\");const t=o(e);return c(e,t)})(e);if(s(t,[43,101,110]))return\"X25519\";if(!s(t,[42,134,72,206,61,2,1]))throw new Error(\"Unsupported key algorithm\");n(e,6,\"Expected curve OID\");const i=o(e),a=c(e,i);for(const{name:e,oid:t}of[{name:\"P-256\",oid:[42,134,72,206,61,3,1,7]},{name:\"P-384\",oid:[43,129,4,0,34]},{name:\"P-521\",oid:[43,129,4,0,35]}])if(s(a,t))return e;throw new Error(\"Unsupported named curve\")})(t)}),(async(e,t,i,a)=>{let s,o;const n=\"spki\"===e,c=()=>n?[\"verify\"]:[\"sign\"];switch(i){case\"PS256\":case\"PS384\":case\"PS512\":s={name:\"RSA-PSS\",hash:`SHA-${i.slice(-3)}`},o=c();break;case\"RS256\":case\"RS384\":case\"RS512\":s={name:\"RSASSA-PKCS1-v1_5\",hash:`SHA-${i.slice(-3)}`},o=c();break;case\"RSA-OAEP\":case\"RSA-OAEP-256\":case\"RSA-OAEP-384\":case\"RSA-OAEP-512\":s={name:\"RSA-OAEP\",hash:`SHA-${parseInt(i.slice(-3),10)||1}`},o=n?[\"encrypt\",\"wrapKey\"]:[\"decrypt\",\"unwrapKey\"];break;case\"ES256\":case\"ES384\":case\"ES512\":s={name:\"ECDSA\",namedCurve:{ES256:\"P-256\",ES384:\"P-384\",ES512:\"P-521\"}[i]},o=c();break;case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":try{const e=a.getNamedCurve(t);s=\"X25519\"===e?{name:\"X25519\"}:{name:\"ECDH\",namedCurve:e}}catch(e){throw new r.T0(\"Invalid or unsupported key format\")}o=n?[]:[\"deriveBits\"];break;case\"Ed25519\":case\"EdDSA\":s={name:\"Ed25519\"},o=c();break;case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":s={name:i},o=c();break;default:throw new r.T0('Invalid or unsupported \"alg\" (Algorithm) value')}return crypto.subtle.importKey(e,t,s,a?.extractable??!!n,o)})(\"spki\",l,t,d)}},947:(e,t,i)=>{i.d(t,{x:()=>s});var a=i(817);const r='Invalid or unsupported JWK \"alg\" (Algorithm) Parameter value';async function s(e){if(!e.alg)throw new TypeError('\"alg\" argument is required when \"jwk.alg\" is not present');const{algorithm:t,keyUsages:i}=function(e){let t,i;switch(e.kty){case\"AKP\":switch(e.alg){case\"ML-DSA-44\":case\"ML-DSA-65\":case\"ML-DSA-87\":t={name:e.alg},i=e.priv?[\"sign\"]:[\"verify\"];break;default:throw new a.T0(r)}break;case\"RSA\":switch(e.alg){case\"PS256\":case\"PS384\":case\"PS512\":t={name:\"RSA-PSS\",hash:`SHA-${e.alg.slice(-3)}`},i=e.d?[\"sign\"]:[\"verify\"];break;case\"RS256\":case\"RS384\":case\"RS512\":t={name:\"RSASSA-PKCS1-v1_5\",hash:`SHA-${e.alg.slice(-3)}`},i=e.d?[\"sign\"]:[\"verify\"];break;case\"RSA-OAEP\":case\"RSA-OAEP-256\":case\"RSA-OAEP-384\":case\"RSA-OAEP-512\":t={name:\"RSA-OAEP\",hash:`SHA-${parseInt(e.alg.slice(-3),10)||1}`},i=e.d?[\"decrypt\",\"unwrapKey\"]:[\"encrypt\",\"wrapKey\"];break;default:throw new a.T0(r)}break;case\"EC\":switch(e.alg){case\"ES256\":case\"ES384\":case\"ES512\":t={name:\"ECDSA\",namedCurve:{ES256:\"P-256\",ES384:\"P-384\",ES512:\"P-521\"}[e.alg]},i=e.d?[\"sign\"]:[\"verify\"];break;case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":t={name:\"ECDH\",namedCurve:e.crv},i=e.d?[\"deriveBits\"]:[];break;default:throw new a.T0(r)}break;case\"OKP\":switch(e.alg){case\"Ed25519\":case\"EdDSA\":t={name:\"Ed25519\"},i=e.d?[\"sign\"]:[\"verify\"];break;case\"ECDH-ES\":case\"ECDH-ES+A128KW\":case\"ECDH-ES+A192KW\":case\"ECDH-ES+A256KW\":t={name:e.crv},i=e.d?[\"deriveBits\"]:[];break;default:throw new a.T0(r)}break;default:throw new a.T0('Invalid or unsupported JWK \"kty\" (Key Type) Parameter value')}return{algorithm:t,keyUsages:i}}(e),s={...e};return\"AKP\"!==s.kty&&delete s.alg,delete s.use,crypto.subtle.importKey(\"jwk\",s,t,e.ext??(!e.d&&!e.priv),e.key_ops??i)}},973:(e,t,i)=>{i.d(t,{B:()=>o});var a=i(623),r=i(817),s=i(203);async function o(e,t,i){if(e instanceof Uint8Array&&(e=s.D0.decode(e)),\"string\"!=typeof e)throw new r.Ye(\"Compact JWS must be a string or Uint8Array\");const{0:o,1:n,2:c,length:l}=e.split(\".\");if(3!==l)throw new r.Ye(\"Invalid Compact JWS\");const d=await(0,a.Z)({payload:n,protected:o,signature:c},t,i),u={payload:d.payload,protectedHeader:d.protectedHeader};return\"function\"==typeof t?{...u,key:d.key}:u}}},t={};function i(a){var r=t[a];if(void 0!==r)return r.exports;var s=t[a]={exports:{}};return e[a](s,s.exports,i),s.exports}i.d=(e,t)=>{for(var a in t)i.o(t,a)&&!i.o(e,a)&&Object.defineProperty(e,a,{enumerable:!0,get:t[a]})},i.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),i.r=e=>{\"undefined\"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:\"Module\"}),Object.defineProperty(e,\"__esModule\",{value:!0})};var a={};(()=>{i.r(a),i.d(a,{default:()=>s});var e=i(604),t=window.powerbi,r={name:\"bfusionResourceKPI9D4E2F7A1B8C\",displayName:\"BFUSION Resource KPI\",class:\"Visual\",apiVersion:\"5.11.0\",create:t=>{if(e.b)return new e.b(t);throw\"Visual instance not found\"},createModalDialog:(e,t,i)=>{const a=globalThis.dialogRegistry;e in a&&new a[e](t,i)},custom:!0};void 0!==t&&(t.visuals=t.visuals||{},t.visuals.plugins=t.visuals.plugins||{},t.visuals.plugins.bfusionResourceKPI9D4E2F7A1B8C=r);const s=r})(),bfusionResourceKPI9D4E2F7A1B8C=a})();",
+    "css": "/* ========================================================================== */\n/* BFUSION Resource KPI — Modernised top-band cards + grey panel chrome      */\n/* ========================================================================== */\n.bfusion-root {\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  font-family: var(--rkpi-font-family, \"Segoe UI\"), wf_segoe-ui_normal, helvetica, arial, sans-serif;\n  background-color: #FFFFFF;\n  position: relative;\n  color: #1F2937;\n}\n.bfusion-root *,\n.bfusion-root *:before,\n.bfusion-root *:after {\n  box-sizing: border-box;\n}\n.bfusion-rkpi {\n  display: flex;\n  flex-direction: column;\n  padding-bottom: 24px;\n  /* license badge clear-zone */\n}\n/* ========================================================================== */\n/* Header bar (title + subtitle + info button)                                */\n/* ========================================================================== */\n.rkpi-header {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  padding: 10px 18px 8px 18px;\n  border-bottom: 1px solid #E5E7EB;\n  background: #FFFFFF;\n  position: relative;\n}\n.rkpi-header__titles {\n  flex: 1 1 auto;\n  min-width: 0;\n}\n.rkpi-header__title {\n  font-weight: 700;\n  color: #1F2937;\n  letter-spacing: 0.1px;\n  line-height: 1.2;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  font-size: var(--rkpi-fs-header-title, 13px);\n}\n.rkpi-header__subtitle {\n  margin-top: 2px;\n  color: #6B7280;\n  font-weight: 400;\n  line-height: 1.3;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  font-size: var(--rkpi-fs-header-subtitle, 10px);\n}\n.rkpi-header__info {\n  flex: 0 0 auto;\n  width: 20px;\n  height: 20px;\n  border-radius: 50%;\n  border: 1px solid #E5E7EB;\n  background: #fff;\n  color: #6B7280;\n  font-style: italic;\n  font-weight: 700;\n  font-size: 11px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n  transition: all 0.15s ease;\n}\n.rkpi-header__info:hover {\n  color: #fff;\n  background: #E8612A;\n  border-color: #E8612A;\n  transform: scale(1.05);\n}\n.rkpi-header__info-pop {\n  position: absolute;\n  top: calc(100% + 6px);\n  right: 12px;\n  z-index: 30;\n  width: 320px;\n  max-width: calc(100% - 24px);\n  background: #fff;\n  border: 1px solid #E5E7EB;\n  border-radius: 8px;\n  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);\n  padding: 12px 14px;\n  color: #1F2937;\n  line-height: 1.45;\n  font-size: var(--rkpi-fs-sub, 11px);\n}\n.rkpi-header__info-pop ul {\n  margin: 8px 0 0 0;\n  padding-left: 18px;\n}\n.rkpi-header__info-pop ul li {\n  margin: 3px 0;\n  color: #6B7280;\n}\n.rkpi-info-pop__title {\n  font-weight: 700;\n  color: #1F2937;\n  margin-bottom: 4px;\n}\n.rkpi-info-pop__desc {\n  color: #6B7280;\n}\n/* ========================================================================== */\n/* Main wrapper                                                               */\n/* ========================================================================== */\n.rkpi-wrap {\n  width: 100%;\n  padding: 14px 18px 4px 18px;\n  display: block;\n  background: #FFFFFF;\n}\n.rkpi-row {\n  margin-bottom: 14px;\n}\n.rkpi-row--r1,\n.rkpi-row--r2 {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));\n  gap: 10px;\n}\n/* ========================================================================== */\n/* Modern KPI Card — top-band design                                          */\n/* ========================================================================== */\n.rkpi-card {\n  --rkpi-card-color: #1F2A44;\n  background: #FFFFFF;\n  border: 1px solid #E5E7EB;\n  border-radius: 8px;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transition: box-shadow 0.2s ease, transform 0.15s ease;\n  min-height: 122px;\n}\n.rkpi-card:hover {\n  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);\n  transform: translateY(-1px);\n}\n.rkpi-card__band {\n  background: var(--rkpi-card-color);\n  color: #FFFFFF;\n  padding: 8px 12px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 6px;\n  min-height: 30px;\n}\n.rkpi-card__band-title {\n  font-size: var(--rkpi-fs-label, 11px);\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 0.6px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.rkpi-card__band-meta {\n  font-size: var(--rkpi-fs-band-meta, 10px);\n  font-weight: 600;\n  color: rgba(255, 255, 255, 0.85);\n  white-space: nowrap;\n}\n.rkpi-card__body {\n  padding: 12px 14px 12px 14px;\n  flex: 1 1 auto;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  min-width: 0;\n}\n.rkpi-card__value {\n  font-size: var(--rkpi-fs-value, 28px);\n  font-weight: 700;\n  line-height: 1.1;\n  color: #1F2937;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.rkpi-card__unit {\n  font-size: var(--rkpi-fs-unit, 11px);\n  color: #6B7280;\n  font-weight: 500;\n  margin-left: 4px;\n}\n.rkpi-card__sub {\n  font-size: var(--rkpi-fs-sub, 11px);\n  color: #6B7280;\n  line-height: 1.4;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.rkpi-card__pbar {\n  margin-top: auto;\n  height: 4px;\n  background: #F1F5F9;\n  border-radius: 2px;\n  overflow: hidden;\n}\n.rkpi-card__pbar-fill {\n  height: 100%;\n  border-radius: 2px;\n  background: var(--rkpi-card-color);\n  transition: width 0.3s ease;\n}\n/* ========================================================================== */\n/* Section panel — grey header band + body                                    */\n/* ========================================================================== */\n.rkpi-panel {\n  background: #FFFFFF;\n  border: 1px solid #E5E7EB;\n  border-radius: 8px;\n  overflow: hidden;\n  margin-bottom: 14px;\n}\n.rkpi-panel__head {\n  background: linear-gradient(90deg, #F1F4F8 0%, #E9EEF4 100%);\n  color: #1F2937;\n  padding: 10px 16px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  border-bottom: 1px solid #E5E7EB;\n}\n.rkpi-panel__title {\n  font-size: var(--rkpi-fs-panel-title, 12px);\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 0.8px;\n  color: #1F2937;\n}\n.rkpi-panel__head-sub {\n  font-size: var(--rkpi-fs-panel-sub, 11px);\n  color: #6B7280;\n  font-weight: 500;\n  text-align: right;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 60%;\n}\n.rkpi-panel__body {\n  padding: 14px 16px 16px 16px;\n  background: #FFFFFF;\n}\n/* ========================================================================== */\n/* Gauge Cards (Utilization | Bench Ratio) — inside .rkpi-panel               */\n/* ========================================================================== */\n.rkpi-gauges-grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 14px;\n}\n.rkpi-gauge-card {\n  background: #F8FAFC;\n  border: 1px solid #E5E7EB;\n  border-radius: 8px;\n  padding: 12px 14px;\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  transition: box-shadow 0.15s ease, transform 0.15s ease;\n}\n.rkpi-gauge-card:hover {\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);\n  transform: translateY(-1px);\n}\n.rkpi-gauge__title {\n  font-size: var(--rkpi-fs-gauge-title, 11px);\n  color: #6B7280;\n  font-weight: 700;\n  letter-spacing: 0.8px;\n  text-transform: uppercase;\n  margin-bottom: 6px;\n}\n.rkpi-gauge__body {\n  display: flex;\n  align-items: stretch;\n  gap: 12px;\n  min-width: 0;\n}\n.rkpi-gauge__left {\n  flex: 0 0 150px;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: flex-start;\n  min-width: 0;\n}\n.rkpi-gauge__value {\n  font-size: var(--rkpi-fs-gauge-value, 22px);\n  font-weight: 700;\n  line-height: 1.1;\n  margin-bottom: 2px;\n  font-variant-numeric: tabular-nums;\n}\n.rkpi-gauge__svg {\n  width: 150px;\n  max-width: 100%;\n  height: auto;\n}\n.rkpi-gauge__right {\n  flex: 1 1 auto;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 0;\n  min-width: 0;\n}\n.rkpi-gauge__row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  padding: 6px 4px;\n  font-size: var(--rkpi-fs-gauge-row, 11px);\n  border-top: 1px solid #E5E7EB;\n}\n.rkpi-gauge__row:first-child {\n  border-top: none;\n}\n.rkpi-gauge__row-label {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  color: #6B7280;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.rkpi-gauge__dot {\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  flex-shrink: 0;\n  display: inline-block;\n}\n.rkpi-gauge__row-value {\n  font-weight: 700;\n  text-align: right;\n  white-space: nowrap;\n  flex-shrink: 0;\n  font-variant-numeric: tabular-nums;\n}\n.rkpi-gauge__badge {\n  display: inline-block;\n  padding: 2px 8px;\n  border-radius: 4px;\n  font-size: 0.85em;\n  font-weight: 700;\n  letter-spacing: 0.5px;\n  color: #fff !important;\n}\n/* ========================================================================== */\n/* Allocation Distribution — inside .rkpi-panel                               */\n/* ========================================================================== */\n.rkpi-distrib {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n.rkpi-distrib__subtitle {\n  font-size: var(--rkpi-fs-distrib-sub, 11px);\n  color: #6B7280;\n  margin-bottom: 2px;\n}\n.rkpi-distrib__bar {\n  width: 100%;\n  height: 22px;\n  background: #F1F5F9;\n  border-radius: 6px;\n  overflow: hidden;\n  display: flex;\n  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.02);\n}\n.rkpi-distrib__seg {\n  height: 100%;\n  transition: width 0.3s ease;\n}\n.rkpi-distrib__seg:hover {\n  opacity: 0.85;\n}\n.rkpi-distrib__legend {\n  display: flex;\n  gap: 16px;\n  flex-wrap: wrap;\n}\n.rkpi-legend {\n  font-size: var(--rkpi-fs-distrib-sub, 11px);\n  color: #1F2937;\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  font-weight: 500;\n}\n.rkpi-legend strong {\n  font-weight: 700;\n  color: #1F2937;\n  font-variant-numeric: tabular-nums;\n}\n.rkpi-legend__dot {\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  display: inline-block;\n  flex-shrink: 0;\n}\n/* ========================================================================== */\n/* Insight panel — rows inside .rkpi-panel                                    */\n/* ========================================================================== */\n.rkpi-insight {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n.rkpi-insight__row {\n  display: flex;\n  align-items: flex-start;\n  gap: 10px;\n  padding: 10px 12px;\n  border-radius: 6px;\n  border: 1px solid #E5E7EB;\n}\n.rkpi-insight__icon {\n  font-size: 20px;\n  flex-shrink: 0;\n  line-height: 1;\n}\n.rkpi-insight__text {\n  flex: 1;\n  min-width: 0;\n}\n.rkpi-insight__headline {\n  font-size: var(--rkpi-fs-insight-headline, 11px);\n  font-weight: 700;\n  line-height: 1.3;\n}\n.rkpi-insight__detail {\n  font-size: var(--rkpi-fs-insight-detail, 10px);\n  color: #6B7280;\n  line-height: 1.3;\n  margin-top: 2px;\n}\n/* Distribution + Insights side-by-side at wide widths */\n.rkpi-row--insights-grid {\n  display: grid;\n  grid-template-columns: 1.6fr 1fr;\n  gap: 14px;\n  margin-bottom: 14px;\n}\n/* ========================================================================== */\n/* Responsive                                                                 */\n/* ========================================================================== */\n.bfusion-rkpi.rkpi-narrow .rkpi-row--insights-grid {\n  grid-template-columns: 1fr;\n}\n.bfusion-rkpi.rkpi-narrow .rkpi-gauges-grid {\n  grid-template-columns: 1fr;\n}\n.bfusion-rkpi.rkpi-medium .rkpi-row--insights-grid {\n  grid-template-columns: 1fr;\n}\n/* ========================================================================== */\n/* Landing Page (shared pattern)                                              */\n/* ========================================================================== */\n.bfusion-landing-wrap {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  background-color: #FFFFFF;\n}\n.bfusion-landing {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  max-width: 420px;\n  padding: 20px;\n  box-sizing: border-box;\n  text-align: center;\n}\n.bfusion-landing__logo-container {\n  width: 130px;\n  height: 84px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: #E8612A;\n  border-radius: 12px;\n  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);\n  margin-bottom: 24px;\n  overflow: hidden;\n}\n.bfusion-landing__logo {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n}\n.bfusion-landing__text-container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  width: 100%;\n}\n.bfusion-landing__title {\n  font-size: 15px;\n  font-weight: 600;\n  color: #242424;\n  margin: 0 0 14px 0;\n  padding: 0;\n  line-height: 1.2;\n}\n.bfusion-landing__description {\n  font-size: 11.5px;\n  font-weight: 400;\n  color: #666666;\n  margin: 0;\n  padding: 0;\n  line-height: 1.5;\n}\n.bfusion-landing__description strong {\n  font-weight: 600;\n  color: #444444;\n}\n.bfusion-landing__separator {\n  width: 60%;\n  height: 1px;\n  background-color: #EAEAEA;\n  margin: 20px 0;\n}\n.bfusion-landing__metadata {\n  font-size: 10.5px;\n  color: #8C8C8C;\n  margin-bottom: 4px;\n  font-weight: 400;\n  line-height: 1.4;\n}\n.bfusion-landing__metadata strong {\n  font-weight: 600;\n  color: #707070;\n}\n/* ========================================================================== */\n/* License Badge & Watermark                                                  */\n/* ========================================================================== */\n.bfusion-license-badge-wrap {\n  position: absolute;\n  bottom: 4px;\n  left: 8px;\n  z-index: 20;\n  pointer-events: none;\n}\n.bfusion-license-badge {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  padding: 3px 10px;\n  border-radius: 4px;\n  font-size: 9px;\n  font-family: \"Segoe UI\", wf_segoe-ui_normal, helvetica, arial, sans-serif;\n  line-height: 1.3;\n  pointer-events: auto;\n  max-width: 380px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bfusion-license-badge--valid {\n  background: rgba(5, 150, 105, 0.08);\n  border: 1px solid rgba(5, 150, 105, 0.25);\n  color: #059669;\n}\n.bfusion-license-badge--invalid {\n  background: rgba(220, 38, 38, 0.06);\n  border: 1px solid rgba(220, 38, 38, 0.2);\n  color: #DC2626;\n}\n.bfusion-license-badge__icon {\n  font-size: 11px;\n  flex-shrink: 0;\n}\n.bfusion-license-badge__text {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bfusion-license-badge__text strong {\n  font-weight: 600;\n}\n.bfusion-watermark {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 15;\n  pointer-events: none;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: repeating-linear-gradient(-45deg, transparent, transparent 120px, rgba(220, 38, 38, 0.03) 120px, rgba(220, 38, 38, 0.03) 122px);\n}\n.bfusion-watermark__content {\n  text-align: center;\n  opacity: 0.18;\n  user-select: none;\n  transform: rotate(-18deg);\n}\n.bfusion-watermark__title {\n  font-size: 56px;\n  font-weight: 900;\n  color: #DC2626;\n  letter-spacing: 12px;\n  line-height: 1;\n  font-family: \"Segoe UI\", sans-serif;\n}\n.bfusion-watermark__subtitle {\n  font-size: 16px;\n  font-weight: 600;\n  color: #DC2626;\n  margin-top: 6px;\n  letter-spacing: 3px;\n  text-transform: uppercase;\n  font-family: \"Segoe UI\", sans-serif;\n}\n.bfusion-watermark__link {\n  font-size: 11px;\n  color: #9CA3AF;\n  margin-top: 12px;\n  font-family: \"Segoe UI\", sans-serif;\n}\n/* ========================================================================== */\n/* Empty Data State                                                           */\n/* ========================================================================== */\n.bfusion-empty {\n  display: flex;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n  justify-content: center;\n  padding: 20px 24px 28px 24px;\n  box-sizing: border-box;\n}\n.bfusion-empty__message {\n  font-size: 12px;\n  color: #94a3b8;\n  font-weight: 400;\n  text-align: center;\n  letter-spacing: 0.2px;\n}\n\n",
+    "iconBase64": "data:image/png;base64,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"
+  },
+  "visualEntryPoint": "",
+  "externalJS": [],
+  "assets": {
+    "icon": "assets/icon.png"
+  }
+}

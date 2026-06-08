@@ -1,0 +1,92 @@
+table ModelerScenarioPlan
+	lineageTag: f2a770fb-ea7a-461e-89b0-1ea4bc7b895c
+
+	/// Returns 1 if the current project (Plans[Name] context) is part of the current scenario (ModelerScenario[Name] context), else 0. Bind to the Scenario Membership data role on the Efficient Frontier visual (project-mode).
+	measure 'Modeler | Membership 1' = VAR _proj = SELECTEDVALUE ( Plans[Name] ) VAR _scn  = SELECTEDVALUE ( ModelerScenario[Name] ) RETURN     IF (         NOT ISBLANK ( _proj ) && NOT ISBLANK ( _scn )             && CALCULATE (                 COUNTROWS ( ModelerScenarioPlan ),                 ModelerScenarioPlan[Name] = _proj,                 ModelerScenarioPlan[Checked] = TRUE ()             ) > 0,         1, 0     )
+		formatString: 0
+		displayFolder: Modeler | Efficient Frontier
+		lineageTag: c079312d-c6d2-4a41-87f2-22d0efd92919
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 2cc43e98-53c4-4f82-8efa-c4b3356304e7
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentScenarioId
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: c361c490-2a71-4d1d-b42d-7ab13b083dca
+		summarizeBy: none
+		sourceColumn: ParentScenarioId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentScenarioName
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: ad92fd57-5982-46d1-9138-eb85fc1c53e1
+		summarizeBy: none
+		sourceColumn: ParentScenarioName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 94432699-1549-4552-8999-5ed79f32587d
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Checked
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 05d4e0be-c46c-4c28-b347-42772293188d
+		summarizeBy: none
+		sourceColumn: Checked
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Priority
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: 24ca2ecd-dc6c-4967-82e0-d61aa96a12f0
+		summarizeBy: sum
+		sourceColumn: Priority
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition ModelerScenarioPlan = m
+		mode: import
+		queryGroup: 'Portfolio Modeler'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    ModelerScenarioPlan_table = Source{[Name="ModelerScenarioPlan",Signature="table"]}[Data]
+				in
+				    ModelerScenarioPlan_table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
