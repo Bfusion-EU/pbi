@@ -38,13 +38,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name",
               "active": true
             }
@@ -75,13 +75,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "ProjectType_Value"
                 }
               },
-              "queryRef": "Plans.ProjectType_Value",
+              "queryRef": "DimProject.ProjectType_Value",
               "nativeQueryRef": "ProjectType_Value"
             }
           ]
@@ -95,7 +95,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Benefits"
@@ -118,7 +118,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "PrioritizationScore"

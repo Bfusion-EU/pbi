@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Goals_Value"
                 }
               },
-              "queryRef": "Plans.Goals_Value",
+              "queryRef": "DimProject.Goals_Value",
               "nativeQueryRef": "Goals_Value",
               "active": true
             },
@@ -35,13 +35,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "StrategicAlignment_Value"
                 }
               },
-              "queryRef": "Plans.StrategicAlignment_Value",
+              "queryRef": "DimProject.StrategicAlignment_Value",
               "nativeQueryRef": "StrategicAlignment_Value",
               "active": false
             },
@@ -50,13 +50,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name",
               "active": false
             }

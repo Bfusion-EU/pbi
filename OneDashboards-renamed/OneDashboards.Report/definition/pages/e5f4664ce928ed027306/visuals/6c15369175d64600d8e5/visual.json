@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -76,7 +76,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Summary_PercentDone"
@@ -97,13 +97,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "State_Value"
                 }
               },
-              "queryRef": "Plans.State_Value",
+              "queryRef": "DimProject.State_Value",
               "nativeQueryRef": "State_Value"
             }
           ]
@@ -151,13 +151,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Summary_EndDate"
                 }
               },
-              "queryRef": "Plans.Summary_EndDate",
+              "queryRef": "DimProject.Summary_EndDate",
               "nativeQueryRef": "Summary_EndDate"
             }
           ]
@@ -170,7 +170,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Plans"
+                    "Entity": "DimProject"
                   }
                 },
                 "Property": "Summary_EndDate"

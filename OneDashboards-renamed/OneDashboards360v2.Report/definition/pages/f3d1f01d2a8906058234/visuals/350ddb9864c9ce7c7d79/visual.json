@@ -1,0 +1,372 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "350ddb9864c9ce7c7d79",
+  "position": {
+    "x": 9.1822094691535145,
+    "y": 167.72835963653753,
+    "z": 0,
+    "height": 479.31133428981349,
+    "width": 1265.3084648493543,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "bfusionSunkCostDecisionBoardS1U2N3K0",
+    "query": {
+      "queryState": {
+        "project": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "Plans.Name",
+              "nativeQueryRef": "Name",
+              "active": true
+            }
+          ]
+        },
+        "category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "BusinessUnit_Value"
+                }
+              },
+              "queryRef": "Plans.BusinessUnit_Value",
+              "nativeQueryRef": "BusinessUnit_Value"
+            }
+          ]
+        },
+        "budgetConsumed": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "SunkCost | Budget Consumed %"
+                }
+              },
+              "queryRef": "_Measures.SunkCost | Budget Consumed %",
+              "nativeQueryRef": "SunkCost | Budget Consumed %"
+            }
+          ]
+        },
+        "healthScore": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "SunkCost | Value Confidence Score"
+                }
+              },
+              "queryRef": "_Measures.SunkCost | Value Confidence Score",
+              "nativeQueryRef": "SunkCost | Value Confidence Score"
+            }
+          ]
+        },
+        "recoverable": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "SunkCost | Recoverable Budget"
+                }
+              },
+              "queryRef": "_Measures.SunkCost | Recoverable Budget",
+              "nativeQueryRef": "SunkCost | Recoverable Budget"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Total Budget"
+                }
+              },
+              "queryRef": "_Measures.Total Budget",
+              "nativeQueryRef": "Total Budget"
+            }
+          ]
+        },
+        "consumed": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Plans"
+                        }
+                      },
+                      "Property": "BudgetUsed"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Plans.BudgetUsed)",
+              "nativeQueryRef": "Sum of BudgetUsed"
+            }
+          ]
+        },
+        "budgetConsumedPrev": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "SunkCost | Budget Consumed % — Prior"
+                }
+              },
+              "queryRef": "_Measures.SunkCost | Budget Consumed % — Prior",
+              "nativeQueryRef": "SunkCost | Budget Consumed % — Prior"
+            }
+          ]
+        },
+        "healthPrev": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "SunkCost | Value Confidence Score — Prior"
+                }
+              },
+              "queryRef": "_Measures.SunkCost | Value Confidence Score — Prior",
+              "nativeQueryRef": "SunkCost | Value Confidence Score — Prior"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "SunkCost | Budget Consumed %"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNjk3Mjg4LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfNzMxYzk4ZGUyN2JiIiwidmVyIjozLCJ2aXMiOlsiYmZ1c2lvbmJlbmVmaXRzcmVhbGl6YXRpb24iLCJiZnVzaW9uY2FwYWNpdHlwbGFubmluZyIsImJmdXNpb25jb25zdHJhaW50c2Fua2V5IiwiYmZ1c2lvbmNyaXRpY2FscGF0aGRpYWdyYW0iLCJiZnVzaW9uZWZmaWNpZW50ZnJvbnRpZXIiLCJiZnVzaW9uZXZtYWN0aW9ubWF0cml4IiwiYmZ1c2lvbmZpbmFuY2lhbGtwaW5hcnJhdGl2ZSIsImJmdXNpb25maW5hbmNpYWxvdmVydmlldyIsImJmdXNpb25maW5hbmNpYWxzY3VydmUiLCJiZnVzaW9uZnRlZGVjaXNpb25ib2FyZCIsImJmdXNpb25oaWVyYXJjaGljYWxnYW50dCIsImJmdXNpb25rYW5iYW5ib2FyZCIsImJmdXNpb25rcGlncmlkIiwiYmZ1c2lvbm5hdmlnYXRpb25tZW51IiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJwb3J0Zm9saW9yb2FkbWFwIiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlZWZmaWNpZW5jeWJyZWFrZG93biIsImJmdXNpb25yZXNvdXJjZWZvcmVjYXN0IiwiYmZ1c2lvbnJlc291cmNlZ2FwYW5hbHlzaXMiLCJiZnVzaW9ucmVzb3VyY2VoZWF0bWFwIiwiYmZ1c2lvbnJlc291cmNla3BpIiwiYmZ1c2lvbnJpc2ttYXRyaXhleHQiLCJiZnVzaW9ucmlza3JhZGFyY2hhcnQiLCJiZnVzaW9uc2NlbmFyaW9yYWRhciIsImJmdXNpb25zZWxlY3Rpb253YXRlcmZhbGwiLCJiZnVzaW9uc2Vuc2l0aXZpdHl0b3JuYWRvIiwiYmZ1c2lvbnN0YXR1c3RyZW5kc3BhcmtsaW5lIiwiYmZ1c2lvbnN0cmF0ZWdpY3N1bmJ1cnN0IiwiYmZ1c2lvbnN1bmtjb3N0ZGVjaXNpb25ib2FyZCIsImJmdXNpb250YXNra3BpYm9hcmQiLCJiZnVzaW9ud2F0ZXJsaW5lbW9kZWxlciJdfQ.gvGxJTlXf7M8b390kJbl-uH2QtEHbJvVrWZSEs23EHkujk_7qQXctkCWL5KXWHNfbLRK32Pqqmx_22kK-CdMXWXedhdFiR62NcOH4kxcXZI6XuS8VwEoPj_GBr6B7Vji83wtR3y-Kh779HnRe0Qznl5Yqc2Xh8F0ZXmG-4OKOEA-zfuZSdh-3T2iFKV1AYpMmKXCXqt4m2OSwiPXowvMtr3AQLD1Yln4ZD2mzH6DrR1mY3-ONDVfcO--PBD921j2_zU2qX89ZRq-YXMNESn3Q7_1jAe5qyDECKhUziekUBHSStacLkPd9IYFZt1bfjljP5voW2onKOttT_OwW0gfSg'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "quadrants": [
+        {
+          "properties": {
+            "showCrosshairLabel": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showQuadrantLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "healthyColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            },
+            "failingEarlyColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 8,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            },
+            "sunkCostColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "thresholds": [
+        {
+          "properties": {
+            "currency": {
+              "expr": {
+                "Literal": {
+                  "Value": "'€'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "style": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "trajectory": [
+        {
+          "properties": {
+            "arrowWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "bubbles": [
+        {
+          "properties": {
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0FAA07'"
+                    }
+                  }
+                }
+              }
+            },
+            "labelColorHealthy": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "labelColorSunk": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": -0.25
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

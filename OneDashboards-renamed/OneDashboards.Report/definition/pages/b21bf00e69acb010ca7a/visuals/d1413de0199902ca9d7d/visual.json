@@ -38,13 +38,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "EstimatedStart"
                 }
               },
-              "queryRef": "Plans.EstimatedStart",
+              "queryRef": "DimProject.EstimatedStart",
               "nativeQueryRef": "EstimatedStart"
             }
           ]
@@ -56,13 +56,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "EstimatedEnd"
                 }
               },
-              "queryRef": "Plans.EstimatedEnd",
+              "queryRef": "DimProject.EstimatedEnd",
               "nativeQueryRef": "EstimatedEnd"
             }
           ]
@@ -110,13 +110,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "ModelerScenario"
+                      "Entity": "DimScenario"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "ModelerScenario.Name",
+              "queryRef": "DimScenario.Name",
               "nativeQueryRef": "Name1"
             }
           ]
@@ -128,13 +128,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Period"
                 }
               },
-              "queryRef": "Calendar.Period",
+              "queryRef": "DimDate.Period",
               "nativeQueryRef": "Period"
             }
           ]
@@ -146,13 +146,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -164,13 +164,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Id"
                 }
               },
-              "queryRef": "Plans.Id",
+              "queryRef": "DimProject.Id",
               "nativeQueryRef": "Id"
             }
           ]
@@ -291,7 +291,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Plans"
+                    "Entity": "DimProject"
                   }
                 },
                 "Property": "EstimatedStart"

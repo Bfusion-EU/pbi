@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Department_Value"
                 }
               },
-              "queryRef": "Resources.Department_Value",
+              "queryRef": "DimResource.Department_Value",
               "nativeQueryRef": "Department_Value",
               "active": true
             }
@@ -40,7 +40,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Resources"
+                    "Entity": "DimResource"
                   }
                 },
                 "Property": "Department_Value"

@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Year"
                 }
               },
-              "queryRef": "Calendar.Year",
+              "queryRef": "DimDate.Year",
               "nativeQueryRef": "Year",
               "active": true
             },
@@ -35,13 +35,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Quarter Name"
                 }
               },
-              "queryRef": "Calendar.Quarter Name",
+              "queryRef": "DimDate.Quarter Name",
               "nativeQueryRef": "Quarter Name",
               "active": true
             },
@@ -50,13 +50,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Period"
                 }
               },
-              "queryRef": "Calendar.Period",
+              "queryRef": "DimDate.Period",
               "nativeQueryRef": "Period",
               "active": true
             }
@@ -69,13 +69,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Department_Value"
                 }
               },
-              "queryRef": "Resources.Department_Value",
+              "queryRef": "DimResource.Department_Value",
               "nativeQueryRef": "Department",
               "active": true,
               "displayName": "Department"
@@ -85,13 +85,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Role_Value"
                 }
               },
-              "queryRef": "Resources.Role_Value",
+              "queryRef": "DimResource.Role_Value",
               "nativeQueryRef": "Role",
               "active": false,
               "displayName": "Role"
@@ -101,13 +101,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Resources.Name",
+              "queryRef": "DimResource.Name",
               "nativeQueryRef": "Resource",
               "active": false,
               "displayName": "Resource"
@@ -185,7 +185,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Resources"
+                    "Entity": "DimResource"
                   }
                 },
                 "Property": "Department_Value"
@@ -204,7 +204,7 @@
         "levels": [
           {
             "queryRefs": [
-              "Resources.Department_Value"
+              "DimResource.Department_Value"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -212,7 +212,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Department_Value"
@@ -223,7 +223,7 @@
           },
           {
             "queryRefs": [
-              "Resources.Role_Value"
+              "DimResource.Role_Value"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -231,7 +231,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Role_Value"
@@ -242,7 +242,7 @@
           },
           {
             "queryRefs": [
-              "Resources.Name"
+              "DimResource.Name"
             ],
             "isCollapsed": true,
             "isPinned": true
@@ -264,7 +264,7 @@
             }
           },
           "selector": {
-            "metadata": "Resources.Department_Value"
+            "metadata": "DimResource.Department_Value"
           }
         },
         {
@@ -285,7 +285,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Calendar"
+                          "Entity": "DimDate"
                         }
                       },
                       "Property": "Period"

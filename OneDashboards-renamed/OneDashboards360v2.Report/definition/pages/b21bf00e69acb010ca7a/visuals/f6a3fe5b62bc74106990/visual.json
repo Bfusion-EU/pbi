@@ -1,0 +1,326 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "f6a3fe5b62bc74106990",
+  "position": {
+    "x": 18.085106382978726,
+    "y": 101.06382978723404,
+    "z": 4000,
+    "height": 698.936170212766,
+    "width": 1055.3191489361702,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "bfusionEfficientFrontierF1A2B3C4D5E6",
+    "query": {
+      "queryState": {
+        "projectName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "Plans.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "scenarioName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelerScenario"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "ModelerScenario.Name",
+              "nativeQueryRef": "Name1"
+            }
+          ]
+        },
+        "projectValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Project Value"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Project Value",
+              "nativeQueryRef": "Modeler | Project Value"
+            }
+          ]
+        },
+        "membershipValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Membership"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Membership",
+              "nativeQueryRef": "Modeler | Membership"
+            }
+          ]
+        },
+        "targetBudget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Target Budget"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Target Budget",
+              "nativeQueryRef": "Modeler | Target Budget"
+            }
+          ]
+        },
+        "projectCost": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Project | Total EstimatedCost"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Project Cost",
+              "nativeQueryRef": "Modeler | Project Cost"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Project | Total EstimatedCost"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNjk3Mjg4LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfNzMxYzk4ZGUyN2JiIiwidmVyIjozLCJ2aXMiOlsiYmZ1c2lvbmJlbmVmaXRzcmVhbGl6YXRpb24iLCJiZnVzaW9uY2FwYWNpdHlwbGFubmluZyIsImJmdXNpb25jb25zdHJhaW50c2Fua2V5IiwiYmZ1c2lvbmNyaXRpY2FscGF0aGRpYWdyYW0iLCJiZnVzaW9uZWZmaWNpZW50ZnJvbnRpZXIiLCJiZnVzaW9uZXZtYWN0aW9ubWF0cml4IiwiYmZ1c2lvbmZpbmFuY2lhbGtwaW5hcnJhdGl2ZSIsImJmdXNpb25maW5hbmNpYWxvdmVydmlldyIsImJmdXNpb25maW5hbmNpYWxzY3VydmUiLCJiZnVzaW9uZnRlZGVjaXNpb25ib2FyZCIsImJmdXNpb25oaWVyYXJjaGljYWxnYW50dCIsImJmdXNpb25rYW5iYW5ib2FyZCIsImJmdXNpb25rcGlncmlkIiwiYmZ1c2lvbm5hdmlnYXRpb25tZW51IiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJwb3J0Zm9saW9yb2FkbWFwIiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlZWZmaWNpZW5jeWJyZWFrZG93biIsImJmdXNpb25yZXNvdXJjZWZvcmVjYXN0IiwiYmZ1c2lvbnJlc291cmNlZ2FwYW5hbHlzaXMiLCJiZnVzaW9ucmVzb3VyY2VoZWF0bWFwIiwiYmZ1c2lvbnJlc291cmNla3BpIiwiYmZ1c2lvbnJpc2ttYXRyaXhleHQiLCJiZnVzaW9ucmlza3JhZGFyY2hhcnQiLCJiZnVzaW9uc2NlbmFyaW9yYWRhciIsImJmdXNpb25zZWxlY3Rpb253YXRlcmZhbGwiLCJiZnVzaW9uc2Vuc2l0aXZpdHl0b3JuYWRvIiwiYmZ1c2lvbnN0YXR1c3RyZW5kc3BhcmtsaW5lIiwiYmZ1c2lvbnN0cmF0ZWdpY3N1bmJ1cnN0IiwiYmZ1c2lvbnN1bmtjb3N0ZGVjaXNpb25ib2FyZCIsImJmdXNpb250YXNra3BpYm9hcmQiLCJiZnVzaW9ud2F0ZXJsaW5lbW9kZWxlciJdfQ.gvGxJTlXf7M8b390kJbl-uH2QtEHbJvVrWZSEs23EHkujk_7qQXctkCWL5KXWHNfbLRK32Pqqmx_22kK-CdMXWXedhdFiR62NcOH4kxcXZI6XuS8VwEoPj_GBr6B7Vji83wtR3y-Kh779HnRe0Qznl5Yqc2Xh8F0ZXmG-4OKOEA-zfuZSdh-3T2iFKV1AYpMmKXCXqt4m2OSwiPXowvMtr3AQLD1Yln4ZD2mzH6DrR1mY3-ONDVfcO--PBD921j2_zU2qX89ZRq-YXMNESn3Q7_1jAe5qyDECKhUziekUBHSStacLkPd9IYFZt1bfjljP5voW2onKOttT_OwW0gfSg'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "lines": [
+        {
+          "properties": {
+            "frontierColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "showCAL": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "universe": [
+        {
+          "properties": {
+            "mcSampleSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "80000D"
+                }
+              }
+            },
+            "scenarioMarkerSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "17D"
+                }
+              }
+            },
+            "showUniverse": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "universeRamp": [
+        {
+          "properties": {
+            "showColorbar": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "useGradient": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "highColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0C8827'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "overlays": [
+        {
+          "properties": {
+            "showIdealPortfolio": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "overlayFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "showRiskFree": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showRiskPremium": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showRiskNeutral": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showOverlayLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "b9cc0f97c284004b3e76",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Plans"
+              }
+            },
+            "Property": "PlanType"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      }
+    ]
+  }
+}

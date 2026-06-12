@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -38,13 +38,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "OverallHealth_Value"
                 }
               },
-              "queryRef": "Plans.OverallHealth_Value",
+              "queryRef": "DimProject.OverallHealth_Value",
               "nativeQueryRef": "OverallHealth_Value"
             }
           ]
@@ -56,13 +56,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "ScheduleHealth_Value"
                 }
               },
-              "queryRef": "Plans.ScheduleHealth_Value",
+              "queryRef": "DimProject.ScheduleHealth_Value",
               "nativeQueryRef": "ScheduleHealth_Value"
             }
           ]
@@ -74,13 +74,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "FinancialHealth_Value"
                 }
               },
-              "queryRef": "Plans.FinancialHealth_Value",
+              "queryRef": "DimProject.FinancialHealth_Value",
               "nativeQueryRef": "FinancialHealth_Value"
             }
           ]
@@ -92,13 +92,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "ScopeHealth_Value"
                 }
               },
-              "queryRef": "Plans.ScopeHealth_Value",
+              "queryRef": "DimProject.ScopeHealth_Value",
               "nativeQueryRef": "ScopeHealth_Value"
             }
           ]
@@ -110,13 +110,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "EffortHealth_Value"
                 }
               },
-              "queryRef": "Plans.EffortHealth_Value",
+              "queryRef": "DimProject.EffortHealth_Value",
               "nativeQueryRef": "EffortHealth_Value"
             }
           ]
@@ -128,13 +128,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "IssueHealth_Value"
                 }
               },
-              "queryRef": "Plans.IssueHealth_Value",
+              "queryRef": "DimProject.IssueHealth_Value",
               "nativeQueryRef": "IssueHealth_Value"
             }
           ]
@@ -166,7 +166,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Benefits"
@@ -189,7 +189,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Summary_PercentDone"

@@ -1,0 +1,318 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "f0f7e15e11d5392416e7",
+  "position": {
+    "x": 15.466448445171849,
+    "y": 936.57937806873974,
+    "z": 9000,
+    "height": 620.37643207855967,
+    "width": 995.00818330605557,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "bfusionResourceGapAnalysis_CustomVisual",
+    "query": {
+      "queryState": {
+        "resourceName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Resources"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "Resources.Name",
+              "nativeQueryRef": "ResourceName",
+              "displayName": "ResourceName"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Category"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "index": 0,
+              "length": 1
+            }
+          ]
+        },
+        "gap": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Demand-Supply Gap"
+                }
+              },
+              "queryRef": "_Measures.Resource Demand-Supply Gap",
+              "nativeQueryRef": "Resource Demand-Supply Gap"
+            }
+          ]
+        },
+        "drillParent": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Resources"
+                    }
+                  },
+                  "Property": "Department_Value"
+                }
+              },
+              "queryRef": "Resources.Department_Value",
+              "nativeQueryRef": "Department",
+              "displayName": "Department"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Calendar"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "Calendar.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        },
+        "groupBy": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Resources"
+                    }
+                  },
+                  "Property": "OP_Financial_ResourceType_Value"
+                }
+              },
+              "queryRef": "Resources.OP_Financial_ResourceType_Value",
+              "nativeQueryRef": "OP_Financial_ResourceType_Value"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNjcxNjI0LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfY2FkNjQ0OTBhOTdmIiwidmlzIjpbImJmdXNpb25iZW5lZml0c3JlYWxpemF0aW9uIiwiYmZ1c2lvbmNhcGFjaXR5cGxhbm5pbmciLCJiZnVzaW9uY29uc3RyYWludHNhbmtleSIsImJmdXNpb25jcml0aWNhbHBhdGhkaWFncmFtIiwiYmZ1c2lvbmVmZmljaWVudGZyb250aWVyIiwiYmZ1c2lvbmV2bWFjdGlvbm1hdHJpeCIsImJmdXNpb25maW5hbmNpYWxrcGluYXJyYXRpdmUiLCJiZnVzaW9uZmluYW5jaWFsb3ZlcnZpZXciLCJiZnVzaW9uZmluYW5jaWFsc2N1cnZlIiwiYmZ1c2lvbmZ0ZWRlY2lzaW9uYm9hcmQiLCJiZnVzaW9uaGllcmFyY2hpY2FsZ2FudHQiLCJiZnVzaW9ua2FuYmFuYm9hcmQiLCJiZnVzaW9ua3BpZ3JpZCIsIm5hdmlnYXRpb25tZW51IiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJwb3J0Zm9saW9yb2FkbWFwIiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlZWZmaWNpZW5jeWJyZWFrZG93biIsImJmdXNpb25yZXNvdXJjZWZvcmVjYXN0IiwiYmZ1c2lvbnJlc291cmNlZ2FwYW5hbHlzaXMiLCJiZnVzaW9ucmVzb3VyY2VoZWF0bWFwIiwiYmZ1c2lvbnJlc291cmNla3BpIiwiYmZ1c2lvbnJpc2ttYXRyaXhleHQiLCJiZnVzaW9ucmlza3JhZGFyY2hhcnQiLCJiZnVzaW9uc2NlbmFyaW9yYWRhciIsImJmdXNpb25zZWxlY3Rpb253YXRlcmZhbGwiLCJiZnVzaW9uc2Vuc2l0aXZpdHl0b3JuYWRvIiwiYmZ1c2lvbnN0YXR1c3RyZW5kc3BhcmtsaW5lIiwiYmZ1c2lvbnN0cmF0ZWdpY3N1bmJ1cnN0IiwiYmZ1c2lvbnRhc2trcGlib2FyZCIsImJmdXNpb253YXRlcmxpbmVtb2RlbGVyIl0sInZlciI6M30.FwXvLyTUoN7rFBnQ7bsSEOcEk_qulOMO9m1vaJyxxA1ka2aEP07UrmLtEqTsz62rfJhtjn002uId2faiR2VOobgTal8knx4gQX4njP3YApBBabn_mPhr4OOzgsuYw0tLZXv-Zkxy2K0CkC_djN_U8YkfAQwm31cnTQ1nwDgDMC265tGUUHIQz4OGofCzjVaI7gW8LmIWcrxPRHKbegiRjI1zDEiQgo5LW7Y8cc6oP20l_5cdYaycYVLCE4a6aEnvl_psy0DtwdZ1yuL2h5NF-hal1_lCwapsZB1Tz7Hw22VuBNjHzLcM-nbw16DwWk7GrM3b4O0hegHbCaWGQx4DLQ'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "sparklineSettings": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "groupCollapseSettings": [
+        {
+          "properties": {
+            "enabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "startCollapsed": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "averageLineSettings": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "benchmarkSettings": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "topNSettings": [
+        {
+          "properties": {
+            "enabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataLabelSettings": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "showSign": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "insightPanel": [
+        {
+          "properties": {
+            "panelExpanded": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showInsights": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showSmartInsights": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fontSettings": [
+        {
+          "properties": {
+            "axisTitleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "axisLabelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "resourceLabelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            },
+            "legendFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            },
+            "breadcrumbFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

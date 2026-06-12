@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -38,13 +38,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "BusinessUnit_Value"
                 }
               },
-              "queryRef": "Plans.BusinessUnit_Value",
+              "queryRef": "DimProject.BusinessUnit_Value",
               "nativeQueryRef": "BusinessUnit_Value"
             }
           ]
@@ -56,13 +56,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Owner_Value"
                 }
               },
-              "queryRef": "Plans.Owner_Value",
+              "queryRef": "DimProject.Owner_Value",
               "nativeQueryRef": "Owner_Value"
             }
           ]
@@ -74,13 +74,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "EffortHealth_Value"
                 }
               },
-              "queryRef": "Plans.EffortHealth_Value",
+              "queryRef": "DimProject.EffortHealth_Value",
               "nativeQueryRef": "EffortHealth_Value"
             }
           ]
@@ -92,13 +92,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "ScopeHealth_Value"
                 }
               },
-              "queryRef": "Plans.ScopeHealth_Value",
+              "queryRef": "DimProject.ScopeHealth_Value",
               "nativeQueryRef": "ScopeHealth_Value"
             }
           ]
@@ -110,13 +110,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "FinancialHealth_Value"
                 }
               },
-              "queryRef": "Plans.FinancialHealth_Value",
+              "queryRef": "DimProject.FinancialHealth_Value",
               "nativeQueryRef": "FinancialHealth_Value"
             }
           ]
@@ -128,13 +128,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "ScheduleHealth_Value"
                 }
               },
-              "queryRef": "Plans.ScheduleHealth_Value",
+              "queryRef": "DimProject.ScheduleHealth_Value",
               "nativeQueryRef": "ScheduleHealth_Value"
             }
           ]
@@ -146,13 +146,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "IssueHealth_Value"
                 }
               },
-              "queryRef": "Plans.IssueHealth_Value",
+              "queryRef": "DimProject.IssueHealth_Value",
               "nativeQueryRef": "IssueHealth_Value"
             }
           ]
@@ -184,7 +184,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Benefits"
@@ -207,7 +207,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Summary_PercentDone"
@@ -228,13 +228,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Summary_EndDate"
                 }
               },
-              "queryRef": "Plans.Summary_EndDate",
+              "queryRef": "DimProject.Summary_EndDate",
               "nativeQueryRef": "Summary_EndDate"
             }
           ]
@@ -246,13 +246,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "OverallHealth_Value"
                 }
               },
-              "queryRef": "Plans.OverallHealth_Value",
+              "queryRef": "DimProject.OverallHealth_Value",
               "nativeQueryRef": "OverallHealth_Value"
             }
           ]
@@ -264,13 +264,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "OverallHealth_Value"
                 }
               },
-              "queryRef": "Plans.OverallHealth_Value",
+              "queryRef": "DimProject.OverallHealth_Value",
               "nativeQueryRef": "OverallHealth_Value"
             }
           ]
@@ -282,13 +282,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "State_Value"
                 }
               },
-              "queryRef": "Plans.State_Value",
+              "queryRef": "DimProject.State_Value",
               "nativeQueryRef": "State_Value"
             }
           ]
@@ -300,13 +300,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Portfolio"
+                      "Entity": "DimPortfolio"
                     }
                   },
                   "Property": "Manager_Value"
                 }
               },
-              "queryRef": "Plan_Portfolio.Manager_Value",
+              "queryRef": "DimPortfolio.Manager_Value",
               "nativeQueryRef": "Manager_Value"
             }
           ]
@@ -318,13 +318,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "RiskRating_Value"
                 }
               },
-              "queryRef": "Plans.RiskRating_Value",
+              "queryRef": "DimProject.RiskRating_Value",
               "nativeQueryRef": "RiskRating_Value"
             }
           ]
@@ -336,13 +336,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Category_Value"
                 }
               },
-              "queryRef": "Plans.Category_Value",
+              "queryRef": "DimProject.Category_Value",
               "nativeQueryRef": "Category_Value"
             }
           ]
@@ -354,13 +354,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "ExecutiveSponsor_Value"
                 }
               },
-              "queryRef": "Plans.ExecutiveSponsor_Value",
+              "queryRef": "DimProject.ExecutiveSponsor_Value",
               "nativeQueryRef": "ExecutiveSponsor_Value"
             }
           ]
@@ -372,13 +372,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Portfolio"
+                      "Entity": "DimPortfolio"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plan_Portfolio.Name",
+              "queryRef": "DimPortfolio.Name",
               "nativeQueryRef": "Name1"
             }
           ]
@@ -390,13 +390,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Programs"
+                      "Entity": "DimProgram"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plan_Programs.Name",
+              "queryRef": "DimProgram.Name",
               "nativeQueryRef": "Name2"
             }
           ]
@@ -408,13 +408,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -427,7 +427,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Plans"
+                    "Entity": "DimProject"
                   }
                 },
                 "Property": "Summary_EndDate"

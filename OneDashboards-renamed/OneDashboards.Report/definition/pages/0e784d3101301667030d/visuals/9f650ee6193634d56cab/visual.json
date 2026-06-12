@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Portfolio"
+                      "Entity": "DimPortfolio"
                     }
                   },
                   "Property": "ProjectType_Value"
                 }
               },
-              "queryRef": "Plan_Portfolio.ProjectType_Value",
+              "queryRef": "DimPortfolio.ProjectType_Value",
               "nativeQueryRef": "Project Tp",
               "active": true,
               "displayName": "Project Tp"
@@ -41,7 +41,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Plan_Portfolio"
+                    "Entity": "DimPortfolio"
                   }
                 },
                 "Property": "ProjectType_Value"

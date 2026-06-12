@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -38,13 +38,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "StatusReports"
+                      "Entity": "FactStatusReport"
                     }
                   },
                   "Property": "OverallHealth"
                 }
               },
-              "queryRef": "StatusReports.OverallHealth",
+              "queryRef": "FactStatusReport.OverallHealth",
               "nativeQueryRef": "OverallHealth"
             }
           ]
@@ -56,13 +56,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "StatusReports"
+                      "Entity": "FactStatusReport"
                     }
                   },
                   "Property": "ScheduleHealth"
                 }
               },
-              "queryRef": "StatusReports.ScheduleHealth",
+              "queryRef": "FactStatusReport.ScheduleHealth",
               "nativeQueryRef": "ScheduleHealth"
             }
           ]
@@ -74,13 +74,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "StatusReports"
+                      "Entity": "FactStatusReport"
                     }
                   },
                   "Property": "FinancialHealth"
                 }
               },
-              "queryRef": "StatusReports.FinancialHealth",
+              "queryRef": "FactStatusReport.FinancialHealth",
               "nativeQueryRef": "FinancialHealth"
             }
           ]
@@ -92,13 +92,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "StatusReports"
+                      "Entity": "FactStatusReport"
                     }
                   },
                   "Property": "EffortHealth"
                 }
               },
-              "queryRef": "StatusReports.EffortHealth",
+              "queryRef": "FactStatusReport.EffortHealth",
               "nativeQueryRef": "EffortHealth"
             }
           ]
@@ -110,13 +110,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "StatusReports"
+                      "Entity": "FactStatusReport"
                     }
                   },
                   "Property": "IssueHealth"
                 }
               },
-              "queryRef": "StatusReports.IssueHealth",
+              "queryRef": "FactStatusReport.IssueHealth",
               "nativeQueryRef": "IssueHealth"
             }
           ]
@@ -128,13 +128,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "StatusReports"
+                      "Entity": "FactStatusReport"
                     }
                   },
                   "Property": "Status"
                 }
               },
-              "queryRef": "StatusReports.Status",
+              "queryRef": "FactStatusReport.Status",
               "nativeQueryRef": "Status"
             }
           ]
@@ -146,13 +146,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Period"
                 }
               },
-              "queryRef": "Calendar.Period",
+              "queryRef": "DimDate.Period",
               "nativeQueryRef": "Period"
             }
           ]

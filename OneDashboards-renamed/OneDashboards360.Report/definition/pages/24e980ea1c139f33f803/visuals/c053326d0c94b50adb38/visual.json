@@ -56,13 +56,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Portfolio"
+                      "Entity": "DimPortfolio"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plan_Portfolio.Name",
+              "queryRef": "DimPortfolio.Name",
               "nativeQueryRef": "Name",
               "active": true
             },
@@ -71,13 +71,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Programs"
+                      "Entity": "DimProgram"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plan_Programs.Name",
+              "queryRef": "DimProgram.Name",
               "nativeQueryRef": "Name1",
               "active": false
             },
@@ -86,13 +86,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name2",
               "active": false
             }

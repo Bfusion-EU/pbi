@@ -13,7 +13,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Tasks"
+                "Entity": "DimTask"
               }
             },
             "Property": "WorkType"
@@ -25,7 +25,7 @@
           "From": [
             {
               "Name": "t",
-              "Entity": "Tasks",
+              "Entity": "DimTask",
               "Type": 0
             }
           ],

@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Role_Value"
                 }
               },
-              "queryRef": "Resources.Role_Value",
+              "queryRef": "DimResource.Role_Value",
               "nativeQueryRef": "Role_Value",
               "displayName": "Role"
             }
@@ -73,13 +73,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Period"
                 }
               },
-              "queryRef": "Calendar.Period",
+              "queryRef": "DimDate.Period",
               "nativeQueryRef": "Period",
               "active": true
             }

@@ -20,7 +20,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Costs"
+                "Entity": "FactCost"
               }
             },
             "Property": "CostCategory"
@@ -36,7 +36,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Plan_Programs"
+                "Entity": "DimProgram"
               }
             },
             "Property": "Name"
@@ -48,7 +48,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "Plan_Programs",
+              "Entity": "DimProgram",
               "Type": 0
             }
           ],
@@ -89,7 +89,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Plan_Portfolio"
+                "Entity": "DimPortfolio"
               }
             },
             "Property": "Name"
@@ -101,7 +101,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "Plan_Portfolio",
+              "Entity": "DimPortfolio",
               "Type": 0
             }
           ],
@@ -142,7 +142,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Plan_Projects"
+                "Entity": "DimProject"
               }
             },
             "Property": "Name"
@@ -154,7 +154,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "Plan_Projects",
+              "Entity": "DimProject",
               "Type": 0
             }
           ],
@@ -195,7 +195,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Costs"
+                "Entity": "FactCost"
               }
             },
             "Property": "DetailRow"
@@ -207,7 +207,7 @@
           "From": [
             {
               "Name": "c",
-              "Entity": "Costs",
+              "Entity": "FactCost",
               "Type": 0
             }
           ],
@@ -250,7 +250,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Plans"
+                "Entity": "DimProject"
               }
             },
             "Property": "Name"
@@ -262,7 +262,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "Plans",
+              "Entity": "DimProject",
               "Type": 0
             }
           ],
@@ -303,7 +303,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Plan_Portfolio"
+                "Entity": "DimPortfolio"
               }
             },
             "Property": "Name"
@@ -334,7 +334,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Plans"
+                "Entity": "DimProject"
               }
             },
             "Property": "Name"
@@ -350,7 +350,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Plan_Programs"
+                "Entity": "DimProgram"
               }
             },
             "Property": "Name"

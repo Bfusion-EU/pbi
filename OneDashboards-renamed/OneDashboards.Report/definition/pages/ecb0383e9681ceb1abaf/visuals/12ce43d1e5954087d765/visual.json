@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "ProcessSteps"
+                      "Entity": "DimProcessStep"
                     }
                   },
                   "Property": "Gate"
                 }
               },
-              "queryRef": "ProcessSteps.Gate",
+              "queryRef": "DimProcessStep.Gate",
               "nativeQueryRef": "Gate"
             }
           ]
@@ -40,7 +40,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "PlanProcessSteps"
+                          "Entity": "FactPlanProcessStep"
                         }
                       },
                       "Property": "StepState"
@@ -63,7 +63,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "PlanProcessSteps"
+                          "Entity": "FactPlanProcessStep"
                         }
                       },
                       "Property": "ApprovalState"
@@ -86,7 +86,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "PlanProcessSteps"
+                          "Entity": "FactPlanProcessStep"
                         }
                       },
                       "Property": "Start"
@@ -109,7 +109,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "PlanProcessSteps"
+                          "Entity": "FactPlanProcessStep"
                         }
                       },
                       "Property": "End"
@@ -132,7 +132,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "PlanProcessSteps"
+                          "Entity": "FactPlanProcessStep"
                         }
                       },
                       "Property": "Comments"
@@ -153,13 +153,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "ProcessSteps"
+                      "Entity": "DimProcessStep"
                     }
                   },
                   "Property": "Index"
                 }
               },
-              "queryRef": "ProcessSteps.Index",
+              "queryRef": "DimProcessStep.Index",
               "nativeQueryRef": "Index"
             }
           ]
@@ -171,13 +171,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "ProcessSteps"
+                      "Entity": "DimProcessStep"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "ProcessSteps.Name",
+              "queryRef": "DimProcessStep.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -192,7 +192,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "PlanProcessSteps"
+                        "Entity": "FactPlanProcessStep"
                       }
                     },
                     "Property": "Start"
@@ -247,7 +247,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "ProcessSteps"
+                "Entity": "DimProcessStep"
               }
             },
             "Property": "PlanTypeName"
@@ -259,7 +259,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "ProcessSteps",
+              "Entity": "DimProcessStep",
               "Type": 0
             }
           ],

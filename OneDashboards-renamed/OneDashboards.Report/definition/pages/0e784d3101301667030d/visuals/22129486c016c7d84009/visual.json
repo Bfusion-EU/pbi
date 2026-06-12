@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Portfolio"
+                      "Entity": "DimPortfolio"
                     }
                   },
                   "Property": "BusinessUnit_Value"
                 }
               },
-              "queryRef": "Plan_Portfolio.BusinessUnit_Value",
+              "queryRef": "DimPortfolio.BusinessUnit_Value",
               "nativeQueryRef": "Business Unit",
               "active": true,
               "displayName": "Business Unit"

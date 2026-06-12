@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "BusinessUnit_Value"
                 }
               },
-              "queryRef": "Plans.BusinessUnit_Value",
+              "queryRef": "DimProject.BusinessUnit_Value",
               "nativeQueryRef": "BusinessUnit_Value",
               "active": true
             }
@@ -40,7 +40,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Plans"
+                    "Entity": "DimProject"
                   }
                 },
                 "Property": "BusinessUnit_Value"
@@ -74,7 +74,7 @@
                 "From": [
                   {
                     "Name": "p",
-                    "Entity": "Plans",
+                    "Entity": "DimProject",
                     "Type": 0
                   }
                 ],

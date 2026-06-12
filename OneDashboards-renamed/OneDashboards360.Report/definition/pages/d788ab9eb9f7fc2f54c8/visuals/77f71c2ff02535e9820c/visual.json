@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Tasks.Name",
+              "queryRef": "DimTask.Name",
               "nativeQueryRef": "Name2",
               "active": true
             }
@@ -41,7 +41,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "CostImpact"
@@ -62,13 +62,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Urgency"
                 }
               },
-              "queryRef": "Tasks.Urgency",
+              "queryRef": "DimTask.Urgency",
               "nativeQueryRef": "Urgency"
             }
           ]
@@ -100,7 +100,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "Exposure"
@@ -121,13 +121,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Category"
                 }
               },
-              "queryRef": "Tasks.Category",
+              "queryRef": "DimTask.Category",
               "nativeQueryRef": "Category"
             }
           ]
@@ -139,13 +139,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Probability"
                 }
               },
-              "queryRef": "Tasks.Probability",
+              "queryRef": "DimTask.Probability",
               "nativeQueryRef": "Probability"
             }
           ]
@@ -157,13 +157,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Impact"
                 }
               },
-              "queryRef": "Tasks.Impact",
+              "queryRef": "DimTask.Impact",
               "nativeQueryRef": "Impact"
             }
           ]
@@ -177,7 +177,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "RiskStage"
@@ -198,13 +198,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Urgency"
                 }
               },
-              "queryRef": "Tasks.Urgency",
+              "queryRef": "DimTask.Urgency",
               "nativeQueryRef": "Urgency"
             }
           ]
@@ -219,7 +219,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "Tasks"
+                        "Entity": "DimTask"
                       }
                     },
                     "Property": "Exposure"
@@ -418,7 +418,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Tasks"
+                "Entity": "DimTask"
               }
             },
             "Property": "WorkType"
@@ -430,7 +430,7 @@
           "From": [
             {
               "Name": "t",
-              "Entity": "Tasks",
+              "Entity": "DimTask",
               "Type": 0
             }
           ],
