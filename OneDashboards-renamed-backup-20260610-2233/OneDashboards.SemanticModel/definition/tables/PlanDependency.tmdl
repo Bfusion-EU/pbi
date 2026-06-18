@@ -1,0 +1,74 @@
+table PlanDependency
+	lineageTag: 87a8df58-10ca-4b58-8ecd-54d1e2908eef
+
+	column DependencyId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: dfafd9bb-16f3-4aaf-8836-7f81581c4d30
+		summarizeBy: none
+		sourceColumn: DependencyId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FromPlan
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 638a12fd-10fc-4aa0-bada-9a0ce5c2b94c
+		summarizeBy: none
+		sourceColumn: FromPlan
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ToPlan
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 2bc0c0c5-1ecd-4d7c-93c7-db627e006a72
+		summarizeBy: none
+		sourceColumn: ToPlan
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: b4e68cf7-308c-457f-a78a-5b204c374817
+		summarizeBy: none
+		sourceColumn: Type
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 03f6caf6-b32a-4ed0-8aa5-7665b69f2952
+		summarizeBy: none
+		sourceColumn: Description
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PlanDependency = m
+		mode: import
+		queryGroup: Plans
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    PlanDependency_table = Source{[Name="PlanDependency",Signature="table"]}[Data]
+				in
+				    PlanDependency_table
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

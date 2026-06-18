@@ -1,0 +1,156 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "e1f45b7b08044b915e98",
+  "position": {
+    "x": 75.909661229611046,
+    "y": 146.2986198243413,
+    "z": 3001,
+    "height": 1068.2559598494354,
+    "width": 2084.0652446675031,
+    "tabOrder": 3001
+  },
+  "visual": {
+    "visualType": "bfusionBudgetRiskForecast_CustomVisual",
+    "query": {
+      "queryState": {
+        "costCategory": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactCost"
+                    }
+                  },
+                  "Property": "CostCategory"
+                }
+              },
+              "queryRef": "FactCost.CostCategory",
+              "nativeQueryRef": "CostCategory"
+            }
+          ]
+        },
+        "cost": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactCost"
+                    }
+                  },
+                  "Property": "Cost"
+                }
+              },
+              "queryRef": "FactCost.Cost",
+              "nativeQueryRef": "Cost"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Cost",
+              "nativeQueryRef": "Finance | Budget Cost"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Finance | Budget Cost"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgxMzQxOTE0LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfYmNjYjA2MjRlOWU1IiwidmVyIjozLCJ2aXMiOlsiYmZ1c2lvbmJlbmVmaXRzcmVhbGl6YXRpb24iLCJiZnVzaW9uYnVkZ2V0cmlza2ZvcmVjYXN0IiwiYmZ1c2lvbmNhcGFjaXR5cGxhbm5pbmciLCJiZnVzaW9uY29uc3RyYWludHNhbmtleSIsImJmdXNpb25jcml0aWNhbGNoYWluIiwiYmZ1c2lvbmNyaXRpY2FscGF0aGRpYWdyYW0iLCJiZnVzaW9uZWZmaWNpZW50ZnJvbnRpZXIiLCJiZnVzaW9uZXZtYWN0aW9ubWF0cml4IiwiYmZ1c2lvbmZpbmFuY2lhbGtwaW5hcnJhdGl2ZSIsImJmdXNpb25maW5hbmNpYWxvdmVydmlldyIsImJmdXNpb25maW5hbmNpYWxzY3VydmUiLCJiZnVzaW9uZnRlZGVjaXNpb25ib2FyZCIsImJmdXNpb25nYW50dGxpdGUiLCJiZnVzaW9uaGllcmFyY2hpY2FsZ2FudHQiLCJiZnVzaW9ua2FuYmFuYm9hcmQiLCJiZnVzaW9ua3BpZ3JpZCIsImJmdXNpb25vcmdzdHJ1Y3R1cmUiLCJiZnVzaW9ucGFyZXRvYW5hbHlzaXMiLCJiZnVzaW9ucG9ydGZvbGlvMzYwIiwiYmZ1c2lvbnBvcnRmb2xpb2hlYWx0aG1hdHJpeCIsImJmdXNpb25wb3J0Zm9saW9yaXNrbWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlY29uc3RyYWludHNlcXVlbmNpbmciLCJiZnVzaW9ucmVzb3VyY2VlZmZpY2llbmN5YnJlYWtkb3duIiwiYmZ1c2lvbnJlc291cmNlZm9yZWNhc3QiLCJiZnVzaW9ucmVzb3VyY2VnYXBhbmFseXNpcyIsImJmdXNpb25yZXNvdXJjZWhlYXRtYXAiLCJiZnVzaW9ucmVzb3VyY2VrcGkiLCJiZnVzaW9ucmlza21hdHJpeGV4dCIsImJmdXNpb25yaXNrcmFkYXJjaGFydCIsImJmdXNpb25zY2VuYXJpb3JhZGFyIiwiYmZ1c2lvbnNjaGVkdWxlcmlza2ZvcmVjYXN0IiwiYmZ1c2lvbnNlbGVjdGlvbndhdGVyZmFsbCIsImJmdXNpb25zZW5zaXRpdml0eXRvcm5hZG8iLCJiZnVzaW9uc3RhdHVzdHJlbmRzcGFya2xpbmUiLCJiZnVzaW9uc3RyYXRlZ2ljc3VuYnVyc3QiLCJiZnVzaW9uc3Vua2Nvc3RkZWNpc2lvbmJvYXJkIiwiYmZ1c2lvbnRhc2trcGlib2FyZCIsImJmdXNpb253YXRlcmxpbmVtb2RlbGVyIiwicG9ydGZvbGlvcm9hZG1hcCJdfQ.eFN8cqwxu-o3Ep18w8al5bph13MM1oPxz1Ti_tXn6eJQE5J2rJoRV9m4QX5KK4eLyi87cH0vV1xarnxCTApOrN7_EZD4tiPwBHpx3Bfoh-p2QCps-zVzYzOBKZvaPTDEetGssAbTDUwwkmMQ47jGAEa-qX38UT6N04tKHAJPOl6arxDWPCsgokpUB7AhH7O22PhYT-O0EDjRCWF-BdebOXSoKat_U3mzTGw6bD_WS2jaFhxTL7mTtZ3Ypf2HqdPjMDJ2A4Z_GDcWsAUGqkVz5-RIBbx7Z2lyG2cjksfGxOyxtuiIToP9jhti-XsmrkNCRCL2wNEsXkaGeRdWxYLjrQ'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "simulationSettings": [
+        {
+          "properties": {
+            "optimisticPct": {
+              "expr": {
+                "Literal": {
+                  "Value": "25D"
+                }
+              }
+            },
+            "pessimisticPct": {
+              "expr": {
+                "Literal": {
+                  "Value": "65D"
+                }
+              }
+            },
+            "method": {
+              "expr": {
+                "Literal": {
+                  "Value": "'mc'"
+                }
+              }
+            },
+            "viewMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'scurve'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

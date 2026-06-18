@@ -1,0 +1,536 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "77f71c2ff02535e9820c",
+  "position": {
+    "x": 27.701778385772915,
+    "y": 93.36525307797538,
+    "z": 0,
+    "height": 1044.4596443228454,
+    "width": 1449.7264021887825,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "bfusionRiskMatrixExtC4D7F2A8B1E3",
+    "query": {
+      "queryState": {
+        "risk": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "Tasks.Name",
+              "nativeQueryRef": "Name2",
+              "active": true
+            }
+          ]
+        },
+        "costImpact": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Tasks"
+                        }
+                      },
+                      "Property": "CostImpact"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.CostImpact)",
+              "nativeQueryRef": "Sum of CostImpact"
+            }
+          ]
+        },
+        "plan": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Urgency"
+                }
+              },
+              "queryRef": "Tasks.Urgency",
+              "nativeQueryRef": "Urgency"
+            }
+          ]
+        },
+        "licenseToken": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "License | BFusionLicenseKey"
+                }
+              },
+              "queryRef": "_Measures.BFusionLicenseKey",
+              "nativeQueryRef": "BFusionLicenseKey"
+            }
+          ]
+        },
+        "exposure": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Tasks"
+                        }
+                      },
+                      "Property": "Exposure"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.Exposure)",
+              "nativeQueryRef": "Sum of Exposure"
+            }
+          ]
+        },
+        "category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "queryRef": "Tasks.Category",
+              "nativeQueryRef": "Category"
+            }
+          ]
+        },
+        "probability": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Probability"
+                }
+              },
+              "queryRef": "Tasks.Probability",
+              "nativeQueryRef": "Probability"
+            }
+          ]
+        },
+        "impact": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Impact"
+                }
+              },
+              "queryRef": "Tasks.Impact",
+              "nativeQueryRef": "Impact"
+            }
+          ]
+        },
+        "tooltipFields": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Tasks"
+                        }
+                      },
+                      "Property": "RiskStage"
+                    }
+                  },
+                  "Function": 3
+                }
+              },
+              "queryRef": "Min(Tasks.RiskStage)",
+              "nativeQueryRef": "First RiskStage"
+            }
+          ]
+        },
+        "urgency": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Tasks"
+                    }
+                  },
+                  "Property": "Urgency"
+                }
+              },
+              "queryRef": "Tasks.Urgency",
+              "nativeQueryRef": "Urgency"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Tasks"
+                      }
+                    },
+                    "Property": "Exposure"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNjcxNjI0LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfY2FkNjQ0OTBhOTdmIiwidmlzIjpbImJmdXNpb25iZW5lZml0c3JlYWxpemF0aW9uIiwiYmZ1c2lvbmNhcGFjaXR5cGxhbm5pbmciLCJiZnVzaW9uY29uc3RyYWludHNhbmtleSIsImJmdXNpb25jcml0aWNhbHBhdGhkaWFncmFtIiwiYmZ1c2lvbmVmZmljaWVudGZyb250aWVyIiwiYmZ1c2lvbmV2bWFjdGlvbm1hdHJpeCIsImJmdXNpb25maW5hbmNpYWxrcGluYXJyYXRpdmUiLCJiZnVzaW9uZmluYW5jaWFsb3ZlcnZpZXciLCJiZnVzaW9uZmluYW5jaWFsc2N1cnZlIiwiYmZ1c2lvbmZ0ZWRlY2lzaW9uYm9hcmQiLCJiZnVzaW9uaGllcmFyY2hpY2FsZ2FudHQiLCJiZnVzaW9ua2FuYmFuYm9hcmQiLCJiZnVzaW9ua3BpZ3JpZCIsIm5hdmlnYXRpb25tZW51IiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJwb3J0Zm9saW9yb2FkbWFwIiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlZWZmaWNpZW5jeWJyZWFrZG93biIsImJmdXNpb25yZXNvdXJjZWZvcmVjYXN0IiwiYmZ1c2lvbnJlc291cmNlZ2FwYW5hbHlzaXMiLCJiZnVzaW9ucmVzb3VyY2VoZWF0bWFwIiwiYmZ1c2lvbnJlc291cmNla3BpIiwiYmZ1c2lvbnJpc2ttYXRyaXhleHQiLCJiZnVzaW9ucmlza3JhZGFyY2hhcnQiLCJiZnVzaW9uc2NlbmFyaW9yYWRhciIsImJmdXNpb25zZWxlY3Rpb253YXRlcmZhbGwiLCJiZnVzaW9uc2Vuc2l0aXZpdHl0b3JuYWRvIiwiYmZ1c2lvbnN0YXR1c3RyZW5kc3BhcmtsaW5lIiwiYmZ1c2lvbnN0cmF0ZWdpY3N1bmJ1cnN0IiwiYmZ1c2lvbnRhc2trcGlib2FyZCIsImJmdXNpb253YXRlcmxpbmVtb2RlbGVyIl0sInZlciI6M30.FwXvLyTUoN7rFBnQ7bsSEOcEk_qulOMO9m1vaJyxxA1ka2aEP07UrmLtEqTsz62rfJhtjn002uId2faiR2VOobgTal8knx4gQX4njP3YApBBabn_mPhr4OOzgsuYw0tLZXv-Zkxy2K0CkC_djN_U8YkfAQwm31cnTQ1nwDgDMC265tGUUHIQz4OGofCzjVaI7gW8LmIWcrxPRHKbegiRjI1zDEiQgo5LW7Y8cc6oP20l_5cdYaycYVLCE4a6aEnvl_psy0DtwdZ1yuL2h5NF-hal1_lCwapsZB1Tz7Hw22VuBNjHzLcM-nbw16DwWk7GrM3b4O0hegHbCaWGQx4DLQ'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "matrix": [
+        {
+          "properties": {
+            "showDangerZone": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showCellCounts": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showRadar": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showAnimation": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fontSettings": [
+        {
+          "properties": {
+            "legendFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "foreground": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "keepLayerOrder": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "7e22ee1abf963f1776d6",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Tasks"
+              }
+            },
+            "Property": "WorkType"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "Tasks",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "t"
+                          }
+                        },
+                        "Property": "WorkType"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Risks'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "408bd5e83a73081e1ec6",
+        "ordinal": 1,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Risk & Issue | Impact Score"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "474ca28cf599bd445b87",
+        "ordinal": 2,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Risk & Issue | Likelihood Score"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "55c25dca7d337680fcac",
+        "ordinal": 3,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Risk & Issue | Target"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "b896a474767e97aefad8",
+        "ordinal": 9,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Risk & Issue | Risk Count"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      }
+    ],
+    "filterSortOrder": "Custom"
+  }
+}

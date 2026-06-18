@@ -1,0 +1,83 @@
+table Activities
+	lineageTag: b216e698-2664-4fc9-bb8f-83a566dbcf8c
+
+	column Id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: e042e2ce-5465-465c-be40-c96f1d2be6c6
+		summarizeBy: none
+		sourceColumn: Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 6a3e108b-5ef8-45ad-875b-d1ef596f7782
+		summarizeBy: none
+		sourceColumn: WorkPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TaskId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 6ef99c5c-749d-42fd-9256-047c2a16d89c
+		summarizeBy: none
+		sourceColumn: TaskId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 7fa4d950-a0e4-484a-976c-af22b46d36b3
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: 6ebcf39c-5e39-472e-99f9-18859eaecc52
+		summarizeBy: none
+		sourceColumn: State
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssignedTo
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 723f9d7c-9722-4365-8106-52ca31ce65e0
+		summarizeBy: none
+		sourceColumn: AssignedTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Activities = m
+		mode: import
+		queryGroup: Scheduling
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Activities_table = Source{[Name="Activities",Signature="table"]}[Data]
+				in
+				    Activities_table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

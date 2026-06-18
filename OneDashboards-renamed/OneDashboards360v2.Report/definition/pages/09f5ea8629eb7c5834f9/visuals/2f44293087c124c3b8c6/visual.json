@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "WorkType"
                 }
               },
-              "queryRef": "Tasks.WorkType",
+              "queryRef": "DimTask.WorkType",
               "nativeQueryRef": "WorkType",
               "active": true
             }
@@ -109,7 +109,7 @@
                 "From": [
                   {
                     "Name": "t",
-                    "Entity": "Tasks",
+                    "Entity": "DimTask",
                     "Type": 0
                   }
                 ],

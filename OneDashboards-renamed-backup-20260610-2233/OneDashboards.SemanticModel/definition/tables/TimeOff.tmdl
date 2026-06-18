@@ -1,0 +1,152 @@
+table TimeOff
+	lineageTag: 89de371c-cc0d-4092-afbc-c72b781d6c06
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 536bd398-452a-40dd-89f3-2d305de4aa90
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UserId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: f95d2f70-8890-4965-a832-03777423c7a5
+		summarizeBy: none
+		sourceColumn: UserId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceName
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: b01690c1-9736-4a80-817e-74310ff06a5f
+		summarizeBy: none
+		sourceColumn: ResourceName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimeOffCategory
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: f5b58d05-9cb7-4514-87da-a62fbb5c69ba
+		summarizeBy: none
+		sourceColumn: TimeOffCategory
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Start
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\Planned
+		lineageTag: b29082ff-8cf6-40a8-8909-a4f027fef9b8
+		summarizeBy: none
+		sourceColumn: Start
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column End
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\Planned
+		lineageTag: d72b16aa-eb3b-47e4-b181-bfc26eb5e6ee
+		summarizeBy: none
+		sourceColumn: End
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column HoursPerDay
+		dataType: double
+		displayFolder: Values\Effort
+		lineageTag: 1ca7bf2c-b10e-4650-8ca5-04e64b96ab23
+		summarizeBy: sum
+		sourceColumn: HoursPerDay
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Notes
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 503dd116-6885-45df-9320-b6ce0a245d20
+		summarizeBy: none
+		sourceColumn: Notes
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: 289f4cf9-2276-4485-a834-0360da6addb6
+		summarizeBy: none
+		sourceColumn: Status
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ApproverName
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 90478728-412d-4496-ac2b-608b0f66fb46
+		summarizeBy: none
+		sourceColumn: ApproverName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateApproved
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\Misc
+		lineageTag: 200cd33d-89a8-4cf8-aeee-b0a9076895e2
+		summarizeBy: none
+		sourceColumn: DateApproved
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition TimeOff = m
+		mode: import
+		queryGroup: 'Timesheet Mgmt'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    TimeOff_table = Source{[Name="TimeOff",Signature="table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(TimeOff_table,{{"Start", type date}, {"End", type date}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Approver"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Removed Columns",{{"DateApproved", type date}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

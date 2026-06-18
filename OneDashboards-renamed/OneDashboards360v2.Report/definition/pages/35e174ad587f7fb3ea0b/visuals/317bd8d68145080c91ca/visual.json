@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "StartDate"
                 }
               },
-              "queryRef": "Tasks.StartDate",
+              "queryRef": "DimTask.StartDate",
               "nativeQueryRef": "Start",
               "active": true,
               "displayName": "Start"
@@ -41,7 +41,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Tasks"
+                    "Entity": "DimTask"
                   }
                 },
                 "Property": "StartDate"

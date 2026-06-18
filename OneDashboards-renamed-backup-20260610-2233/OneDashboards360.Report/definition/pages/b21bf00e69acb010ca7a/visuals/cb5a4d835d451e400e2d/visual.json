@@ -1,0 +1,232 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "cb5a4d835d451e400e2d",
+  "position": {
+    "x": 1101.4729950900164,
+    "y": 135.84288052373159,
+    "z": 3000,
+    "height": 628.47790507364982,
+    "width": 985.27004909983634,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "bfusionScenarioRadarB2C3D4E5F6A1",
+    "query": {
+      "queryState": {
+        "licenseToken": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "License | BFusionLicenseKey"
+                }
+              },
+              "queryRef": "_Measures.BFusionLicenseKey",
+              "nativeQueryRef": "BFusionLicenseKey"
+            }
+          ]
+        },
+        "metricName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Modeler_Metrics"
+                    }
+                  },
+                  "Property": "MetricName"
+                }
+              },
+              "queryRef": "_Modeler_Metrics.MetricName",
+              "nativeQueryRef": "MetricName"
+            }
+          ]
+        },
+        "targetValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Scenario Target Value"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Scenario Target Value",
+              "nativeQueryRef": "Modeler | Scenario Target Value"
+            }
+          ]
+        },
+        "metricValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Scenario Metric Value"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Scenario Metric Value",
+              "nativeQueryRef": "Modeler | Scenario Metric Value"
+            }
+          ]
+        },
+        "scenarioName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelerScenario"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "ModelerScenario.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Modeler | Scenario Metric Value"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNjcxNjI0LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfY2FkNjQ0OTBhOTdmIiwidmlzIjpbImJmdXNpb25iZW5lZml0c3JlYWxpemF0aW9uIiwiYmZ1c2lvbmNhcGFjaXR5cGxhbm5pbmciLCJiZnVzaW9uY29uc3RyYWludHNhbmtleSIsImJmdXNpb25jcml0aWNhbHBhdGhkaWFncmFtIiwiYmZ1c2lvbmVmZmljaWVudGZyb250aWVyIiwiYmZ1c2lvbmV2bWFjdGlvbm1hdHJpeCIsImJmdXNpb25maW5hbmNpYWxrcGluYXJyYXRpdmUiLCJiZnVzaW9uZmluYW5jaWFsb3ZlcnZpZXciLCJiZnVzaW9uZmluYW5jaWFsc2N1cnZlIiwiYmZ1c2lvbmZ0ZWRlY2lzaW9uYm9hcmQiLCJiZnVzaW9uaGllcmFyY2hpY2FsZ2FudHQiLCJiZnVzaW9ua2FuYmFuYm9hcmQiLCJiZnVzaW9ua3BpZ3JpZCIsIm5hdmlnYXRpb25tZW51IiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJwb3J0Zm9saW9yb2FkbWFwIiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlZWZmaWNpZW5jeWJyZWFrZG93biIsImJmdXNpb25yZXNvdXJjZWZvcmVjYXN0IiwiYmZ1c2lvbnJlc291cmNlZ2FwYW5hbHlzaXMiLCJiZnVzaW9ucmVzb3VyY2VoZWF0bWFwIiwiYmZ1c2lvbnJlc291cmNla3BpIiwiYmZ1c2lvbnJpc2ttYXRyaXhleHQiLCJiZnVzaW9ucmlza3JhZGFyY2hhcnQiLCJiZnVzaW9uc2NlbmFyaW9yYWRhciIsImJmdXNpb25zZWxlY3Rpb253YXRlcmZhbGwiLCJiZnVzaW9uc2Vuc2l0aXZpdHl0b3JuYWRvIiwiYmZ1c2lvbnN0YXR1c3RyZW5kc3BhcmtsaW5lIiwiYmZ1c2lvbnN0cmF0ZWdpY3N1bmJ1cnN0IiwiYmZ1c2lvbnRhc2trcGlib2FyZCIsImJmdXNpb253YXRlcmxpbmVtb2RlbGVyIl0sInZlciI6M30.FwXvLyTUoN7rFBnQ7bsSEOcEk_qulOMO9m1vaJyxxA1ka2aEP07UrmLtEqTsz62rfJhtjn002uId2faiR2VOobgTal8knx4gQX4njP3YApBBabn_mPhr4OOzgsuYw0tLZXv-Zkxy2K0CkC_djN_U8YkfAQwm31cnTQ1nwDgDMC265tGUUHIQz4OGofCzjVaI7gW8LmIWcrxPRHKbegiRjI1zDEiQgo5LW7Y8cc6oP20l_5cdYaycYVLCE4a6aEnvl_psy0DtwdZ1yuL2h5NF-hal1_lCwapsZB1Tz7Hw22VuBNjHzLcM-nbw16DwWk7GrM3b4O0hegHbCaWGQx4DLQ'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "b6abb84c413b40d02d48",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "License | BFusionLicenseKey"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "3fac6b2b8e4cd083c7dc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Modeler_Metrics"
+              }
+            },
+            "Property": "MetricName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b7cce55c57dee33620b4",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Modeler | Scenario Target Value"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "8d31e1d0ce81abc7783e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Modeler | Scenario Metric Value"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "23b4a1dce5918a6450a2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelerScenario"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

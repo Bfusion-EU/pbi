@@ -1,0 +1,85 @@
+table ProcessSteps
+	lineageTag: 54d40792-09c5-41e1-9a80-eba977f501a2
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 800ac081-cb9d-4f7a-8ead-ebece02ce950
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanTypeId
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 23474973-6fe9-4b78-b152-5269620b5537
+		summarizeBy: none
+		sourceColumn: PlanTypeId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanTypeName
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 3eb13a14-8951-40b8-81bd-26804f46610e
+		summarizeBy: none
+		sourceColumn: PlanTypeName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: a8b524e6-160f-4895-8357-81012cfaeabb
+		summarizeBy: none
+		sourceColumn: Index
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 989e607d-5089-4dfb-9f09-34bb9b380912
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gate
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: d36b0aca-06f8-44a4-8339-fd16b8d7446c
+		summarizeBy: none
+		sourceColumn: Gate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ProcessSteps = m
+		mode: import
+		queryGroup: Process
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    ProcessSteps_table = Source{[Name="ProcessSteps",Signature="table"]}[Data]
+				in
+				    ProcessSteps_table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

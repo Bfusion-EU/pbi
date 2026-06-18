@@ -1,0 +1,157 @@
+table ModelerModel
+	lineageTag: b82ef4da-a2a4-493d-905b-bf52e8b4a0a5
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 5766d704-66be-40b2-a28a-8ea95a89b8fb
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: fdcdae3e-590a-45db-9d09-9eb3619b7cd9
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: e50ad05c-72e7-4f99-9ac4-7a37930c64c1
+		summarizeBy: none
+		sourceColumn: Description
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentId
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 693ff9a6-55e5-4ebd-9038-8f3501ce2867
+		summarizeBy: none
+		sourceColumn: ParentId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Created
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\System
+		lineageTag: b1216485-c651-4b49-ba36-e230c6fd507a
+		summarizeBy: none
+		sourceColumn: Created
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CreatedBy
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 3ffcd7c7-607a-431a-ab3a-531f77d36475
+		summarizeBy: none
+		sourceColumn: CreatedBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modified
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\System
+		lineageTag: ed23e8dd-8533-4f59-b8ce-6f7f0d4620ff
+		summarizeBy: none
+		sourceColumn: Modified
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ModifiedBy
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 680f4048-e23e-4174-a1b8-0967e508126d
+		summarizeBy: none
+		sourceColumn: ModifiedBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumberOfScenarios
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Counts
+		lineageTag: 56b334f8-f0d6-4b1b-bdbe-af7952adae91
+		summarizeBy: sum
+		sourceColumn: NumberOfScenarios
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommitDetails_CommittedScenarioName
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: f54ba899-9b1c-44b2-8e44-428bc6a04dac
+		summarizeBy: none
+		sourceColumn: CommitDetails_CommittedScenarioName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommitDetails_CommittedScenarioID
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: c8d51115-e613-454c-be42-e08c48bba1d6
+		summarizeBy: none
+		sourceColumn: CommitDetails_CommittedScenarioID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommitDetails_CommittedByName
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: f9157b51-352b-4310-a621-18b5729c82e3
+		summarizeBy: none
+		sourceColumn: CommitDetails_CommittedByName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ModelerModel = m
+		mode: import
+		queryGroup: 'Portfolio Modeler'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    ModelerModel_table = Source{[Name="ModelerModel",Signature="table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(ModelerModel_table,{{"Created", type date}, {"Modified", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

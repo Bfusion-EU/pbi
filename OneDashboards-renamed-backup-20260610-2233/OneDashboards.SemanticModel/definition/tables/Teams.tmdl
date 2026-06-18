@@ -1,0 +1,95 @@
+table Teams
+	lineageTag: 263509f2-0a81-4a6d-8b19-dc01dd407a35
+
+	column PlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: a64e81e9-2e50-44bc-b32e-89e41efc5ef5
+		summarizeBy: none
+		sourceColumn: PlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UserId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 52be9114-837f-4a1a-88cc-a2a83910b3e3
+		summarizeBy: none
+		sourceColumn: UserId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: f967a7de-95a0-4b6b-8683-de92652449fb
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Level
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: dd9a93d4-abdb-4a43-906a-ff3fa7423e9f
+		summarizeBy: none
+		sourceColumn: Level
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inherited
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: 8112f9a6-6604-4fba-91dc-4ecd0846a476
+		summarizeBy: none
+		sourceColumn: Inherited
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TeamId
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 23b8f5b7-be0c-4566-b6b4-4c2e0990d9e4
+		summarizeBy: none
+		sourceColumn: TeamId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UserType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 3afaf6b5-f11b-4354-92fb-cbeda07b73c0
+		summarizeBy: none
+		sourceColumn: UserType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Teams = m
+		mode: import
+		queryGroup: Scheduling
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Teams_table = Source{[Name="Teams",Signature="table"]}[Data]
+				in
+				    Teams_table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,231 @@
+table Calendar
+	lineageTag: 25fa1b1d-5d8a-4fc9-9912-84063e883360
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: dd/mm/yyyy
+		displayFolder: Dates\Misc
+		lineageTag: 1b6c3ba7-1420-4899-b986-18c5c5f77a1e
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Year
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: fdffe59a-f736-4d23-9605-cff6c39dad97
+		summarizeBy: sum
+		sourceColumn: Year
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: 80f5aebd-f369-4329-af15-21c229347cb0
+		summarizeBy: sum
+		sourceColumn: Month
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: e015d295-714a-4783-9e82-44515de49175
+		summarizeBy: none
+		sourceColumn: Month Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quarter Name'
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 50b87f9f-aac3-4d80-9cc4-90e3c4bf46b4
+		summarizeBy: none
+		sourceColumn: Quarter Name
+		sortByColumn: Quarter
+
+		changedProperty = SortByColumn
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekday
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: 9d968335-5390-4235-b2fe-271c1bbbd4cc
+		summarizeBy: sum
+		sourceColumn: Weekday
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weekday Name'
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 6886cd48-b6cb-4217-bd00-ed488ed4f22f
+		summarizeBy: none
+		sourceColumn: Weekday Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Is Weekend'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: fa2d048a-fc0d-45d1-a401-17ce6665d133
+		summarizeBy: none
+		sourceColumn: Is Weekend
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Today = TODAY()
+		dataType: dateTime
+		displayFolder: Attributes
+		lineageTag: b6fa6884-46c2-4db3-9571-2122f858d35b
+		summarizeBy: none
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week Number'
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Counts
+		lineageTag: 8cad8688-2c82-42ba-b496-8e3fa158b884
+		summarizeBy: sum
+		sourceColumn: Week Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: 2822f6df-c5ce-46cf-b60f-b8f1340dca44
+		summarizeBy: none
+		sourceColumn: Index
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthCounter
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Counts
+		lineageTag: 6d4a2b8f-96c1-4b5b-99e6-69ca6d7989f3
+		summarizeBy: sum
+		sourceColumn: MonthCounter
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Period
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 45b090c1-bea2-437a-a927-efd68191e28b
+		summarizeBy: none
+		sourceColumn: Period
+		sortByColumn: MonthCounter
+
+		changedProperty = SortByColumn
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: 88dcf600-5d92-4750-887f-304c348b3afb
+		summarizeBy: sum
+		sourceColumn: Quarter
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = m
+		mode: import
+		queryGroup: General
+		source = ```
+				/*
+				    Creator: BFusion
+				    Version: 1.1
+				    Date: 2025-03-07
+				*/
+				
+				let
+				    // Define dynamic start and end dates
+				    CurrentDate = Date.From(DateTime.LocalNow()), 
+				    StartDate = #date(Date.Year(CurrentDate) - 3, 1, 1),  // 3 years ago, starting from January 1st
+				    EndDate = #date(Date.Year(CurrentDate) + 5, 12, 31),  // End of the next 5 years
+				
+				    // Generate list of dates
+				    DateList = List.Dates(StartDate, Number.From(EndDate - StartDate) + 1, #duration(1, 0, 0, 0)),
+				
+				    // Convert list to table
+				    CalendarTable = Table.FromList(DateList, Splitter.SplitByNothing(), {"Date"}),
+				
+				    // Add additional date-related columns
+				    #"Added Year" = Table.AddColumn(CalendarTable, "Year", each Date.Year([Date]), Int64.Type),
+				    #"Added Month" = Table.AddColumn(#"Added Year", "Month", each Date.Month([Date]), Int64.Type),
+				    #"Added Month Name" = Table.AddColumn(#"Added Month", "Month Name", each Date.ToText([Date], "MMMM", "en-US"), type text),
+				    #"Added Quarter" = Table.AddColumn(#"Added Month Name", "Quarter", each "Q" & Number.ToText(Date.QuarterOfYear([Date])), type text),
+				    #"Added Week Number" = Table.AddColumn(#"Added Quarter", "Week Number", each Date.WeekOfYear([Date]), Int64.Type),
+				    #"Added Weekday" = Table.AddColumn(#"Added Week Number", "Weekday", each Date.DayOfWeek([Date]) + 1, Int64.Type),
+				    #"Added Weekday Name" = Table.AddColumn(#"Added Weekday", "Weekday Name", each Date.ToText([Date], "dddd", "en-US"), type text),
+				    #"Added Is Weekend" = Table.AddColumn(#"Added Weekday Name", "Is Weekend", each if Date.DayOfWeek([Date]) >= 5 then true else false, type logical),
+				
+				    // Add Month-Year column in format Mon-yy (proper case)
+				    #"Added Month-Year" = Table.AddColumn(#"Added Is Weekend", "Period", each Date.ToText([Date], "MMM-yy", "en-US"), type text),
+				
+				    // Add YearMonth as numeric value e.g., 202501
+				    #"Added MonthCounter" = Table.AddColumn(#"Added Month-Year", "MonthCounter", each [Year] * 100 + [Month], Int64.Type),
+				
+				    // Ensure sorting order for month and weekday names
+				    #"Sorted Table" = Table.Sort(#"Added MonthCounter" ,{{"Date", Order.Ascending}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Sorted Table",{{"Date", type date}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Changed Type", "Index", 0, 1, Int64.Type),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Added Index",{"Index", "Date", "Year", "Month", "MonthCounter", "Month Name", "Period", "Quarter", "Week Number", "Weekday", "Weekday Name", "Is Weekend"}),
+				    #"Inserted Quarter" = Table.AddColumn(#"Reordered Columns", "Quarter.1", each Date.QuarterOfYear([Date]), Int64.Type),
+				    #"Renamed Columns" = Table.RenameColumns(#"Inserted Quarter",{{"Quarter", "Quarter Name"}, {"Quarter.1", "Quarter"}})
+				in
+				    #"Renamed Columns"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

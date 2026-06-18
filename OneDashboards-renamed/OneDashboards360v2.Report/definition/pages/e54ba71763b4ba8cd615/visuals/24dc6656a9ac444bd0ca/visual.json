@@ -38,13 +38,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "BusinessUnit_Value"
                 }
               },
-              "queryRef": "Plans.BusinessUnit_Value",
+              "queryRef": "DimProject.BusinessUnit_Value",
               "nativeQueryRef": "BusinessUnit_Value"
             }
           ]
@@ -56,13 +56,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Name"
             }
           ]
@@ -74,13 +74,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "OverallHealth_Value"
                 }
               },
-              "queryRef": "Plans.OverallHealth_Value",
+              "queryRef": "DimProject.OverallHealth_Value",
               "nativeQueryRef": "OverallHealth_Value"
             }
           ]
@@ -290,13 +290,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Date"
                 }
               },
-              "queryRef": "Calendar.Date",
+              "queryRef": "DimDate.Date",
               "nativeQueryRef": "Date"
             }
           ]
@@ -309,7 +309,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Calendar"
+                    "Entity": "DimDate"
                   }
                 },
                 "Property": "Date"
@@ -362,7 +362,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "ProcessSteps"
+                "Entity": "DimProcessStep"
               }
             },
             "Property": "PlanTypeName"
@@ -378,7 +378,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "PlanProcessSteps"
+                "Entity": "FactPlanProcessStep"
               }
             },
             "Property": "StepName"

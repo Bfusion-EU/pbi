@@ -1,0 +1,8 @@
+/// Disconnected picker for scenario comparison. Bind a slicer to ModelerScenario_A[Name] and use ScenarioCompare measures.
+table ModelerScenario_A
+	lineageTag: 58615889-6bb5-4bfc-8b36-11048991ae33
+
+	partition ModelerScenario_A = calculated
+		mode: import
+		source = DISTINCT ( SELECTCOLUMNS ( ModelerScenario, "Name", ModelerScenario[Name] ) )
+

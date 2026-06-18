@@ -1,0 +1,109 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: nl-BE
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup Connections
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'Resource Mgmt'
+
+	annotation PBI_QueryGroupOrder = 2
+
+queryGroup 'Timesheet Mgmt'
+
+	annotation PBI_QueryGroupOrder = 3
+
+queryGroup 'Financial Mgmt'
+
+	annotation PBI_QueryGroupOrder = 5
+
+queryGroup Scheduling
+
+	annotation PBI_QueryGroupOrder = 6
+
+queryGroup Process
+
+	annotation PBI_QueryGroupOrder = 7
+
+queryGroup Plans
+
+	annotation PBI_QueryGroupOrder = 8
+
+queryGroup Status
+
+	annotation PBI_QueryGroupOrder = 9
+
+queryGroup General
+
+	annotation PBI_QueryGroupOrder = 10
+
+queryGroup 'Portfolio Modeler'
+
+	annotation PBI_QueryGroupOrder = 4
+
+queryGroup Strategy
+
+	annotation PBI_QueryGroupOrder = 11
+
+annotation PBI_QueryOrder = ["Activities","Assignments","Capacity","Costs","ModelerModel","ModelerScenario","ModelerScenarioPlan","Plan_KeyResult","Plan_Objective","Plan_Portfolio","Plan_Programs","PlanDependency","PlanInsights","PlanProcessSteps","Plan_Projects","ProcessSteps","RateTable","Resources","ResPlan","ResPlanLog","SecurityGroups","StatusReports","TaskDependency","Tasks","Teams","TimeOff","TimesheetAudit","Timesheets","Calendar","OnePlanURL","_Measures","OnePlanUrls","Plans","RefreshTime","ResourceCostTable","BFusionLicenseKey","BFusionLicense"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation __TEdtr = 1
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop","WebModelingEdit","DevMode"]
+
+annotation __LastRPTime = 134251460570310883
+
+annotation TabularEditor_SerializeOptions = {"IgnoreInferredObjects":true,"IgnoreInferredProperties":true,"IgnoreTimestamps":true,"SplitMultilineStrings":true,"PrefixFilenames":false,"LocalTranslations":false,"LocalPerspectives":false,"LocalRelationships":false,"Levels":["Data Sources","Perspectives","Relationships","Roles","Shared Expressions","Tables","Tables/Calculation Items","Tables/Columns","Tables/Hierarchies","Tables/Measures","Tables/Partitions","Translations"]}
+
+ref table Activities
+ref table Assignments
+ref table Capacity
+ref table Costs
+ref table ModelerModel
+ref table ModelerScenario
+ref table ModelerScenarioPlan
+ref table Plan_KeyResult
+ref table Plan_Objective
+ref table Plan_Portfolio
+ref table Plan_Projects
+ref table PlanDependency
+ref table PlanInsights
+ref table PlanProcessSteps
+ref table ProcessSteps
+ref table RateTable
+ref table Resources
+ref table ResPlan
+ref table ResPlanLog
+ref table SecurityGroups
+ref table StatusReports
+ref table TaskDependency
+ref table Tasks
+ref table Teams
+ref table TimeOff
+ref table Calendar
+ref table OnePlanURL
+ref table _Measures
+ref table OnePlanUrls
+ref table Plans
+ref table RefreshTime
+ref table ResourceCostTable
+ref table Category
+ref table NavMenu
+ref table Plan_Programs
+ref table _Modeler_Metrics
+ref table _Modeler_SensitivityParams
+ref table BFusionLicense
+ref table ModelerScenario_A
+ref table ModelerScenario_B
+
+ref role DynamicRLS
+
+ref cultureInfo en-US
+

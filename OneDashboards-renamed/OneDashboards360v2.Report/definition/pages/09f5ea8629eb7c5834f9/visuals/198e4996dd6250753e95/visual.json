@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Year"
                 }
               },
-              "queryRef": "Calendar.Year",
+              "queryRef": "DimDate.Year",
               "nativeQueryRef": "Sum of Year",
               "active": true
             }
@@ -71,7 +71,7 @@
                 "From": [
                   {
                     "Name": "c",
-                    "Entity": "Calendar",
+                    "Entity": "DimDate",
                     "Type": 0
                   }
                 ],

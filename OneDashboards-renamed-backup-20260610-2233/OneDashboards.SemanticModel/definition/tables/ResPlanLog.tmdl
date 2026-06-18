@@ -1,0 +1,84 @@
+table ResPlanLog
+	lineageTag: 7be7ccdb-d972-4baf-8e3c-4da591ab7de0
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 1fe0c052-f84d-4d22-a6de-3ed92a32ce1b
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 173873c6-3055-4f99-9b1b-7bb662d22015
+		summarizeBy: none
+		sourceColumn: ResPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PostDate
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\Misc
+		lineageTag: b4054e1f-934c-4dda-a325-e29d233a4c3c
+		summarizeBy: none
+		sourceColumn: PostDate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		displayFolder: Attributes\Status
+		lineageTag: 783941e2-d4ee-48d0-8c9c-46baf801e25d
+		summarizeBy: none
+		sourceColumn: Status
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 6e5c94b4-1b7e-4d17-8ca6-fceb666e664d
+		summarizeBy: none
+		sourceColumn: ResourceId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Message
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 2d5e7e90-0fe7-4458-9e59-b0c9c1a02d5a
+		summarizeBy: none
+		sourceColumn: Message
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ResPlanLog = m
+		mode: import
+		queryGroup: 'Resource Mgmt'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    ResPlanLog_table = Source{[Name="ResPlanLog",Signature="table"]}[Data]
+				in
+				    ResPlanLog_table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

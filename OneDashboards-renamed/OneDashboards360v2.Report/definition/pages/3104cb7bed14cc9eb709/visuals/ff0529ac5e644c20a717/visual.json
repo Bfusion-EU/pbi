@@ -74,13 +74,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "ModelerScenario"
+                      "Entity": "DimScenario"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "ModelerScenario.Name",
+              "queryRef": "DimScenario.Name",
               "nativeQueryRef": "Model Scenario",
               "displayName": "Model Scenario"
             }
@@ -93,13 +93,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Plan",
               "displayName": "Plan"
             }
@@ -112,13 +112,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Id"
                 }
               },
-              "queryRef": "Plans.Id",
+              "queryRef": "DimProject.Id",
               "nativeQueryRef": "Id"
             }
           ]
@@ -222,7 +222,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "StrategicAlignment_Value"
@@ -245,7 +245,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Risk_Value"
@@ -302,13 +302,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "EstimatedStart"
                 }
               },
-              "queryRef": "Plans.EstimatedStart",
+              "queryRef": "DimProject.EstimatedStart",
               "nativeQueryRef": "EstimatedStart"
             }
           ]
@@ -320,13 +320,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "EstimatedEnd"
                 }
               },
-              "queryRef": "Plans.EstimatedEnd",
+              "queryRef": "DimProject.EstimatedEnd",
               "nativeQueryRef": "EstimatedEnd"
             }
           ]
@@ -338,13 +338,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Period"
                 }
               },
-              "queryRef": "Calendar.Period",
+              "queryRef": "DimDate.Period",
               "nativeQueryRef": "Period"
             }
           ]
@@ -392,13 +392,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Role_Value"
                 }
               },
-              "queryRef": "Resources.Role_Value",
+              "queryRef": "DimResource.Role_Value",
               "nativeQueryRef": "Role_Value"
             }
           ]

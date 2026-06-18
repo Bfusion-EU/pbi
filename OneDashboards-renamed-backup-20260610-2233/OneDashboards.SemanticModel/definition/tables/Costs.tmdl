@@ -1,0 +1,238 @@
+table Costs
+	lineageTag: 6574e3e3-cf07-408c-b84a-ad4be8d6b3f6
+
+	column Id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 8f490529-1283-4066-abca-dd2dcab76790
+		summarizeBy: none
+		sourceColumn: Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: f2563ba7-2eaa-4233-a224-59c3ec556e8a
+		summarizeBy: none
+		sourceColumn: CostType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostCategory
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: e4f230dc-0cd6-4e8f-9849-c8032fcd9bf5
+		summarizeBy: none
+		sourceColumn: CostCategory
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 814f1416-7d8c-4e90-84cf-edab3974b838
+		summarizeBy: none
+		sourceColumn: WorkPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Dates\Misc
+		lineageTag: c587f1e1-b043-4851-9209-9955a848467a
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Cost
+		dataType: double
+		displayFolder: Values\Financial
+		lineageTag: b2b3a29b-7a81-4530-8e73-2ecb0223a55b
+		summarizeBy: sum
+		sourceColumn: Cost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DetailRow
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: a7203b21-bad6-4a2f-b59b-73b1a1fadc44
+		summarizeBy: none
+		sourceColumn: DetailRow
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsLeaf
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		displayFolder: Attributes\Flags
+		lineageTag: fb9782c2-1372-4b6b-ac09-984cd9f60cd2
+		summarizeBy: none
+		sourceColumn: IsLeaf
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 09602634-787a-4aef-a606-6da0b5c954f2
+		summarizeBy: none
+		sourceColumn: Description
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Actual Costs' = IF(Costs[CostType]="Actual Cost", Costs[Cost])
+		dataType: double
+		displayFolder: Values
+		lineageTag: c7217bb1-49d5-4c87-9fbf-417fb272859a
+		summarizeBy: sum
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Budget Costs' = IF(Costs[CostType]="Budget", Costs[Cost])
+		dataType: double
+		displayFolder: Values
+		lineageTag: 76235d0e-bada-4010-878c-2abd64e4d32c
+		summarizeBy: sum
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Forecast Costs' = IF(Costs[CostType]="Forecast Cost", Costs[Cost])
+		dataType: double
+		displayFolder: Values
+		lineageTag: aeffdbfa-c729-4b1a-b366-db9261129745
+		summarizeBy: sum
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TpId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: e204055d-14f8-41f5-a840-d3663266c5be
+		summarizeBy: none
+		sourceColumn: TpId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostTypeId
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 070ff8d4-b865-40b6-a84a-f24d5294c298
+		summarizeBy: none
+		sourceColumn: CostTypeId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentCostCategoryId
+		dataType: string
+		displayFolder: Attributes\Hierarchy
+		lineageTag: 59e42ea5-0fd9-48d8-9d7e-eea56d9f4bf0
+		summarizeBy: none
+		sourceColumn: ParentCostCategoryId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostCategoryId
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: ac0398d6-a357-4b80-9802-652ff9e2f4b4
+		summarizeBy: none
+		sourceColumn: CostCategoryId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExternalId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 460d2690-48bd-4bf4-85b1-33d984e9d47c
+		summarizeBy: none
+		sourceColumn: ExternalId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExpenseType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: c685609c-5178-4986-9770-dccee75e4c9e
+		summarizeBy: none
+		sourceColumn: ExpenseType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExpenseType_Id
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: befb6ef1-718e-43d2-bf7e-cb4b71c6b80b
+		summarizeBy: none
+		sourceColumn: ExpenseType_Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Costs = m
+		mode: import
+		queryGroup: 'Financial Mgmt'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Costs_table = Source{[Name="Costs",Signature="table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Costs_table,{{"Date", type date}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type",null,"",Replacer.ReplaceValue,{"CostCategory"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Replaced Value", each [CostCategory] <> "")
+				in
+				    #"Filtered Rows"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

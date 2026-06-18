@@ -20,7 +20,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Costs"
+                  "Entity": "FactCost"
                 }
               },
               "Property": "CostCategory"
@@ -36,7 +36,7 @@
             "From": [
               {
                 "Name": "p",
-                "Entity": "Plan_Programs",
+                "Entity": "DimProgram",
                 "Type": 0
               }
             ],
@@ -72,7 +72,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Plan_Programs"
+                  "Entity": "DimProgram"
                 }
               },
               "Property": "Name"
@@ -88,7 +88,7 @@
             "From": [
               {
                 "Name": "p",
-                "Entity": "Plan_Portfolio",
+                "Entity": "DimPortfolio",
                 "Type": 0
               }
             ],
@@ -124,7 +124,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Plan_Portfolio"
+                  "Entity": "DimPortfolio"
                 }
               },
               "Property": "Name"
@@ -140,7 +140,7 @@
             "From": [
               {
                 "Name": "p",
-                "Entity": "Plan_Projects",
+                "Entity": "DimProject",
                 "Type": 0
               }
             ],
@@ -176,7 +176,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Plan_Projects"
+                  "Entity": "DimProject"
                 }
               },
               "Property": "Name"
@@ -192,7 +192,7 @@
             "From": [
               {
                 "Name": "c",
-                "Entity": "Costs",
+                "Entity": "FactCost",
                 "Type": 0
               }
             ],
@@ -230,7 +230,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Costs"
+                  "Entity": "FactCost"
                 }
               },
               "Property": "DetailRow"
@@ -246,7 +246,7 @@
             "From": [
               {
                 "Name": "p",
-                "Entity": "Plans",
+                "Entity": "DimProject",
                 "Type": 0
               }
             ],
@@ -282,7 +282,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Plans"
+                  "Entity": "DimProject"
                 }
               },
               "Property": "Name"
@@ -297,7 +297,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Plan_Portfolio"
+                  "Entity": "DimPortfolio"
                 }
               },
               "Property": "Name"
@@ -312,7 +312,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Plans"
+                  "Entity": "DimProject"
                 }
               },
               "Property": "Name"
@@ -327,7 +327,7 @@
             "Column": {
               "Expression": {
                 "SourceRef": {
-                  "Entity": "Plan_Programs"
+                  "Entity": "DimProgram"
                 }
               },
               "Property": "Name"
@@ -350,7 +350,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "StartDate"
@@ -386,7 +386,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "StartDate"
@@ -400,7 +400,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "StartDate"
@@ -420,7 +420,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Resources"
+                          "Entity": "DimResource"
                         }
                       },
                       "Property": "Role_Value"
@@ -435,7 +435,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Resources"
+                          "Entity": "DimResource"
                         }
                       },
                       "Property": "Name"
@@ -470,7 +470,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Resources"
+                          "Entity": "DimResource"
                         }
                       },
                       "Property": "Role_Value"
@@ -480,7 +480,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Resources"
+                          "Entity": "DimResource"
                         }
                       },
                       "Property": "Name"
@@ -496,7 +496,7 @@
                   "levels": [
                     {
                       "queryRefs": [
-                        "Resources.Role_Value"
+                        "DimResource.Role_Value"
                       ],
                       "isCollapsed": true,
                       "identityKeys": [
@@ -504,7 +504,7 @@
                           "Column": {
                             "Expression": {
                               "SourceRef": {
-                                "Entity": "Resources"
+                                "Entity": "DimResource"
                               }
                             },
                             "Property": "Role_Value"
@@ -515,7 +515,7 @@
                     },
                     {
                       "queryRefs": [
-                        "Resources.Name"
+                        "DimResource.Name"
                       ],
                       "isCollapsed": true,
                       "isPinned": true
@@ -600,7 +600,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "EndDate"
@@ -636,7 +636,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "EndDate"
@@ -650,7 +650,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "EndDate"
@@ -670,7 +670,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Name"
@@ -693,7 +693,7 @@
                             "From": [
                               {
                                 "Name": "p",
-                                "Entity": "Plans",
+                                "Entity": "DimProject",
                                 "Type": 0
                               }
                             ],
@@ -752,7 +752,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Name"
@@ -768,7 +768,7 @@
                   "levels": [
                     {
                       "queryRefs": [
-                        "Plans.Name"
+                        "DimProject.Name"
                       ],
                       "isCollapsed": true,
                       "identityKeys": [
@@ -776,7 +776,7 @@
                           "Column": {
                             "Expression": {
                               "SourceRef": {
-                                "Entity": "Plans"
+                                "Entity": "DimProject"
                               }
                             },
                             "Property": "Name"
@@ -803,7 +803,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "PlanType"
@@ -838,7 +838,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "PlanType"
@@ -858,7 +858,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Plans"
+                          "Entity": "DimProject"
                         }
                       },
                       "Property": "Name"
@@ -873,7 +873,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "WBS"
@@ -888,7 +888,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "Name"
@@ -905,7 +905,7 @@
                         "Column": {
                           "Expression": {
                             "SourceRef": {
-                              "Entity": "Tasks"
+                              "Entity": "DimTask"
                             }
                           },
                           "Property": "taskorder"
@@ -923,7 +923,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "StartDate"
@@ -938,7 +938,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "EndDate"
@@ -955,7 +955,7 @@
                         "Column": {
                           "Expression": {
                             "SourceRef": {
-                              "Entity": "Tasks"
+                              "Entity": "DimTask"
                             }
                           },
                           "Property": "PercentDone"
@@ -973,7 +973,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "Milestone"
@@ -988,7 +988,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "BaselineStartDate"
@@ -1003,7 +1003,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "Id"
@@ -1018,7 +1018,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "Predecessors"
@@ -1033,7 +1033,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "BaselineEndDate"
@@ -1048,7 +1048,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Resources"
+                          "Entity": "DimResource"
                         }
                       },
                       "Property": "Name"
@@ -1065,7 +1065,7 @@
                         "Column": {
                           "Expression": {
                             "SourceRef": {
-                              "Entity": "Tasks"
+                              "Entity": "DimTask"
                             }
                           },
                           "Property": "Slack (days)"
@@ -1088,7 +1088,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "Tasks"
+                          "Entity": "DimTask"
                         }
                       },
                       "Property": "StartDate"

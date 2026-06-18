@@ -3,10 +3,10 @@
   "name": "77a9de007e74ae44bd69",
   "position": {
     "x": 0,
-    "y": 207.24637681159422,
+    "y": 241.46341463414635,
     "z": 2000,
-    "height": 859.4202898550725,
-    "width": 940.57971014492762,
+    "height": 825.609756097561,
+    "width": 940.2439024390244,
     "tabOrder": 2000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Department_Value"
                 }
               },
-              "queryRef": "Resources.Department_Value",
+              "queryRef": "DimResource.Department_Value",
               "nativeQueryRef": "Department",
               "displayName": "Department"
             }
@@ -73,18 +73,36 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Period"
                 }
               },
-              "queryRef": "Calendar.Period",
+              "queryRef": "DimDate.Period",
               "nativeQueryRef": "Period",
               "active": true
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Capacity | Resource Utilization%"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
       }
     },
     "objects": {

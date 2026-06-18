@@ -1,0 +1,497 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "d1413de0199902ca9d7d",
+  "position": {
+    "x": 262.7986348122867,
+    "y": 1279.8634812286691,
+    "z": 5000,
+    "height": 674.061433447099,
+    "width": 1822.5255972696248,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "bfusionResourceConstraintSequencing_b2779f58fda84c098319d7d13745664a",
+    "query": {
+      "queryState": {
+        "priority": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Priority Score"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Priority Score",
+              "nativeQueryRef": "Modeler | Priority Score"
+            }
+          ]
+        },
+        "projectStart": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "EstimatedStart"
+                }
+              },
+              "queryRef": "Plans.EstimatedStart",
+              "nativeQueryRef": "EstimatedStart"
+            }
+          ]
+        },
+        "projectEnd": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "EstimatedEnd"
+                }
+              },
+              "queryRef": "Plans.EstimatedEnd",
+              "nativeQueryRef": "EstimatedEnd"
+            }
+          ]
+        },
+        "periodCapacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity"
+                }
+              },
+              "queryRef": "_Measures.Capacity",
+              "nativeQueryRef": "Capacity"
+            }
+          ]
+        },
+        "hoursPerFte": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Capacity per FTE"
+                }
+              },
+              "queryRef": "_Measures.Capacity per FTE",
+              "nativeQueryRef": "Capacity per FTE"
+            }
+          ]
+        },
+        "scenario": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelerScenario"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "ModelerScenario.Name",
+              "nativeQueryRef": "Name1"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Calendar"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "Calendar.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        },
+        "project": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "Plans.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "projectId": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Plans"
+                    }
+                  },
+                  "Property": "Id"
+                }
+              },
+              "queryRef": "Plans.Id",
+              "nativeQueryRef": "Id"
+            }
+          ]
+        },
+        "inScenario": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ScenarioCompare | Membership (A)"
+                }
+              },
+              "queryRef": "_Measures.ScenarioCompare | Membership (A)",
+              "nativeQueryRef": "ScenarioCompare | Membership (A)"
+            }
+          ]
+        },
+        "committedEffort": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ScenarioCompare | Committed Effort (A)"
+                }
+              },
+              "queryRef": "_Measures.ScenarioCompare | Committed Effort (A)",
+              "nativeQueryRef": "ScenarioCompare | Committed Effort (A)"
+            }
+          ]
+        },
+        "periodDemand": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ScenarioCompare | Committed (A)"
+                }
+              },
+              "queryRef": "_Measures.ScenarioCompare | Committed (A)",
+              "nativeQueryRef": "ScenarioCompare | Committed (A)"
+            }
+          ]
+        },
+        "compareInScenario": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ScenarioCompare | Membership (B)"
+                }
+              },
+              "queryRef": "_Measures.ScenarioCompare | Membership (B)",
+              "nativeQueryRef": "ScenarioCompare | Membership (B)"
+            }
+          ]
+        },
+        "compareCommittedEffort": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ScenarioCompare | Committed Effort (B)"
+                }
+              },
+              "queryRef": "_Measures.ScenarioCompare | Committed Effort (B)",
+              "nativeQueryRef": "ScenarioCompare | Committed Effort (B)"
+            }
+          ]
+        },
+        "compareDemand": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ScenarioCompare | Committed (B)"
+                }
+              },
+              "queryRef": "_Measures.ScenarioCompare | Committed (B)",
+              "nativeQueryRef": "ScenarioCompare | Committed (B)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Plans"
+                  }
+                },
+                "Property": "EstimatedStart"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwODMwOTY3LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfZWEwZjFiOWFiODUxIiwidmVyIjozLCJ2aXMiOlsiYmZ1c2lvbmJlbmVmaXRzcmVhbGl6YXRpb24iLCJiZnVzaW9uY2FwYWNpdHlwbGFubmluZyIsImJmdXNpb25jb25zdHJhaW50c2Fua2V5IiwiYmZ1c2lvbmNyaXRpY2FscGF0aGRpYWdyYW0iLCJiZnVzaW9uZWZmaWNpZW50ZnJvbnRpZXIiLCJiZnVzaW9uZXZtYWN0aW9ubWF0cml4IiwiYmZ1c2lvbmZpbmFuY2lhbGtwaW5hcnJhdGl2ZSIsImJmdXNpb25maW5hbmNpYWxvdmVydmlldyIsImJmdXNpb25maW5hbmNpYWxzY3VydmUiLCJiZnVzaW9uZnRlZGVjaXNpb25ib2FyZCIsImJmdXNpb25oaWVyYXJjaGljYWxnYW50dCIsImJmdXNpb25rYW5iYW5ib2FyZCIsImJmdXNpb25rcGlncmlkIiwiYmZ1c2lvbm5hdmlnYXRpb25tZW51IiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJwb3J0Zm9saW9yb2FkbWFwIiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlY29uc3RyYWludHNlcXVlbmNpbmciLCJiZnVzaW9ucmVzb3VyY2VlZmZpY2llbmN5YnJlYWtkb3duIiwiYmZ1c2lvbnJlc291cmNlZm9yZWNhc3QiLCJiZnVzaW9ucmVzb3VyY2VnYXBhbmFseXNpcyIsImJmdXNpb25yZXNvdXJjZWhlYXRtYXAiLCJiZnVzaW9ucmVzb3VyY2VrcGkiLCJiZnVzaW9ucmlza21hdHJpeGV4dCIsImJmdXNpb25yaXNrcmFkYXJjaGFydCIsImJmdXNpb25zY2VuYXJpb3JhZGFyIiwiYmZ1c2lvbnNlbGVjdGlvbndhdGVyZmFsbCIsImJmdXNpb25zZW5zaXRpdml0eXRvcm5hZG8iLCJiZnVzaW9uc3RhdHVzdHJlbmRzcGFya2xpbmUiLCJiZnVzaW9uc3RyYXRlZ2ljc3VuYnVyc3QiLCJiZnVzaW9uc3Vua2Nvc3RkZWNpc2lvbmJvYXJkIiwiYmZ1c2lvbnRhc2trcGlib2FyZCIsImJmdXNpb253YXRlcmxpbmVtb2RlbGVyIl19.kL0ysrisBwH8GsfssCpwo0HYv1RlxsJOYIMuxz3XBgHX3l2xYH7qjjEfbDt5rcorIaVJ14nnajjPKK_I-XoPVEkPYLKJ4jCMB4a1b_YJzFyc1zwiAesCGIfydKVWh_jnjqqWtrw0tqVAs3R9l5IDNz6uNWQ5JUjFBVvTDhRc6zz3ZKsRA8Nk0K4w-IQUyd6KahumB5ugK4oRZdPclF15qW5ZXur3fv_wwqLS5KX3i3ddvmu8b84zeDtdXrcyey8qR1Qqs2m29eChO9BFS6TWc6BkoWNDoEUSuLh5MGQEhXUf_Zx0AvWgI4KzRbyypgwWbFCwjg2G1QrVjNjM0MxWhw'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "sequenceSettings": [
+        {
+          "properties": {
+            "barHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "18D"
+                }
+              }
+            },
+            "showOnlyInScenario": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showFTELabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "topN": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "showCutLine": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "comparisonSettings": [
+        {
+          "properties": {
+            "enabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showCompareArea": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fontSettings": [
+        {
+          "properties": {
+            "projectLabelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            },
+            "barValueFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "axisLabelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "axisTitleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "legendFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "gridlineSettings": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.2
+                    }
+                  }
+                }
+              }
+            },
+            "opacity": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "style": {
+              "expr": {
+                "Literal": {
+                  "Value": "'dashed'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "riskSettings": [
+        {
+          "properties": {
+            "enabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "brushSettings": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

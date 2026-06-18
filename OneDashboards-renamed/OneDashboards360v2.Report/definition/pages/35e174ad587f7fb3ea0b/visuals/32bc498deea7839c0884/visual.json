@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Role_Value"
                 }
               },
-              "queryRef": "Resources.Role_Value",
+              "queryRef": "DimResource.Role_Value",
               "nativeQueryRef": "Role",
               "active": true,
               "displayName": "Role"
@@ -36,13 +36,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Resources.Name",
+              "queryRef": "DimResource.Name",
               "nativeQueryRef": "Resource",
               "active": true,
               "displayName": "Resource"
@@ -59,7 +59,7 @@
         "levels": [
           {
             "queryRefs": [
-              "Resources.Role_Value"
+              "DimResource.Role_Value"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -67,7 +67,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Role_Value"
@@ -78,7 +78,7 @@
           },
           {
             "queryRefs": [
-              "Resources.Name"
+              "DimResource.Name"
             ],
             "isCollapsed": true,
             "isPinned": true
@@ -232,7 +232,7 @@
                 "From": [
                   {
                     "Name": "r",
-                    "Entity": "Resources",
+                    "Entity": "DimResource",
                     "Type": 0
                   }
                 ],

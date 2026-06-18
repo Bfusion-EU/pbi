@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "WorkType"
                 }
               },
-              "queryRef": "Tasks.WorkType",
+              "queryRef": "DimTask.WorkType",
               "nativeQueryRef": "Work Tp",
               "displayName": "Work Tp"
             },
@@ -35,13 +35,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Tasks.Name",
+              "queryRef": "DimTask.Name",
               "nativeQueryRef": "Work Item",
               "displayName": "Work Item"
             },
@@ -50,13 +50,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Status"
                 }
               },
-              "queryRef": "Tasks.Status",
+              "queryRef": "DimTask.Status",
               "nativeQueryRef": "Status"
             },
             {
@@ -64,13 +64,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "StartDate"
                 }
               },
-              "queryRef": "Tasks.StartDate",
+              "queryRef": "DimTask.StartDate",
               "nativeQueryRef": "Start",
               "displayName": "Start"
             },
@@ -79,13 +79,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "EndDate"
                 }
               },
-              "queryRef": "Tasks.EndDate",
+              "queryRef": "DimTask.EndDate",
               "nativeQueryRef": "Due",
               "displayName": "Due"
             },
@@ -94,7 +94,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Duration"
@@ -108,13 +108,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "PercentDone"
                 }
               },
-              "queryRef": "Tasks.PercentDone",
+              "queryRef": "DimTask.PercentDone",
               "nativeQueryRef": "%Done",
               "displayName": "%Done"
             },
@@ -123,13 +123,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "State"
                 }
               },
-              "queryRef": "Tasks.State",
+              "queryRef": "DimTask.State",
               "nativeQueryRef": "State"
             },
             {
@@ -137,13 +137,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "TaskStatus"
                 }
               },
-              "queryRef": "Tasks.TaskStatus",
+              "queryRef": "DimTask.TaskStatus",
               "nativeQueryRef": "Task status",
               "displayName": "Task status"
             },
@@ -152,13 +152,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Resources.Name",
+              "queryRef": "DimResource.Name",
               "nativeQueryRef": "Resource",
               "displayName": "Resource"
             },
@@ -167,7 +167,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Tasks"
+                      "Entity": "DimTask"
                     }
                   },
                   "Property": "Effort"
@@ -186,7 +186,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Tasks"
+                    "Entity": "DimTask"
                   }
                 },
                 "Property": "EndDate"
@@ -249,7 +249,7 @@
                                   "Column": {
                                     "Expression": {
                                       "SourceRef": {
-                                        "Entity": "Tasks"
+                                        "Entity": "DimTask"
                                       }
                                     },
                                     "Property": "PercentDone"
@@ -283,7 +283,7 @@
                                       "Column": {
                                         "Expression": {
                                           "SourceRef": {
-                                            "Entity": "Tasks"
+                                            "Entity": "DimTask"
                                           }
                                         },
                                         "Property": "PercentDone"
@@ -308,7 +308,7 @@
                                       "Column": {
                                         "Expression": {
                                           "SourceRef": {
-                                            "Entity": "Tasks"
+                                            "Entity": "DimTask"
                                           }
                                         },
                                         "Property": "PercentDone"
@@ -344,7 +344,7 @@
                                       "Column": {
                                         "Expression": {
                                           "SourceRef": {
-                                            "Entity": "Tasks"
+                                            "Entity": "DimTask"
                                           }
                                         },
                                         "Property": "PercentDone"
@@ -369,7 +369,7 @@
                                       "Column": {
                                         "Expression": {
                                           "SourceRef": {
-                                            "Entity": "Tasks"
+                                            "Entity": "DimTask"
                                           }
                                         },
                                         "Property": "PercentDone"
@@ -405,7 +405,7 @@
                                       "Column": {
                                         "Expression": {
                                           "SourceRef": {
-                                            "Entity": "Tasks"
+                                            "Entity": "DimTask"
                                           }
                                         },
                                         "Property": "PercentDone"
@@ -430,7 +430,7 @@
                                       "Column": {
                                         "Expression": {
                                           "SourceRef": {
-                                            "Entity": "Tasks"
+                                            "Entity": "DimTask"
                                           }
                                         },
                                         "Property": "PercentDone"
@@ -464,7 +464,7 @@
                                   "Column": {
                                     "Expression": {
                                       "SourceRef": {
-                                        "Entity": "Tasks"
+                                        "Entity": "DimTask"
                                       }
                                     },
                                     "Property": "PercentDone"
@@ -500,7 +500,7 @@
                 }
               }
             ],
-            "metadata": "Tasks.PercentDone"
+            "metadata": "DimTask.PercentDone"
           }
         },
         {
@@ -521,7 +521,7 @@
                                     "Column": {
                                       "Expression": {
                                         "SourceRef": {
-                                          "Entity": "Tasks"
+                                          "Entity": "DimTask"
                                         }
                                       },
                                       "Property": "Overdue Tasks"
@@ -558,7 +558,7 @@
                 }
               }
             ],
-            "metadata": "Tasks.EndDate"
+            "metadata": "DimTask.EndDate"
           }
         },
         {
@@ -571,7 +571,7 @@
                 }
               }
             ],
-            "metadata": "Tasks.TaskStatus"
+            "metadata": "DimTask.TaskStatus"
           }
         },
         {
@@ -606,7 +606,7 @@
                                   "Column": {
                                     "Expression": {
                                       "SourceRef": {
-                                        "Entity": "Tasks"
+                                        "Entity": "DimTask"
                                       }
                                     },
                                     "Property": "Status"
@@ -642,7 +642,7 @@
                                   "Column": {
                                     "Expression": {
                                       "SourceRef": {
-                                        "Entity": "Tasks"
+                                        "Entity": "DimTask"
                                       }
                                     },
                                     "Property": "Status"
@@ -678,7 +678,7 @@
                                   "Column": {
                                     "Expression": {
                                       "SourceRef": {
-                                        "Entity": "Tasks"
+                                        "Entity": "DimTask"
                                       }
                                     },
                                     "Property": "Status"
@@ -718,7 +718,7 @@
                 }
               }
             ],
-            "metadata": "Tasks.Status"
+            "metadata": "DimTask.Status"
           }
         }
       ],
@@ -772,7 +772,7 @@
             }
           },
           "selector": {
-            "metadata": "Tasks.Name"
+            "metadata": "DimTask.Name"
           }
         },
         {
@@ -786,7 +786,7 @@
             }
           },
           "selector": {
-            "metadata": "Tasks.TaskStatus"
+            "metadata": "DimTask.TaskStatus"
           }
         },
         {
@@ -800,7 +800,7 @@
             }
           },
           "selector": {
-            "metadata": "Tasks.Status"
+            "metadata": "DimTask.Status"
           }
         },
         {
@@ -814,7 +814,7 @@
             }
           },
           "selector": {
-            "metadata": "Tasks.StartDate"
+            "metadata": "DimTask.StartDate"
           }
         },
         {
@@ -828,7 +828,7 @@
             }
           },
           "selector": {
-            "metadata": "Tasks.State"
+            "metadata": "DimTask.State"
           }
         }
       ],
@@ -857,7 +857,7 @@
             }
           },
           "selector": {
-            "metadata": "Tasks.PercentDone"
+            "metadata": "DimTask.PercentDone"
           }
         },
         {
@@ -994,7 +994,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Tasks"
+                "Entity": "DimTask"
               }
             },
             "Property": "State"
@@ -1006,7 +1006,7 @@
           "From": [
             {
               "Name": "t",
-              "Entity": "Tasks",
+              "Entity": "DimTask",
               "Type": 0
             }
           ],

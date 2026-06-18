@@ -1,0 +1,112 @@
+table TaskDependency
+	lineageTag: 9ac041bc-570f-4442-8782-1fc1b8bc2acd
+
+	column id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 621361d3-758d-4dbe-be8d-92ba148d0b40
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 576fa38d-3ce3-4fbc-9927-8f482693c985
+		summarizeBy: none
+		sourceColumn: WorkPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column From
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: fbb95c1b-404b-41bd-9fa5-e50767070404
+		summarizeBy: none
+		sourceColumn: From
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column To
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: f8aa7fb6-53f9-4687-affc-f29eb2e19b7e
+		summarizeBy: none
+		sourceColumn: To
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: d6850668-d59f-4e13-adf9-af6b26fe4345
+		summarizeBy: sum
+		sourceColumn: Type
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lag
+		dataType: int64
+		formatString: 0
+		displayFolder: Values\Misc
+		lineageTag: 5186fe37-ace4-41a5-a585-3467034f68c1
+		summarizeBy: sum
+		sourceColumn: Lag
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column LagUnit
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: a69feb0f-c5f5-4592-90cf-81a453070b58
+		summarizeBy: none
+		sourceColumn: LagUnit
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DependencyType =
+			SWITCH(
+			    TaskDependency[Type],
+			    0, "FS",
+			    1, "FF",
+			    2, "SS",
+			    3, "SF",
+			    "FS"
+			)
+		dataType: string
+		displayFolder: Attributes
+		lineageTag: 587341e5-b873-4302-832a-c5a0ccc85756
+		isDataTypeInferred
+
+		changedProperty = IsHidden
+
+	partition TaskDependency = m
+		mode: import
+		queryGroup: Scheduling
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    TaskDependency_table = Source{[Name="TaskDependency",Signature="table"]}[Data]
+				in
+				    TaskDependency_table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

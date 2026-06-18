@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "PlanType"
                 }
               },
-              "queryRef": "Plans.PlanType",
+              "queryRef": "DimProject.PlanType",
               "nativeQueryRef": "PlanType",
               "active": true
             },
@@ -35,13 +35,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plans.Name",
+              "queryRef": "DimProject.Name",
               "nativeQueryRef": "Plan",
               "active": false,
               "displayName": "Plan"
@@ -58,7 +58,7 @@
         "levels": [
           {
             "queryRefs": [
-              "Plans.PlanType"
+              "DimProject.PlanType"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -66,7 +66,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plans"
+                      "Entity": "DimProject"
                     }
                   },
                   "Property": "PlanType"
@@ -77,7 +77,7 @@
           },
           {
             "queryRefs": [
-              "Plans.Name"
+              "DimProject.Name"
             ],
             "isCollapsed": true,
             "isPinned": true
@@ -168,7 +168,7 @@
                 "From": [
                   {
                     "Name": "p",
-                    "Entity": "Plans",
+                    "Entity": "DimProject",
                     "Type": 0
                   }
                 ],
@@ -206,7 +206,7 @@
                             "Column": {
                               "Expression": {
                                 "SourceRef": {
-                                  "Entity": "Plans"
+                                  "Entity": "DimProject"
                                 }
                               },
                               "Property": "PlanType"
@@ -233,7 +233,7 @@
                                 "Column": {
                                   "Expression": {
                                     "SourceRef": {
-                                      "Entity": "Plans"
+                                      "Entity": "DimProject"
                                     }
                                   },
                                   "Property": "PlanType"

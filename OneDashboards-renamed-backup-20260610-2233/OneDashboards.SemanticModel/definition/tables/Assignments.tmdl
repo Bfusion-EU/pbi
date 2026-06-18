@@ -1,0 +1,123 @@
+table Assignments
+	lineageTag: bf959475-4ec4-4847-9e5a-9208efe6864e
+
+	column Id
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: f441b38d-240c-409e-8491-4c7d44e401ba
+		summarizeBy: none
+		sourceColumn: Id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TaskId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: a1212f82-8228-46bc-af80-93b0c8b9c76f
+		summarizeBy: none
+		sourceColumn: TaskId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UserId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 8faf6c5d-6048-4887-9d7d-c57993c23eb2
+		summarizeBy: none
+		sourceColumn: UserId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Units
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: 05b39802-2c15-4025-baa5-07221a63281b
+		summarizeBy: sum
+		sourceColumn: Units
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column AssignedResource
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: d3010fd1-600f-4314-9dc3-6ec43aff88b6
+		summarizeBy: none
+		sourceColumn: AssignedResource
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Department_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: 8d15672a-7532-4b3b-b7ac-97564d2e064a
+		summarizeBy: none
+		sourceColumn: Department_Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Role_Value
+		dataType: string
+		displayFolder: Attributes\Lookup
+		lineageTag: f7d26b59-7c39-42f4-9a55-0221c5c57e34
+		summarizeBy: none
+		sourceColumn: Role_Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceType
+		dataType: string
+		displayFolder: Attributes\Classification
+		lineageTag: 31824e44-d496-4ccb-b45a-9c9b5ed9e037
+		summarizeBy: none
+		sourceColumn: ResourceType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: double
+		displayFolder: Values\Counts
+		lineageTag: 9737c553-086e-4a54-a7f9-78fa51dd7d5c
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Assignments = m
+		mode: import
+		queryGroup: Scheduling
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Assignments_table = Source{[Name="Assignments",Signature="table"]}[Data],
+				    #"Merged Queries" = Table.NestedJoin(Assignments_table, {"UserId"}, Resources, {"UserId"}, "Resources", JoinKind.LeftOuter),
+				    #"Expanded Resources" = Table.ExpandTableColumn(#"Merged Queries", "Resources", {"Name", "Department_Value", "Role_Value"}, {"Resources.Name", "Resources.Department_Value", "Resources.Role_Value"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Expanded Resources",{{"Resources.Name", "AssignedResource"}, {"Resources.Department_Value", "Department_Value"}, {"Resources.Role_Value", "Role_Value"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

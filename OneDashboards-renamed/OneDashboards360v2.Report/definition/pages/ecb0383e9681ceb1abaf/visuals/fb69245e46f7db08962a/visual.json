@@ -20,15 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Resources"
+                      "Entity": "DimResource"
                     }
                   },
-                  "Property": "Name"
+                  "Property": "Role_Value"
                 }
               },
-              "queryRef": "Resources.Name",
-              "nativeQueryRef": "ResourceName",
-              "displayName": "ResourceName"
+              "queryRef": "DimResource.Role_Value",
+              "nativeQueryRef": "Role",
+              "displayName": "Role"
             }
           ],
           "fieldParameters": [
@@ -73,13 +73,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Year"
                 }
               },
-              "queryRef": "Calendar.Year",
+              "queryRef": "DimDate.Year",
               "nativeQueryRef": "Year",
               "active": true
             },
@@ -88,13 +88,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Quarter Name"
                 }
               },
-              "queryRef": "Calendar.Quarter Name",
+              "queryRef": "DimDate.Quarter Name",
               "nativeQueryRef": "Quarter Name",
               "active": true
             },
@@ -103,18 +103,36 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendar"
+                      "Entity": "DimDate"
                     }
                   },
                   "Property": "Period"
                 }
               },
-              "queryRef": "Calendar.Period",
+              "queryRef": "DimDate.Period",
               "nativeQueryRef": "Period",
               "active": true
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Capacity | Resource Utilization%"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
       }
     },
     "objects": {

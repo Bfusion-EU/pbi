@@ -1,0 +1,52 @@
+table RateTable
+	lineageTag: 04b16815-a8f1-4d43-aa79-3afbaa6b0327
+
+	column WorkPlanId
+		dataType: string
+		displayFolder: Attributes\Identity
+		lineageTag: 8e5f2b2c-e552-4c5e-b24c-971740e8c40e
+		summarizeBy: none
+		sourceColumn: WorkPlanId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceId
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 6e672ea8-62c5-4822-9824-8793af8b3087
+		summarizeBy: none
+		sourceColumn: ResourceId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Rate
+		dataType: double
+		displayFolder: Values\Misc
+		lineageTag: 54b947ac-89a2-45c3-b2db-a4271ea6a737
+		summarizeBy: sum
+		sourceColumn: Rate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition RateTable = m
+		mode: import
+		queryGroup: 'Financial Mgmt'
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    RateTable_table = Source{[Name="RateTable",Signature="table"]}[Data]
+				in
+				    RateTable_table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

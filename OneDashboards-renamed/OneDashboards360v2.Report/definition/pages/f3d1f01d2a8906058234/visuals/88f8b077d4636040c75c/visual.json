@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Portfolio"
+                      "Entity": "DimPortfolio"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plan_Portfolio.Name",
+              "queryRef": "DimPortfolio.Name",
               "nativeQueryRef": "Portfolio > Programme",
               "active": true,
               "displayName": "Portfolio > Programme"
@@ -36,13 +36,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Programs"
+                      "Entity": "DimProgram"
                     }
                   },
                   "Property": "Name"
                 }
               },
-              "queryRef": "Plan_Programs.Name",
+              "queryRef": "DimProgram.Name",
               "nativeQueryRef": "Programme",
               "active": true,
               "displayName": "Programme"
@@ -59,7 +59,7 @@
         "levels": [
           {
             "queryRefs": [
-              "Plan_Portfolio.Name"
+              "DimPortfolio.Name"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -67,7 +67,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Plan_Portfolio"
+                      "Entity": "DimPortfolio"
                     }
                   },
                   "Property": "Name"
@@ -78,7 +78,7 @@
           },
           {
             "queryRefs": [
-              "Plan_Programs.Name"
+              "DimProgram.Name"
             ],
             "isCollapsed": true,
             "isPinned": true

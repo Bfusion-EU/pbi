@@ -1,0 +1,9 @@
+role DynamicRLS
+	modelPermission: read
+
+	tablePermission Resources = [Email] = USERPRINCIPALNAME()
+
+	tablePermission _Measures
+
+	annotation PBI_Id = ba8f07d55fc941fbb79f1af007504ddb
+
