@@ -1,0 +1,40 @@
+table DimLeaveType
+	lineageTag: 7d21a67f-1a09-428b-a47b-6b2c01449439
+
+	column LeaveTypeKey
+		dataType: int64
+		isHidden
+		lineageTag: b7b36073-8fcf-4a50-8269-94aa4ffbb66f
+		summarizeBy: none
+		sourceColumn: LeaveTypeKey
+
+	column LeaveCode
+		dataType: string
+		lineageTag: 495a0ece-dc8c-4138-adbe-e0af8ab649ac
+		sourceColumn: LeaveCode
+
+	column LeaveName
+		dataType: string
+		lineageTag: 133b8a60-8d00-4819-a3ed-ec22458c745a
+		sourceColumn: LeaveName
+
+	column IsPaid
+		dataType: boolean
+		lineageTag: ea702ee8-46c2-403e-a353-79d3fe36f308
+		sourceColumn: IsPaid
+
+	partition DimLeaveType = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="TimeOff", Signature="table"]}[Data],
+				    Cat = Table.RenameColumns(Table.Distinct(Table.SelectColumns(Raw, {"TimeOffCategory"})), {{"TimeOffCategory", "LeaveCode"}}),
+				    Filtered = Table.SelectRows(Cat, each [LeaveCode] <> null),
+				    Keyed = Table.AddIndexColumn(Filtered, "LeaveTypeKey", 1, 1, Int64.Type),
+				    AddName = Table.AddColumn(Keyed, "LeaveName", each [LeaveCode], type text),
+				    AddPaid = Table.AddColumn(AddName, "IsPaid", each not (Text.Lower([LeaveCode] ?? "") = "unpaid"), type logical)
+				in
+				    AddPaid
+
+	annotation PBI_ResultType = Exception
+

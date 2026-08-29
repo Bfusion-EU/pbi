@@ -1,0 +1,65 @@
+table BridgeTaskDependency
+	lineageTag: 7669e794-9ef2-435c-b0d4-b1aed52241f3
+
+	column id
+		dataType: string
+		lineageTag: 3071b077-47f2-4422-a51c-29975d2e2bb5
+		sourceColumn: id
+
+	column WorkPlanId
+		dataType: string
+		lineageTag: 3224b093-1713-44e2-b2e6-b5b542baf908
+		sourceColumn: WorkPlanId
+
+	column From
+		dataType: string
+		lineageTag: 99361be8-034a-4294-bb1b-d6ad798577c3
+		sourceColumn: From
+
+	column To
+		dataType: string
+		lineageTag: 7600ca5b-cc40-4287-985a-b4f954189bcc
+		sourceColumn: To
+
+	column Type
+		dataType: int64
+		lineageTag: e6a64fa8-1a06-4ceb-8eef-e8205a343d1f
+		sourceColumn: Type
+
+	column Lag
+		dataType: int64
+		lineageTag: 5d1e1cb1-282a-40f8-a2c6-f0a5ee8edce7
+		sourceColumn: Lag
+
+	column LagUnit
+		dataType: string
+		lineageTag: 2d49ff1d-a921-444d-a55d-cee3c5a62852
+		sourceColumn: LagUnit
+
+	column FromTaskKey
+		dataType: int64
+		isHidden
+		lineageTag: 91036dd5-1aab-42c0-91ac-02f82609dd48
+		summarizeBy: none
+		sourceColumn: FromTaskKey
+
+	column ToTaskKey
+		dataType: int64
+		isHidden
+		lineageTag: d087699b-9f4e-4921-98b7-d013d7fd6f11
+		summarizeBy: none
+		sourceColumn: ToTaskKey
+
+	partition BridgeTaskDependency = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="TaskDependency", Signature="table"]}[Data],
+				    DimT = DimTask,
+				    J1 = Table.NestedJoin(Raw, {"From"}, DimT, {"TaskBK"}, "_F", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_F", {"TaskKey"}, {"FromTaskKey"}),
+				    J2 = Table.NestedJoin(E1, {"To"}, DimT, {"TaskBK"}, "_T", JoinKind.LeftOuter),
+				    E2 = Table.ExpandTableColumn(J2, "_T", {"TaskKey"}, {"ToTaskKey"})
+				in
+				    E2
+

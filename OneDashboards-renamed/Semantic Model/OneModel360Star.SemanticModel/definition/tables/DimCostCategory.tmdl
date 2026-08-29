@@ -1,0 +1,36 @@
+table DimCostCategory
+	lineageTag: d5b4d04e-c200-4573-8ebc-59849a1c8790
+
+	column CostCategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 42f54e31-39c2-4752-bc31-451f21d1eae4
+		summarizeBy: none
+		sourceColumn: CostCategoryKey
+
+	column CategoryBK
+		dataType: string
+		lineageTag: 3b9fe6d7-f9d6-4e4a-9427-3aed0a3cfc45
+		sourceColumn: CategoryBK
+
+	column CategoryName
+		dataType: string
+		lineageTag: 96b435dc-941f-4e49-aca7-8a39e187f1d0
+		sourceColumn: CategoryName
+
+	partition DimCostCategory = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="Costs", Signature="table"]}[Data],
+				    Picked = Table.SelectColumns(Raw, {"CostCategory"}),
+				    Filtered = Table.SelectRows(Picked, each [CostCategory] <> null and [CostCategory] <> ""),
+				    Distinct_ = Table.Distinct(Filtered),
+				    Renamed = Table.RenameColumns(Distinct_, {{"CostCategory", "CategoryBK"}}),
+				    Keyed = Table.AddIndexColumn(Renamed, "CostCategoryKey", 1, 1, Int64.Type),
+				    AddName = Table.AddColumn(Keyed, "CategoryName", each [CategoryBK], type text)
+				in
+				    AddName
+
+	annotation PBI_ResultType = Exception
+

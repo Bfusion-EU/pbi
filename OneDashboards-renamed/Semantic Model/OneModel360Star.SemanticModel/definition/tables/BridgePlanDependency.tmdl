@@ -1,0 +1,55 @@
+table BridgePlanDependency
+	lineageTag: f7c1d86f-97b5-4138-b01d-148f2f971246
+
+	column DependencyId
+		dataType: string
+		lineageTag: 4b839b1f-d06f-4fc2-a0ea-9d8fb70de546
+		sourceColumn: DependencyId
+
+	column FromPlan
+		dataType: string
+		lineageTag: 3e633e27-ee78-411f-af36-0473fc57afec
+		sourceColumn: FromPlan
+
+	column ToPlan
+		dataType: string
+		lineageTag: 39d80e73-4f0c-4bfb-9c22-0dc65d855526
+		sourceColumn: ToPlan
+
+	column Type
+		dataType: string
+		lineageTag: dd145d0f-1aa6-4907-8e1b-59febb8708ac
+		sourceColumn: Type
+
+	column Description
+		dataType: string
+		lineageTag: 363273d6-16ba-46ce-b964-3ef0763b2b68
+		sourceColumn: Description
+
+	column FromProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: 7f366c97-e3db-4aa2-b16d-0b63a026e045
+		summarizeBy: none
+		sourceColumn: FromProjectKey
+
+	column ToProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: d28fb3f1-bdaf-4bfd-a7d9-09be8467a63d
+		summarizeBy: none
+		sourceColumn: ToProjectKey
+
+	partition BridgePlanDependency = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="PlanDependency", Signature="table"]}[Data],
+				    DimP = DimProject,
+				    J1 = Table.NestedJoin(Raw, {"FromPlan"}, DimP, {"ProjectBK"}, "_F", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_F", {"ProjectKey"}, {"FromProjectKey"}),
+				    J2 = Table.NestedJoin(E1, {"ToPlan"}, DimP, {"ProjectBK"}, "_T", JoinKind.LeftOuter),
+				    E2 = Table.ExpandTableColumn(J2, "_T", {"ProjectKey"}, {"ToProjectKey"})
+				in
+				    E2
+

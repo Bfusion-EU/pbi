@@ -1,0 +1,60 @@
+table RefreshTime
+	isHidden
+	lineageTag: 2fb8db39-c5f9-4c16-a8a5-e6ac28e88538
+
+	column 'Last Refreshed (Belgium Time)'
+		dataType: dateTime
+		formatString: General Date
+		displayFolder: Dates\System
+		lineageTag: e20f4240-7b20-4675-8dc1-82a003c2a51a
+		summarizeBy: none
+		sourceColumn: Last Refreshed (Belgium Time)
+
+		changedProperty = DataType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition RefreshTime = m
+		mode: import
+		queryGroup: Scheduling
+		source =
+				let
+				    // Get current UTC refresh time
+				    RefreshDateTimeUTC = DateTimeZone.UtcNow(),
+				    CurrentDateTime = DateTimeZone.RemoveZone(RefreshDateTimeUTC),
+				
+				    // Helper: Get last Sunday of given month
+				    GetLastSunday = (y as number, m as number) as date =>
+				        let
+				            FirstDayNextMonth = #date(y, m, 1) + #duration(31,0,0,0),
+				            LastDayThisMonth = Date.AddDays(FirstDayNextMonth, -Date.Day(FirstDayNextMonth)),
+				            DayOfWeek = Date.DayOfWeek(LastDayThisMonth, Day.Sunday),
+				            LastSunday = Date.AddDays(LastDayThisMonth, -DayOfWeek)
+				        in
+				            LastSunday,
+				
+				    // DST boundaries as DateTime
+				    YearNow = Date.Year(CurrentDateTime),
+				    DSTStartDate = GetLastSunday(YearNow, 3),
+				    DSTEndDate = GetLastSunday(YearNow, 10),
+				    DSTStartDateTime = #datetime(YearNow, Date.Month(DSTStartDate), Date.Day(DSTStartDate), 2, 0, 0),  // Starts at 2 AM
+				    DSTEndDateTime = #datetime(YearNow, Date.Month(DSTEndDate), Date.Day(DSTEndDate), 3, 0, 0),        // Ends at 3 AM
+				
+				    // Determine if current time is within DST
+				    IsDST = CurrentDateTime >= DSTStartDateTime and CurrentDateTime < DSTEndDateTime,
+				    Offset = if IsDST then 2 else 1,
+				
+				    // Apply time zone offset
+				    RefreshDateTimeBelgium = DateTimeZone.SwitchZone(RefreshDateTimeUTC, Offset),
+				
+				    // Output as single-value table
+				    Output = #table({"Last Refreshed (Belgium Time)"}, {{DateTimeZone.RemoveZone(RefreshDateTimeBelgium)}})
+				in
+				    Output
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

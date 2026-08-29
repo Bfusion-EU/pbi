@@ -1,0 +1,50 @@
+table Category
+	lineageTag: b8256458-b2a6-4c5b-814b-77a1b98441e8
+
+	column Category
+		displayFolder: Attributes\Classification
+		lineageTag: 2d26beeb-d5fe-44e0-8956-9559b72dbe80
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Category Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Category Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Fields'
+		displayFolder: Attributes\Classification
+		lineageTag: fbd4cf29-2193-4317-8040-fa29ddf87ae5
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Category Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Order'
+		formatString: 0
+		displayFolder: Attributes\Classification
+		lineageTag: b54269ef-8f41-44f0-a27b-f1e71863f76b
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Category = calculated
+		mode: import
+		source =
+				{
+				    ("Department", NAMEOF('DimResource'[Department_Value]), 0),
+				    ("Role", NAMEOF('DimResource'[Role_Value]), 1),
+				    ("ResourceName", NAMEOF('DimResource'[Name]), 2)
+				}
+
+	annotation PBI_Id = bef7032e95b9401681864a535e64d76c
+

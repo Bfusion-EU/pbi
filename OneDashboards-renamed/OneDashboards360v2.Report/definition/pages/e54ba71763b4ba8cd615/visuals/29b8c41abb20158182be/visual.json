@@ -27,8 +27,9 @@
                 }
               },
               "queryRef": "DimProject.BusinessUnit_Value",
-              "nativeQueryRef": "BusinessUnit_Value",
-              "active": true
+              "nativeQueryRef": "Business Unit",
+              "active": true,
+              "displayName": "Business Unit"
             }
           ]
         }
@@ -67,49 +68,7 @@
       ],
       "general": [
         {
-          "properties": {
-            "filter": {
-              "filter": {
-                "Version": 2,
-                "From": [
-                  {
-                    "Name": "p",
-                    "Entity": "DimProject",
-                    "Type": 0
-                  }
-                ],
-                "Where": [
-                  {
-                    "Condition": {
-                      "In": {
-                        "Expressions": [
-                          {
-                            "Column": {
-                              "Expression": {
-                                "SourceRef": {
-                                  "Source": "p"
-                                }
-                              },
-                              "Property": "BusinessUnit_Value"
-                            }
-                          }
-                        ],
-                        "Values": [
-                          [
-                            {
-                              "Literal": {
-                                "Value": "'IT'"
-                              }
-                            }
-                          ]
-                        ]
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
+          "properties": {}
         }
       ],
       "header": [

@@ -1,0 +1,215 @@
+table DimResource
+	lineageTag: 84c5122e-6690-4c1f-a2db-50cb06271a55
+
+	column UserId
+		dataType: string
+		lineageTag: a6c454a2-5cae-4e8a-a4df-22fe1748c938
+		sourceColumn: UserId
+
+	column Name
+		dataType: string
+		lineageTag: 89b00a0a-d152-471d-b7e7-6a4263655bb1
+		sourceColumn: Name
+
+	column Email
+		dataType: string
+		lineageTag: 49c20f98-fc30-4820-b730-6cf20a3d2f2d
+		sourceColumn: Email
+
+	column Generic
+		dataType: boolean
+		lineageTag: 2bdc238f-5b0d-4faf-bf47-c025355603c3
+		sourceColumn: Generic
+
+	column Inactive
+		dataType: boolean
+		lineageTag: 5e125534-f0ac-4318-b90a-f887f740a39d
+		sourceColumn: Inactive
+
+	column ExternalId
+		dataType: string
+		lineageTag: 232be3cc-7a91-4893-b5c9-edb2127dcd7a
+		sourceColumn: ExternalId
+
+	column OnePlanSecurityGroup
+		dataType: string
+		lineageTag: cfc5468d-6a6b-4978-b798-0570ee73ef8c
+		sourceColumn: OnePlanSecurityGroup
+
+	column Permissions
+		dataType: string
+		lineageTag: ccce816e-7ce0-4816-899e-305f77943e0b
+		sourceColumn: Permissions
+
+	column Quantity
+		dataType: double
+		lineageTag: 03eac161-772c-46e8-a3e0-7e4d1379c56f
+		sourceColumn: Quantity
+
+	column Office365Id
+		dataType: string
+		lineageTag: 4faf8034-f882-4585-a93e-c21d611e4ea8
+		sourceColumn: Office365Id
+
+	column Department_Value
+		dataType: string
+		lineageTag: d1245033-9b3b-4c70-bbe3-878217434ade
+		sourceColumn: Department_Value
+
+	column Role_Value
+		dataType: string
+		lineageTag: c1ef9e4e-b217-4138-aed6-e9c08ea824b5
+		sourceColumn: Role_Value
+
+	column Cost
+		dataType: double
+		lineageTag: a036e9fb-671b-4145-ae29-f734f5a546eb
+		sourceColumn: Cost
+
+	column Rate
+		dataType: double
+		lineageTag: 59c721fb-aa3a-4114-bfdf-8a1ccb8f13de
+		sourceColumn: Rate
+
+	column Manager
+		dataType: string
+		lineageTag: 07885abc-b9e3-4acb-b1d5-d4184a414e46
+		sourceColumn: Manager
+
+	column Manager_DisplayName
+		dataType: string
+		lineageTag: 60bbe32e-7293-4502-89de-cf8c7579b92c
+		sourceColumn: Manager_DisplayName
+
+	column TimesheetsAdmin
+		dataType: boolean
+		lineageTag: 255313af-0e41-4f4c-9e49-89501574effa
+		sourceColumn: TimesheetsAdmin
+
+	column TimesheetManager
+		dataType: string
+		lineageTag: a1e382d6-85ec-442e-a6aa-af82f11982c9
+		sourceColumn: TimesheetManager
+
+	column TimesheetManager_DisplayName
+		dataType: string
+		lineageTag: 06d89576-3812-4156-bd69-caa8d5c06b49
+		sourceColumn: TimesheetManager_DisplayName
+
+	column Insights_Compliance
+		dataType: double
+		lineageTag: 71c25d61-16ad-423f-a787-6e2f2b2fa36f
+		sourceColumn: Insights_Compliance
+
+	column Insights_Problems
+		dataType: double
+		lineageTag: 250418bf-1eb1-4421-a426-59beacf13e86
+		sourceColumn: Insights_Problems
+
+	column Insights_Warnings
+		dataType: double
+		lineageTag: eed4168b-1365-405f-9a92-3f409ac8fa4d
+		sourceColumn: Insights_Warnings
+
+	column AvailableFrom
+		dataType: dateTime
+		lineageTag: 9bf06e92-b573-401b-9ee9-d38bcb21384b
+		sourceColumn: AvailableFrom
+
+	column AvailableTo
+		dataType: dateTime
+		lineageTag: 7f0ec965-018b-4ac5-baac-589047c7467b
+		sourceColumn: AvailableTo
+
+	column OP_Financial_ResourceType_Id
+		dataType: string
+		lineageTag: 897aee49-e36c-4675-8538-fff3dc6d473e
+		sourceColumn: OP_Financial_ResourceType_Id
+
+	column OP_Financial_ResourceType_Value
+		dataType: string
+		lineageTag: 2474a315-8076-4cfa-8346-89c1503c77e7
+		sourceColumn: OP_Financial_ResourceType_Value
+
+	column NonLaborCost_Id
+		dataType: string
+		lineageTag: fb67ae11-9fcf-4d95-81d1-233b3a0d8b59
+		sourceColumn: NonLaborCost_Id
+
+	column NonLaborCost_Value
+		dataType: string
+		lineageTag: 37ceb383-be90-4d0b-9f51-300a59c30b57
+		sourceColumn: NonLaborCost_Value
+
+	column UtilizationGoal
+		dataType: double
+		lineageTag: 79ace463-b67e-43ff-bc69-19e09a36f0be
+		sourceColumn: UtilizationGoal
+
+	column Financial_a0671c7b03f4cf89bda76ba3612c14cb_Id
+		dataType: string
+		lineageTag: 7a9bae32-0ad3-47bd-87b5-4470215ce0be
+		sourceColumn: Financial_a0671c7b03f4cf89bda76ba3612c14cb_Id
+
+	column Financial_a0671c7b03f4cf89bda76ba3612c14cb_Value
+		dataType: string
+		lineageTag: 51e19683-0542-408d-87fe-b242a3eebe84
+		sourceColumn: Financial_a0671c7b03f4cf89bda76ba3612c14cb_Value
+
+	column ResourceKey
+		dataType: int64
+		isHidden
+		lineageTag: 3e8a58c9-bf17-4bb9-86ae-791053f86644
+		summarizeBy: none
+		sourceColumn: ResourceKey
+
+	column ResourceBK
+		dataType: string
+		lineageTag: 93314c48-e829-40c1-85f3-0fae0d43dbb6
+		sourceColumn: ResourceBK
+
+	column Resource_ResourceType_Id
+		dataType: string
+		lineageTag: 8e905385-c42e-4541-8d5e-38843a9ba72e
+		summarizeBy: none
+		sourceColumn: Resource_ResourceType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Resource_ResourceType_Value
+		dataType: string
+		lineageTag: e814154e-89f1-4e92-97b0-9c8db8ed80f6
+		summarizeBy: none
+		sourceColumn: Resource_ResourceType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarId_Id
+		dataType: string
+		lineageTag: 1d21015e-7aa7-4eb0-a1dd-96e9b4af0223
+		summarizeBy: none
+		sourceColumn: CalendarId_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarId_Value
+		dataType: string
+		lineageTag: 735a5eaa-9702-48ec-9ea8-adf8a7046c39
+		summarizeBy: none
+		sourceColumn: CalendarId_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimResource = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw    = Source{[Name="Resources", Signature="table"]}[Data],
+				    Cleaned = Table.RemoveColumns(Raw, {"Department_Id", "Role_Id"}, MissingField.Ignore),
+				    Keyed  = Table.AddIndexColumn(Cleaned, "ResourceKey", 1, 1, Int64.Type),
+				    AddBK  = Table.AddColumn(Keyed, "ResourceBK", each [UserId], type text)
+				in
+				    AddBK
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,55 @@
+table DimProcessStep
+	lineageTag: 2c155549-388a-46a1-90e6-80ab7938bf80
+
+	column id
+		dataType: string
+		lineageTag: 23f035e9-bd91-40a3-b0dd-3a7cf87e4f65
+		sourceColumn: id
+
+	column PlanTypeId
+		dataType: string
+		lineageTag: a46ac92e-61ec-4e33-9e89-2249ec17ca74
+		sourceColumn: PlanTypeId
+
+	column PlanTypeName
+		dataType: string
+		lineageTag: f93363bd-df89-4159-b95e-9395d216cbba
+		sourceColumn: PlanTypeName
+
+	column Index
+		dataType: int64
+		lineageTag: 3d14680b-f285-4d63-918d-7c968efc479a
+		sourceColumn: Index
+
+	column Name
+		dataType: string
+		lineageTag: b89337df-c680-4a39-9f09-45e880eaceb1
+		sourceColumn: Name
+
+	column Gate
+		dataType: boolean
+		lineageTag: a58a5ddf-16c8-48be-8747-827a2c940534
+		sourceColumn: Gate
+
+	column ProcessStepKey
+		dataType: int64
+		isHidden
+		lineageTag: 17f6ffbf-8b0a-4291-b0ec-e7f02a7cd0c7
+		summarizeBy: none
+		sourceColumn: ProcessStepKey
+
+	column ProcessStepBK
+		dataType: string
+		lineageTag: c02f9009-d7bb-424e-b5eb-c35ca9f0e9f8
+		sourceColumn: ProcessStepBK
+
+	partition DimProcessStep = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="ProcessSteps", Signature="table"]}[Data],
+				    Keyed = Table.AddIndexColumn(Raw, "ProcessStepKey", 1, 1, Int64.Type),
+				    AddBK = Table.AddColumn(Keyed, "ProcessStepBK", each Text.From([Index]), type text)
+				in
+				    AddBK
+

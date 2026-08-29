@@ -5,7 +5,7 @@
     "x": 8,
     "y": 115,
     "z": 1000,
-    "height": 1246,
+    "height": 1157,
     "width": 1264,
     "tabOrder": 0
   },
@@ -13,21 +13,21 @@
     "visualType": "bfusionPortfolio360D4F8A2C1B6E9",
     "query": {
       "queryState": {
-        "budget": {
+        "lifecycle": {
           "projections": [
             {
               "field": {
-                "Measure": {
+                "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "DimObjective"
                     }
                   },
-                  "Property": "License | BFusionLicenseKey"
+                  "Property": "Summary_RiskStage"
                 }
               },
-              "queryRef": "_Measures.BFusionLicenseKey",
-              "nativeQueryRef": "BFusionLicenseKey"
+              "queryRef": "DimObjective.Summary_RiskStage",
+              "nativeQueryRef": "Summary_RiskStage"
             }
           ]
         },
@@ -38,18 +38,18 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimProject"
+                      "Entity": "DimDate"
                     }
                   },
-                  "Property": "BusinessUnit_Value"
+                  "Property": "Date"
                 }
               },
-              "queryRef": "DimProject.BusinessUnit_Value",
-              "nativeQueryRef": "BusinessUnit_Value"
+              "queryRef": "DimDate.Date",
+              "nativeQueryRef": "Date"
             }
           ]
         },
-        "segment": {
+        "projectName": {
           "projections": [
             {
               "field": {
@@ -67,7 +67,7 @@
             }
           ]
         },
-        "projectName": {
+        "scheduleHealth": {
           "projections": [
             {
               "field": {
@@ -77,11 +77,12 @@
                       "Entity": "DimProject"
                     }
                   },
-                  "Property": "OverallHealth_Value"
+                  "Property": "ScheduleHealth_Value"
                 }
               },
-              "queryRef": "DimProject.OverallHealth_Value",
-              "nativeQueryRef": "OverallHealth_Value"
+              "queryRef": "DimProject.ScheduleHealth_Value",
+              "nativeQueryRef": "ScheduleHealth",
+              "displayName": "ScheduleHealth"
             }
           ]
         },
@@ -95,33 +96,15 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Portfolio 360 | On-Time Flag"
+                  "Property": "Finance | Forecast Cost"
                 }
               },
-              "queryRef": "_Measures.Portfolio360 | On-Time Flag",
-              "nativeQueryRef": "Portfolio360 | On-Time Flag"
+              "queryRef": "_Measures.Finance | Forecast Cost",
+              "nativeQueryRef": "Forecast Cost"
             }
           ]
         },
-        "actual": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Portfolio 360 | Budget Target"
-                }
-              },
-              "queryRef": "_Measures.Portfolio360 | Budget Target",
-              "nativeQueryRef": "Portfolio360 | Budget Target"
-            }
-          ]
-        },
-        "onTimeFlag": {
+        "onTimeTarget": {
           "projections": [
             {
               "field": {
@@ -134,7 +117,7 @@
                   "Property": "Portfolio 360 | On-Time Target %"
                 }
               },
-              "queryRef": "_Measures.Portfolio360 | On-Time Target %",
+              "queryRef": "_Measures.Portfolio 360 | On-Time Target %",
               "nativeQueryRef": "Portfolio360 | On-Time Target %"
             }
           ]
@@ -149,83 +132,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Budget Cost"
+                  "Property": "Portfolio 360 | Budget Target"
                 }
               },
-              "queryRef": "_Measures.Budget Cost",
-              "nativeQueryRef": "Budget Cost"
-            }
-          ]
-        },
-        "onTimeTarget": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Finance | Forecast Cost"
-                }
-              },
-              "queryRef": "_Measures.Forecast Cost",
-              "nativeQueryRef": "Forecast Cost"
-            }
-          ]
-        },
-        "utilization": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Finance | Actual Cost"
-                }
-              },
-              "queryRef": "_Measures.Actual Cost",
-              "nativeQueryRef": "Actual Cost"
-            }
-          ]
-        },
-        "capacity": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Project | Active Risks"
-                }
-              },
-              "queryRef": "_Measures.Plans - Active Risks",
-              "nativeQueryRef": "Plans - Active Risks"
-            }
-          ]
-        },
-        "demand": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Project | Active Issues"
-                }
-              },
-              "queryRef": "_Measures.Plans - Active Issues",
-              "nativeQueryRef": "Plans - Active Issues"
+              "queryRef": "_Measures.Portfolio 360 | Budget Target",
+              "nativeQueryRef": "Portfolio 360 | Budget Target"
             }
           ]
         },
@@ -239,11 +150,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Capacity"
+                  "Property": "Project | Active Risks"
                 }
               },
-              "queryRef": "_Measures.Resource Capacity",
-              "nativeQueryRef": "Resource Capacity"
+              "queryRef": "_Measures.Project | Active Risks",
+              "nativeQueryRef": "Plans - Active Risks"
             }
           ]
         },
@@ -257,11 +168,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Demand"
+                  "Property": "Project | Active Issues"
                 }
               },
-              "queryRef": "_Measures.Demand",
-              "nativeQueryRef": "Demand"
+              "queryRef": "_Measures.Project | Active Issues",
+              "nativeQueryRef": "Plans - Active Issues"
             }
           ]
         },
@@ -275,29 +186,119 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Utilization%"
+                  "Property": "Project | ROI% (Misc)"
                 }
               },
-              "queryRef": "_Measures.Resource Utilization%",
-              "nativeQueryRef": "Resource Utilization%"
+              "queryRef": "_Measures.Project | ROI% (Misc)",
+              "nativeQueryRef": "Project | ROI% (Misc)"
             }
           ]
         },
-        "scheduleHealth": {
+        "capacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity",
+              "nativeQueryRef": "Capacity | Resource Capacity"
+            }
+          ]
+        },
+        "utilization": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Utilization%"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Utilization%",
+              "nativeQueryRef": "Capacity | Resource Utilization%"
+            }
+          ]
+        },
+        "demand": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Demand"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Demand",
+              "nativeQueryRef": "Capacity | Demand"
+            }
+          ]
+        },
+        "segment": {
           "projections": [
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimDate"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Date"
+                  "Property": "BusinessUnit_Value"
                 }
               },
-              "queryRef": "DimDate.Date",
-              "nativeQueryRef": "Date"
+              "queryRef": "DimProject.BusinessUnit_Value",
+              "nativeQueryRef": "BusinessUnit_Value"
+            }
+          ]
+        },
+        "onTimeFlag": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Portfolio 360 | On-Time Flag"
+                }
+              },
+              "queryRef": "_Measures.Portfolio 360 | On-Time Flag",
+              "nativeQueryRef": "Portfolio 360 | On-Time Flag"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Project | Total Budget"
+                }
+              },
+              "queryRef": "_Measures.Project | Total Budget",
+              "nativeQueryRef": "Project | Total Budget"
             }
           ]
         }
@@ -328,7 +329,7 @@
             "licenseKey": {
               "expr": {
                 "Literal": {
-                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNjcxNjI0LCJleHAiOjE4MzAyOTc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfY2FkNjQ0OTBhOTdmIiwidmlzIjpbImJmdXNpb25iZW5lZml0c3JlYWxpemF0aW9uIiwiYmZ1c2lvbmNhcGFjaXR5cGxhbm5pbmciLCJiZnVzaW9uY29uc3RyYWludHNhbmtleSIsImJmdXNpb25jcml0aWNhbHBhdGhkaWFncmFtIiwiYmZ1c2lvbmVmZmljaWVudGZyb250aWVyIiwiYmZ1c2lvbmV2bWFjdGlvbm1hdHJpeCIsImJmdXNpb25maW5hbmNpYWxrcGluYXJyYXRpdmUiLCJiZnVzaW9uZmluYW5jaWFsb3ZlcnZpZXciLCJiZnVzaW9uZmluYW5jaWFsc2N1cnZlIiwiYmZ1c2lvbmZ0ZWRlY2lzaW9uYm9hcmQiLCJiZnVzaW9uaGllcmFyY2hpY2FsZ2FudHQiLCJiZnVzaW9ua2FuYmFuYm9hcmQiLCJiZnVzaW9ua3BpZ3JpZCIsIm5hdmlnYXRpb25tZW51IiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJwb3J0Zm9saW9yb2FkbWFwIiwiYmZ1c2lvbnBvcnRmb2xpb3N1bW1hcnlrcGkiLCJiZnVzaW9ucHJvamVjdGxpZmVjeWNsZSIsImJmdXNpb25wcm9qZWN0c3RhdHVzY2FyZCIsImJmdXNpb25yZXNvdXJjZWFsaWdubWVudHN0cmF0ZWd5IiwiYmZ1c2lvbnJlc291cmNlZWZmaWNpZW5jeWJyZWFrZG93biIsImJmdXNpb25yZXNvdXJjZWZvcmVjYXN0IiwiYmZ1c2lvbnJlc291cmNlZ2FwYW5hbHlzaXMiLCJiZnVzaW9ucmVzb3VyY2VoZWF0bWFwIiwiYmZ1c2lvbnJlc291cmNla3BpIiwiYmZ1c2lvbnJpc2ttYXRyaXhleHQiLCJiZnVzaW9ucmlza3JhZGFyY2hhcnQiLCJiZnVzaW9uc2NlbmFyaW9yYWRhciIsImJmdXNpb25zZWxlY3Rpb253YXRlcmZhbGwiLCJiZnVzaW9uc2Vuc2l0aXZpdHl0b3JuYWRvIiwiYmZ1c2lvbnN0YXR1c3RyZW5kc3BhcmtsaW5lIiwiYmZ1c2lvbnN0cmF0ZWdpY3N1bmJ1cnN0IiwiYmZ1c2lvbnRhc2trcGlib2FyZCIsImJmdXNpb253YXRlcmxpbmVtb2RlbGVyIl0sInZlciI6M30.FwXvLyTUoN7rFBnQ7bsSEOcEk_qulOMO9m1vaJyxxA1ka2aEP07UrmLtEqTsz62rfJhtjn002uId2faiR2VOobgTal8knx4gQX4njP3YApBBabn_mPhr4OOzgsuYw0tLZXv-Zkxy2K0CkC_djN_U8YkfAQwm31cnTQ1nwDgDMC265tGUUHIQz4OGofCzjVaI7gW8LmIWcrxPRHKbegiRjI1zDEiQgo5LW7Y8cc6oP20l_5cdYaycYVLCE4a6aEnvl_psy0DtwdZ1yuL2h5NF-hal1_lCwapsZB1Tz7Hw22VuBNjHzLcM-nbw16DwWk7GrM3b4O0hegHbCaWGQx4DLQ'"
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzg2OTYwNDU3LCJleHAiOjE4MzgxNTk5OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfMGMyNzE1Y2ExODhjIiwidmVyIjozLCJ2aXMiOlsiKiJdfQ.MnnT8eu6ij3H3vKZt_NBLkj_9G1AwoI2gE5BBiYtEJ3u-9-Ju5On_8jS9Kg1lhs5iRl3_kxnn4K45vp8OWbqd4JPW0kHafjdIdqnb9jog_U68UPkhgcv8fWDiANsv8G88gCUr8QZUzpcu1_9uxpX-7dLO4dPHge-6LNGS0ACrX02Sarlb8caACG4HVVj4OOuyf_riKjJmMxH-zR9qtDGd_reY5iJ755EKUqzHCjcNf-8HABLK0t5jNKDkdMawJx83u2GCTFuOw6LEqF2Sa3IdwrLmCZW2276IdH7UYiWYt57kypCpYAFEPw5IFIvApNEebcalzDVaEhAbQGHkRnRew'"
                 }
               }
             }

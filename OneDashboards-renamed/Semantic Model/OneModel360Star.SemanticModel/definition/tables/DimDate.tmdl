@@ -1,0 +1,181 @@
+table DimDate
+	lineageTag: 03ec2b07-8d60-4829-8f98-130c7887e976
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 7910bd08-c29d-4ad5-87d8-7b0bdae19f4b
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: fb48d2ed-5e59-4fd2-87b6-afc89a83ff6c
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Year
+		dataType: int64
+		lineageTag: 7588d741-8ba4-45a0-b349-5f1830dff872
+		sourceColumn: Year
+
+	column Quarter
+		dataType: int64
+		lineageTag: b76e530b-c313-431c-a983-99b128aea0db
+		sourceColumn: Quarter
+
+	column Month
+		dataType: int64
+		lineageTag: 1e0f063d-9e27-4f4a-bd4f-dedf2e3c79e8
+		sourceColumn: Month
+
+	column Day
+		dataType: int64
+		lineageTag: 462b4987-a5e1-434d-b526-078be3fb3333
+		sourceColumn: Day
+
+	column YearMonth
+		dataType: int64
+		lineageTag: e9dbcdfb-470d-438c-b207-ce8e233e0394
+		sourceColumn: YearMonth
+
+	column MonthName
+		dataType: string
+		lineageTag: 85aef82f-5a80-42b7-8c4e-e500c952037c
+		sourceColumn: MonthName
+
+	column DayName
+		dataType: string
+		lineageTag: 5d7e45ba-23fd-4557-a76d-cb961eaa4784
+		sourceColumn: DayName
+
+	column WeekOfYear
+		dataType: int64
+		lineageTag: 30a421ae-9900-4b68-98d5-ed6346b6577c
+		sourceColumn: WeekOfYear
+
+	column IsWeekend
+		dataType: boolean
+		lineageTag: cdad4122-1fcd-4005-a59f-4c171dbe78a7
+		sourceColumn: IsWeekend
+
+	column IsBusinessDay
+		dataType: boolean
+		lineageTag: b8b9153c-fcdd-43e8-9cc8-c50516178d3e
+		sourceColumn: IsBusinessDay
+
+	column FiscalYear
+		dataType: int64
+		lineageTag: 7e1db918-073e-44c5-a0a3-7fb9f4a40864
+		sourceColumn: FiscalYear
+
+	column FiscalQuarter
+		dataType: int64
+		lineageTag: a4b1f90a-82aa-4dc1-84ed-0d5ca47ccbb6
+		sourceColumn: FiscalQuarter
+
+	column FiscalMonth
+		dataType: int64
+		lineageTag: 9dedb39b-8ed9-4cc7-813b-1030ed303667
+		sourceColumn: FiscalMonth
+
+	column RelativeMonth
+		dataType: int64
+		lineageTag: e71874f2-00cf-47c7-932e-6a4b7dedaad1
+		sourceColumn: RelativeMonth
+
+	column Today
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 45520e78-78a5-46e3-89d6-c0c961399f32
+		summarizeBy: none
+		sourceColumn: Today
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthCounter
+		dataType: int64
+		lineageTag: 76465238-5d5f-4a10-91ea-501e3922b7ed
+		sourceColumn: MonthCounter
+
+	column Period
+		dataType: string
+		lineageTag: ba30ba53-00dc-47d0-8c52-ee54941cc085
+		sourceColumn: Period
+
+	column 'Quarter Name'
+		dataType: string
+		lineageTag: dedb35c8-b369-4d62-8a44-2db2c27a0fcc
+		sourceColumn: Quarter Name
+
+	column 'Week Number'
+		dataType: int64
+		lineageTag: 71063ac3-7b15-4771-a00f-67bad7e180ee
+		sourceColumn: Week Number
+
+	column Weekday
+		dataType: int64
+		lineageTag: a49f68b3-0b50-41cf-9ea2-105d036886da
+		sourceColumn: Weekday
+
+	column 'Weekday Name'
+		dataType: string
+		lineageTag: c0c8a431-bbf1-449e-818d-675c7c356ecb
+		sourceColumn: Weekday Name
+
+	column 'Is Weekend'
+		dataType: boolean
+		lineageTag: cbb9b457-2a9d-4ec8-8287-28c8a805f9c5
+		sourceColumn: Is Weekend
+
+	column Index
+		dataType: int64
+		lineageTag: 15f78c56-dbc5-4bbe-ad13-4b2d469558e3
+		sourceColumn: Index
+
+	partition DimDate = m
+		source =
+				let
+				    Today_ = Date.From(DateTime.LocalNow()),
+				    Start = #date(Date.Year(Today_) - 3, 1, 1),
+				    End   = #date(Date.Year(Today_) + 5, 12, 31),
+				    Dates = List.Dates(Start, Number.From(End - Start) + 1, #duration(1, 0, 0, 0)),
+				    T0  = Table.FromList(Dates, Splitter.SplitByNothing(), {"Date"}, null, ExtraValues.Error),
+				    T1  = Table.TransformColumnTypes(T0, {{"Date", type date}}),
+				    T2  = Table.AddColumn(T1,  "DateKey",       each Date.Year([Date])*10000 + Date.Month([Date])*100 + Date.Day([Date]), Int64.Type),
+				    T3  = Table.AddColumn(T2,  "Year",          each Date.Year([Date]), Int64.Type),
+				    T4  = Table.AddColumn(T3,  "Quarter",       each Date.QuarterOfYear([Date]), Int64.Type),
+				    T5  = Table.AddColumn(T4,  "Month",         each Date.Month([Date]), Int64.Type),
+				    T6  = Table.AddColumn(T5,  "Day",           each Date.Day([Date]), Int64.Type),
+				    T7  = Table.AddColumn(T6,  "YearMonth",     each Date.Year([Date])*100 + Date.Month([Date]), Int64.Type),
+				    T8  = Table.AddColumn(T7,  "MonthName",     each Date.ToText([Date], "MMMM", "en-US"), type text),
+				    T9  = Table.AddColumn(T8,  "DayName",       each Date.ToText([Date], "dddd", "en-US"), type text),
+				    T10 = Table.AddColumn(T9,  "WeekOfYear",    each Date.WeekOfYear([Date]), Int64.Type),
+				    T11 = Table.AddColumn(T10, "IsWeekend",     each Date.DayOfWeek([Date], Day.Monday) >= 5, type logical),
+				    T12 = Table.AddColumn(T11, "IsBusinessDay", each not [IsWeekend], type logical),
+				    T13 = Table.AddColumn(T12, "FiscalYear",    each Date.Year([Date]), Int64.Type),
+				    T14 = Table.AddColumn(T13, "FiscalQuarter", each Date.QuarterOfYear([Date]), Int64.Type),
+				    T15 = Table.AddColumn(T14, "FiscalMonth",   each Date.Month([Date]), Int64.Type),
+				    T16 = Table.AddColumn(T15, "RelativeMonth", each (Date.Year([Date]) - Date.Year(Today_))*12 + (Date.Month([Date]) - Date.Month(Today_)), Int64.Type),
+				    // Legacy Calendar compat
+				    T17 = Table.AddColumn(T16, "Today",         each Today_, type date),
+				    T18 = Table.AddColumn(T17, "MonthCounter",  each [Year]*100 + [Month], Int64.Type),
+				    T19 = Table.AddColumn(T18, "Period",        each Date.ToText([Date], "MMM-yy", "en-US"), type text),
+				    T20 = Table.AddColumn(T19, "Quarter Name",  each "Q" & Number.ToText([Quarter]), type text),
+				    T21 = Table.AddColumn(T20, "Week Number",   each [WeekOfYear], Int64.Type),
+				    T22 = Table.AddColumn(T21, "Weekday",       each Date.DayOfWeek([Date]) + 1, Int64.Type),
+				    T23 = Table.AddColumn(T22, "Weekday Name",  each [DayName], type text),
+				    T24 = Table.AddColumn(T23, "Is Weekend",    each [IsWeekend], type logical),
+				    T25 = Table.AddIndexColumn(T24, "Index", 0, 1, Int64.Type)
+				in
+				    T25
+

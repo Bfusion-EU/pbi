@@ -1,0 +1,635 @@
+table DimTask
+	lineageTag: 1d0fe7f6-40cd-449b-baa9-5f9183eba00a
+
+	column Id
+		dataType: string
+		lineageTag: 7929d54b-7218-4a86-b321-805212d85d79
+		sourceColumn: Id
+
+	column Name
+		dataType: string
+		lineageTag: 6591dda2-d926-4041-8f3e-5c82702e0707
+		sourceColumn: Name
+
+	column Created
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 87ff92eb-820d-4256-820c-d60a0f1ef8b9
+		summarizeBy: none
+		sourceColumn: Created
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modified
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 369b6a67-b44d-496f-9deb-ba09cfcc6f02
+		summarizeBy: none
+		sourceColumn: Modified
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanId
+		dataType: string
+		lineageTag: b21759e8-4ea0-4fc1-8eb9-a816b025e4a7
+		sourceColumn: PlanId
+
+	column ParentTaskId
+		dataType: string
+		lineageTag: ef715d76-0e70-4cc6-a20c-08821faf4add
+		sourceColumn: ParentTaskId
+
+	column Leaf
+		dataType: boolean
+		lineageTag: 0075cf88-6268-4542-a590-fc7a0a6b7c47
+		sourceColumn: Leaf
+
+	column Inactive
+		dataType: boolean
+		lineageTag: 58625e52-2c64-4b5c-ae76-1673abccb964
+		sourceColumn: Inactive
+
+	column WorkType
+		dataType: string
+		lineageTag: bfbba9b5-08eb-43f8-91cc-16cca84598aa
+		sourceColumn: WorkType
+
+	column Assignment
+		dataType: string
+		lineageTag: 3d0d6a4a-e94c-4697-a731-075310b4c9f5
+		sourceColumn: Assignment
+
+	column Status
+		dataType: string
+		lineageTag: 17db068a-87fb-4d68-a08e-72c799c015cb
+		sourceColumn: Status
+
+	column Complete
+		dataType: boolean
+		lineageTag: 6aa261d2-7904-4706-8717-55c20590c0c7
+		sourceColumn: Complete
+
+	column EstimatedCost
+		dataType: double
+		lineageTag: 517f7355-4b95-4873-9295-e8199209a3c9
+		sourceColumn: EstimatedCost
+
+	column EstimatedRevenue
+		dataType: double
+		lineageTag: 8588bb26-b7e1-4673-b9fa-b8cee803bd22
+		sourceColumn: EstimatedRevenue
+
+	column State
+		dataType: string
+		lineageTag: a5725a6f-c148-41bf-99e4-9169b3d207d3
+		sourceColumn: State
+
+	column TimesheetHours
+		dataType: double
+		lineageTag: b48e0788-f4ce-4093-9612-387efb25486b
+		sourceColumn: TimesheetHours
+
+	column Priority
+		dataType: string
+		lineageTag: 703e61d5-2003-4a42-a0b1-dcd16a47e884
+		sourceColumn: Priority
+
+	column TaskStatus
+		dataType: string
+		lineageTag: 5e1a0666-3a46-461c-b7d0-5780ddf82fa8
+		sourceColumn: TaskStatus
+
+	column StatusNotes
+		dataType: string
+		lineageTag: 88d7c3c0-ce82-4d06-9bc8-11490b609174
+		sourceColumn: StatusNotes
+
+	column RemainingEffort
+		dataType: double
+		lineageTag: 5e527232-5fbf-4e11-90e0-788cc9968b1d
+		sourceColumn: RemainingEffort
+
+	column ActualCost
+		dataType: double
+		lineageTag: cdb78d0c-75af-45ac-904f-2660a116558f
+		sourceColumn: ActualCost
+
+	column RemainingCost
+		dataType: double
+		lineageTag: 0197f853-8468-4ceb-9a8a-553ed1dfe38c
+		sourceColumn: RemainingCost
+
+	column ActualRevenue
+		dataType: double
+		lineageTag: a53d01cc-dbcd-48f7-9117-ac0a3ffc178d
+		sourceColumn: ActualRevenue
+
+	column RemainingRevenue
+		dataType: double
+		lineageTag: e0190e7d-d5a3-4de3-a22f-9e4fcacb70b6
+		sourceColumn: RemainingRevenue
+
+	column Points
+		dataType: double
+		lineageTag: 7557ab6f-02a2-4dab-9509-87de2e298658
+		sourceColumn: Points
+
+	column Description
+		dataType: string
+		lineageTag: 52bdc14b-2f67-4941-81d2-3a42d0b9ea9b
+		sourceColumn: Description
+
+	column Impact
+		dataType: string
+		lineageTag: a8f9bbf2-580d-4e70-9756-baeac3603720
+		sourceColumn: Impact
+
+	column Category
+		dataType: string
+		lineageTag: 40ddab4e-b6de-448e-814c-4ce286acae41
+		sourceColumn: Category
+
+	column RiskStage
+		dataType: string
+		lineageTag: 2e66ba1a-c4e3-4ccc-9c2a-b919153c3793
+		sourceColumn: RiskStage
+
+	column Mitigation
+		dataType: string
+		lineageTag: 612be16f-7f2a-4943-9202-a95eaf802352
+		sourceColumn: Mitigation
+
+	column CostImpact
+		dataType: double
+		lineageTag: e38a241f-123b-4be1-beed-6d6b42c96eb8
+		sourceColumn: CostImpact
+
+	column TopicArea
+		dataType: string
+		lineageTag: 0e411e85-39fe-405d-a03a-6b7016f19ca4
+		sourceColumn: TopicArea
+
+	column DecisionDate
+		dataType: dateTime
+		lineageTag: 8b989cfb-2292-4087-9b55-1de5494032d5
+		sourceColumn: DecisionDate
+
+	column DecisionImpact
+		dataType: string
+		lineageTag: 6fd1bbd3-aeb6-4c8c-a376-dd1a268c9261
+		sourceColumn: DecisionImpact
+
+	column DecisionMakers
+		dataType: string
+		lineageTag: dbb83170-96d0-4ad0-bab6-76df7de30230
+		sourceColumn: DecisionMakers
+
+	column ShowinReports
+		dataType: string
+		lineageTag: fa98e9c2-bb6a-4b40-93af-d6033d3edefd
+		sourceColumn: ShowinReports
+
+	column MSPWBS
+		dataType: string
+		lineageTag: b402eb20-e8e2-4fb1-b197-eadc889ad1b0
+		sourceColumn: MSPWBS
+
+	column Contingency
+		dataType: string
+		lineageTag: 1da57325-7b7e-4f8f-8eb2-f1cd3fedd4ee
+		sourceColumn: Contingency
+
+	column Resolution
+		dataType: string
+		lineageTag: 68b173be-ceab-41e2-8d1a-46c78b8f7b9e
+		sourceColumn: Resolution
+
+	column Exposure
+		dataType: double
+		lineageTag: 02aed2fd-8efc-4714-926f-717778dc5c1d
+		sourceColumn: Exposure
+
+	column Probability
+		dataType: double
+		lineageTag: 473e93b8-db1f-47cc-95bd-728717e9b4e2
+		sourceColumn: Probability
+
+	column Risk
+		dataType: string
+		lineageTag: ace5eb57-0977-431c-97fd-3c96c96cf1fe
+		sourceColumn: Risk
+
+	column ItemType
+		dataType: string
+		lineageTag: abfc9aa9-ef5c-45ec-89fa-6b596b3b0d2e
+		sourceColumn: ItemType
+
+	column BusinessValue
+		dataType: string
+		lineageTag: d176ce37-baa8-4f0f-9fc4-e14dfb17cc45
+		sourceColumn: BusinessValue
+
+	column BaselinePercentDone
+		dataType: double
+		lineageTag: 2ef01421-48aa-4135-bead-d3ac2589b4f9
+		sourceColumn: BaselinePercentDone
+
+	column BaselineEndDate
+		dataType: dateTime
+		lineageTag: 269133d6-34bc-40a5-821c-0bc041588514
+		sourceColumn: BaselineEndDate
+
+	column BaselineEffort
+		dataType: double
+		lineageTag: c22ed637-3b5b-4a94-946f-963e5c481481
+		sourceColumn: BaselineEffort
+
+	column BaselineStartDate
+		dataType: dateTime
+		lineageTag: 7a12e0d8-feb0-42c2-9fae-66e6c82d47b2
+		sourceColumn: BaselineStartDate
+
+	column BaselineRemainingEffort
+		dataType: double
+		lineageTag: ff1d43fd-2b56-49c2-838c-167a40f4e81a
+		sourceColumn: BaselineRemainingEffort
+
+	column ChargeType
+		dataType: string
+		lineageTag: 0c37cb74-b5fa-4d53-aa29-06b0c34e74d6
+		sourceColumn: ChargeType
+
+	column FixedCost
+		dataType: double
+		lineageTag: 844c2a85-bacc-437c-bc7b-9cc0a5d48683
+		sourceColumn: FixedCost
+
+	column Rate
+		dataType: double
+		lineageTag: 2da49870-82b2-41d0-aa74-f6121cae134c
+		sourceColumn: Rate
+
+	column Deadline
+		dataType: dateTime
+		lineageTag: dc6eafc3-0131-4630-a34b-a7bb109b72d9
+		sourceColumn: Deadline
+
+	column DeadlineCalc
+		dataType: double
+		lineageTag: f26b525a-b3ec-4730-af2c-24bf3405a1d3
+		sourceColumn: DeadlineCalc
+
+	column critical
+		dataType: boolean
+		lineageTag: 1639435a-4da7-46cd-8ca4-c598564b71b7
+		sourceColumn: critical
+
+	column FixedBudget
+		dataType: double
+		lineageTag: 36176cde-ed27-42ff-ba45-074a7cb37b5c
+		sourceColumn: FixedBudget
+
+	column BudgetUsed
+		dataType: double
+		lineageTag: 8cd507f9-4d10-4541-a4f8-6fe5a04da180
+		sourceColumn: BudgetUsed
+
+	column EstimatedProfit
+		dataType: double
+		lineageTag: 7df24851-a7ae-406a-8886-28642ce20523
+		sourceColumn: EstimatedProfit
+
+	column ProfitVariance
+		dataType: double
+		lineageTag: 7acd2ab0-30a6-4eaa-81b3-caf958c4afa4
+		sourceColumn: ProfitVariance
+
+	column ChargeableHours
+		dataType: double
+		lineageTag: be3950ba-7f6f-431b-a2f0-b517920ebe1a
+		sourceColumn: ChargeableHours
+
+	column RemainingChargeableEffort
+		dataType: double
+		lineageTag: 4b059658-1fea-4e31-ad7f-2bce3517a035
+		sourceColumn: RemainingChargeableEffort
+
+	column LaborRevenue
+		dataType: double
+		lineageTag: 63d1834e-237c-48f1-b641-5ad2be3bbc3d
+		sourceColumn: LaborRevenue
+
+	column LaborCost
+		dataType: double
+		lineageTag: e06b69dd-39ff-4509-b258-5d1cb9095b5a
+		sourceColumn: LaborCost
+
+	column TotalActualCost
+		dataType: double
+		lineageTag: 27a9cd58-698f-48ce-a51f-4a80b1983187
+		sourceColumn: TotalActualCost
+
+	column TotalActualRevenue
+		dataType: double
+		lineageTag: 4d8d8f41-b975-4502-8e40-978b714d5be1
+		sourceColumn: TotalActualRevenue
+
+	column ActualProfit
+		dataType: double
+		lineageTag: 6e8040b2-3eb7-4b6f-84cb-1195900ceb88
+		sourceColumn: ActualProfit
+
+	column Margin
+		dataType: double
+		lineageTag: 05f36c37-3f4b-4914-88f4-489bff4aa845
+		sourceColumn: Margin
+
+	column ActualMargin
+		dataType: double
+		lineageTag: 7f19ecef-a94c-49c1-b97d-3d99359cb9b9
+		sourceColumn: ActualMargin
+
+	column MarginVariance
+		dataType: double
+		lineageTag: e2a52e4d-733a-43c6-a83f-fe74b05dd279
+		sourceColumn: MarginVariance
+
+	column WorkItemIdentifier
+		dataType: string
+		lineageTag: 865f1e2a-7fce-44ec-be0d-c07923fca0ec
+		sourceColumn: WorkItemIdentifier
+
+	column StartDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c8551b65-233e-4b8b-863d-05d3f1d8b8d3
+		summarizeBy: none
+		sourceColumn: StartDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column EndDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 99b041a8-30c6-4c21-a15e-ccf9ef6e0fd4
+		summarizeBy: none
+		sourceColumn: EndDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column Effort
+		dataType: double
+		lineageTag: cf6ae6f4-807a-496d-820b-c22e71c10f14
+		sourceColumn: Effort
+
+	column Duration
+		dataType: double
+		lineageTag: 436fb39b-1d94-48bb-b2cb-b7d1890b5c9c
+		sourceColumn: Duration
+
+	column PercentDone
+		dataType: double
+		lineageTag: 8170c842-b3eb-4932-bd83-c6c4cb644efd
+		sourceColumn: PercentDone
+
+	column taskorder
+		dataType: double
+		lineageTag: d3e624ff-e6b4-4e2c-adc9-ea4fa922015e
+		sourceColumn: taskorder
+
+	column WBS
+		dataType: string
+		lineageTag: bcb3a6ee-2240-47a7-a7b0-85d9dc21cc8a
+		sourceColumn: WBS
+
+	column Milestone
+		dataType: boolean
+		lineageTag: ed768542-e4b7-4041-92c1-2f18b121e561
+		sourceColumn: Milestone
+
+	column DurationUnit
+		dataType: string
+		lineageTag: b48d89a2-1737-48a2-b90b-a19998943ee2
+		sourceColumn: DurationUnit
+
+	column ShowInTimeline
+		dataType: boolean
+		lineageTag: d62382f4-a721-4b62-8bf0-0e5aecde09ad
+		sourceColumn: ShowInTimeline
+
+	column TotalCost
+		dataType: double
+		lineageTag: 80cc25ac-2179-4bfd-9f86-0464b2c8e44e
+		sourceColumn: TotalCost
+
+	column Owner
+		dataType: string
+		lineageTag: 3a662150-96c9-42f2-a6bb-be25cd2e81fc
+		sourceColumn: Owner
+
+	column RemainingLaborCost
+		dataType: double
+		lineageTag: 88b1da6a-d8b0-4b46-85d1-a9d4663520ac
+		sourceColumn: RemainingLaborCost
+
+	column NonLaborCost
+		dataType: double
+		lineageTag: 332ca0c9-4595-4570-bc83-6ffd69fcfaf5
+		sourceColumn: NonLaborCost
+
+	column Note
+		dataType: string
+		lineageTag: f982d6ce-692f-4cf4-951e-755f4d996680
+		sourceColumn: Note
+
+	column Financial_a0671c7b03f4cf89bda76ba3612c14cb
+		dataType: string
+		lineageTag: a40ce652-1fbd-4348-b344-96a3d93fef17
+		sourceColumn: Financial_a0671c7b03f4cf89bda76ba3612c14cb
+
+	column Urgency
+		dataType: string
+		lineageTag: 25d8ec44-9510-4188-81af-131b746a6516
+		sourceColumn: Urgency
+
+	column RiskMagnitude
+		dataType: string
+		lineageTag: a9048cad-03a1-4e05-a75d-2ac36ffcb48f
+		sourceColumn: RiskMagnitude
+
+	column RiskTO
+		dataType: string
+		lineageTag: 0b2bcb18-8be2-4ecb-bdce-6bd324db5307
+		sourceColumn: RiskTO
+
+	column RiskResponse
+		dataType: string
+		lineageTag: b7057830-c60d-4b7b-a74d-6b53c5c6be8f
+		sourceColumn: RiskResponse
+
+	column Severity
+		dataType: string
+		lineageTag: 07b10f09-d604-48ee-9897-75b026cdd65f
+		sourceColumn: Severity
+
+	column Severity_Value
+		dataType: string
+		lineageTag: 681bba84-7690-4c1e-a797-c851d8b5ee96
+		sourceColumn: Severity_Value
+
+	column Occurence
+		dataType: string
+		lineageTag: fc3299a3-954c-4d3b-bc93-2adcac47b2c7
+		sourceColumn: Occurence
+
+	column MitigationActions
+		dataType: string
+		lineageTag: dce4c251-ea40-4271-95fb-a113cd6b5535
+		sourceColumn: MitigationActions
+
+	column ProbabilityPostMitigation
+		dataType: double
+		lineageTag: 7b779f7e-2bf6-4a54-a891-326d4c79ec10
+		sourceColumn: ProbabilityPostMitigation
+
+	column EffectivenessLevel
+		dataType: string
+		lineageTag: f96705f9-5791-4ed6-8464-d4913ba884d7
+		sourceColumn: EffectivenessLevel
+
+	column Detection
+		dataType: string
+		lineageTag: bfb8c270-6fda-46b2-b37e-5152efd4f879
+		sourceColumn: Detection
+
+	column RiskType
+		dataType: string
+		lineageTag: 7b89cbb6-8975-4771-b303-5c0619700e3b
+		sourceColumn: RiskType
+
+	column RPN
+		dataType: double
+		lineageTag: bb1c8098-cab9-4ea4-bc1d-fddbf167718b
+		sourceColumn: RPN
+
+	column TaskKey
+		dataType: int64
+		isHidden
+		lineageTag: 5556ee63-4298-4204-af25-3acbe71a9ca7
+		summarizeBy: none
+		sourceColumn: TaskKey
+
+	column TaskBK
+		dataType: string
+		lineageTag: 3997d20d-db04-43ae-9810-ef15484a321d
+		sourceColumn: TaskBK
+
+	column 'Overdue Tasks' = IF(DimTask[EndDate]<TODAY(),[Task | Task Count])
+		displayFolder: Values
+		lineageTag: 10de9fb4-2a0f-48f9-a486-0116e5b57f82
+		summarizeBy: sum
+
+	column 'Probability Category' =
+			SWITCH(
+			    TRUE(),
+			    DimTask[Probability] >= 75, "(1) Critical",
+			    DimTask[Probability] >= 50, "(2) High",
+			    DimTask[Probability] >= 25, "(3) Medium",
+			    "(4) Low"
+			)
+		lineageTag: ae300fd7-dab7-49c0-ae60-1196c1994c01
+		summarizeBy: none
+
+	column ParentName = LOOKUPVALUE ( DimTask[Name], DimTask[Id], DimTask[ParentTaskId] )
+		displayFolder: Attributes
+		lineageTag: 46bb932f-1b28-48d7-9ccc-d77c18b4507e
+
+	column Predecessors =
+			CONCATENATEX(
+			    FILTER( BridgeTaskDependency, BridgeTaskDependency[To] = DimTask[Id] ),
+			    BridgeTaskDependency[From],
+			    ","
+			)
+		lineageTag: 2bb0a4c0-173a-4b3f-95c3-46a77696b341
+
+	column PredecessorTypes =
+			CONCATENATEX(
+			    FILTER( BridgeTaskDependency, BridgeTaskDependency[To] = DimTask[Id] ),
+			    BridgeTaskDependency[From] & ":" & BridgeTaskDependency[Type],
+			    ","
+			)
+		lineageTag: 004044be-e0c7-4d72-8ad2-5531d2d88169
+
+	column 'Slack (days)' = ```
+			VAR CurrentEnd = DimTask[EndDate]
+			VAR CurrentId = DimTask[id]
+			VAR SuccessorMinStart = 
+			    MINX(
+			        FILTER(BridgeTaskDependency, BridgeTaskDependency[From] = CurrentId),
+			        VAR SuccId = BridgeTaskDependency[To]
+			        RETURN LOOKUPVALUE(DimTask[StartDate], DimTask[id], SuccId)
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(SuccessorMinStart),
+			        BLANK(),
+			        MAX(0, DATEDIFF(CurrentEnd, SuccessorMinStart, DAY))
+			    )
+			```
+		lineageTag: cf934aa4-2f22-4ccc-bac1-6a133a30f2a5
+
+	column ProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: a49584f2-bfc6-4db0-a46e-db4dec4ec5fb
+		summarizeBy: none
+		sourceColumn: ProjectKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column BaselineDuration
+		dataType: double
+		lineageTag: 619028ba-abf6-4676-a924-8ffb30d5e024
+		summarizeBy: sum
+		sourceColumn: BaselineDuration
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LastBaselineDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 74ee7253-007e-4e94-81e4-5a2cbe830e05
+		summarizeBy: none
+		sourceColumn: LastBaselineDate
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimTask = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="Tasks", Signature="table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Raw,
+				        {{"Created", type date},{"Modified", type date},{"StartDate", type date},{"EndDate", type date}},
+				        "en-US"),
+				    Cleaned = Table.RemoveColumns(Typed, {"WorkTypeId", "ModifiedBy", "CreatedBy"}, MissingField.Ignore),
+				    Keyed = Table.AddIndexColumn(Cleaned, "TaskKey", 1, 1, Int64.Type),
+				    AddBK = Table.AddColumn(Keyed, "TaskBK", each [Id], type text),
+				    DimP = DimProject,
+				    J1 = Table.NestedJoin(AddBK, {"PlanId"}, DimP, {"ProjectBK"}, "_P", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_P", {"ProjectKey"}, {"ProjectKey"})
+				in
+				    E1
+
+	annotation PBI_ResultType = Table
+

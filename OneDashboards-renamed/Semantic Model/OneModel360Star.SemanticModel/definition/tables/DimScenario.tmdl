@@ -1,0 +1,124 @@
+table DimScenario
+	lineageTag: 1decba64-a7d1-40c2-b15d-45fb63b832eb
+
+	column id
+		dataType: string
+		lineageTag: 688c2b7a-9497-4478-9ffa-baf80bac4220
+		sourceColumn: id
+
+	column Name
+		dataType: string
+		lineageTag: 5b82414b-2797-4b0c-a8ce-a0d7fe7e27e3
+		sourceColumn: Name
+
+	column UserId
+		dataType: string
+		lineageTag: f5eb2f0b-9ed7-4ed6-b5ac-a4f91fb0dc0d
+		sourceColumn: UserId
+
+	column ParentModelId
+		dataType: string
+		lineageTag: e1f6a0c8-4667-462a-b4b5-50203b6a0ab3
+		sourceColumn: ParentModelId
+
+	column Personal
+		dataType: boolean
+		lineageTag: 6745a419-2569-4d35-bad2-da5cdee9eea8
+		sourceColumn: Personal
+
+	column TotalPlans
+		dataType: int64
+		lineageTag: 70689d9a-6825-4168-b1bc-f0935310bde9
+		sourceColumn: TotalPlans
+
+	column TotalCheckedPlans
+		dataType: int64
+		lineageTag: bdf74279-5b21-43c8-a5de-dafa1dcc61c9
+		sourceColumn: TotalCheckedPlans
+
+	column CommitDetails_CommittedOn
+		dataType: dateTime
+		lineageTag: e0bd66e7-79d6-41c6-8321-3890d5570c0f
+		sourceColumn: CommitDetails_CommittedOn
+
+	column CommitDetails_CommittedBy
+		dataType: string
+		lineageTag: 0a485990-efbe-49aa-b7a5-1af901fa04a2
+		sourceColumn: CommitDetails_CommittedBy
+
+	column CommitDetails_Committed
+		dataType: boolean
+		lineageTag: 4c5fc213-0376-4df4-a0f6-2dbdff5ce28b
+		sourceColumn: CommitDetails_Committed
+
+	column TotalBenefits
+		dataType: double
+		lineageTag: b3ada938-ba89-4a30-a0cb-c6e3a67b7557
+		sourceColumn: TotalBenefits
+
+	column TargetBenefits
+		dataType: double
+		lineageTag: 20340e9e-92c2-472f-986d-9b31c9cb53f1
+		sourceColumn: TargetBenefits
+
+	column TotalBudget
+		dataType: double
+		lineageTag: db9d5f32-2279-44bb-9032-e0618c42d219
+		sourceColumn: TotalBudget
+
+	column TargetBudget
+		dataType: double
+		lineageTag: 45755a6a-8202-492d-9e03-1b2b58b5b8fa
+		sourceColumn: TargetBudget
+
+	column TotalCommittedEffort
+		dataType: double
+		lineageTag: 44e1b1ae-9d32-4d89-a036-63e41b707f77
+		sourceColumn: TotalCommittedEffort
+
+	column TargetCommittedEffort
+		dataType: double
+		lineageTag: bcef1dc5-35e5-4e4b-8eeb-943e20603110
+		sourceColumn: TargetCommittedEffort
+
+	column ScenarioKey
+		dataType: int64
+		isHidden
+		lineageTag: 71f74db0-55a9-463a-8edf-da4968509be1
+		summarizeBy: none
+		sourceColumn: ScenarioKey
+
+	column ScenarioBK
+		dataType: string
+		lineageTag: 00496a35-d3c6-496a-822e-729d582131e6
+		sourceColumn: ScenarioBK
+
+	column ModelName_Star
+		dataType: string
+		lineageTag: 8b1565eb-cea3-4e63-a3bd-fa5bc1cd6ba6
+		sourceColumn: ModelName_Star
+
+	column NumberOfScenarios
+		dataType: int64
+		displayFolder: Values\Counts
+		lineageTag: b6fe1563-755a-4777-a29e-c9ee374b8c3d
+		summarizeBy: none
+		sourceColumn: NumberOfScenarios
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimScenario = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Sc  = Source{[Name="ModelerScenario", Signature="table"]}[Data],
+				    Mdl = Source{[Name="ModelerModel",    Signature="table"]}[Data],
+				    Joined = Table.NestedJoin(Sc, {"ParentModelId"}, Mdl, {"id"}, "_M", JoinKind.LeftOuter),
+				    Expanded = Table.ExpandTableColumn(Joined, "_M", {"Name", "NumberOfScenarios"}, {"ModelName_Star", "NumberOfScenarios"}),
+				    Keyed = Table.AddIndexColumn(Expanded, "ScenarioKey", 1, 1, Int64.Type),
+				    AddBK = Table.AddColumn(Keyed, "ScenarioBK", each [id], type text)
+				in
+				    AddBK
+
+	annotation PBI_ResultType = Exception
+

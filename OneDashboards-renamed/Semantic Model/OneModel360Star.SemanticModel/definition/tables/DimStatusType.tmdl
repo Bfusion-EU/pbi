@@ -1,0 +1,59 @@
+table DimStatusType
+	lineageTag: 81f3caa8-ab92-4e7f-8fcb-e30c835e3ab9
+
+	column StatusTypeKey
+		dataType: int64
+		isHidden
+		lineageTag: 2f91d3fa-c55b-4c6a-a42a-2ee8c7157511
+		summarizeBy: none
+		sourceColumn: StatusTypeKey
+
+	column StatusCode
+		dataType: string
+		lineageTag: 6a7af46a-54b5-4af1-a5b6-0f083eaeffb2
+		sourceColumn: StatusCode
+
+	column StatusLabel
+		dataType: string
+		lineageTag: a875aa96-17c1-45f3-ac12-45c1ea5f5f22
+		sourceColumn: StatusLabel
+
+	column StatusColor
+		dataType: string
+		lineageTag: c7e14286-9c36-492b-b3fc-d322458517c2
+		sourceColumn: StatusColor
+
+	column StatusGroup
+		dataType: string
+		lineageTag: 701a2af9-f8b0-41d6-ad9c-d8c633208ee8
+		sourceColumn: StatusGroup
+
+	column SortOrder
+		dataType: int64
+		lineageTag: ff968e2d-bfc9-4611-be79-d497356ce3ad
+		sourceColumn: SortOrder
+
+	partition DimStatusType = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    P = Source{[Name="Plans", Signature="table"]}[Data],
+				    Sched   = Table.RenameColumns(Table.Distinct(Table.SelectColumns(P, {"ScheduleHealth_Value"})), {{"ScheduleHealth_Value", "StatusCode"}}),
+				    Overall = Table.RenameColumns(Table.Distinct(Table.SelectColumns(P, {"OverallHealth_Value"})),  {{"OverallHealth_Value",  "StatusCode"}}),
+				    State_  = Table.RenameColumns(Table.Distinct(Table.SelectColumns(P, {"State_Value"})),          {{"State_Value",          "StatusCode"}}),
+				    All_ = Table.Distinct(Table.Combine({Sched, Overall, State_})),
+				    Filtered = Table.SelectRows(All_, each [StatusCode] <> null and [StatusCode] <> ""),
+				    Keyed = Table.AddIndexColumn(Filtered, "StatusTypeKey", 1, 1, Int64.Type),
+				    Label = Table.AddColumn(Keyed, "StatusLabel", each [StatusCode], type text),
+				    Color = Table.AddColumn(Label, "StatusColor", each
+				        if Text.Contains(Text.Lower([StatusCode] ?? ""), "green")  or Text.Contains(Text.Lower([StatusCode] ?? ""), "track") then "#2E7D32"
+				        else if Text.Contains(Text.Lower([StatusCode] ?? ""), "yellow") or Text.Contains(Text.Lower([StatusCode] ?? ""), "risk") then "#F9A825"
+				        else if Text.Contains(Text.Lower([StatusCode] ?? ""), "red")    or Text.Contains(Text.Lower([StatusCode] ?? ""), "late") then "#C62828"
+				        else "#9E9E9E", type text),
+				    Group_ = Table.AddColumn(Color, "StatusGroup", each "Health", type text),
+				    Sort   = Table.AddColumn(Group_, "SortOrder", each [StatusTypeKey], Int64.Type)
+				in
+				    Sort
+
+	annotation PBI_ResultType = Exception
+

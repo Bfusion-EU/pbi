@@ -1,0 +1,60 @@
+table FactModelerScenarioPlan
+	lineageTag: 4ab2df31-2b29-4871-9845-d6905c21e388
+
+	column id
+		dataType: string
+		lineageTag: d61a81fa-257b-47c8-a47f-d0b06a5fe1fb
+		sourceColumn: id
+
+	column ParentScenarioId
+		dataType: string
+		lineageTag: 8b96f24c-341f-4565-bdc7-77c44089766f
+		sourceColumn: ParentScenarioId
+
+	column ParentScenarioName
+		dataType: string
+		lineageTag: 9e6090b7-8304-4fb6-93fc-2397c923cc9f
+		sourceColumn: ParentScenarioName
+
+	column Name
+		dataType: string
+		lineageTag: df9c58b9-04e0-48d1-b58e-092bdcf6f33f
+		sourceColumn: Name
+
+	column Checked
+		dataType: boolean
+		lineageTag: 0dba3156-e9a2-48ac-a8b6-dd48193b5070
+		sourceColumn: Checked
+
+	column Priority
+		dataType: double
+		lineageTag: 9453d88e-34f7-4dc2-8566-fdc15e917be6
+		sourceColumn: Priority
+
+	column ScenarioKey
+		dataType: int64
+		isHidden
+		lineageTag: 22d5964f-a53a-4cb6-b04a-7f05881c2037
+		summarizeBy: none
+		sourceColumn: ScenarioKey
+
+	column ProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: 8d332d73-5db7-42cc-8ef3-cc54e8e48b04
+		summarizeBy: none
+		sourceColumn: ProjectKey
+
+	partition FactModelerScenarioPlan = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="ModelerScenarioPlan", Signature="table"]}[Data],
+				    DimS = DimScenario, DimP = DimProject,
+				    J1 = Table.NestedJoin(Raw, {"ParentScenarioId"}, DimS, {"ScenarioBK"}, "_S", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_S", {"ScenarioKey"}, {"ScenarioKey"}),
+				    J2 = Table.NestedJoin(E1, {"Name"}, DimP, {"Name"}, "_P", JoinKind.LeftOuter),
+				    E2 = Table.ExpandTableColumn(J2, "_P", {"ProjectKey"}, {"ProjectKey"})
+				in
+				    E2
+

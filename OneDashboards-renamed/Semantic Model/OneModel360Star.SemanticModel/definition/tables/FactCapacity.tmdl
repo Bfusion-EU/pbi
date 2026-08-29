@@ -1,0 +1,56 @@
+table FactCapacity
+	lineageTag: 6597c0b6-b6ae-4a42-8683-fe24b33dfbaf
+
+	column ResourceId
+		dataType: string
+		lineageTag: bddf5a50-3190-4dd1-8809-19bcde65f127
+		sourceColumn: ResourceId
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3581a2e1-64d7-4ddf-aaea-eb3342608362
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column Capacity
+		dataType: double
+		lineageTag: 659b5109-2056-4e85-8ac7-16ccedbab664
+		sourceColumn: Capacity
+
+	column Units
+		dataType: double
+		lineageTag: 507315d0-3b5f-4cda-beff-8a41e0279df2
+		sourceColumn: Units
+
+	column ResourceKey
+		dataType: int64
+		isHidden
+		lineageTag: 06b12bd9-8fd1-4759-8c50-8ceb7f386d53
+		summarizeBy: none
+		sourceColumn: ResourceKey
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 6dacc599-6e39-412a-b18f-cff9c0e579ce
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	partition FactCapacity = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="Capacity", Signature="table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Raw, {{"Date", type date}}, "en-US"),
+				    DimR = DimResource,
+				    J1 = Table.NestedJoin(Typed, {"ResourceId"}, DimR, {"ResourceBK"}, "_R", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_R", {"ResourceKey"}, {"ResourceKey"}),
+				    AddDK = Table.AddColumn(E1, "DateKey", each Date.Year([Date])*10000 + Date.Month([Date])*100 + Date.Day([Date]), Int64.Type)
+				in
+				    AddDK
+

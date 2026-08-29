@@ -1,0 +1,180 @@
+relationship e7062302-1dcf-4620-a22a-8536b63d2112
+	isActive: false
+	fromColumn: FactAssignment.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship b1e24165-1c78-488d-935d-737e9db8e0e8
+	fromColumn: FactAssignment.TaskKey
+	toColumn: DimTask.TaskKey
+
+relationship 2743ed53-09e4-476a-b322-f241354b6f59
+	fromColumn: FactAssignment.ResourceKey
+	toColumn: DimResource.ResourceKey
+
+relationship e22153f8-2d1e-4a0c-a09c-4b1dbd0d13b6
+	fromColumn: FactResourcePlan.DateKey
+	toColumn: DimDate.DateKey
+
+relationship b8144354-2b3f-4fa1-a5a0-bdd780ed0b60
+	fromColumn: FactResourcePlan.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship 86789e55-0219-48d1-b239-8f6b511b6636
+	fromColumn: FactResourcePlan.ResourceKey
+	toColumn: DimResource.ResourceKey
+
+relationship fb7d318b-12e3-4bca-b9da-6bddf1e2a301
+	fromColumn: FactCapacity.DateKey
+	toColumn: DimDate.DateKey
+
+relationship 12c7a84d-4494-47d5-9fff-6a03b0071355
+	fromColumn: FactCapacity.ResourceKey
+	toColumn: DimResource.ResourceKey
+
+relationship df39d17a-5d70-418f-b9d0-4a6ce2784073
+	fromColumn: FactTimeOff.DateKey
+	toColumn: DimDate.DateKey
+
+relationship 9412937c-e507-42b0-a820-a17d961012a0
+	fromColumn: FactTimeOff.ResourceKey
+	toColumn: DimResource.ResourceKey
+
+relationship b751296c-19cc-4d6e-860e-44dbe5eba0b9
+	fromColumn: FactTimeOff.LeaveTypeKey
+	toColumn: DimLeaveType.LeaveTypeKey
+
+relationship 0a586a9f-afe7-4a2b-ad10-7d1fd038a974
+	fromColumn: FactCost.DateKey
+	toColumn: DimDate.DateKey
+
+relationship ede295db-441b-4540-a18f-45311b1195c8
+	fromColumn: FactCost.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship d83bebda-7628-49c8-8065-9ca164b059aa
+	fromColumn: FactCost.CostCategoryKey
+	toColumn: DimCostCategory.CostCategoryKey
+
+relationship 1e80c809-5b60-432a-858a-01ad2386953e
+	fromColumn: FactStatusReport.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship a5028614-9805-492a-ab4d-13bc48a2f08e
+	fromColumn: FactStatusReport.ReportEndKey
+	toColumn: DimDate.DateKey
+
+relationship 0ebb4c6b-2a40-49cf-baf0-99e0c702a55a
+	isActive: false
+	fromColumn: FactStatusReport.ReportStartKey
+	toColumn: DimDate.DateKey
+
+relationship 12e014df-fbe1-4f87-8266-dee09c6b8c73
+	fromColumn: FactStatusReport.ManagerResourceKey
+	toColumn: DimResource.ResourceKey
+
+relationship edc6ca29-6a63-4692-b691-d8508c75faa5
+	fromColumn: FactStatusReport.StatusTypeKey
+	toColumn: DimStatusType.StatusTypeKey
+
+relationship 1f136201-4732-4883-95cf-98c000c96420
+	fromColumn: FactPlanEvent.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship ed551786-0be1-4677-94f6-9a7c60ab5b64
+	fromColumn: FactModelerScenarioPlan.ScenarioKey
+	toColumn: DimScenario.ScenarioKey
+
+relationship e2f2c52a-b023-4cc6-af93-77db1e5736df
+	fromColumn: FactModelerScenarioPlan.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship b51f6894-f860-41fe-821f-c82a8fbe1098
+	fromColumn: BridgeTaskDependency.FromTaskKey
+	toColumn: DimTask.TaskKey
+
+relationship 22029fe7-7a66-49f9-acac-d258124599d1
+	isActive: false
+	fromColumn: BridgeTaskDependency.ToTaskKey
+	toColumn: DimTask.TaskKey
+
+relationship 5e4256ab-c4d3-47b1-92d3-0cf3ba07dd0b
+	fromColumn: BridgePlanDependency.FromProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship debb3c34-3315-4505-afd5-6b1a2129608d
+	isActive: false
+	fromColumn: BridgePlanDependency.ToProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship 1981f1b9-5d80-424c-ae9a-5584a5a77b9f
+	fromColumn: FactPlanProcessStep.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship 77868f50-ff8b-4138-af86-e5cde91c753d
+	fromColumn: DimTask.ProjectKey
+	toColumn: DimProject.ProjectKey
+
+relationship 0619b467-bb7a-4cf0-a7fd-6497685c5de7
+	fromColumn: DimProject.PlanType_Program_Id
+	toColumn: DimProgram.Id
+
+relationship cd978fb8-b31f-4d24-9899-1df85cd8de6e
+	fromColumn: DimProgram.PlanType_EnterpriseProject_Id
+	toColumn: DimPortfolio.Id
+
+relationship 56e97739-a437-4ac9-be27-61e6a0ee61b2
+	fromColumn: DimObjective.PlanId
+	toColumn: DimProject.Id
+
+relationship 62e5e17c-59d6-4c09-9e07-a66d88a0ca9f
+	fromColumn: DimKeyResult.PlanId
+	toColumn: DimProject.Id
+
+relationship 26136965-2f41-4352-9ddf-633de7e19889
+	fromColumn: Activities.TaskId
+	toColumn: DimTask.TaskBK
+
+relationship AutoDetected_0892e218-698a-4df9-a9dd-f5510e92042a
+	fromColumn: DimProjectsAll.NoofNotStartedTasks
+	toColumn: DimProgram.NoofNotStartedTasks
+
+relationship AutoDetected_093a7eb1-5f11-4193-8ae5-a5c7ee0f0dbf
+	isActive: false
+	fromColumn: DimObjective.NoofNotStartedTasks
+	toColumn: DimProgram.NoofNotStartedTasks
+
+relationship AutoDetected_9d6fd84b-caa3-4ab1-9288-cbfa2da97277
+	isActive: false
+	fromColumn: DimKeyResult.NoofNotStartedTasks
+	toColumn: DimProgram.NoofNotStartedTasks
+
+relationship AutoDetected_79bcb815-2e12-43d6-b238-7935ae730478
+	isActive: false
+	fromColumn: FactStatusReport.NoofNotStartedTasks
+	toColumn: DimProgram.NoofNotStartedTasks
+
+relationship AutoDetected_a5894bd6-9101-47c1-91e8-7d150d6b9928
+	isActive: false
+	fromColumn: DimProject.NoofNotStartedTasks
+	toColumn: DimPortfolio.NoofNotStartedTasks
+
+relationship AutoDetected_3654bc0b-fa68-47c8-bc0a-1d462559b201
+	isActive: false
+	fromColumn: DimProjectsAll.NoofNotStartedTasks
+	toColumn: DimPortfolio.NoofNotStartedTasks
+
+relationship AutoDetected_e6560c94-04c2-4374-9f74-6fb68cecdad0
+	isActive: false
+	fromColumn: DimObjective.NoofNotStartedTasks
+	toColumn: DimPortfolio.NoofNotStartedTasks
+
+relationship AutoDetected_80df361d-0e95-4c12-9ef9-d09dd193bbea
+	isActive: false
+	fromColumn: DimKeyResult.NoofNotStartedTasks
+	toColumn: DimPortfolio.NoofNotStartedTasks
+
+relationship AutoDetected_f3ec0e97-6800-49e3-a181-f9fccf78d7b1
+	isActive: false
+	fromColumn: FactStatusReport.NoofNotStartedTasks
+	toColumn: DimPortfolio.NoofNotStartedTasks
+

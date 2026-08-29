@@ -1,0 +1,104 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: nl-BE
+	dataAccessOptions
+		legacyRedirects
+
+queryGroup Connections
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'Resource Mgmt'
+
+	annotation PBI_QueryGroupOrder = 2
+
+queryGroup 'Timesheet Mgmt'
+
+	annotation PBI_QueryGroupOrder = 3
+
+queryGroup 'Financial Mgmt'
+
+	annotation PBI_QueryGroupOrder = 5
+
+queryGroup Scheduling
+
+	annotation PBI_QueryGroupOrder = 6
+
+queryGroup Process
+
+	annotation PBI_QueryGroupOrder = 7
+
+queryGroup Plans
+
+	annotation PBI_QueryGroupOrder = 8
+
+queryGroup Status
+
+	annotation PBI_QueryGroupOrder = 9
+
+queryGroup General
+
+	annotation PBI_QueryGroupOrder = 10
+
+queryGroup 'Portfolio Modeler'
+
+	annotation PBI_QueryGroupOrder = 4
+
+queryGroup Strategy
+
+	annotation PBI_QueryGroupOrder = 11
+
+annotation PBI_QueryOrder = ["Activities","TimesheetAudit","Timesheets","OnePlanURL","_Measures","OnePlanUrls","RefreshTime","BFusionLicenseKey","BFusionLicense","DimDate","DimResource","DimProject","DimProjectsAll","DimProgram","DimPortfolio","DimObjective","DimKeyResult","DimTask","DimScenario","DimStatusType","DimCostCategory","DimProcessStep","DimLeaveType","FactAssignment","FactResourcePlan","FactCapacity","FactTimeOff","FactCost","FactStatusReport","FactPlanEvent","FactModelerScenarioPlan","BridgeTaskDependency","BridgePlanDependency","FactPlanProcessStep"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation __TEdtr = 1
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop","WebModelingEdit","DevMode"]
+
+annotation __LastRPTime = 134251460570310883
+
+annotation TabularEditor_SerializeOptions = {"IgnoreInferredObjects":true,"IgnoreInferredProperties":true,"IgnoreTimestamps":true,"SplitMultilineStrings":true,"PrefixFilenames":false,"LocalTranslations":false,"LocalPerspectives":false,"LocalRelationships":false,"Levels":["Data Sources","Perspectives","Relationships","Roles","Shared Expressions","Tables","Tables/Calculation Items","Tables/Columns","Tables/Hierarchies","Tables/Measures","Tables/Partitions","Translations"]}
+
+ref table Activities
+ref table OnePlanURL
+ref table _Measures
+ref table OnePlanUrls
+ref table RefreshTime
+ref table Category
+ref table NavMenu
+ref table _Modeler_Metrics
+ref table _Modeler_SensitivityParams
+ref table BFusionLicense
+ref table ModelerScenario_A
+ref table ModelerScenario_B
+ref table DimDate
+ref table DimResource
+ref table DimProject
+ref table DimProjectsAll
+ref table DimProgram
+ref table DimPortfolio
+ref table DimObjective
+ref table DimKeyResult
+ref table DimTask
+ref table DimScenario
+ref table DimStatusType
+ref table DimCostCategory
+ref table DimProcessStep
+ref table DimLeaveType
+ref table FactAssignment
+ref table FactResourcePlan
+ref table FactCapacity
+ref table FactTimeOff
+ref table FactCost
+ref table FactStatusReport
+ref table FactPlanEvent
+ref table FactModelerScenarioPlan
+ref table BridgeTaskDependency
+ref table BridgePlanDependency
+ref table FactPlanProcessStep
+
+ref cultureInfo en-US
+

@@ -1,0 +1,142 @@
+table FactCost
+	lineageTag: 5a5543d6-a8a7-4cfa-a504-440c8cc997ee
+
+	column Id
+		dataType: string
+		lineageTag: df5b7e42-3623-443f-a0f3-bb7d96bd2efe
+		sourceColumn: Id
+
+	column CostType
+		dataType: string
+		lineageTag: dfa14378-eda1-465e-ac4a-a676b14aedbb
+		sourceColumn: CostType
+
+	column CostCategory
+		dataType: string
+		lineageTag: 94c11104-ca39-4de6-8ea1-7f1f1bc3d7c9
+		sourceColumn: CostCategory
+
+	column WorkPlanId
+		dataType: string
+		lineageTag: e5a15e38-4708-49c1-9225-3c0cc36d95cd
+		sourceColumn: WorkPlanId
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 704ab45e-2c62-426b-a245-e666cfcdb724
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cost
+		dataType: double
+		lineageTag: 1951d88d-a50f-4c8d-b7f3-ffbdb57ae5b3
+		sourceColumn: Cost
+
+	column DetailRow
+		dataType: boolean
+		lineageTag: f77b92cd-2dfd-4a3d-99c5-1709fb591ece
+		sourceColumn: DetailRow
+
+	column IsLeaf
+		dataType: boolean
+		lineageTag: aa4fc363-d313-43d5-825d-126b5535a17f
+		sourceColumn: IsLeaf
+
+	column Description
+		dataType: string
+		lineageTag: 73693683-8d16-4d96-8899-e0476859510a
+		sourceColumn: Description
+
+	column TpId
+		dataType: string
+		lineageTag: 7d2d5878-40ad-4a81-92f7-6cd02013262b
+		sourceColumn: TpId
+
+	column CostTypeId
+		dataType: string
+		lineageTag: 67f61d54-e9e5-4f60-ba02-abb3b5432f74
+		sourceColumn: CostTypeId
+
+	column ParentCostCategoryId
+		dataType: string
+		lineageTag: 80ba7ced-e0a8-408b-806a-cb6e71638f5d
+		sourceColumn: ParentCostCategoryId
+
+	column CostCategoryId
+		dataType: string
+		lineageTag: 20aacd93-e615-4b4d-ab24-b939a2cae24c
+		sourceColumn: CostCategoryId
+
+	column ExternalId
+		dataType: string
+		lineageTag: 6fca07cd-cb9a-4383-a653-6457b0fdae32
+		sourceColumn: ExternalId
+
+	column ExpenseType
+		dataType: string
+		lineageTag: db7fe084-bb31-4f34-a88d-af0d5a864065
+		sourceColumn: ExpenseType
+
+	column ExpenseType_Id
+		dataType: string
+		lineageTag: 1571d8b5-1137-4f7d-8206-bbc6d797f5f2
+		sourceColumn: ExpenseType_Id
+
+	column ProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: 5bd900c5-e365-4cdb-be3a-734d8ba72028
+		summarizeBy: none
+		sourceColumn: ProjectKey
+
+	column CostCategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 8bccfa11-7a40-49e2-84f4-2cb7229a5b23
+		summarizeBy: none
+		sourceColumn: CostCategoryKey
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: d92d59b6-ad6f-42f8-be6b-336e02242c24
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column 'Actual Costs' = IF(FactCost[CostType]="Actual Cost", FactCost[Cost])
+		displayFolder: Values
+		lineageTag: 8ec419b4-1585-4884-99ae-5d3aa48fb5b6
+		summarizeBy: sum
+
+	column 'Budget Costs' = IF(FactCost[CostType]="Budget", FactCost[Cost])
+		displayFolder: Values
+		lineageTag: 12b9c055-bd18-4627-bd76-900ce038e489
+		summarizeBy: sum
+
+	column 'Forecast Costs' = IF(FactCost[CostType]="Forecast Cost", FactCost[Cost])
+		displayFolder: Values
+		lineageTag: efef260b-0f09-4dbc-b0d2-a585699b598d
+		summarizeBy: sum
+
+	partition FactCost = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="Costs", Signature="table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Raw, {{"Date", type date}}, "en-US"),
+				    Replaced = Table.ReplaceValue(Typed, null, "", Replacer.ReplaceValue, {"CostCategory"}),
+				    Filtered = Table.SelectRows(Replaced, each [CostCategory] <> ""),
+				    DimP = DimProject, DimC = DimCostCategory,
+				    J1 = Table.NestedJoin(Filtered, {"WorkPlanId"}, DimP, {"ProjectBK"}, "_P", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_P", {"ProjectKey"}, {"ProjectKey"}),
+				    J2 = Table.NestedJoin(E1, {"CostCategory"}, DimC, {"CategoryBK"}, "_C", JoinKind.LeftOuter),
+				    E2 = Table.ExpandTableColumn(J2, "_C", {"CostCategoryKey"}, {"CostCategoryKey"}),
+				    AddDK = Table.AddColumn(E2, "DateKey", each Date.Year([Date])*10000 + Date.Month([Date])*100 + Date.Day([Date]), Int64.Type)
+				in
+				    AddDK
+

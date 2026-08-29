@@ -1,0 +1,3857 @@
+table DimObjective
+	lineageTag: d2bfbc67-4a8c-4146-a815-6f310905a23c
+
+	column Id
+		dataType: string
+		lineageTag: 3a69fac4-9ad0-4b9f-af40-e19e25cde10e
+		summarizeBy: none
+		sourceColumn: Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		lineageTag: ecf00693-3c64-4eb4-a733-6c31cb3c7a51
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Created
+		dataType: dateTime
+		lineageTag: f64475c4-092f-468e-8523-1d05302fba95
+		summarizeBy: none
+		sourceColumn: Created
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modified
+		dataType: dateTime
+		lineageTag: 360ec74f-a031-4f73-b095-bc373f35f8e4
+		summarizeBy: none
+		sourceColumn: Modified
+
+		annotation SummarizationSetBy = Automatic
+
+	column Creator
+		dataType: string
+		lineageTag: d2798e7c-0e24-4682-933b-b93916fe9604
+		summarizeBy: none
+		sourceColumn: Creator
+
+		annotation SummarizationSetBy = Automatic
+
+	column Editor
+		dataType: string
+		lineageTag: 03dc10e3-bdc3-4946-b991-c4e6ef7daed3
+		summarizeBy: none
+		sourceColumn: Editor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Folder
+		dataType: boolean
+		lineageTag: 2c0d0fef-04e7-4928-b610-811863481123
+		summarizeBy: none
+		sourceColumn: Folder
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentPlanId
+		dataType: string
+		lineageTag: 36d489a3-427b-41c3-8ca7-82cfaf3f12e4
+		summarizeBy: none
+		sourceColumn: ParentPlanId
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProcessStep
+		dataType: string
+		lineageTag: d343101f-cce5-4f0c-a738-d2a9764cad32
+		summarizeBy: none
+		sourceColumn: ProcessStep
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProcessStepStart
+		dataType: dateTime
+		lineageTag: 8b6630e2-1849-4d8e-8229-86238a152a80
+		summarizeBy: none
+		sourceColumn: ProcessStepStart
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProcessStepIndex
+		dataType: int64
+		lineageTag: d14dd4f0-d310-4d00-8233-dacdd7fb74e1
+		summarizeBy: sum
+		sourceColumn: ProcessStepIndex
+
+		annotation SummarizationSetBy = Automatic
+
+	column Archived
+		dataType: boolean
+		lineageTag: dab89328-2496-4a8d-aa7f-731a5c539efe
+		summarizeBy: none
+		sourceColumn: Archived
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType
+		dataType: string
+		lineageTag: bc4c4748-e19d-4839-aade-cb3279d92559
+		summarizeBy: none
+		sourceColumn: PlanType
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanId
+		dataType: string
+		lineageTag: cd35a949-51c4-4c70-a0ae-0ae52d8eab49
+		summarizeBy: none
+		sourceColumn: PlanId
+
+		annotation SummarizationSetBy = Automatic
+
+	column PortfolioPriority
+		dataType: int64
+		lineageTag: 6ef63d29-ba01-4a0a-8270-a5ea5a9443c9
+		summarizeBy: sum
+		sourceColumn: PortfolioPriority
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Milestone
+		dataType: boolean
+		lineageTag: 245e794e-0e8e-4efe-9c75-a69e09340fd3
+		summarizeBy: none
+		sourceColumn: Summary_Milestone
+
+		annotation SummarizationSetBy = Automatic
+
+	column State_Id
+		dataType: string
+		lineageTag: 41c93aed-cfe0-45bb-b7de-ca1cafa4847f
+		summarizeBy: none
+		sourceColumn: State_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column State_Value
+		dataType: string
+		lineageTag: 83e7b430-1259-4c06-9e6b-1a0d2a20cd26
+		summarizeBy: none
+		sourceColumn: State_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Priority_Id
+		dataType: string
+		lineageTag: 235e98dc-02b1-4c76-a8b0-dbf7da2ea525
+		summarizeBy: none
+		sourceColumn: Priority_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Priority_Value
+		dataType: string
+		lineageTag: 9abaf6c8-f313-4345-9bfd-78e053633119
+		summarizeBy: none
+		sourceColumn: Priority_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Budget
+		dataType: double
+		lineageTag: 13f2fc21-cf74-4af3-9e20-77fb1d919f47
+		summarizeBy: sum
+		sourceColumn: Budget
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetHours
+		dataType: double
+		lineageTag: 4f4f1ad7-4aaf-40ef-aace-26be3938fe5c
+		summarizeBy: sum
+		sourceColumn: TimesheetHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetType_Id
+		dataType: string
+		lineageTag: bb0931c7-e147-4e99-be95-355a34fe0b72
+		summarizeBy: none
+		sourceColumn: TimesheetType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetType_Value
+		dataType: string
+		lineageTag: 907f7ff5-8d24-4f4a-ade2-9a1eaea9ca7a
+		summarizeBy: none
+		sourceColumn: TimesheetType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetChargeLevel_Id
+		dataType: string
+		lineageTag: 53ecf635-8a03-48b6-a168-78399d14fa19
+		summarizeBy: none
+		sourceColumn: TimesheetChargeLevel_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimesheetChargeLevel_Value
+		dataType: string
+		lineageTag: 552275cf-cad8-4407-b30a-80abce3bdde3
+		summarizeBy: none
+		sourceColumn: TimesheetChargeLevel_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedStart
+		dataType: dateTime
+		lineageTag: 49174d20-fd92-4c12-a0c4-f0073a72af72
+		summarizeBy: none
+		sourceColumn: EstimatedStart
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedEnd
+		dataType: dateTime
+		lineageTag: 465dba59-5088-4ef9-89d0-c4c767460425
+		summarizeBy: none
+		sourceColumn: EstimatedEnd
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExecutiveSponsor
+		dataType: string
+		lineageTag: 96c207d1-2a83-437a-b647-d23e285925a2
+		summarizeBy: none
+		sourceColumn: ExecutiveSponsor
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExecutiveSponsor_Value
+		dataType: string
+		lineageTag: 9097cc92-15b3-41de-ac48-2bb0a792c770
+		summarizeBy: none
+		sourceColumn: ExecutiveSponsor_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Manager
+		dataType: string
+		lineageTag: 04c3577f-b167-406a-94f4-813b989fc474
+		summarizeBy: none
+		sourceColumn: Manager
+
+		annotation SummarizationSetBy = Automatic
+
+	column Manager_Value
+		dataType: string
+		lineageTag: 3a90746a-0a1e-44cc-83d8-c7d606b09b27
+		summarizeBy: none
+		sourceColumn: Manager_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectType_Id
+		dataType: string
+		lineageTag: 7c91e41c-359e-4291-86e6-9f8641fdeb1e
+		summarizeBy: none
+		sourceColumn: ProjectType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectType_Value
+		dataType: string
+		lineageTag: 1c091628-f8d1-4064-8eb7-031a177b4508
+		summarizeBy: none
+		sourceColumn: ProjectType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessUnit_Id
+		dataType: string
+		lineageTag: 85228d7e-1833-44d2-8aae-adc9229dafea
+		summarizeBy: none
+		sourceColumn: BusinessUnit_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessUnit_Value
+		dataType: string
+		lineageTag: 7231ccc6-7f91-4a50-bc08-077aa4b0cd35
+		summarizeBy: none
+		sourceColumn: BusinessUnit_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Forecast
+		dataType: double
+		lineageTag: 2be7f173-404a-48b9-9a02-788e4c82aa60
+		summarizeBy: sum
+		sourceColumn: Forecast
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingBudget
+		dataType: double
+		lineageTag: e46d6e89-e90e-4dc9-9521-8fc842f8eb4d
+		summarizeBy: sum
+		sourceColumn: RemainingBudget
+
+		annotation SummarizationSetBy = Automatic
+
+	column BudgetVariance
+		dataType: double
+		lineageTag: 340d7689-a41d-440f-b2f5-eb93e7f0ed69
+		summarizeBy: sum
+		sourceColumn: BudgetVariance
+
+		annotation SummarizationSetBy = Automatic
+
+	column Benefits
+		dataType: double
+		lineageTag: 20416632-ceab-439f-b5de-168312be134e
+		summarizeBy: sum
+		sourceColumn: Benefits
+
+		annotation SummarizationSetBy = Automatic
+
+	column ROI
+		dataType: double
+		lineageTag: 25fa9d70-e6e3-4b37-ac92-1f5ef0734303
+		summarizeBy: sum
+		sourceColumn: ROI
+
+		annotation SummarizationSetBy = Automatic
+
+	column FundingAvailable
+		dataType: boolean
+		lineageTag: 94f7bb69-ee6c-4db1-80c7-90842f8902f3
+		summarizeBy: none
+		sourceColumn: FundingAvailable
+
+		annotation SummarizationSetBy = Automatic
+
+	column FundingSource_Id
+		dataType: string
+		lineageTag: f2033c20-7389-485e-9bae-d5930cad9d2f
+		summarizeBy: none
+		sourceColumn: FundingSource_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column FundingSource_Value
+		dataType: string
+		lineageTag: cb447192-8507-45dd-ab0e-148ea7e07d03
+		summarizeBy: none
+		sourceColumn: FundingSource_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommittedEffort
+		dataType: double
+		lineageTag: ffd7f3ee-a405-4172-8572-d3ee41e64511
+		summarizeBy: sum
+		sourceColumn: CommittedEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column ScheduledEffort
+		dataType: double
+		lineageTag: 13b20e27-1eb0-408d-be43-1df2e9aeea50
+		summarizeBy: sum
+		sourceColumn: ScheduledEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingEffort
+		dataType: double
+		lineageTag: d468767f-a263-4d65-8627-e02022d8dfe7
+		summarizeBy: sum
+		sourceColumn: RemainingEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column EffortVariance
+		dataType: double
+		lineageTag: aca2ea03-6a08-4b77-bdb7-986c16f3a047
+		summarizeBy: sum
+		sourceColumn: EffortVariance
+
+		annotation SummarizationSetBy = Automatic
+
+	column OverallHealth_Id
+		dataType: string
+		lineageTag: b7269c01-f3ce-40fe-bbc0-36a0072fc21c
+		summarizeBy: none
+		sourceColumn: OverallHealth_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column OverallHealth_Value
+		dataType: string
+		lineageTag: 6d2e56e6-e728-4a8d-a405-3a37570aef5b
+		summarizeBy: none
+		sourceColumn: OverallHealth_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ScheduleHealth_Id
+		dataType: string
+		lineageTag: 6f0f7bd4-1fc7-4fa5-a628-b1f3916b8414
+		summarizeBy: none
+		sourceColumn: ScheduleHealth_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ScheduleHealth_Value
+		dataType: string
+		lineageTag: 6765cda2-b80d-48b1-977d-473e0d9548c3
+		summarizeBy: none
+		sourceColumn: ScheduleHealth_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinancialHealth_Id
+		dataType: string
+		lineageTag: 37a80326-ce3e-4f98-8218-ad180fbd6633
+		summarizeBy: none
+		sourceColumn: FinancialHealth_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinancialHealth_Value
+		dataType: string
+		lineageTag: cfbc87e8-2528-4ac7-b601-a123358e6cde
+		summarizeBy: none
+		sourceColumn: FinancialHealth_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column EffortHealth_Id
+		dataType: string
+		lineageTag: 42d68a9f-a117-4003-bb75-47e6d717b6e6
+		summarizeBy: none
+		sourceColumn: EffortHealth_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column EffortHealth_Value
+		dataType: string
+		lineageTag: 3dd68558-b4a3-4996-b3b4-ab036e96ea99
+		summarizeBy: none
+		sourceColumn: EffortHealth_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column IssueHealth_Id
+		dataType: string
+		lineageTag: c5395e56-c965-435c-a5ee-256a8a6afd46
+		summarizeBy: none
+		sourceColumn: IssueHealth_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column IssueHealth_Value
+		dataType: string
+		lineageTag: ebf7e770-4c0d-4799-ad10-67b9081ed5b5
+		summarizeBy: none
+		sourceColumn: IssueHealth_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column NeedsStaffing
+		dataType: boolean
+		lineageTag: 1aa4e919-5218-4df9-bb1b-f4e175cf4f78
+		summarizeBy: none
+		sourceColumn: NeedsStaffing
+
+		annotation SummarizationSetBy = Automatic
+
+	column StrategicAlignment_Id
+		dataType: string
+		lineageTag: 8d2db785-a383-41b1-843e-748d7f72f1e1
+		summarizeBy: none
+		sourceColumn: StrategicAlignment_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column StrategicAlignment_Value
+		dataType: string
+		lineageTag: 2f613628-e6a7-4207-a44a-9537ca452882
+		summarizeBy: none
+		sourceColumn: StrategicAlignment_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column LowerCost_Id
+		dataType: string
+		lineageTag: a671d044-dbd8-4c82-a49a-9ca9cd8257a6
+		summarizeBy: none
+		sourceColumn: LowerCost_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column LowerCost_Value
+		dataType: string
+		lineageTag: e67b9da3-43c2-4e87-aec6-939a6702f37c
+		summarizeBy: none
+		sourceColumn: LowerCost_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ImproveEmployeeRetention_Id
+		dataType: string
+		lineageTag: e0062190-b39c-4857-beef-c42f507cebff
+		summarizeBy: none
+		sourceColumn: ImproveEmployeeRetention_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ImproveEmployeeRetention_Value
+		dataType: string
+		lineageTag: 505701de-91c2-4368-9bfd-4971decc228f
+		summarizeBy: none
+		sourceColumn: ImproveEmployeeRetention_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risk_Id
+		dataType: string
+		lineageTag: 831580da-5d46-4995-9765-42fd7ae5f5d8
+		summarizeBy: none
+		sourceColumn: Risk_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risk_Value
+		dataType: string
+		lineageTag: bd5359c6-215f-45b9-8e95-1e7bcad7ab73
+		summarizeBy: none
+		sourceColumn: Risk_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PrioritizationScore
+		dataType: double
+		lineageTag: b081e055-9bd4-47a4-8844-622ef28bfd67
+		summarizeBy: sum
+		sourceColumn: PrioritizationScore
+
+		annotation SummarizationSetBy = Automatic
+
+	column Actuals
+		dataType: double
+		lineageTag: ec88a867-ea9e-47c5-b315-b7c8e1ca7dc0
+		summarizeBy: sum
+		sourceColumn: Actuals
+
+		annotation SummarizationSetBy = Automatic
+
+	column PowerAppID
+		dataType: string
+		lineageTag: bf9eb95f-496b-4122-b34a-408094576de5
+		summarizeBy: none
+		sourceColumn: PowerAppID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Goals_Id
+		dataType: string
+		lineageTag: 49620767-9024-4261-bda2-50f2f1e913a6
+		summarizeBy: none
+		sourceColumn: Goals_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Goals_Value
+		dataType: string
+		lineageTag: b59db6ed-2bbc-40a0-b9ef-736868d81f33
+		summarizeBy: none
+		sourceColumn: Goals_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: f86bee66-cdca-42bc-8e41-8ead974ffd4a
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessCase
+		dataType: string
+		lineageTag: 06de7e65-2060-4838-b904-725dc29be8dc
+		summarizeBy: none
+		sourceColumn: BusinessCase
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValueStatement
+		dataType: string
+		lineageTag: 508e1c95-51f3-4eba-8ec3-ec90ec06cb66
+		summarizeBy: none
+		sourceColumn: ValueStatement
+
+		annotation SummarizationSetBy = Automatic
+
+	column Accomplishments
+		dataType: string
+		lineageTag: 6f8f843a-c752-4797-87d6-76dbe1665c22
+		summarizeBy: none
+		sourceColumn: Accomplishments
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlannedActivities
+		dataType: string
+		lineageTag: ffb120f8-ea08-4eac-b598-3b97750d7467
+		summarizeBy: none
+		sourceColumn: PlannedActivities
+
+		annotation SummarizationSetBy = Automatic
+
+	column AdditionalComments
+		dataType: string
+		lineageTag: 6d3d19df-0af0-4285-9911-693c3759e2be
+		summarizeBy: none
+		sourceColumn: AdditionalComments
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_EnterpriseProject_Id
+		dataType: string
+		lineageTag: 29ca395b-495a-4fb4-9c2d-0d82f89d4553
+		summarizeBy: none
+		sourceColumn: PlanType_EnterpriseProject_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_EnterpriseProject_Value
+		dataType: string
+		lineageTag: 733fbe0b-50d3-40c7-9d10-83a87a04f1ec
+		summarizeBy: none
+		sourceColumn: PlanType_EnterpriseProject_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_Program_Id
+		dataType: string
+		lineageTag: 54b9ecb5-4217-4634-9c76-0ca36998c9f0
+		summarizeBy: none
+		sourceColumn: PlanType_Program_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_Program_Value
+		dataType: string
+		lineageTag: 63c372df-1ecb-4d3d-97d8-d4874c53d50e
+		summarizeBy: none
+		sourceColumn: PlanType_Program_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProgramBudget
+		dataType: double
+		lineageTag: 5bc364b4-a620-4c35-9cc1-524a3e0e9d1e
+		summarizeBy: sum
+		sourceColumn: ProgramBudget
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingBudgetAllocation
+		dataType: double
+		lineageTag: f6d63012-2b80-4ca6-8412-33bb7994ee3f
+		summarizeBy: sum
+		sourceColumn: RemainingBudgetAllocation
+
+		annotation SummarizationSetBy = Automatic
+
+	column JiraProjectNames_Id
+		dataType: string
+		lineageTag: c96dac41-c574-4076-93ec-7cccf7357bcf
+		summarizeBy: none
+		sourceColumn: JiraProjectNames_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column JiraProjectNames_Value
+		dataType: string
+		lineageTag: 90b73890-b478-408c-bbbf-68d1f25cc75d
+		summarizeBy: none
+		sourceColumn: JiraProjectNames_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActiveRisks
+		dataType: double
+		lineageTag: 7b702f10-d202-4379-b22e-9d709d483442
+		summarizeBy: sum
+		sourceColumn: ActiveRisks
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActiveIssues
+		dataType: double
+		lineageTag: 0a482bbc-5bc9-4071-9af9-b0aa0089d958
+		summarizeBy: sum
+		sourceColumn: ActiveIssues
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActiveChanges
+		dataType: double
+		lineageTag: f7140dc8-f702-4a95-8ebc-51ac1606a47b
+		summarizeBy: sum
+		sourceColumn: ActiveChanges
+
+		annotation SummarizationSetBy = Automatic
+
+	column TasksinProgress
+		dataType: double
+		lineageTag: b05b7d00-74cf-4ba6-a138-5c6c4d3505ab
+		summarizeBy: sum
+		sourceColumn: TasksinProgress
+
+		annotation SummarizationSetBy = Automatic
+
+	column TasksAtRisks
+		dataType: double
+		lineageTag: 529fbac8-e3eb-47f9-9480-e2b63cff4170
+		summarizeBy: sum
+		sourceColumn: TasksAtRisks
+
+		annotation SummarizationSetBy = Automatic
+
+	column TasksOffTrack
+		dataType: double
+		lineageTag: 69586574-9ce4-4017-82f6-fc80a6b27f22
+		summarizeBy: sum
+		sourceColumn: TasksOffTrack
+
+		annotation SummarizationSetBy = Automatic
+
+	column ofBacklogTasks
+		dataType: double
+		lineageTag: b1a7bf7f-66b6-40bb-b4a2-0ff424ec505f
+		summarizeBy: sum
+		sourceColumn: ofBacklogTasks
+
+		annotation SummarizationSetBy = Automatic
+
+	column ofFeatures
+		dataType: double
+		lineageTag: 5099eb0d-07bc-4824-9f54-0e2d7f83d869
+		summarizeBy: sum
+		sourceColumn: ofFeatures
+
+		annotation SummarizationSetBy = Automatic
+
+	column ofUserStories
+		dataType: double
+		lineageTag: f8462243-6cf8-4fcf-8516-32c476d9743d
+		summarizeBy: sum
+		sourceColumn: ofUserStories
+
+		annotation SummarizationSetBy = Automatic
+
+	column BacklogPoints
+		dataType: double
+		lineageTag: 1ffe66bd-15f2-41f3-87eb-05d90082b16b
+		summarizeBy: sum
+		sourceColumn: BacklogPoints
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessValue_Id
+		dataType: string
+		lineageTag: aeab754b-9f2e-4646-8cce-b2733e323e04
+		summarizeBy: none
+		sourceColumn: BusinessValue_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessValue_Value
+		dataType: string
+		lineageTag: 2b475b28-c7d9-4ba4-ae22-d6d83ed84644
+		summarizeBy: none
+		sourceColumn: BusinessValue_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskReduction_Id
+		dataType: string
+		lineageTag: edc59a17-19b8-4550-bef8-9fca46b19ccf
+		summarizeBy: none
+		sourceColumn: RiskReduction_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskReduction_Value
+		dataType: string
+		lineageTag: b52fa4c3-6606-42d7-9c67-a624e61942fa
+		summarizeBy: none
+		sourceColumn: RiskReduction_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column SWAG_Id
+		dataType: string
+		lineageTag: 3975f07e-2456-4dec-b365-6c4f21988d85
+		summarizeBy: none
+		sourceColumn: SWAG_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column SWAG_Value
+		dataType: string
+		lineageTag: 4967726e-1c4d-4f86-a95b-5e15a067b8fe
+		summarizeBy: none
+		sourceColumn: SWAG_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimeCriticality_Id
+		dataType: string
+		lineageTag: 756a1e9f-8335-433e-8e95-1b7650753772
+		summarizeBy: none
+		sourceColumn: TimeCriticality_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column TimeCriticality_Value
+		dataType: string
+		lineageTag: a2430698-4fc6-4bfc-b83d-89c7b5349677
+		summarizeBy: none
+		sourceColumn: TimeCriticality_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostofDelay
+		dataType: double
+		lineageTag: 4100324b-fc24-4b8b-82bd-c311f8d57d74
+		summarizeBy: sum
+		sourceColumn: CostofDelay
+
+		annotation SummarizationSetBy = Automatic
+
+	column WSJF
+		dataType: double
+		lineageTag: 9065c4b8-4dbb-470f-845a-b8298fbd9c90
+		summarizeBy: sum
+		sourceColumn: WSJF
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValueArea_Id
+		dataType: string
+		lineageTag: b98b7444-a8c3-4d88-9e4b-fdf434a76482
+		summarizeBy: none
+		sourceColumn: ValueArea_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValueArea_Value
+		dataType: string
+		lineageTag: 8baf9115-3f07-48b0-a575-c963684d96df
+		summarizeBy: none
+		sourceColumn: ValueArea_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column EpicPoints
+		dataType: double
+		lineageTag: 35155b76-d7fe-4f25-b5a8-e3a1a68f0c2d
+		summarizeBy: sum
+		sourceColumn: EpicPoints
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingPoints
+		dataType: double
+		lineageTag: cae4bd5c-be09-4b72-81c6-625ce5bd794a
+		summarizeBy: sum
+		sourceColumn: RemainingPoints
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_Objective_Id
+		dataType: string
+		lineageTag: 2a980360-1b23-40ae-bfba-a154fefd3673
+		summarizeBy: none
+		sourceColumn: PlanType_Objective_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_Objective_Value
+		dataType: string
+		lineageTag: 70babbe9-edcc-4a08-99b0-fe0726576b06
+		summarizeBy: none
+		sourceColumn: PlanType_Objective_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lead
+		dataType: string
+		lineageTag: 0ffcf330-837a-4a23-92c1-bd8398d21e08
+		summarizeBy: none
+		sourceColumn: Lead
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lead_Value
+		dataType: string
+		lineageTag: 4875a2bc-6bf3-4837-a205-b3a54a95cc5a
+		summarizeBy: none
+		sourceColumn: Lead_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metric_Id
+		dataType: string
+		lineageTag: c2bfe5f6-c415-4d69-9e4e-f16734483990
+		summarizeBy: none
+		sourceColumn: Metric_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metric_Value
+		dataType: string
+		lineageTag: cef3455a-6ce1-479d-a39a-8b0f3e1245ea
+		summarizeBy: none
+		sourceColumn: Metric_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column CurrentNumber
+		dataType: double
+		lineageTag: d654fbdc-07c2-4175-b9d6-70fdff0d5c03
+		summarizeBy: sum
+		sourceColumn: CurrentNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetNumber
+		dataType: double
+		lineageTag: 0ecb356d-5397-40be-8954-527d05ae6954
+		summarizeBy: sum
+		sourceColumn: TargetNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column CurrentMetric
+		dataType: double
+		lineageTag: d258ad09-9c8f-434c-a99e-d5801ca6bab8
+		summarizeBy: sum
+		sourceColumn: CurrentMetric
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Id
+		dataType: string
+		lineageTag: e69a79f8-3874-4eb8-bdb7-7170f77ee911
+		summarizeBy: none
+		sourceColumn: Status_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Value
+		dataType: string
+		lineageTag: 938e4229-dc93-484c-bee0-fb0e1865a7fb
+		summarizeBy: none
+		sourceColumn: Status_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequestedBy
+		dataType: string
+		lineageTag: a734bcb9-86ad-4f3d-a378-ed866c9345d6
+		summarizeBy: none
+		sourceColumn: RequestedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequestedBy_Value
+		dataType: string
+		lineageTag: 6f969e37-0f37-45f6-b598-a15a2ea8d48b
+		summarizeBy: none
+		sourceColumn: RequestedBy_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product_Id
+		dataType: string
+		lineageTag: 6558d6fd-d3be-4d8f-9771-9c79fde13ea7
+		summarizeBy: none
+		sourceColumn: Product_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product_Value
+		dataType: string
+		lineageTag: bcb809bc-706a-4574-a8ac-aab6e8211d8d
+		summarizeBy: none
+		sourceColumn: Product_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedPortfolio_Id
+		dataType: string
+		lineageTag: 339c3d01-28d4-4944-9ff3-5ad220a9ec43
+		summarizeBy: none
+		sourceColumn: AssociatedPortfolio_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedPortfolio_Value
+		dataType: string
+		lineageTag: 4a157f64-279d-4a65-aa72-55f12e22184c
+		summarizeBy: none
+		sourceColumn: AssociatedPortfolio_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedPrograms
+		dataType: string
+		lineageTag: f181c251-3514-4f88-bd1a-1e167a1dfe67
+		summarizeBy: none
+		sourceColumn: AssociatedPrograms
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedPrograms_Value
+		dataType: string
+		lineageTag: 1ce0cfd2-417f-4802-81b6-ff41152419e4
+		summarizeBy: none
+		sourceColumn: AssociatedPrograms_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column NoofNotStartedTasks
+		dataType: double
+		lineageTag: 7a5f836d-dd17-4d4a-b661-6f272a8673b1
+		summarizeBy: sum
+		sourceColumn: NoofNotStartedTasks
+
+		annotation SummarizationSetBy = Automatic
+
+	column Insights_Compliance
+		dataType: double
+		lineageTag: 748fab8d-4895-4442-960e-7c2c114d7dc6
+		summarizeBy: sum
+		sourceColumn: Insights_Compliance
+
+		annotation SummarizationSetBy = Automatic
+
+	column Insights_Problems
+		dataType: double
+		lineageTag: cb406933-7b59-45ea-9a81-b4608889fffa
+		summarizeBy: sum
+		sourceColumn: Insights_Problems
+
+		annotation SummarizationSetBy = Automatic
+
+	column Insights_Warnings
+		dataType: double
+		lineageTag: 645b0199-2885-4276-9e84-5726675d91ec
+		summarizeBy: sum
+		sourceColumn: Insights_Warnings
+
+		annotation SummarizationSetBy = Automatic
+
+	column NoofLateTasks
+		dataType: double
+		lineageTag: 6b836d86-b2ad-4352-b83a-f7b41c371e08
+		summarizeBy: sum
+		sourceColumn: NoofLateTasks
+
+		annotation SummarizationSetBy = Automatic
+
+	column ApprovalStatus_Id
+		dataType: string
+		lineageTag: 4ad3ab13-0eba-441f-a4df-09a214b785d0
+		summarizeBy: none
+		sourceColumn: ApprovalStatus_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ApprovalStatus_Value
+		dataType: string
+		lineageTag: 811c7bb1-c147-4e09-880a-e8c7444ed814
+		summarizeBy: none
+		sourceColumn: ApprovalStatus_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedResults
+		dataType: string
+		lineageTag: a5efd350-3d7e-4893-88bb-310ffe7a4333
+		summarizeBy: none
+		sourceColumn: AssociatedResults
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedResults_Value
+		dataType: string
+		lineageTag: 045331a1-66c3-4d58-824d-47ebd3f7f1f3
+		summarizeBy: none
+		sourceColumn: AssociatedResults_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column DefaultTaskType_Id
+		dataType: string
+		lineageTag: 71337f99-ac4e-4e18-bae0-2589bd537ff9
+		summarizeBy: none
+		sourceColumn: DefaultTaskType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column DefaultTaskType_Value
+		dataType: string
+		lineageTag: 110925be-2fda-4c8b-8d8e-b8bd9db688a7
+		summarizeBy: none
+		sourceColumn: DefaultTaskType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BudgetTrend
+		dataType: double
+		lineageTag: 66f0f9f9-d66c-431b-a1f8-fb6673dff670
+		summarizeBy: sum
+		sourceColumn: BudgetTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComplianceTrend
+		dataType: double
+		lineageTag: 49617105-17ea-4f37-b386-8179b2e1a5af
+		summarizeBy: sum
+		sourceColumn: ComplianceTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActiveIssuesTrend
+		dataType: double
+		lineageTag: 09647326-e56c-4f2d-a1e2-80a8d9c03890
+		summarizeBy: sum
+		sourceColumn: ActiveIssuesTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActiveChangesTrend
+		dataType: double
+		lineageTag: da5df55b-a267-4961-9335-e182b6adb158
+		summarizeBy: sum
+		sourceColumn: ActiveChangesTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column StateTrend
+		dataType: string
+		lineageTag: b701f73c-481f-4cda-ba2d-9bc419fa8dcf
+		summarizeBy: none
+		sourceColumn: StateTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column MetricTrend
+		dataType: string
+		lineageTag: 39e6d978-33df-46ca-ac10-7361f3dbded7
+		summarizeBy: none
+		sourceColumn: MetricTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column CurrentMetricTrend
+		dataType: double
+		lineageTag: acef71cc-3c60-4c67-a01c-b02c0caef032
+		summarizeBy: sum
+		sourceColumn: CurrentMetricTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column DefaultTaskMode_Id
+		dataType: string
+		lineageTag: 1b72ba3d-5018-4436-bfc6-3fe651d94ce8
+		summarizeBy: none
+		sourceColumn: DefaultTaskMode_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column DefaultTaskMode_Value
+		dataType: string
+		lineageTag: 1b5b66c6-ca77-4f6b-ba47-711684c2e94c
+		summarizeBy: none
+		sourceColumn: DefaultTaskMode_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValueProposition
+		dataType: string
+		lineageTag: de281c76-17c6-49d7-8149-8ec3508c7603
+		summarizeBy: none
+		sourceColumn: ValueProposition
+
+		annotation SummarizationSetBy = Automatic
+
+	column PeopleandLocations
+		dataType: string
+		lineageTag: 23e1f18f-fed2-4eaa-a3d7-5c4d0c20cb85
+		summarizeBy: none
+		sourceColumn: PeopleandLocations
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vision
+		dataType: string
+		lineageTag: 34d33cc3-fd99-4b9e-b8b4-4b8c9babdd20
+		summarizeBy: none
+		sourceColumn: Vision
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mission
+		dataType: string
+		lineageTag: 6f2940fd-97c4-4f30-a651-38c82a136518
+		summarizeBy: none
+		sourceColumn: Mission
+
+		annotation SummarizationSetBy = Automatic
+
+	column Strengths
+		dataType: string
+		lineageTag: dc1d9627-7838-48cc-aafe-02d82dd688af
+		summarizeBy: none
+		sourceColumn: Strengths
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weaknesses
+		dataType: string
+		lineageTag: 8d0d86c4-9bd6-433a-8e8d-0012220db4d2
+		summarizeBy: none
+		sourceColumn: Weaknesses
+
+		annotation SummarizationSetBy = Automatic
+
+	column Opportunity
+		dataType: string
+		lineageTag: 0e418f64-df3c-4303-becf-0778e6529028
+		summarizeBy: none
+		sourceColumn: Opportunity
+
+		annotation SummarizationSetBy = Automatic
+
+	column Threats
+		dataType: string
+		lineageTag: 2d02a928-68c3-4451-b9e2-944653bd2023
+		summarizeBy: none
+		sourceColumn: Threats
+
+		annotation SummarizationSetBy = Automatic
+
+	column StatusTrend
+		dataType: string
+		lineageTag: a410e68c-40ed-44d0-b411-dec434daf705
+		summarizeBy: none
+		sourceColumn: StatusTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedInitiatives
+		dataType: string
+		lineageTag: c8d32f20-52d8-4b6c-92fb-5940f62fef7d
+		summarizeBy: none
+		sourceColumn: AssociatedInitiatives
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedInitiatives_Value
+		dataType: string
+		lineageTag: 1ab328b2-1630-449f-97ff-e03c34a99e70
+		summarizeBy: none
+		sourceColumn: AssociatedInitiatives_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column FunctionalFit_Id
+		dataType: string
+		lineageTag: 421c4693-dd54-45fc-b974-5fab7548c7c9
+		summarizeBy: none
+		sourceColumn: FunctionalFit_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column FunctionalFit_Value
+		dataType: string
+		lineageTag: e854de89-4245-4ba9-9555-321f95cb1d94
+		summarizeBy: none
+		sourceColumn: FunctionalFit_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountExecutive
+		dataType: string
+		lineageTag: 9666a98c-7f02-4c8d-8852-9739a100be5b
+		summarizeBy: none
+		sourceColumn: AccountExecutive
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountExecutive_Value
+		dataType: string
+		lineageTag: 5c5e814b-980e-46bf-a8ea-d3ecfc0c50d7
+		summarizeBy: none
+		sourceColumn: AccountExecutive_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PrimaryContact
+		dataType: string
+		lineageTag: 2dc56d80-3da3-4ecd-89b3-51887dfc6a83
+		summarizeBy: none
+		sourceColumn: PrimaryContact
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerManager
+		dataType: string
+		lineageTag: 17fab98c-6996-4484-b48e-00b7414a5123
+		summarizeBy: none
+		sourceColumn: CustomerManager
+
+		annotation SummarizationSetBy = Automatic
+
+	column Address
+		dataType: string
+		lineageTag: 9aaf606f-4ae0-4b3e-a0fb-f156cc59c1e2
+		summarizeBy: none
+		sourceColumn: Address
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerSponsor
+		dataType: string
+		lineageTag: 6244e89f-d779-4dce-a208-0ee17e1867d7
+		summarizeBy: none
+		sourceColumn: CustomerSponsor
+
+		annotation SummarizationSetBy = Automatic
+
+	column PO
+		dataType: string
+		lineageTag: 218a115e-63ac-4c9f-8501-1d59949164df
+		summarizeBy: none
+		sourceColumn: PO
+
+		annotation SummarizationSetBy = Automatic
+
+	column SOWProvided
+		dataType: boolean
+		lineageTag: b5c3215f-f755-42ee-b5d8-d66a5418202b
+		summarizeBy: none
+		sourceColumn: SOWProvided
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillingMethod_Id
+		dataType: string
+		lineageTag: 23f895a9-08f2-4ca7-9e2a-ec84f150136f
+		summarizeBy: none
+		sourceColumn: BillingMethod_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillingMethod_Value
+		dataType: string
+		lineageTag: 16a688d1-26a9-4da9-bf82-fcb5d072339f
+		summarizeBy: none
+		sourceColumn: BillingMethod_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Closed
+		dataType: boolean
+		lineageTag: 29ec31d8-1851-403e-a98e-cde89992e3dd
+		summarizeBy: none
+		sourceColumn: Closed
+
+		annotation SummarizationSetBy = Automatic
+
+	column Industry_Id
+		dataType: string
+		lineageTag: 8340769f-bd32-4e60-a9b2-c71502990705
+		summarizeBy: none
+		sourceColumn: Industry_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Industry_Value
+		dataType: string
+		lineageTag: bf6057b0-8289-4082-9daf-38750f06f1d8
+		summarizeBy: none
+		sourceColumn: Industry_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column MarketCap
+		dataType: double
+		lineageTag: 5c9a6e08-c2d0-4bac-9fdc-77605d8e7cc3
+		summarizeBy: sum
+		sourceColumn: MarketCap
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumofEmployees
+		dataType: double
+		lineageTag: e38cce74-9fff-40e9-8d1b-eca6ba2e2251
+		summarizeBy: sum
+		sourceColumn: NumofEmployees
+
+		annotation SummarizationSetBy = Automatic
+
+	column Website
+		dataType: string
+		lineageTag: 9cdaef52-99e3-4a76-b138-7348e6a812dd
+		summarizeBy: none
+		sourceColumn: Website
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContractAmount
+		dataType: double
+		lineageTag: cea37850-7d22-4b1a-bf9d-b4fe0b6ce856
+		summarizeBy: sum
+		sourceColumn: ContractAmount
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContractVariance
+		dataType: double
+		lineageTag: 713eb405-664b-4deb-afaf-31e25774854c
+		summarizeBy: sum
+		sourceColumn: ContractVariance
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetMargin
+		dataType: double
+		lineageTag: 027c677d-07f5-4fa0-89f3-b5da55854655
+		summarizeBy: sum
+		sourceColumn: TargetMargin
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContractHours
+		dataType: double
+		lineageTag: 310c87b3-2085-4d9e-bc9f-e8ada2ceda7c
+		summarizeBy: sum
+		sourceColumn: ContractHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column InvoicedAmount
+		dataType: double
+		lineageTag: 0a1012e9-7736-472f-ba6c-9d6672e19937
+		summarizeBy: sum
+		sourceColumn: InvoicedAmount
+
+		annotation SummarizationSetBy = Automatic
+
+	column ScopeHealth_Id
+		dataType: string
+		lineageTag: e54d7fec-9099-40bb-a43e-52dbc9eef0de
+		summarizeBy: none
+		sourceColumn: ScopeHealth_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ScopeHealth_Value
+		dataType: string
+		lineageTag: 2b49dde8-57d2-48ce-bbaa-9588f474c61a
+		summarizeBy: none
+		sourceColumn: ScopeHealth_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column OverallHealthStatus
+		dataType: string
+		lineageTag: a440f77a-c4d4-4dad-99ac-1d5587d6fbb4
+		summarizeBy: none
+		sourceColumn: OverallHealthStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column ScopeHealthStatus
+		dataType: string
+		lineageTag: 954f411c-dce9-4073-a960-7c2cae354d91
+		summarizeBy: none
+		sourceColumn: ScopeHealthStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column IssueHealthStatus
+		dataType: string
+		lineageTag: 177366ed-7110-4285-9592-8daf219e023d
+		summarizeBy: none
+		sourceColumn: IssueHealthStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column EffortHealthStatus
+		dataType: string
+		lineageTag: a699c123-3016-4df0-a874-0a8f78aef447
+		summarizeBy: none
+		sourceColumn: EffortHealthStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column ScheduleHealthStatus
+		dataType: string
+		lineageTag: f6693882-ac45-4097-a2a9-304a5625b897
+		summarizeBy: none
+		sourceColumn: ScheduleHealthStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContractAmountTrend
+		dataType: double
+		lineageTag: b7c3872f-8bf3-4e00-81ba-424ca0c8c759
+		summarizeBy: sum
+		sourceColumn: ContractAmountTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column KeyAccomplishmentsThisReportingPeriod
+		dataType: string
+		lineageTag: a616dd28-3d53-4124-b429-37ddf2d36e0d
+		summarizeBy: none
+		sourceColumn: KeyAccomplishmentsThisReportingPeriod
+
+		annotation SummarizationSetBy = Automatic
+
+	column UpcomingTasksforNext2Weeks
+		dataType: string
+		lineageTag: 053d2bd8-45a9-4f0d-8f51-ba41455fc425
+		summarizeBy: none
+		sourceColumn: UpcomingTasksforNext2Weeks
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedCost
+		dataType: double
+		lineageTag: 2ef39562-cd61-43b8-9e2e-6ce74fa4e72c
+		summarizeBy: sum
+		sourceColumn: EstimatedCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActualCost
+		dataType: double
+		lineageTag: 9541cbda-af8e-4275-a44d-1196f05767e5
+		summarizeBy: sum
+		sourceColumn: ActualCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedRevenue
+		dataType: double
+		lineageTag: d0e43233-ff36-469b-8853-2aa9cf78c8be
+		summarizeBy: sum
+		sourceColumn: EstimatedRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedRevenueTrend
+		dataType: double
+		lineageTag: 22bd42cd-7839-4d79-80bd-8b53350e860f
+		summarizeBy: sum
+		sourceColumn: EstimatedRevenueTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedProfit
+		dataType: double
+		lineageTag: 565bb25a-d18c-42bb-8a57-ab34cacafd2a
+		summarizeBy: sum
+		sourceColumn: EstimatedProfit
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedProfitTrend
+		dataType: double
+		lineageTag: e8d61f5a-a8f7-4089-b294-338a15e97ad7
+		summarizeBy: sum
+		sourceColumn: EstimatedProfitTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActualRevenue
+		dataType: double
+		lineageTag: 833a37c2-6026-464d-ab0c-8dd48d780193
+		summarizeBy: sum
+		sourceColumn: ActualRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column BudgetUsed
+		dataType: double
+		lineageTag: 8549f2be-95d4-497c-a1c0-8065c6caa57b
+		summarizeBy: sum
+		sourceColumn: BudgetUsed
+
+		annotation SummarizationSetBy = Automatic
+
+	column Margin
+		dataType: double
+		lineageTag: 21b795fb-91e8-45b3-9b76-5a2a8860a0d8
+		summarizeBy: sum
+		sourceColumn: Margin
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActualMargin
+		dataType: double
+		lineageTag: 24f266ee-b18f-4191-8202-e1d29ad54f08
+		summarizeBy: sum
+		sourceColumn: ActualMargin
+
+		annotation SummarizationSetBy = Automatic
+
+	column MarginVariance
+		dataType: double
+		lineageTag: 6d965dfc-b17e-447e-ad20-107ae3d47548
+		summarizeBy: sum
+		sourceColumn: MarginVariance
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlansEstimatedCost
+		dataType: double
+		lineageTag: 79bd4845-a8eb-45f8-84e7-73a93e2c799a
+		summarizeBy: sum
+		sourceColumn: PlansEstimatedCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlansEstimatedProfit
+		dataType: double
+		lineageTag: 03eedecb-2f13-4e87-a24c-191937bb7626
+		summarizeBy: sum
+		sourceColumn: PlansEstimatedProfit
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlansEstimatedRevenue
+		dataType: double
+		lineageTag: bcdd5864-1879-4361-9310-9cc248071519
+		summarizeBy: sum
+		sourceColumn: PlansEstimatedRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlansEstimatedCostTrend
+		dataType: double
+		lineageTag: 61dacc17-cc85-43ef-82c1-e2b1ff4722ac
+		summarizeBy: sum
+		sourceColumn: PlansEstimatedCostTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlansEstimatedProfitTrend
+		dataType: double
+		lineageTag: cc464895-ac33-4030-976a-a4383c1c2f84
+		summarizeBy: sum
+		sourceColumn: PlansEstimatedProfitTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlansEstimatedRevenueTrend
+		dataType: double
+		lineageTag: dc9061f9-ad89-41ee-89fe-074ec0a7d706
+		summarizeBy: sum
+		sourceColumn: PlansEstimatedRevenueTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Status
+		dataType: string
+		lineageTag: 85067aa3-52e5-4817-b210-0a663f578e90
+		summarizeBy: none
+		sourceColumn: Summary_Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Complete
+		dataType: boolean
+		lineageTag: d2eabd10-68e7-495b-a8c4-4cbcd51b65a3
+		summarizeBy: none
+		sourceColumn: Summary_Complete
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_EstimatedCost
+		dataType: double
+		lineageTag: ce31d4a4-1ecf-49e1-a7b1-c44feccbc041
+		summarizeBy: sum
+		sourceColumn: Summary_EstimatedCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_EstimatedRevenue
+		dataType: double
+		lineageTag: 3d6cc117-636c-4c20-87d9-c6c5c4128d34
+		summarizeBy: sum
+		sourceColumn: Summary_EstimatedRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_State
+		dataType: string
+		lineageTag: 69d55f2e-91f0-4c3f-b6fd-748292115d99
+		summarizeBy: none
+		sourceColumn: Summary_State
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_TimesheetHours
+		dataType: double
+		lineageTag: c5843cf9-0947-4ee0-8089-fc79c91e8998
+		summarizeBy: sum
+		sourceColumn: Summary_TimesheetHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Priority
+		dataType: string
+		lineageTag: e2693418-cd7f-42fe-9461-214566722a6e
+		summarizeBy: none
+		sourceColumn: Summary_Priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_TaskStatus
+		dataType: string
+		lineageTag: 62b10710-d890-45c9-909b-ca1dde6188ba
+		summarizeBy: none
+		sourceColumn: Summary_TaskStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_StatusNotes
+		dataType: string
+		lineageTag: fc956c8b-a3b8-49b0-980d-df7df9b986d3
+		summarizeBy: none
+		sourceColumn: Summary_StatusNotes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RemainingEffort
+		dataType: double
+		lineageTag: 7a68fdd9-ec40-4085-9958-182923a2e1ef
+		summarizeBy: sum
+		sourceColumn: Summary_RemainingEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ActualCost
+		dataType: double
+		lineageTag: c3a214b3-01e5-46d9-a968-2b4c452a32c2
+		summarizeBy: sum
+		sourceColumn: Summary_ActualCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RemainingCost
+		dataType: double
+		lineageTag: 34ee0891-72ba-4a4a-a835-44a9ff483fcf
+		summarizeBy: sum
+		sourceColumn: Summary_RemainingCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ActualRevenue
+		dataType: double
+		lineageTag: ad2a4c4a-d3e6-4cbc-bc9f-8463ef916191
+		summarizeBy: sum
+		sourceColumn: Summary_ActualRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RemainingRevenue
+		dataType: double
+		lineageTag: 9ae5f7fe-6683-42b2-92db-d4dee48e1e94
+		summarizeBy: sum
+		sourceColumn: Summary_RemainingRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Points
+		dataType: double
+		lineageTag: 79c99ae6-61d0-414e-b0d5-734bd1b3b4b4
+		summarizeBy: sum
+		sourceColumn: Summary_Points
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Description
+		dataType: string
+		lineageTag: 254302fe-47cd-413f-b188-ab133def5849
+		summarizeBy: none
+		sourceColumn: Summary_Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Impact
+		dataType: string
+		lineageTag: 85bbd0df-405b-423e-bc18-8f86bec49905
+		summarizeBy: none
+		sourceColumn: Summary_Impact
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Category
+		dataType: string
+		lineageTag: 1f3ce160-b680-4824-8502-757b466cd620
+		summarizeBy: none
+		sourceColumn: Summary_Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RiskStage
+		dataType: string
+		lineageTag: 3ff2116d-4cc1-4e22-b8c1-b6a2f2f66ed7
+		summarizeBy: none
+		sourceColumn: Summary_RiskStage
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Mitigation
+		dataType: string
+		lineageTag: 6e980c1d-2014-4e6b-8f33-aec065ce401e
+		summarizeBy: none
+		sourceColumn: Summary_Mitigation
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_CostImpact
+		dataType: double
+		lineageTag: 45cfce94-9b9e-4124-a82a-6ef36e02fc9b
+		summarizeBy: sum
+		sourceColumn: Summary_CostImpact
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_TopicArea
+		dataType: string
+		lineageTag: 1419543c-1dda-45ae-b276-8a5b3e9eb3d3
+		summarizeBy: none
+		sourceColumn: Summary_TopicArea
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_DecisionDate
+		dataType: dateTime
+		lineageTag: 826995b5-172c-49f6-b316-2fc2f4bb6a91
+		summarizeBy: none
+		sourceColumn: Summary_DecisionDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_DecisionImpact
+		dataType: string
+		lineageTag: e306a5c8-49f8-4d27-a327-80fa97b0c013
+		summarizeBy: none
+		sourceColumn: Summary_DecisionImpact
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_DecisionMakers
+		dataType: string
+		lineageTag: 85c00a28-8446-41aa-8b1e-86d807086b64
+		summarizeBy: none
+		sourceColumn: Summary_DecisionMakers
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ShowinReports
+		dataType: string
+		lineageTag: 7d62b70b-24b0-4107-a6ce-4565e105b896
+		summarizeBy: none
+		sourceColumn: Summary_ShowinReports
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_MSPWBS
+		dataType: string
+		lineageTag: 087241b6-8126-4761-8619-44ecb741873f
+		summarizeBy: none
+		sourceColumn: Summary_MSPWBS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Contingency
+		dataType: string
+		lineageTag: 9a9f417c-98b1-4747-9124-b2582e1fbc2d
+		summarizeBy: none
+		sourceColumn: Summary_Contingency
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Resolution
+		dataType: string
+		lineageTag: 4beb8156-2a10-49a3-8a71-acb7dc93374e
+		summarizeBy: none
+		sourceColumn: Summary_Resolution
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Exposure
+		dataType: double
+		lineageTag: f945fb12-c8e5-4d58-a0ea-ee4d55379ba8
+		summarizeBy: sum
+		sourceColumn: Summary_Exposure
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Probability
+		dataType: double
+		lineageTag: 83625a67-932b-4499-8ea6-649bb721c98f
+		summarizeBy: sum
+		sourceColumn: Summary_Probability
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Risk
+		dataType: string
+		lineageTag: 49338460-aae6-4b98-90c6-0dac96e62c9b
+		summarizeBy: none
+		sourceColumn: Summary_Risk
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ItemType
+		dataType: string
+		lineageTag: 05e160cf-52be-427d-9f5b-7dcec0ad5762
+		summarizeBy: none
+		sourceColumn: Summary_ItemType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BusinessValue
+		dataType: string
+		lineageTag: ec35692f-28f0-442b-9892-88865258619a
+		summarizeBy: none
+		sourceColumn: Summary_BusinessValue
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BaselinePercentDone
+		dataType: double
+		lineageTag: 25882d66-2a97-454d-97ea-ec33a72ab0be
+		summarizeBy: sum
+		sourceColumn: Summary_BaselinePercentDone
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BaselineEndDate
+		dataType: dateTime
+		lineageTag: 3233a89f-7f8b-4dc0-9cb5-cd07d4464ef5
+		summarizeBy: none
+		sourceColumn: Summary_BaselineEndDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BaselineEffort
+		dataType: double
+		lineageTag: 11ee690c-2581-4d35-8130-13f459fe1fe6
+		summarizeBy: sum
+		sourceColumn: Summary_BaselineEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BaselineStartDate
+		dataType: dateTime
+		lineageTag: 953e8e2a-87b1-443b-8094-5527079973f6
+		summarizeBy: none
+		sourceColumn: Summary_BaselineStartDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BaselineRemainingEffort
+		dataType: double
+		lineageTag: 65330d1a-215c-4908-8af0-28559877c549
+		summarizeBy: sum
+		sourceColumn: Summary_BaselineRemainingEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ChargeType
+		dataType: string
+		lineageTag: 336d534d-ce37-45e4-a541-3572bca658d3
+		summarizeBy: none
+		sourceColumn: Summary_ChargeType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_FixedCost
+		dataType: double
+		lineageTag: 8084b568-c12e-4a18-8693-5b182050136f
+		summarizeBy: sum
+		sourceColumn: Summary_FixedCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Rate
+		dataType: double
+		lineageTag: 1abf2b70-5d2e-4037-b43a-f37fc3b0ae56
+		summarizeBy: sum
+		sourceColumn: Summary_Rate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Deadline
+		dataType: dateTime
+		lineageTag: 209e350a-8b85-4020-a806-c1c3b22389a4
+		summarizeBy: none
+		sourceColumn: Summary_Deadline
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_DeadlineCalc
+		dataType: double
+		lineageTag: 364a2fd4-b7f8-4f91-bf21-10aea2afca1e
+		summarizeBy: sum
+		sourceColumn: Summary_DeadlineCalc
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_critical
+		dataType: boolean
+		lineageTag: b48b77f8-80d3-40a0-b1d4-de7c3a9e66b3
+		summarizeBy: none
+		sourceColumn: Summary_critical
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_FixedBudget
+		dataType: double
+		lineageTag: 2f8de2cf-c143-4c6a-8a4f-9cb1511608ed
+		summarizeBy: sum
+		sourceColumn: Summary_FixedBudget
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BudgetUsed
+		dataType: double
+		lineageTag: e676e3b0-3040-4823-a067-507fbde51b24
+		summarizeBy: sum
+		sourceColumn: Summary_BudgetUsed
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_EstimatedProfit
+		dataType: double
+		lineageTag: 48da60ca-4626-4132-b79f-fcb02a861b26
+		summarizeBy: sum
+		sourceColumn: Summary_EstimatedProfit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ProfitVariance
+		dataType: double
+		lineageTag: 3a854929-b1fc-4eeb-8ab1-eb227599a4d7
+		summarizeBy: sum
+		sourceColumn: Summary_ProfitVariance
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ChargeableHours
+		dataType: double
+		lineageTag: 27615cbd-4a12-46c4-b467-36e35a8c8543
+		summarizeBy: sum
+		sourceColumn: Summary_ChargeableHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RemainingChargeableEffort
+		dataType: double
+		lineageTag: fab73867-3ef6-43cc-ba71-fdacf1170bac
+		summarizeBy: sum
+		sourceColumn: Summary_RemainingChargeableEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_LaborRevenue
+		dataType: double
+		lineageTag: 7a67fcbd-0a2c-4d28-a0c1-cd56df44078a
+		summarizeBy: sum
+		sourceColumn: Summary_LaborRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_LaborCost
+		dataType: double
+		lineageTag: 20ee47a6-ac80-404a-94e3-7fc67629e0f9
+		summarizeBy: sum
+		sourceColumn: Summary_LaborCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_TotalActualCost
+		dataType: double
+		lineageTag: 6d05c03c-1d47-45aa-81c0-170d053b0058
+		summarizeBy: sum
+		sourceColumn: Summary_TotalActualCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_TotalActualRevenue
+		dataType: double
+		lineageTag: a12c97a1-54e8-4db6-b6d0-82cf3c7a8c08
+		summarizeBy: sum
+		sourceColumn: Summary_TotalActualRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ActualProfit
+		dataType: double
+		lineageTag: 57963cec-ad9c-4463-b1ad-1b25207b1503
+		summarizeBy: sum
+		sourceColumn: Summary_ActualProfit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Margin
+		dataType: double
+		lineageTag: 92c9a4bf-71da-4ddc-8d21-f862470ab326
+		summarizeBy: sum
+		sourceColumn: Summary_Margin
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ActualMargin
+		dataType: double
+		lineageTag: e6cf978b-c983-4354-8a49-45c0f76903e3
+		summarizeBy: sum
+		sourceColumn: Summary_ActualMargin
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_MarginVariance
+		dataType: double
+		lineageTag: 9ca92394-87b6-4699-b55e-c09afe89828c
+		summarizeBy: sum
+		sourceColumn: Summary_MarginVariance
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_WorkItemIdentifier
+		dataType: string
+		lineageTag: 6e8d7ff2-f602-455b-bda8-950b4456bf85
+		summarizeBy: none
+		sourceColumn: Summary_WorkItemIdentifier
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_StartDate
+		dataType: dateTime
+		lineageTag: 1a91855a-721c-45d1-a756-f07b7786398e
+		summarizeBy: none
+		sourceColumn: Summary_StartDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_EndDate
+		dataType: dateTime
+		lineageTag: 5f464aa3-e3f6-4efa-bc4f-5d630cd98188
+		summarizeBy: none
+		sourceColumn: Summary_EndDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Effort
+		dataType: double
+		lineageTag: f90a518b-b8b0-498c-803d-ebd80918f2f8
+		summarizeBy: sum
+		sourceColumn: Summary_Effort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Duration
+		dataType: double
+		lineageTag: 7ac896bb-79ff-4ed6-b261-1480574ac1a5
+		summarizeBy: sum
+		sourceColumn: Summary_Duration
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_PercentDone
+		dataType: double
+		lineageTag: 878e8e1a-6e8b-47fa-969c-c7233472b205
+		summarizeBy: sum
+		sourceColumn: Summary_PercentDone
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_taskorder
+		dataType: double
+		lineageTag: da64d313-ff2b-4471-aa0c-5bf1a8218930
+		summarizeBy: sum
+		sourceColumn: Summary_taskorder
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_WBS
+		dataType: string
+		lineageTag: 8fd89323-26eb-4907-a9da-0e68edc29eb4
+		summarizeBy: none
+		sourceColumn: Summary_WBS
+
+		annotation SummarizationSetBy = Automatic
+
+	column VoteAmount
+		dataType: double
+		lineageTag: bcd43a4a-d28d-4bea-8035-c32d05770654
+		summarizeBy: sum
+		sourceColumn: VoteAmount
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedApplications
+		dataType: string
+		lineageTag: 5b76a6ab-9832-4609-af6b-770d16b7b96b
+		summarizeBy: none
+		sourceColumn: AssociatedApplications
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedApplications_Value
+		dataType: string
+		lineageTag: 1ae0f701-0920-42f9-9453-e8e07881f35f
+		summarizeBy: none
+		sourceColumn: AssociatedApplications_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedProducts
+		dataType: string
+		lineageTag: e450ff85-bc7c-467d-9f6d-14bcb21c2744
+		summarizeBy: none
+		sourceColumn: AssociatedProducts
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedProducts_Value
+		dataType: string
+		lineageTag: c6b2fe2e-10a4-47a1-8330-8aedbcd693a6
+		summarizeBy: none
+		sourceColumn: AssociatedProducts_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedEngagements
+		dataType: string
+		lineageTag: b9a7fa7d-7328-47df-9d6f-8c50858ea07d
+		summarizeBy: none
+		sourceColumn: AssociatedEngagements
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedEngagements_Value
+		dataType: string
+		lineageTag: 860187ef-c8be-440f-be24-81b9277c2365
+		summarizeBy: none
+		sourceColumn: AssociatedEngagements_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedEpics
+		dataType: string
+		lineageTag: 2bb46f0d-328a-474b-bf1c-5a182b4a0d0e
+		summarizeBy: none
+		sourceColumn: AssociatedEpics
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedEpics_Value
+		dataType: string
+		lineageTag: b5d14c85-398a-44e9-a9e6-8463a4d9be06
+		summarizeBy: none
+		sourceColumn: AssociatedEpics_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedIdeas
+		dataType: string
+		lineageTag: df826fb9-17f5-4029-a2f3-b83f60567e04
+		summarizeBy: none
+		sourceColumn: AssociatedIdeas
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedIdeas_Value
+		dataType: string
+		lineageTag: 25fa6833-45e7-4f61-ac00-0d21ac67509b
+		summarizeBy: none
+		sourceColumn: AssociatedIdeas_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedAccounts
+		dataType: string
+		lineageTag: 637c98ff-f2b3-4033-a980-4c90bd6c77b3
+		summarizeBy: none
+		sourceColumn: AssociatedAccounts
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedAccounts_Value
+		dataType: string
+		lineageTag: 7055bb2b-59d0-40a5-8596-842f9e559d0f
+		summarizeBy: none
+		sourceColumn: AssociatedAccounts_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountType_Id
+		dataType: string
+		lineageTag: b675236c-5e57-4771-83de-8fe47b103801
+		summarizeBy: none
+		sourceColumn: AccountType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountType_Value
+		dataType: string
+		lineageTag: e013625e-cbd9-4ef8-b5d8-a91a50da73ec
+		summarizeBy: none
+		sourceColumn: AccountType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region_Id
+		dataType: string
+		lineageTag: 02c794b8-7890-4dbc-b233-6c468f25f6a6
+		summarizeBy: none
+		sourceColumn: Region_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region_Value
+		dataType: string
+		lineageTag: e37065f4-4332-4179-a27e-2265ff47094e
+		summarizeBy: none
+		sourceColumn: Region_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column EngagementType_Id
+		dataType: string
+		lineageTag: 495998c0-def1-4fbb-ab23-5c4982b3a31f
+		summarizeBy: none
+		sourceColumn: EngagementType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column EngagementType_Value
+		dataType: string
+		lineageTag: 60d086fb-df3a-42bc-b050-db76e6258d20
+		summarizeBy: none
+		sourceColumn: EngagementType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceLine_Id
+		dataType: string
+		lineageTag: b1e41b55-72da-4755-b518-3aeb52c5c840
+		summarizeBy: none
+		sourceColumn: ServiceLine_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceLine_Value
+		dataType: string
+		lineageTag: c27ae5a6-ad92-4407-ba6a-7901d922c3a9
+		summarizeBy: none
+		sourceColumn: ServiceLine_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column CapabilityLevel_Id
+		dataType: string
+		lineageTag: 518f69f8-ccb8-473f-b76f-acd304aa74fe
+		summarizeBy: none
+		sourceColumn: CapabilityLevel_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column CapabilityLevel_Value
+		dataType: string
+		lineageTag: 917b6209-6aaf-465a-afff-d94857a070e3
+		summarizeBy: none
+		sourceColumn: CapabilityLevel_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column MaturityLevel_Id
+		dataType: string
+		lineageTag: bbcd114b-4e86-416e-aafc-61ec1efda7fb
+		summarizeBy: none
+		sourceColumn: MaturityLevel_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column MaturityLevel_Value
+		dataType: string
+		lineageTag: bcf81338-7f9c-4e81-84d0-f3a8ee3e8d4e
+		summarizeBy: none
+		sourceColumn: MaturityLevel_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PainPoints
+		dataType: string
+		lineageTag: e9969cad-ffe0-43c4-8a28-e078ae3c7548
+		summarizeBy: none
+		sourceColumn: PainPoints
+
+		annotation SummarizationSetBy = Automatic
+
+	column FutureStateVision
+		dataType: string
+		lineageTag: 75340622-4d4f-48a4-b345-1e1af6250440
+		summarizeBy: none
+		sourceColumn: FutureStateVision
+
+		annotation SummarizationSetBy = Automatic
+
+	column ApplicationCategory_Id
+		dataType: string
+		lineageTag: 9948f46f-d870-416b-89c3-d3b2baa625cf
+		summarizeBy: none
+		sourceColumn: ApplicationCategory_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ApplicationCategory_Value
+		dataType: string
+		lineageTag: c892f25a-127f-4a85-b4bd-95b102c548bd
+		summarizeBy: none
+		sourceColumn: ApplicationCategory_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column HostingLocation_Id
+		dataType: string
+		lineageTag: 0021dcda-8b72-49f9-9ce7-76d308a97d80
+		summarizeBy: none
+		sourceColumn: HostingLocation_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column HostingLocation_Value
+		dataType: string
+		lineageTag: 15668f47-167b-4de0-b395-2b909cf5380e
+		summarizeBy: none
+		sourceColumn: HostingLocation_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessCriticality_Id
+		dataType: string
+		lineageTag: 35ecd312-0464-4be2-9357-691bd8704007
+		summarizeBy: none
+		sourceColumn: BusinessCriticality_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessCriticality_Value
+		dataType: string
+		lineageTag: e2f85686-0283-46a2-a58a-b91ee323868a
+		summarizeBy: none
+		sourceColumn: BusinessCriticality_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column StrategicFit_Id
+		dataType: string
+		lineageTag: 3fd11180-3da7-4be6-a99e-5c98000669f3
+		summarizeBy: none
+		sourceColumn: StrategicFit_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column StrategicFit_Value
+		dataType: string
+		lineageTag: a71147de-662c-4616-afa9-f3fdcbca3736
+		summarizeBy: none
+		sourceColumn: StrategicFit_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComplianceRisk_Id
+		dataType: string
+		lineageTag: 4429e613-06b7-455b-8df8-5ff361788b0c
+		summarizeBy: none
+		sourceColumn: ComplianceRisk_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComplianceRisk_Value
+		dataType: string
+		lineageTag: e45bc19e-de29-44e0-9e09-24eba9b3ca64
+		summarizeBy: none
+		sourceColumn: ComplianceRisk_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column SecurityRisk_Id
+		dataType: string
+		lineageTag: 927b5279-7ca7-4244-8965-d6f0500fd0ff
+		summarizeBy: none
+		sourceColumn: SecurityRisk_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column SecurityRisk_Value
+		dataType: string
+		lineageTag: 0b8810b8-87e9-443e-9974-c68ee29641af
+		summarizeBy: none
+		sourceColumn: SecurityRisk_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column UserCount
+		dataType: double
+		lineageTag: a56f15c4-9741-4c5f-9f84-eff9ea2ad421
+		summarizeBy: sum
+		sourceColumn: UserCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLAAvailabilityRequirement_Id
+		dataType: string
+		lineageTag: fd6e621e-946b-47a7-847b-ae59ae9e1b24
+		summarizeBy: none
+		sourceColumn: SLAAvailabilityRequirement_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLAAvailabilityRequirement_Value
+		dataType: string
+		lineageTag: 5a0f064a-0136-4236-8210-8a3c38659d24
+		summarizeBy: none
+		sourceColumn: SLAAvailabilityRequirement_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastAssessmentDate
+		dataType: dateTime
+		lineageTag: f815273e-228c-4997-ab45-98140bcf462d
+		summarizeBy: none
+		sourceColumn: LastAssessmentDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReplacementPlan
+		dataType: string
+		lineageTag: e21d6dc8-e679-48d5-a966-3c3eacaa4e8b
+		summarizeBy: none
+		sourceColumn: ReplacementPlan
+
+		annotation SummarizationSetBy = Automatic
+
+	column TechnicalFit_Id
+		dataType: string
+		lineageTag: 16d45e47-b7d0-4590-a2f6-b8d6d882809f
+		summarizeBy: none
+		sourceColumn: TechnicalFit_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column TechnicalFit_Value
+		dataType: string
+		lineageTag: 727acd11-1fee-4e67-b9ab-b5909322a8df
+		summarizeBy: none
+		sourceColumn: TechnicalFit_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column MarketSegment_Id
+		dataType: string
+		lineageTag: ecc620f8-fab8-4083-bf9e-eeca9d0124ee
+		summarizeBy: none
+		sourceColumn: MarketSegment_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column MarketSegment_Value
+		dataType: string
+		lineageTag: a5ebd067-2f7e-477d-aa1e-af0ff1462efa
+		summarizeBy: none
+		sourceColumn: MarketSegment_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductType_Id
+		dataType: string
+		lineageTag: c82d7e74-e831-4442-a28b-011ddb83f718
+		summarizeBy: none
+		sourceColumn: ProductType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductType_Value
+		dataType: string
+		lineageTag: 8ea12ba6-5a7d-4f15-bc09-33c7e3408f5b
+		summarizeBy: none
+		sourceColumn: ProductType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column CosttoDevelop
+		dataType: double
+		lineageTag: fecaa719-7abb-4b56-8fdd-4856d97f2100
+		summarizeBy: sum
+		sourceColumn: CosttoDevelop
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReleaseDate
+		dataType: dateTime
+		lineageTag: 5b8ce45e-3071-4291-b62d-98c9ce9dbeac
+		summarizeBy: none
+		sourceColumn: ReleaseDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column CompetitivePositioning_Id
+		dataType: string
+		lineageTag: 554234a7-feee-4656-be29-294c308fcc59
+		summarizeBy: none
+		sourceColumn: CompetitivePositioning_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column CompetitivePositioning_Value
+		dataType: string
+		lineageTag: 1b697c45-c69a-461c-b1c2-5b3d78efbac6
+		summarizeBy: none
+		sourceColumn: CompetitivePositioning_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegulatoryDependencies_Id
+		dataType: string
+		lineageTag: 9115a213-ce3a-4f5a-83c7-22dbcdc75952
+		summarizeBy: none
+		sourceColumn: RegulatoryDependencies_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegulatoryDependencies_Value
+		dataType: string
+		lineageTag: e34dbb4e-8485-4a3d-9b9b-59cab870189b
+		summarizeBy: none
+		sourceColumn: RegulatoryDependencies_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerAdoptionStatus_Id
+		dataType: string
+		lineageTag: 27b83c95-0d9f-4e62-8233-afbd72615be3
+		summarizeBy: none
+		sourceColumn: CustomerAdoptionStatus_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerAdoptionStatus_Value
+		dataType: string
+		lineageTag: 09ae0ea4-9bf0-4638-9234-5994d2277edb
+		summarizeBy: none
+		sourceColumn: CustomerAdoptionStatus_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RevenuePotential
+		dataType: double
+		lineageTag: 6143f541-af1f-4d67-b08d-caefa19ee545
+		summarizeBy: sum
+		sourceColumn: RevenuePotential
+
+		annotation SummarizationSetBy = Automatic
+
+	column NetValue
+		dataType: double
+		lineageTag: eee9ba8c-9807-4f53-8989-21d59f29b90d
+		summarizeBy: sum
+		sourceColumn: NetValue
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActualProfit
+		dataType: double
+		lineageTag: 001dda0a-00cb-45c1-a868-3f9d5a76453d
+		summarizeBy: sum
+		sourceColumn: ActualProfit
+
+		annotation SummarizationSetBy = Automatic
+
+	column InnovationScore
+		dataType: double
+		lineageTag: c75c780d-afae-4ef2-ba01-586c7e23aa64
+		summarizeBy: sum
+		sourceColumn: InnovationScore
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChallengeCategory_Id
+		dataType: string
+		lineageTag: 918e6617-e41e-4a13-855b-9a15c72044ed
+		summarizeBy: none
+		sourceColumn: ChallengeCategory_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChallengeCategory_Value
+		dataType: string
+		lineageTag: 60a626c7-2158-48bb-a32b-af82db569e98
+		summarizeBy: none
+		sourceColumn: ChallengeCategory_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessObjective_Id
+		dataType: string
+		lineageTag: fb7204cb-e0d4-4854-8e55-8e4424cf44c7
+		summarizeBy: none
+		sourceColumn: BusinessObjective_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessObjective_Value
+		dataType: string
+		lineageTag: db66acb1-8fd6-4998-857e-8ff8a78ef734
+		summarizeBy: none
+		sourceColumn: BusinessObjective_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedTimetoImplement_Id
+		dataType: string
+		lineageTag: fdb8dc1f-aeb0-4d74-aceb-e7ed225954d5
+		summarizeBy: none
+		sourceColumn: EstimatedTimetoImplement_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedTimetoImplement_Value
+		dataType: string
+		lineageTag: 69c077a2-d0ee-4ab1-a731-af46ccf4b546
+		summarizeBy: none
+		sourceColumn: EstimatedTimetoImplement_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column FeasibilityAssessment_Id
+		dataType: string
+		lineageTag: 16b8ac19-daf7-4c7f-8d6d-8ae15d5b767e
+		summarizeBy: none
+		sourceColumn: FeasibilityAssessment_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column FeasibilityAssessment_Value
+		dataType: string
+		lineageTag: 12ee1e0e-be08-4201-a7b2-1f0c250175b8
+		summarizeBy: none
+		sourceColumn: FeasibilityAssessment_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column IdeaCategory_Id
+		dataType: string
+		lineageTag: d3bca014-b804-4342-aabf-1989e7fa532c
+		summarizeBy: none
+		sourceColumn: IdeaCategory_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column IdeaCategory_Value
+		dataType: string
+		lineageTag: 838be3cb-27fa-47ef-a11c-ac82965ea1c3
+		summarizeBy: none
+		sourceColumn: IdeaCategory_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedChallenge
+		dataType: string
+		lineageTag: ae97a49b-8316-4f7b-b4f1-e8046434c8d7
+		summarizeBy: none
+		sourceColumn: AssociatedChallenge
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedChallenge_Value
+		dataType: string
+		lineageTag: a1afda82-bf7e-46ad-a6ca-56f558da1106
+		summarizeBy: none
+		sourceColumn: AssociatedChallenge_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetNumberTrend
+		dataType: double
+		lineageTag: 2ed40fc3-3a7a-4837-82d3-2ae08c62d1c5
+		summarizeBy: sum
+		sourceColumn: TargetNumberTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedCostTrend
+		dataType: double
+		lineageTag: cdfb9578-6abc-4485-b23e-e890960e9e86
+		summarizeBy: sum
+		sourceColumn: EstimatedCostTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingRevenue
+		dataType: double
+		lineageTag: 4d82b1f1-a4f5-47f3-b167-85c326014efb
+		summarizeBy: sum
+		sourceColumn: RemainingRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column RemainingRevenueTrend
+		dataType: double
+		lineageTag: 12edf797-da2b-4fa3-a271-1604476ad1b7
+		summarizeBy: sum
+		sourceColumn: RemainingRevenueTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column Owner
+		dataType: string
+		lineageTag: 53186f81-b3d9-44cf-85a4-b4059e0713c1
+		summarizeBy: none
+		sourceColumn: Owner
+
+		annotation SummarizationSetBy = Automatic
+
+	column Owner_Value
+		dataType: string
+		lineageTag: 9fb451d8-0a7e-45ba-84c4-d1f54e0ee348
+		summarizeBy: none
+		sourceColumn: Owner_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenefitType_Id
+		dataType: string
+		lineageTag: 31a3e754-1c56-4d7b-a856-03c74a2f898f
+		summarizeBy: none
+		sourceColumn: BenefitType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenefitType_Value
+		dataType: string
+		lineageTag: a3689e55-77a7-4cb8-b658-f219422b274d
+		summarizeBy: none
+		sourceColumn: BenefitType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenefitCategory_Id
+		dataType: string
+		lineageTag: 8c639639-87b0-496f-b7ce-c70066a5d1fe
+		summarizeBy: none
+		sourceColumn: BenefitCategory_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenefitCategory_Value
+		dataType: string
+		lineageTag: ce599791-7e29-408f-975f-9049e90049f2
+		summarizeBy: none
+		sourceColumn: BenefitCategory_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RealizationWindow_Id
+		dataType: string
+		lineageTag: 6b3592e9-44b8-4c74-a6a0-0de17df6ac19
+		summarizeBy: none
+		sourceColumn: RealizationWindow_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RealizationWindow_Value
+		dataType: string
+		lineageTag: 7a6560c9-e0f9-4128-a3f0-65312cd3dccb
+		summarizeBy: none
+		sourceColumn: RealizationWindow_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenefitStatus_Id
+		dataType: string
+		lineageTag: db036ebd-ab3a-4154-a603-e3214ad60762
+		summarizeBy: none
+		sourceColumn: BenefitStatus_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenefitStatus_Value
+		dataType: string
+		lineageTag: 3dfc6f02-b076-499c-bc41-89c3ab02884e
+		summarizeBy: none
+		sourceColumn: BenefitStatus_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskLevel_Id
+		dataType: string
+		lineageTag: 45525d2c-bfe1-45c5-82ab-34600b08e520
+		summarizeBy: none
+		sourceColumn: RiskLevel_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskLevel_Value
+		dataType: string
+		lineageTag: 396abb6c-7890-4b21-9c91-cde398d829f1
+		summarizeBy: none
+		sourceColumn: RiskLevel_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Assumptions
+		dataType: string
+		lineageTag: 96d92779-64a2-422e-9c70-ffb01dd47e3e
+		summarizeBy: none
+		sourceColumn: Assumptions
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedBenefitRealization
+		dataType: string
+		lineageTag: a61f927b-520d-4a1d-9359-c809ff8d8d4c
+		summarizeBy: none
+		sourceColumn: AssociatedBenefitRealization
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedBenefitRealization_Value
+		dataType: string
+		lineageTag: 00720012-18e2-44fb-a48d-adff7f6ef43b
+		summarizeBy: none
+		sourceColumn: AssociatedBenefitRealization_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenefitStrategicAlignment
+		dataType: string
+		lineageTag: 9da799eb-5cea-4f57-ad6a-fa3fbf243126
+		summarizeBy: none
+		sourceColumn: BenefitStrategicAlignment
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedRisk
+		dataType: string
+		lineageTag: 2532c2bb-5c90-484b-a8f6-82b0c5ad8606
+		summarizeBy: none
+		sourceColumn: AssociatedRisk
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedRisk_Value
+		dataType: string
+		lineageTag: 9be77e5d-0b4e-4dec-9a7a-88fba9c02e6c
+		summarizeBy: none
+		sourceColumn: AssociatedRisk_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category_Id
+		dataType: string
+		lineageTag: 92719a60-066f-4674-9121-0f1a5e2b6c97
+		summarizeBy: none
+		sourceColumn: Category_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category_Value
+		dataType: string
+		lineageTag: e2be4f28-a6f7-45c1-a647-26b19571bbca
+		summarizeBy: none
+		sourceColumn: Category_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubCategory_Id
+		dataType: string
+		lineageTag: aca49910-c8f3-4324-90d2-ea569a69da67
+		summarizeBy: none
+		sourceColumn: SubCategory_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubCategory_Value
+		dataType: string
+		lineageTag: 2388cc83-fbbe-4053-a4dc-ca68bca51931
+		summarizeBy: none
+		sourceColumn: SubCategory_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trigger
+		dataType: string
+		lineageTag: c2177a4a-a6d8-41f3-b72b-af1e8fec0175
+		summarizeBy: none
+		sourceColumn: Trigger
+
+		annotation SummarizationSetBy = Automatic
+
+	column Likelihood_Id
+		dataType: string
+		lineageTag: cefd0ef7-f4ff-402a-a20c-58799aedec0a
+		summarizeBy: none
+		sourceColumn: Likelihood_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Likelihood_Value
+		dataType: string
+		lineageTag: 12a3b4db-5337-4d36-b9c9-2cf54cc37fd4
+		summarizeBy: none
+		sourceColumn: Likelihood_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Impact_Id
+		dataType: string
+		lineageTag: 88076a25-e0af-463a-b3fa-aa79ea17f406
+		summarizeBy: none
+		sourceColumn: Impact_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Impact_Value
+		dataType: string
+		lineageTag: fb475364-0a68-468a-affb-a17222b595ce
+		summarizeBy: none
+		sourceColumn: Impact_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ImpactScore
+		dataType: double
+		lineageTag: 4eb6216b-0e12-43fc-91bd-d68a6c1c2c8d
+		summarizeBy: sum
+		sourceColumn: ImpactScore
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskRating_Id
+		dataType: string
+		lineageTag: 62d28a3c-1d7a-4639-867e-d8f9d17ab6f4
+		summarizeBy: none
+		sourceColumn: RiskRating_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskRating_Value
+		dataType: string
+		lineageTag: 9b19ef5f-c6b1-4e57-872e-ab30944dd679
+		summarizeBy: none
+		sourceColumn: RiskRating_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskResponse_Id
+		dataType: string
+		lineageTag: 1c30fd4e-a132-4e8a-8843-b6002880881a
+		summarizeBy: none
+		sourceColumn: RiskResponse_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskResponse_Value
+		dataType: string
+		lineageTag: 8e91d395-ef54-40ca-b6e1-9ee862ebe5bb
+		summarizeBy: none
+		sourceColumn: RiskResponse_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column MitigationStatus_Id
+		dataType: string
+		lineageTag: 119cd321-cfc1-4689-bb85-154ac3df1ded
+		summarizeBy: none
+		sourceColumn: MitigationStatus_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column MitigationStatus_Value
+		dataType: string
+		lineageTag: b3faeb1b-78c0-47d8-9a82-867a8141909a
+		summarizeBy: none
+		sourceColumn: MitigationStatus_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column MitigationOwner
+		dataType: string
+		lineageTag: 61d1e817-73b8-44a7-b5c3-bccf9ee80131
+		summarizeBy: none
+		sourceColumn: MitigationOwner
+
+		annotation SummarizationSetBy = Automatic
+
+	column MitigationOwner_Value
+		dataType: string
+		lineageTag: 16c6638d-abf3-4f05-82f3-585e5c6c6c94
+		summarizeBy: none
+		sourceColumn: MitigationOwner_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column MitigationStrategy
+		dataType: string
+		lineageTag: a0ea84b1-01a3-472a-ae2d-bbc82cc026a6
+		summarizeBy: none
+		sourceColumn: MitigationStrategy
+
+		annotation SummarizationSetBy = Automatic
+
+	column EscalationLevel_Id
+		dataType: string
+		lineageTag: 4a99c5b7-0c6b-4e02-a42c-d9217f0a6087
+		summarizeBy: none
+		sourceColumn: EscalationLevel_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column EscalationLevel_Value
+		dataType: string
+		lineageTag: 059d5295-03df-410a-bcd9-ba9948fd6ca9
+		summarizeBy: none
+		sourceColumn: EscalationLevel_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column NextReviewDate
+		dataType: dateTime
+		lineageTag: 45795a0c-5ec5-497b-b7d6-8be762b89d37
+		summarizeBy: none
+		sourceColumn: NextReviewDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComplianceRequirement_Id
+		dataType: string
+		lineageTag: 42722c6f-cb0e-4403-a18a-0fbebfa64ccb
+		summarizeBy: none
+		sourceColumn: ComplianceRequirement_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComplianceRequirement_Value
+		dataType: string
+		lineageTag: 4124d83c-a5b0-4f42-9271-438ffad19e78
+		summarizeBy: none
+		sourceColumn: ComplianceRequirement_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ControlOwner
+		dataType: string
+		lineageTag: 24d5ab91-4748-4846-a0cf-7dfb21f00e3a
+		summarizeBy: none
+		sourceColumn: ControlOwner
+
+		annotation SummarizationSetBy = Automatic
+
+	column ControlOwner_Value
+		dataType: string
+		lineageTag: 37acc675-0c39-4161-a7b1-cdac2f3f1392
+		summarizeBy: none
+		sourceColumn: ControlOwner_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ControlReference
+		dataType: string
+		lineageTag: 1ea38fc9-1ff7-43e8-b9fc-60f8d380dd08
+		summarizeBy: none
+		sourceColumn: ControlReference
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskAppetiteAlignment_Id
+		dataType: string
+		lineageTag: 680e7643-656b-4ff1-906f-96ceb8bb71a5
+		summarizeBy: none
+		sourceColumn: RiskAppetiteAlignment_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskAppetiteAlignment_Value
+		dataType: string
+		lineageTag: 7f8f9bcf-08d4-4fe7-b974-eb0d78c5879c
+		summarizeBy: none
+		sourceColumn: RiskAppetiteAlignment_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AuditNotes
+		dataType: string
+		lineageTag: 403ec084-1173-49fa-aa60-e21cc2e6d311
+		summarizeBy: none
+		sourceColumn: AuditNotes
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskStatus_Id
+		dataType: string
+		lineageTag: cb7c292f-f99f-40bc-9ac4-e9d4a29c9216
+		summarizeBy: none
+		sourceColumn: RiskStatus_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskStatus_Value
+		dataType: string
+		lineageTag: 5831ceba-499b-463d-aa4d-1e7204cf0638
+		summarizeBy: none
+		sourceColumn: RiskStatus_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiskStatusTrend
+		dataType: string
+		lineageTag: b5b77acb-a807-433f-9f8a-9a4e9da660de
+		summarizeBy: none
+		sourceColumn: RiskStatusTrend
+
+		annotation SummarizationSetBy = Automatic
+
+	column BusinessDriver
+		dataType: string
+		lineageTag: b5810ff9-28a4-4e8a-90c2-bf4398b5993e
+		summarizeBy: none
+		sourceColumn: BusinessDriver
+
+		annotation SummarizationSetBy = Automatic
+
+	column Source_Id
+		dataType: string
+		lineageTag: eced56eb-bb9e-4f1a-a353-d37651288973
+		summarizeBy: none
+		sourceColumn: Source_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Source_Value
+		dataType: string
+		lineageTag: 46daed9e-554d-4959-af73-94f7968e438b
+		summarizeBy: none
+		sourceColumn: Source_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubmissionDate
+		dataType: dateTime
+		lineageTag: 70a3d252-b357-48d9-9b84-281aa6e762be
+		summarizeBy: none
+		sourceColumn: SubmissionDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Urgency_Id
+		dataType: string
+		lineageTag: b6e237c3-09af-4c4e-aa18-8c2ecce8edc7
+		summarizeBy: none
+		sourceColumn: Urgency_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Urgency_Value
+		dataType: string
+		lineageTag: 8e08381d-ae69-4344-9081-7aa79b67758a
+		summarizeBy: none
+		sourceColumn: Urgency_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedRequirements
+		dataType: string
+		lineageTag: d9e6156d-bf43-41fe-aa27-28f8d05b2dc5
+		summarizeBy: none
+		sourceColumn: AssociatedRequirements
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedRequirements_Value
+		dataType: string
+		lineageTag: a4b11b24-412f-48a7-9890-40ea0254d962
+		summarizeBy: none
+		sourceColumn: AssociatedRequirements_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequirementType_Id
+		dataType: string
+		lineageTag: 6f7acb9d-b9d9-41e4-ba61-9d4ac370e17d
+		summarizeBy: none
+		sourceColumn: RequirementType_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequirementType_Value
+		dataType: string
+		lineageTag: a04b772b-dbc0-49b7-baa0-3580fb43df03
+		summarizeBy: none
+		sourceColumn: RequirementType_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequirementSource_Id
+		dataType: string
+		lineageTag: ec3e4002-6c81-4382-8ff3-98bee8bd3da7
+		summarizeBy: none
+		sourceColumn: RequirementSource_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequirementSource_Value
+		dataType: string
+		lineageTag: b5da8fc6-f419-46aa-bc37-733166f64149
+		summarizeBy: none
+		sourceColumn: RequirementSource_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedEffort
+		dataType: double
+		lineageTag: ff3872b7-20b9-4860-b376-773b07d5ee23
+		summarizeBy: sum
+		sourceColumn: EstimatedEffort
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetRelease_Id
+		dataType: string
+		lineageTag: f608bcd1-0d8f-4c81-8074-f91c671b51e5
+		summarizeBy: none
+		sourceColumn: TargetRelease_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetRelease_Value
+		dataType: string
+		lineageTag: d53d6eb4-158d-4cfd-97ff-6659d18d17bb
+		summarizeBy: none
+		sourceColumn: TargetRelease_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AcceptanceCriteria
+		dataType: string
+		lineageTag: 6b816962-40e9-454e-83de-ef61ea88b663
+		summarizeBy: none
+		sourceColumn: AcceptanceCriteria
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedFinancialImpact_Id
+		dataType: string
+		lineageTag: 68388404-47e2-41f1-8bb2-e6ecf6d4873f
+		summarizeBy: none
+		sourceColumn: EstimatedFinancialImpact_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedFinancialImpact_Value
+		dataType: string
+		lineageTag: 7bc482e7-a63d-46f4-a1d5-21d2475d5391
+		summarizeBy: none
+		sourceColumn: EstimatedFinancialImpact_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssociatedBusinessRequirements
+		dataType: string
+		lineageTag: 1b408503-d1e1-4ef3-ae84-cd028f873eab
+		summarizeBy: none
+		sourceColumn: AssociatedBusinessRequirements
+
+		annotation SummarizationSetBy = Automatic
+
+	column EAC
+		dataType: double
+		lineageTag: 07a52f1e-4681-4a38-a7f3-2702f748d8e3
+		summarizeBy: sum
+		sourceColumn: EAC
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_TotalCost
+		dataType: double
+		lineageTag: be616d9d-d4db-414b-a057-6ef79d1a17fd
+		summarizeBy: sum
+		sourceColumn: Summary_TotalCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Owner
+		dataType: string
+		lineageTag: 06b4d9a5-cb27-432b-a2bf-b6f9ece7d169
+		summarizeBy: none
+		sourceColumn: Summary_Owner
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RemainingLaborCost
+		dataType: double
+		lineageTag: da4b6725-dbcd-4970-9410-10723f1b515a
+		summarizeBy: sum
+		sourceColumn: Summary_RemainingLaborCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_NonLaborCost
+		dataType: double
+		lineageTag: 5256e42d-796c-4665-869d-b4a79b9c5566
+		summarizeBy: sum
+		sourceColumn: Summary_NonLaborCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Note
+		dataType: string
+		lineageTag: ea879443-d0aa-46e0-8a5d-206f09c7ab86
+		summarizeBy: none
+		sourceColumn: Summary_Note
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinancialHealthStatus
+		dataType: string
+		lineageTag: 83bb7678-0b41-4228-bf31-5de897599505
+		summarizeBy: none
+		sourceColumn: FinancialHealthStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_ProductLine_Id
+		dataType: string
+		lineageTag: b95f020e-077b-46a5-a36b-973a2606dc4e
+		summarizeBy: none
+		sourceColumn: PlanType_ProductLine_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_ProductLine_Value
+		dataType: string
+		lineageTag: 6b5df5f4-499f-4e77-978a-e5d2a2918c22
+		summarizeBy: none
+		sourceColumn: PlanType_ProductLine_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_BusinessCapabilities_Id
+		dataType: string
+		lineageTag: 1e4d67ed-33f2-4189-8836-58bda5fffeca
+		summarizeBy: none
+		sourceColumn: PlanType_BusinessCapabilities_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_BusinessCapabilities_Value
+		dataType: string
+		lineageTag: fecb997a-0627-4a4d-a3ab-946f2fb733ee
+		summarizeBy: none
+		sourceColumn: PlanType_BusinessCapabilities_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_Challenge_Id
+		dataType: string
+		lineageTag: 7925124d-3517-41ae-b2ed-76fd8a443a8e
+		summarizeBy: none
+		sourceColumn: PlanType_Challenge_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_Challenge_Value
+		dataType: string
+		lineageTag: 3b784c84-04be-43ab-b004-7c08798ba709
+		summarizeBy: none
+		sourceColumn: PlanType_Challenge_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_BusinessNeed_Id
+		dataType: string
+		lineageTag: 556a4e27-9526-4d9f-8679-4e861db3c244
+		summarizeBy: none
+		sourceColumn: PlanType_BusinessNeed_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType_BusinessNeed_Value
+		dataType: string
+		lineageTag: 7f980c5c-22d7-4e4e-91ce-264d1cb3c33a
+		summarizeBy: none
+		sourceColumn: PlanType_BusinessNeed_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedBy
+		dataType: string
+		lineageTag: beaca87e-fd4d-4552-a6b8-5da83ab853b5
+		summarizeBy: none
+		sourceColumn: Model_CommittedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedBy_Value
+		dataType: string
+		lineageTag: 36c30774-cafb-4fe7-8191-2dcf697467c8
+		summarizeBy: none
+		sourceColumn: Model_CommittedBy_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedEnd
+		dataType: dateTime
+		lineageTag: 87572ac4-4b7c-4387-9c62-ff0b39d39f0a
+		summarizeBy: none
+		sourceColumn: Model_CommittedEnd
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedModelID
+		dataType: string
+		lineageTag: 25eb868f-fba2-40ac-bf63-3c3cce90c056
+		summarizeBy: none
+		sourceColumn: Model_CommittedModelID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedModelName
+		dataType: string
+		lineageTag: e75cd54d-803d-43ad-9fb7-6f81ee063def
+		summarizeBy: none
+		sourceColumn: Model_CommittedModelName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedOn
+		dataType: dateTime
+		lineageTag: 042e3353-5e75-410c-b494-6614facf95f1
+		summarizeBy: none
+		sourceColumn: Model_CommittedOn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_Priority
+		dataType: double
+		lineageTag: 8ab26390-3489-4c94-8fc3-8d0632c7da4d
+		summarizeBy: sum
+		sourceColumn: Model_Priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedScenarioID
+		dataType: string
+		lineageTag: 9b99d32a-3694-4834-b56c-954420c48a61
+		summarizeBy: none
+		sourceColumn: Model_CommittedScenarioID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedScenarioName
+		dataType: string
+		lineageTag: 05f39283-8ba9-41b3-8031-3e587a56ca37
+		summarizeBy: none
+		sourceColumn: Model_CommittedScenarioName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_ScenarioStatus_Id
+		dataType: string
+		lineageTag: 70931502-db2b-4a93-9a60-f8933845b600
+		summarizeBy: none
+		sourceColumn: Model_ScenarioStatus_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_ScenarioStatus_Value
+		dataType: string
+		lineageTag: d57f579c-5cac-42df-bc16-53b2bab328bc
+		summarizeBy: none
+		sourceColumn: Model_ScenarioStatus_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Model_CommittedStart
+		dataType: dateTime
+		lineageTag: 59622184-e7a8-4fc1-901d-35ea22dd63d1
+		summarizeBy: none
+		sourceColumn: Model_CommittedStart
+
+		annotation SummarizationSetBy = Automatic
+
+	column RevenueActual
+		dataType: double
+		lineageTag: 69b7aafb-6b67-454c-878d-443fbae25741
+		summarizeBy: sum
+		sourceColumn: RevenueActual
+
+		annotation SummarizationSetBy = Automatic
+
+	column RevenueEstimate
+		dataType: double
+		lineageTag: 3c7aaa68-247a-42f5-ae7d-8e430590e436
+		summarizeBy: sum
+		sourceColumn: RevenueEstimate
+
+		annotation SummarizationSetBy = Automatic
+
+	column CapEx
+		dataType: double
+		lineageTag: 98bec96e-8770-4665-8398-a9dd76f11e04
+		summarizeBy: sum
+		sourceColumn: CapEx
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpEx
+		dataType: double
+		lineageTag: b23342f0-7be9-4c3d-9810-e5777d22cdea
+		summarizeBy: sum
+		sourceColumn: OpEx
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Financial_a0671c7b03f4cf89bda76ba3612c14cb
+		dataType: string
+		lineageTag: 0550ab9f-e5c2-4ef1-9e2b-5b3b4d8b9c1a
+		summarizeBy: none
+		sourceColumn: Summary_Financial_a0671c7b03f4cf89bda76ba3612c14cb
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Urgency
+		dataType: string
+		lineageTag: eef5a5ad-9447-4eac-ad49-e9402139cb41
+		summarizeBy: none
+		sourceColumn: Summary_Urgency
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RiskMagnitude
+		dataType: string
+		lineageTag: c323efef-3b99-4a25-ad8a-72ca0c3c5889
+		summarizeBy: none
+		sourceColumn: Summary_RiskMagnitude
+
+		annotation SummarizationSetBy = Automatic
+
+	column TechnicalReadiness_Id
+		dataType: string
+		lineageTag: c8158115-f987-4237-b1cf-8977ed7c6683
+		summarizeBy: none
+		sourceColumn: TechnicalReadiness_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column TechnicalReadiness_Value
+		dataType: string
+		lineageTag: 2e8411e2-5305-4635-927f-af113b025e9f
+		summarizeBy: none
+		sourceColumn: TechnicalReadiness_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChangeDifficulty_Id
+		dataType: string
+		lineageTag: 01d87ffe-7092-41f6-8227-129b519f8889
+		summarizeBy: none
+		sourceColumn: ChangeDifficulty_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChangeDifficulty_Value
+		dataType: string
+		lineageTag: c8d6f575-9329-4efc-9519-3673d83946fc
+		summarizeBy: none
+		sourceColumn: ChangeDifficulty_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanExternalId
+		dataType: string
+		lineageTag: ff4ad281-948c-4a29-b72b-abc12700f37f
+		summarizeBy: none
+		sourceColumn: PlanExternalId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RiskTO
+		dataType: string
+		lineageTag: c048711c-8099-4677-88a4-5ab15fb09ba4
+		summarizeBy: none
+		sourceColumn: Summary_RiskTO
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RiskResponse
+		dataType: string
+		lineageTag: 7477dcdc-23fc-4f7a-b570-3b965418dd1a
+		summarizeBy: none
+		sourceColumn: Summary_RiskResponse
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Severity
+		dataType: string
+		lineageTag: b04eeae2-8bd0-46b4-87d9-b97745a51e54
+		summarizeBy: none
+		sourceColumn: Summary_Severity
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Occurence
+		dataType: string
+		lineageTag: 914b54b0-39e8-470e-8cb2-a152ac3f1257
+		summarizeBy: none
+		sourceColumn: Summary_Occurence
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_MitigationActions
+		dataType: string
+		lineageTag: 1ad921f8-3894-476a-96e7-f0f79b1a2c16
+		summarizeBy: none
+		sourceColumn: Summary_MitigationActions
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_ProbabilityPostMitigation
+		dataType: double
+		lineageTag: a169b41c-4c42-4263-b0c2-6b0456c9d69e
+		summarizeBy: sum
+		sourceColumn: Summary_ProbabilityPostMitigation
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_EffectivenessLevel
+		dataType: string
+		lineageTag: 655c1769-af0d-4715-a1fd-25c18304afa1
+		summarizeBy: none
+		sourceColumn: Summary_EffectivenessLevel
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_Detection
+		dataType: string
+		lineageTag: ec3e332d-f79f-4a22-b3e8-cfbd9e0e4e53
+		summarizeBy: none
+		sourceColumn: Summary_Detection
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RiskType
+		dataType: string
+		lineageTag: 503c64c3-1d36-407c-ac26-9ce03936c6ba
+		summarizeBy: none
+		sourceColumn: Summary_RiskType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_RPN
+		dataType: double
+		lineageTag: ae0fcee6-1ed2-451c-afcc-163e9f03d48a
+		summarizeBy: sum
+		sourceColumn: Summary_RPN
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjectiveKey
+		dataType: int64
+		isHidden
+		lineageTag: a12bf7d2-6bd5-42c2-a385-1d8b0cd535c1
+		summarizeBy: count
+		sourceColumn: ObjectiveKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjectiveBK
+		dataType: string
+		lineageTag: c1262c6a-56fd-494b-bf2e-46cd7897fe71
+		summarizeBy: none
+		sourceColumn: ObjectiveBK
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectLeader
+		dataType: string
+		lineageTag: 3c94e67e-8901-4f25-82a6-f12d82b8517a
+		summarizeBy: none
+		sourceColumn: ProjectLeader
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectLeader_Value
+		dataType: string
+		lineageTag: ea1c7830-3111-4827-a846-0c66a333d4e3
+		summarizeBy: none
+		sourceColumn: ProjectLeader_Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Summary_BaselineDuration
+		dataType: double
+		lineageTag: 0ded032f-a255-4a02-bd60-f4ce1831b598
+		summarizeBy: sum
+		sourceColumn: Summary_BaselineDuration
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Summary_LastBaselineDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ff2fa98c-ff01-46a8-bf99-a1a22cfbb3ee
+		summarizeBy: none
+		sourceColumn: Summary_LastBaselineDate
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimObjective = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="Plan_Objective", Signature="table"]}[Data],
+				    Keyed = Table.AddIndexColumn(Raw, "ObjectiveKey", 1, 1, Int64.Type),
+				    AddBK = Table.AddColumn(Keyed, "ObjectiveBK", each [Id], type text)
+				in
+				    AddBK
+

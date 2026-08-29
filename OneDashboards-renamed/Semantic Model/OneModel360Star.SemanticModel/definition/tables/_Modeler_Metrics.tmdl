@@ -1,0 +1,32 @@
+/// Metric dimension for Scenario Radar visual — each row is one radar axis.
+table _Modeler_Metrics
+	lineageTag: e410437e-f460-4941-a0c2-4c945f5d83ce
+
+	column MetricName
+		displayFolder: Attributes\Misc
+		lineageTag: 3dccb88e-7385-4a79-a92b-89de7262e5ae
+		isNameInferred
+		sourceColumn: [MetricName]
+
+	column SortOrder
+		displayFolder: Attributes\Misc
+		lineageTag: c22ad60d-2a58-4b96-b5fe-8f79e5ad72ea
+		isNameInferred
+		sourceColumn: [SortOrder]
+
+	partition _Modeler_Metrics = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "MetricName", STRING,
+				    "SortOrder", INTEGER,
+				    {
+				        {"Budget",            1},
+				        {"Benefits",          2},
+				        {"Committed Effort",  3},
+				        {"Selected Plans",    4},
+				        {"Budget Utilization %", 5}
+				    }
+				)
+

@@ -1,0 +1,26 @@
+table OnePlanURL
+	isHidden
+	lineageTag: d25c9d38-e281-4775-a6e0-03d242a784a6
+
+	column OnePlanURL
+		dataType: string
+		displayFolder: Attributes\Reference
+		lineageTag: a44bc2d2-8c7f-49fa-8940-fd55968008bd
+		summarizeBy: none
+		sourceColumn: OnePlanURL
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition OnePlanURL = m
+		mode: import
+		queryGroup: Connections
+		source = "https://mygraph.oneplan.ai/odata/159cadd8-4da7-4c34-b01a-c71d129bf79f" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

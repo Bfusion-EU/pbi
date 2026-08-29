@@ -1,0 +1,113 @@
+table FactTimeOff
+	lineageTag: bbe7b83e-e136-460e-9bb3-68f76dbc1733
+
+	column id
+		dataType: string
+		lineageTag: f037add7-ac87-4620-bf13-6d195ac99318
+		sourceColumn: id
+
+	column UserId
+		dataType: string
+		lineageTag: 22ad5b43-9da8-450e-bac4-d9f0dff26026
+		sourceColumn: UserId
+
+	column ResourceName
+		dataType: string
+		lineageTag: 9af00ded-30b7-4b75-b0b1-93dd7f288c08
+		sourceColumn: ResourceName
+
+	column TimeOffCategory
+		dataType: string
+		lineageTag: 4df37de0-208e-43a5-8be4-6a2b036aa4ce
+		sourceColumn: TimeOffCategory
+
+	column Start
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fd0ef8dc-3138-43a2-bd77-19d91033a528
+		summarizeBy: none
+		sourceColumn: Start
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column End
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 61185974-64b6-48ca-bae1-b770431632fe
+		summarizeBy: none
+		sourceColumn: End
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column HoursPerDay
+		dataType: double
+		lineageTag: 4e479f8b-6c78-40d8-8000-21c966c22903
+		sourceColumn: HoursPerDay
+
+	column Notes
+		dataType: string
+		lineageTag: 9c75ecb7-bd2b-4d49-a711-df35f2309d1f
+		sourceColumn: Notes
+
+	column Status
+		dataType: string
+		lineageTag: a850b94b-c17c-4181-a3f8-66710b8b9cf2
+		sourceColumn: Status
+
+	column ApproverName
+		dataType: string
+		lineageTag: db828295-932e-4a0c-b016-fb354db4d394
+		sourceColumn: ApproverName
+
+	column DateApproved
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 569bb93e-6ed7-47ae-a0d0-ca5afa4cdcef
+		summarizeBy: none
+		sourceColumn: DateApproved
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceKey
+		dataType: int64
+		isHidden
+		lineageTag: 42c2d1bd-9716-476e-bc53-a389acafde83
+		summarizeBy: none
+		sourceColumn: ResourceKey
+
+	column LeaveTypeKey
+		dataType: int64
+		isHidden
+		lineageTag: 6df947b9-fcf8-48d3-b5db-a6d1080e25e9
+		summarizeBy: none
+		sourceColumn: LeaveTypeKey
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 9258db3b-be17-4623-ae11-e8c92e900918
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	partition FactTimeOff = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="TimeOff", Signature="table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Raw, {{"Start", type date},{"End", type date},{"DateApproved", type date}}, "en-US"),
+				    Cleaned = Table.RemoveColumns(Typed, {"Approver"}, MissingField.Ignore),
+				    DimR = DimResource, DimL = DimLeaveType,
+				    J1 = Table.NestedJoin(Cleaned, {"UserId"}, DimR, {"ResourceBK"}, "_R", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_R", {"ResourceKey"}, {"ResourceKey"}),
+				    J2 = Table.NestedJoin(E1, {"TimeOffCategory"}, DimL, {"LeaveCode"}, "_L", JoinKind.LeftOuter),
+				    E2 = Table.ExpandTableColumn(J2, "_L", {"LeaveTypeKey"}, {"LeaveTypeKey"}),
+				    AddDK = Table.AddColumn(E2, "DateKey", each Date.Year([Start])*10000 + Date.Month([Start])*100 + Date.Day([Start]), Int64.Type)
+				in
+				    AddDK
+

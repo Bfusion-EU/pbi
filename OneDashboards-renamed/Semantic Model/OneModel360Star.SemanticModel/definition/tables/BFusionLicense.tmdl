@@ -1,0 +1,24 @@
+table BFusionLicense
+	lineageTag: 49aa8a06-920c-4001-9e64-273875cfaec0
+
+	column Key
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 2a95f115-7b6c-4357-ae9d-0b82340d7555
+		summarizeBy: none
+		sourceColumn: Key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition BFusionLicense = m
+		mode: import
+		source =
+				let
+				  Source = #table({"Key"}, {{BFusionLicenseKey}})
+				in
+				  Source
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

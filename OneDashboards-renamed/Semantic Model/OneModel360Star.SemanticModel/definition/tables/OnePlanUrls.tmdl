@@ -1,0 +1,53 @@
+table OnePlanUrls
+	isHidden
+	lineageTag: 3721d9c1-ff50-47e8-a7bf-1a73f84bcd53
+
+	column Index
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 9c75d2db-b176-45af-b3a7-c03c06468863
+		summarizeBy: none
+		sourceColumn: Index
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column App
+		dataType: string
+		displayFolder: Attributes\Misc
+		lineageTag: 93c057d5-e5d4-4507-8ba9-50d03f3dcd27
+		summarizeBy: none
+		sourceColumn: App
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Url
+		dataType: string
+		displayFolder: Attributes\Reference
+		lineageTag: 157222d3-8c9b-41da-93c4-f037a491a5b9
+		dataCategory: WebUrl
+		summarizeBy: none
+		sourceColumn: Url
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition OnePlanUrls = m
+		mode: import
+		queryGroup: General
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("zZPNaxRBEMX/lbDnVFJd/VUtBJFc9CCECHqIOVR3V+ti3Fn3A/G/t2azHgRzCVmwD32YecP71Zt6d3eL97/OPk2bb4vzxdfdbr19dXmp+4tppesHWV3I8vL19bQayy/v+pXwiAGHAmoaEEgIxPkKI41ekKPDOD7vESm9Wa9N31ApUeyQHNVZjyCdE6i9cMNz907Nlhb35weMW/2x1+1u+xTK80moOfE+R6jNIELpDqT5Dq148ibXmvhR/3GpP2eDzhkpeHAdGxAzA7Y8oGoK3gdGjOFosFG5ilRtol7AxyEQun1YJHeoIeRUfXMuk03lD5Pe6nbab5qe3dhYp4g9JXtKCbyjBgGZoGiMpkfm2IMkRrONB5iZYaWbE2Dg8cA/ruNxZpv/zuRaV7uncZ5PI0Ru2AVcS4TgVaB6CTAaa6yltirNXPlxF6euD6egIIfJqS1Gy2R6iQrMhcB2M2CPIzZhcy0Hig872e231or1tDlFKUStly0oOC7F9B2h5GFrkzOiheI6zZGkP/W8MYwxPSyn/6CfGFSwcQTGESBTY/Bi7I6izyX47KsYZjiwv52+68szpyCuBp171f0cX7D4MkN2NdsvbqXXufNucX//Gw==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [App = _t, Url = _t, Index = _t]),
+				    #"Reordered Columns" = Table.ReorderColumns(Source,{"Index", "App", "Url"}),
+				    #"Sorted Rows" = Table.Sort(#"Reordered Columns",{{"Index", Order.Ascending}})
+				in
+				    #"Sorted Rows"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

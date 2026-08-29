@@ -1,0 +1,116 @@
+table FactResourcePlan
+	lineageTag: ebe72ff7-2985-415a-bce8-f71ff1671dfa
+
+	column Id
+		dataType: string
+		lineageTag: 5e2e56b1-e076-47ac-b317-bd70de0679ea
+		sourceColumn: Id
+
+	column CostTypeId
+		dataType: string
+		lineageTag: c46d1994-e1fc-4daf-b5d8-0ea954e419aa
+		sourceColumn: CostTypeId
+
+	column CostType
+		dataType: string
+		lineageTag: 4d885b03-06fc-4f49-94e1-93978b478dd5
+		sourceColumn: CostType
+
+	column WorkPlanId
+		dataType: string
+		lineageTag: 3a3b0ceb-6b2e-4498-a16b-e110f496b327
+		sourceColumn: WorkPlanId
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: db38f4b4-a493-49d2-8cad-ddca9dcddf0b
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hours
+		dataType: double
+		lineageTag: 59638136-8583-4f03-8ef1-21a7263b601b
+		sourceColumn: Hours
+
+	column ResourceId
+		dataType: string
+		lineageTag: 238e511d-c5f9-4965-880e-00d17450d00a
+		sourceColumn: ResourceId
+
+	column ResourceName
+		dataType: string
+		lineageTag: 6bdf9a05-ea7e-4920-b131-3168c365f53c
+		sourceColumn: ResourceName
+
+	column State
+		dataType: string
+		lineageTag: 37b71e14-f1dd-4933-9f44-a2cdeb067b60
+		sourceColumn: State
+
+	column ProjectManagerStatus
+		dataType: string
+		lineageTag: d14ae904-a499-4f72-a9ca-577f6fc3b817
+		sourceColumn: ProjectManagerStatus
+
+	column ResourceManagerStatus
+		dataType: string
+		lineageTag: e7e02572-1733-4251-8e21-55f2a0560cf2
+		sourceColumn: ResourceManagerStatus
+
+	column Notes
+		dataType: string
+		lineageTag: 47dd85ab-d1bd-41c0-befd-fee3590f1f3a
+		sourceColumn: Notes
+
+	column ExpenseType
+		dataType: string
+		lineageTag: 2857cdc9-8d72-4ae0-8857-0d889ce43082
+		sourceColumn: ExpenseType
+
+	column ProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: 3aef67b6-e6b6-49fa-bda2-407b829a253c
+		summarizeBy: none
+		sourceColumn: ProjectKey
+
+	column ResourceKey
+		dataType: int64
+		isHidden
+		lineageTag: 3bd8fec3-b94e-4412-b4e3-d9cc5f89dc30
+		summarizeBy: none
+		sourceColumn: ResourceKey
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: f4bf445a-5f92-494b-b0e3-0b5e6491d060
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column PlannedFTE
+		dataType: double
+		lineageTag: 1faaed0c-5f0c-4305-b4e0-99ea9968c678
+		sourceColumn: PlannedFTE
+
+	partition FactResourcePlan = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="ResPlan", Signature="table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Raw, {{"Date", type date}}, "en-US"),
+				    DimP = DimProject, DimR = DimResource,
+				    J1 = Table.NestedJoin(Typed, {"WorkPlanId"}, DimP, {"ProjectBK"}, "_P", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_P", {"ProjectKey"}, {"ProjectKey"}),
+				    J2 = Table.NestedJoin(E1, {"ResourceId"}, DimR, {"ResourceBK"}, "_R", JoinKind.LeftOuter),
+				    E2 = Table.ExpandTableColumn(J2, "_R", {"ResourceKey"}, {"ResourceKey"}),
+				    AddDK = Table.AddColumn(E2, "DateKey", each Date.Year([Date])*10000 + Date.Month([Date])*100 + Date.Day([Date]), Int64.Type),
+				    AddFTE = Table.AddColumn(AddDK, "PlannedFTE", each if [Hours] = null then null else [Hours] / 8.0, type number)
+				in
+				    AddFTE
+

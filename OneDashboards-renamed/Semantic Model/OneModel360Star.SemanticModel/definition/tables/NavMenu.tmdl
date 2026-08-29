@@ -1,0 +1,55 @@
+table NavMenu
+	isHidden
+	lineageTag: 20eedb03-544e-44f7-8cf0-2550e6a34b50
+
+	column MenuItem
+		displayFolder: Attributes\Misc
+		lineageTag: b2fbf94b-c901-4abc-95cf-421b8502c4bf
+		isNameInferred
+		sourceColumn: [MenuItem]
+
+	column Group
+		displayFolder: Attributes\Misc
+		lineageTag: 23c5a017-48a7-4884-8c3c-fa89d333f3ad
+		isNameInferred
+		sourceColumn: [Group]
+
+	column PageId
+		displayFolder: Attributes\Misc
+		lineageTag: 6a69475a-38a7-43a1-92d4-d9999192915b
+		isNameInferred
+		sourceColumn: [PageId]
+
+	column Icon
+		displayFolder: Attributes\Misc
+		lineageTag: 4db9ccb8-d5b0-466e-aa6f-191c67e54237
+		isNameInferred
+		sourceColumn: [Icon]
+
+	column SortOrder
+		displayFolder: Attributes\Misc
+		lineageTag: f7577cf1-aca2-4175-a6e5-096097b6b04a
+		isNameInferred
+		sourceColumn: [SortOrder]
+
+	partition 'New Calculated Table' = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "MenuItem",   STRING,
+				    "Group",      STRING,
+				    "PageId",     STRING,
+				    "Icon",       STRING,
+				    "SortOrder",  INTEGER,
+				    {
+				        { "Overview",          "MAIN",       "overview",      "home",      1 },
+				        { "Portfolio Health",  "MAIN",       "health",        "dashboard", 2 },
+				        { "Roadmap",           "MAIN",       "roadmap",       "chart",     3 },
+				        { "Risk Matrix",       "ANALYSIS",   "risk",          "risk",      4 },
+				        { "Resource Forecast", "ANALYSIS",   "resources",     "users",     5 },
+				        { "Financial S-Curve", "FINANCE",    "scurve",        "money",     6 },
+				        { "Settings",          "",           "settings",      "settings",  7 }
+				    }
+				)
+

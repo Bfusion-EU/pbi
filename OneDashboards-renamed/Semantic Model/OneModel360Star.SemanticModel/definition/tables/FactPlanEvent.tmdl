@@ -1,0 +1,73 @@
+table FactPlanEvent
+	lineageTag: 6ca9def6-7f76-423e-820a-90716fd84940
+
+	column id
+		dataType: string
+		lineageTag: a09a9f5c-d0f6-4afb-b1a3-cc54bb139454
+		sourceColumn: id
+
+	column WorkPlanId
+		dataType: string
+		lineageTag: b7e8fee2-b612-4f82-98c0-7a746864bf35
+		sourceColumn: WorkPlanId
+
+	column Plan
+		dataType: string
+		lineageTag: 7d02141b-e6a8-4777-b3b9-cd453f0e8cd3
+		sourceColumn: Plan
+
+	column Level
+		dataType: int64
+		lineageTag: b2ac241b-b8d0-43cf-bb95-63ae281ddfd5
+		sourceColumn: Level
+
+	column IsCompliance
+		dataType: boolean
+		lineageTag: 329c4098-b849-477d-a285-3f993f844c2c
+		sourceColumn: IsCompliance
+
+	column ResultText
+		dataType: string
+		lineageTag: 43b3cbd5-41f0-4d3d-9a00-85d36c14bcca
+		sourceColumn: ResultText
+
+	column Details
+		dataType: string
+		lineageTag: 5a1d5bff-2267-48d6-9066-eab0fd4b77c4
+		sourceColumn: Details
+
+	column Result
+		dataType: boolean
+		lineageTag: 8e17802f-8adc-4311-ab56-3dad2daa7067
+		sourceColumn: Result
+
+	column ResultValues
+		dataType: string
+		lineageTag: a043c5cc-1582-44e9-9552-87811c906e91
+		sourceColumn: ResultValues
+
+	column ProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: 31e6ae6b-3fe5-44bf-84ef-dd810417d452
+		summarizeBy: none
+		sourceColumn: ProjectKey
+
+	column EventCount
+		dataType: int64
+		lineageTag: 7c731b7e-796f-4926-ab72-91827ac174f4
+		sourceColumn: EventCount
+
+	partition FactPlanEvent = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="PlanInsights", Signature="table"]}[Data],
+				    Cleaned = Table.RemoveColumns(Raw, {"InsightId"}, MissingField.Ignore),
+				    DimP = DimProject,
+				    J1 = Table.NestedJoin(Cleaned, {"WorkPlanId"}, DimP, {"ProjectBK"}, "_P", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_P", {"ProjectKey"}, {"ProjectKey"}),
+				    AddCnt = Table.AddColumn(E1, "EventCount", each 1, Int64.Type)
+				in
+				    AddCnt
+

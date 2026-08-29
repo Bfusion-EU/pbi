@@ -1,0 +1,94 @@
+table FactAssignment
+	lineageTag: 9f5eb035-2b6b-44ad-8d5b-11b38d7a2b9c
+
+	column Id
+		dataType: string
+		lineageTag: c244042b-a637-429e-896d-521cfe8a9cf8
+		sourceColumn: Id
+
+	column TaskId
+		dataType: string
+		lineageTag: fed50c01-bc91-4112-bb04-5c8cfd078b33
+		sourceColumn: TaskId
+
+	column UserId
+		dataType: string
+		lineageTag: 7b7e1828-2ddf-448e-9fcb-4813d7759b34
+		sourceColumn: UserId
+
+	column Units
+		dataType: double
+		lineageTag: 6088ae2a-20da-4f34-bb33-23e14c99c6b2
+		sourceColumn: Units
+
+	column AssignedResource
+		dataType: string
+		lineageTag: 0b9dc464-4851-4663-97c7-48cb45bc7de9
+		sourceColumn: AssignedResource
+
+	column Department_Value
+		dataType: string
+		lineageTag: 70a44f11-0ce0-4aee-8510-5877d709014d
+		sourceColumn: Department_Value
+
+	column Role_Value
+		dataType: string
+		lineageTag: 60e1b357-cbd5-4504-9bb4-2ff5fa64fc1b
+		sourceColumn: Role_Value
+
+	column ResourceType
+		dataType: string
+		lineageTag: fa2865a4-49ba-4862-a5de-237efcd1ae1d
+		sourceColumn: ResourceType
+
+	column Quantity
+		dataType: double
+		lineageTag: 66cfd87a-3d0f-4408-b52c-0baa6723762d
+		sourceColumn: Quantity
+
+	column ProjectKey
+		dataType: int64
+		isHidden
+		lineageTag: aa46645f-d47c-47d9-8a7b-3c444959abd2
+		summarizeBy: none
+		sourceColumn: ProjectKey
+
+	column TaskKey
+		dataType: int64
+		isHidden
+		lineageTag: f641fef5-1a50-4eac-ac8f-728b23fbc493
+		summarizeBy: none
+		sourceColumn: TaskKey
+
+	column ResourceKey
+		dataType: int64
+		isHidden
+		lineageTag: 5e50e36c-3e48-47b5-ac89-d173cd203c3d
+		summarizeBy: none
+		sourceColumn: ResourceKey
+
+	column Cost
+		dataType: double
+		lineageTag: 74c537c6-dc86-45a1-832d-8110243196d1
+		summarizeBy: sum
+		sourceColumn: Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition FactAssignment = m
+		source =
+				let
+				    Source = OData.Feed(OnePlanURL, null, [Implementation="2.0"]),
+				    Raw = Source{[Name="Assignments", Signature="table"]}[Data],
+				    DimT = DimTask, DimR = DimResource,
+				    J1 = Table.NestedJoin(Raw, {"TaskId"}, DimT, {"TaskBK"}, "_T", JoinKind.LeftOuter),
+				    E1 = Table.ExpandTableColumn(J1, "_T", {"TaskKey", "ProjectKey"}, {"TaskKey", "ProjectKey"}),
+				    J2 = Table.NestedJoin(E1, {"UserId"}, DimR, {"ResourceBK"}, "_R", JoinKind.LeftOuter),
+				    E2 = Table.ExpandTableColumn(J2, "_R",
+				        {"ResourceKey", "Name", "Department_Value", "Role_Value"},
+				        {"ResourceKey", "AssignedResource", "Department_Value", "Role_Value"})
+				in
+				    E2
+
