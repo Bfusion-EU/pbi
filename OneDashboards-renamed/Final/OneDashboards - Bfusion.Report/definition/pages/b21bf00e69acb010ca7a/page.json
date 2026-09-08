@@ -1,0 +1,143 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "b21bf00e69acb010ca7a",
+  "displayName": "> Modeler | Scenarios",
+  "displayOption": "FitToPage",
+  "height": 2000,
+  "width": 2100,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "a0c6d25c036ae6b01ac2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "PlanType"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "p",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "p"
+                          }
+                        },
+                        "Property": "PlanType"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Project'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
+  },
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "image": {
+            "image": {
+              "name": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'footer_band_2100x2000.png'"
+                  }
+                }
+              },
+              "url": {
+                "expr": {
+                  "ResourcePackageItem": {
+                    "PackageName": "RegisteredResources",
+                    "PackageType": 1,
+                    "ItemName": "bfv5_footer_band_2100x2000.png"
+                  }
+                }
+              },
+              "scaling": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'Fit'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "204L"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "cb5a4d835d451e400e2d",
+      "target": "3dc79a560549d566c548",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a5ce8780b0a2126e80e7",
+      "target": "3dc79a560549d566c548",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a5ce8780b0a2126e80e7",
+      "target": "cb5a4d835d451e400e2d",
+      "type": "DataFilter"
+    },
+    {
+      "source": "ed4dee4415e6b200266e",
+      "target": "cb5a4d835d451e400e2d",
+      "type": "DataFilter"
+    }
+  ]
+}

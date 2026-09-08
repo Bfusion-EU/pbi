@@ -1,0 +1,11 @@
+EVALUATE
+ROW (
+    "ProgramRows",          COUNTROWS ( 'DimProgram' ),
+    "ProgramKey_Distinct",  DISTINCTCOUNT ( 'DimProgram'[ProgramKey] ),
+    "ProgramBK_Distinct",   DISTINCTCOUNT ( 'DimProgram'[ProgramBK] ),
+    "PortfolioRows",        COUNTROWS ( 'DimPortfolio' ),
+    "PortfolioKey_Distinct",DISTINCTCOUNT ( 'DimPortfolio'[PortfolioKey] ),
+    "PortfolioBK_Distinct", DISTINCTCOUNT ( 'DimPortfolio'[PortfolioBK] ),
+    "ProjectRows",          COUNTROWS ( 'DimProject' ),
+    "ProjectKey_Distinct",  DISTINCTCOUNT ( 'DimProject'[ProjectKey] )
+)

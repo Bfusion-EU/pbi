@@ -1,0 +1,515 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "3e2264150deb8041da35",
+  "position": {
+    "x": 19.803600654664486,
+    "y": 1166.6121112929625,
+    "z": 0,
+    "height": 882.1603927986907,
+    "width": 2163.9934533551555,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "bfusionPortfolioHealthMatrix7D4E8F1A2B3C",
+    "query": {
+      "queryState": {
+        "projectName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "department": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "BusinessUnit_Value"
+                }
+              },
+              "queryRef": "DimProject.BusinessUnit_Value",
+              "nativeQueryRef": "BusinessUnit_Value"
+            }
+          ]
+        },
+        "owner": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Owner_Value"
+                }
+              },
+              "queryRef": "DimProject.Owner_Value",
+              "nativeQueryRef": "Owner_Value"
+            }
+          ]
+        },
+        "effortHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "EffortHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.EffortHealth_Value",
+              "nativeQueryRef": "EffortHealth_Value"
+            }
+          ]
+        },
+        "scopeHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ScopeHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.ScopeHealth_Value",
+              "nativeQueryRef": "ScopeHealth_Value"
+            }
+          ]
+        },
+        "financialHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "FinancialHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.FinancialHealth_Value",
+              "nativeQueryRef": "FinancialHealth_Value"
+            }
+          ]
+        },
+        "scheduleHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ScheduleHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.ScheduleHealth_Value",
+              "nativeQueryRef": "ScheduleHealth_Value"
+            }
+          ]
+        },
+        "issueHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "IssueHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.IssueHealth_Value",
+              "nativeQueryRef": "IssueHealth_Value"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Budget Cost",
+              "nativeQueryRef": "Budget Cost"
+            }
+          ]
+        },
+        "benefits": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimProject"
+                        }
+                      },
+                      "Property": "Benefits"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Plans.Benefits)",
+              "nativeQueryRef": "Sum of Benefits"
+            }
+          ]
+        },
+        "pctDone": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimProject"
+                        }
+                      },
+                      "Property": "Summary_PercentDone"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Plans.Summary_PercentDone)",
+              "nativeQueryRef": "Sum of Summary_PercentDone"
+            }
+          ]
+        },
+        "estEnd": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Summary_EndDate"
+                }
+              },
+              "queryRef": "DimProject.Summary_EndDate",
+              "nativeQueryRef": "Summary_EndDate"
+            }
+          ]
+        },
+        "changeHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "OverallHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.OverallHealth_Value",
+              "nativeQueryRef": "OverallHealth_Value"
+            }
+          ]
+        },
+        "overallHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "OverallHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.OverallHealth_Value",
+              "nativeQueryRef": "OverallHealth_Value"
+            }
+          ]
+        },
+        "state": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "State_Value"
+                }
+              },
+              "queryRef": "DimProject.State_Value",
+              "nativeQueryRef": "State_Value"
+            }
+          ]
+        },
+        "portfolioManager": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimPortfolio"
+                    }
+                  },
+                  "Property": "Manager_Value"
+                }
+              },
+              "queryRef": "DimPortfolio.Manager_Value",
+              "nativeQueryRef": "Manager_Value"
+            }
+          ]
+        },
+        "riskRating": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "RiskRating_Value"
+                }
+              },
+              "queryRef": "DimProject.RiskRating_Value",
+              "nativeQueryRef": "RiskRating_Value"
+            }
+          ]
+        },
+        "category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Category_Value"
+                }
+              },
+              "queryRef": "DimProject.Category_Value",
+              "nativeQueryRef": "Category_Value"
+            }
+          ]
+        },
+        "execSponsor": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ExecutiveSponsor_Value"
+                }
+              },
+              "queryRef": "DimProject.ExecutiveSponsor_Value",
+              "nativeQueryRef": "ExecutiveSponsor_Value"
+            }
+          ]
+        },
+        "level3": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimPortfolio"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimPortfolio.Name",
+              "nativeQueryRef": "Name1"
+            }
+          ]
+        },
+        "level2": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProgram"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProgram.Name",
+              "nativeQueryRef": "Name2"
+            }
+          ]
+        },
+        "level1": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimProject"
+                  }
+                },
+                "Property": "Summary_EndDate"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzg4NzY4MTY0LCJleHAiOjE3OTIyODE1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY183ZmQyYzA5ZTllZmUiLCJ2ZXIiOjMsInZpcyI6WyJiZnVzaW9uYmVuZWZpdHNyZWFsaXphdGlvbiIsImJmdXNpb25idWRnZXRyaXNrZm9yZWNhc3QiLCJiZnVzaW9uY2FwYWNpdHlwbGFubmluZyIsImJmdXNpb25jb25zdHJhaW50c2Fua2V5IiwiYmZ1c2lvbmNyaXRpY2FsY2hhaW4iLCJiZnVzaW9uY3JpdGljYWxwYXRoZGlhZ3JhbSIsImJmdXNpb25lZmZpY2llbnRmcm9udGllciIsImJmdXNpb25ldm1hY3Rpb25tYXRyaXgiLCJiZnVzaW9uZmluYW5jaWFsa3BpbmFycmF0aXZlIiwiYmZ1c2lvbmZpbmFuY2lhbG92ZXJ2aWV3IiwiYmZ1c2lvbmZpbmFuY2lhbHNjdXJ2ZSIsImJmdXNpb25mdGVkZWNpc2lvbmJvYXJkIiwiYmZ1c2lvbmdhbnR0bGl0ZSIsImJmdXNpb25oaWVyYXJjaGljYWxnYW50dCIsImJmdXNpb25rYW5iYW5ib2FyZCIsImJmdXNpb25rcGlncmlkIiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJiZnVzaW9ucG9ydGZvbGlvc3VtbWFyeWtwaSIsImJmdXNpb25wcm9qZWN0bGlmZWN5Y2xlIiwiYmZ1c2lvbnByb2plY3RzdGF0dXNjYXJkIiwiYmZ1c2lvbnJlc291cmNlYWxpZ25tZW50c3RyYXRlZ3kiLCJiZnVzaW9ucmVzb3VyY2Vjb25zdHJhaW50c2VxdWVuY2luZyIsImJmdXNpb25yZXNvdXJjZWVmZmljaWVuY3licmVha2Rvd24iLCJiZnVzaW9ucmVzb3VyY2Vmb3JlY2FzdCIsImJmdXNpb25yZXNvdXJjZWdhcGFuYWx5c2lzIiwiYmZ1c2lvbnJlc291cmNlaGVhdG1hcCIsImJmdXNpb25yZXNvdXJjZWtwaSIsImJmdXNpb25yaXNrbWF0cml4ZXh0IiwiYmZ1c2lvbnJpc2tyYWRhcmNoYXJ0IiwiYmZ1c2lvbnNjZW5hcmlvcmFkYXIiLCJiZnVzaW9uc2NoZWR1bGVyaXNrZm9yZWNhc3QiLCJiZnVzaW9uc2VsZWN0aW9ud2F0ZXJmYWxsIiwiYmZ1c2lvbnNlbnNpdGl2aXR5dG9ybmFkbyIsImJmdXNpb25zdGF0dXN0cmVuZHNwYXJrbGluZSIsImJmdXNpb25zdHJhdGVnaWNzdW5idXJzdCIsImJmdXNpb25zdW5rY29zdGRlY2lzaW9uYm9hcmQiLCJiZnVzaW9udGFza2twaWJvYXJkIiwiYmZ1c2lvbndhdGVybGluZW1vZGVsZXIiLCJwb3J0Zm9saW9yb2FkbWFwIl19.K-BTJTeqoSwsS4viYDTeqzKFSfjukSmX6CEZ0Jik9Vb0ak4invDKF_1-ltd8ShF5sZiIVOfPj9DkkNr3kjQEwdCTqTo020wq8oA9e47XVb-9dpuOffPuIqxdipBOdC5Pd5UOjMQ8USuNjLob0Ry8F33nt-cFrvPNNVxALepjRuNJBo46_6bxL1FEBMmotZWA_vzXLr-BC1TZVQldVKRyMhqQZb44unQ_X6oYvwBmO66iyn9SQPIk7-52ZhYnCx2THsfjJTzhmQ3fCDCXr5YmlQZEuxVIjAKtv_wf8vRt6-9HWQnsM7HqjcgXy9WeUGnpK7CTYxFDISIlCm_YSc0wkA'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fontSettings": [
+        {
+          "properties": {
+            "headerFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            },
+            "cellFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            },
+            "legendFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            },
+            "buttonFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            },
+            "pctLabelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
