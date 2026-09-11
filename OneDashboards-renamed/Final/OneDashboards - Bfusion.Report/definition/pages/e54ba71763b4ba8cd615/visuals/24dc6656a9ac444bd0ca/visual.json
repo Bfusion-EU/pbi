@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "24dc6656a9ac444bd0ca",
   "position": {
-    "x": 8,
-    "y": 115,
+    "x": 7.2727272727272725,
+    "y": 115.45454545454544,
     "z": 1000,
-    "height": 1157,
-    "width": 1264,
+    "height": 1155.4545454545453,
+    "width": 1272.7272727272725,
     "tabOrder": 0
   },
   "visual": {
@@ -28,24 +28,6 @@
               },
               "queryRef": "DimObjective.Summary_RiskStage",
               "nativeQueryRef": "Summary_RiskStage"
-            }
-          ]
-        },
-        "reportingDate": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimDate"
-                    }
-                  },
-                  "Property": "Date"
-                }
-              },
-              "queryRef": "DimDate.Date",
-              "nativeQueryRef": "Date"
             }
           ]
         },
@@ -140,24 +122,6 @@
             }
           ]
         },
-        "activeRisks": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Project | Active Risks"
-                }
-              },
-              "queryRef": "_Measures.Project | Active Risks",
-              "nativeQueryRef": "Plans - Active Risks"
-            }
-          ]
-        },
         "activeIssues": {
           "projections": [
             {
@@ -194,24 +158,6 @@
             }
           ]
         },
-        "capacity": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Resource Capacity"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Resource Capacity",
-              "nativeQueryRef": "Capacity | Resource Capacity"
-            }
-          ]
-        },
         "utilization": {
           "projections": [
             {
@@ -227,24 +173,6 @@
               },
               "queryRef": "_Measures.Capacity | Resource Utilization%",
               "nativeQueryRef": "Capacity | Resource Utilization%"
-            }
-          ]
-        },
-        "demand": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Demand"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Demand",
-              "nativeQueryRef": "Capacity | Demand"
             }
           ]
         },
@@ -301,25 +229,115 @@
               "nativeQueryRef": "Project | Total Budget"
             }
           ]
+        },
+        "activeRisks": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Project | Active Risks"
+                }
+              },
+              "queryRef": "_Measures.Project | Active Risks",
+              "nativeQueryRef": "Project | Active Risks"
+            }
+          ]
+        },
+        "actual": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Project | EAC (€)"
+                }
+              },
+              "queryRef": "_Measures.Project | EAC (€)",
+              "nativeQueryRef": "Project | EAC (€)"
+            }
+          ]
+        },
+        "reportingDate": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        },
+        "capacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Capacity per FTE"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Capacity per FTE",
+              "nativeQueryRef": "Capacity | Capacity per FTE"
+            }
+          ]
+        },
+        "demand": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Demand per FTE"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Demand per FTE",
+              "nativeQueryRef": "Capacity | Demand per FTE"
+            }
+          ]
+        },
+        "overAllocatedCount": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Over-Allocated Resource Count"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Over-Allocated Resource Count",
+              "nativeQueryRef": "Capacity | Over-Allocated Resource Count"
+            }
+          ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "DimDate"
-                  }
-                },
-                "Property": "Date"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -330,6 +348,60 @@
               "expr": {
                 "Literal": {
                   "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzg4NzY4MTY0LCJleHAiOjE3OTIyODE1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY183ZmQyYzA5ZTllZmUiLCJ2ZXIiOjMsInZpcyI6WyJiZnVzaW9uYmVuZWZpdHNyZWFsaXphdGlvbiIsImJmdXNpb25idWRnZXRyaXNrZm9yZWNhc3QiLCJiZnVzaW9uY2FwYWNpdHlwbGFubmluZyIsImJmdXNpb25jb25zdHJhaW50c2Fua2V5IiwiYmZ1c2lvbmNyaXRpY2FsY2hhaW4iLCJiZnVzaW9uY3JpdGljYWxwYXRoZGlhZ3JhbSIsImJmdXNpb25lZmZpY2llbnRmcm9udGllciIsImJmdXNpb25ldm1hY3Rpb25tYXRyaXgiLCJiZnVzaW9uZmluYW5jaWFsa3BpbmFycmF0aXZlIiwiYmZ1c2lvbmZpbmFuY2lhbG92ZXJ2aWV3IiwiYmZ1c2lvbmZpbmFuY2lhbHNjdXJ2ZSIsImJmdXNpb25mdGVkZWNpc2lvbmJvYXJkIiwiYmZ1c2lvbmdhbnR0bGl0ZSIsImJmdXNpb25oaWVyYXJjaGljYWxnYW50dCIsImJmdXNpb25rYW5iYW5ib2FyZCIsImJmdXNpb25rcGlncmlkIiwiYmZ1c2lvbm9yZ3N0cnVjdHVyZSIsImJmdXNpb25wYXJldG9hbmFseXNpcyIsImJmdXNpb25wb3J0Zm9saW8zNjAiLCJiZnVzaW9ucG9ydGZvbGlvaGVhbHRobWF0cml4IiwiYmZ1c2lvbnBvcnRmb2xpb3Jpc2ttYXRyaXgiLCJiZnVzaW9ucG9ydGZvbGlvc3VtbWFyeWtwaSIsImJmdXNpb25wcm9qZWN0bGlmZWN5Y2xlIiwiYmZ1c2lvbnByb2plY3RzdGF0dXNjYXJkIiwiYmZ1c2lvbnJlc291cmNlYWxpZ25tZW50c3RyYXRlZ3kiLCJiZnVzaW9ucmVzb3VyY2Vjb25zdHJhaW50c2VxdWVuY2luZyIsImJmdXNpb25yZXNvdXJjZWVmZmljaWVuY3licmVha2Rvd24iLCJiZnVzaW9ucmVzb3VyY2Vmb3JlY2FzdCIsImJmdXNpb25yZXNvdXJjZWdhcGFuYWx5c2lzIiwiYmZ1c2lvbnJlc291cmNlaGVhdG1hcCIsImJmdXNpb25yZXNvdXJjZWtwaSIsImJmdXNpb25yaXNrbWF0cml4ZXh0IiwiYmZ1c2lvbnJpc2tyYWRhcmNoYXJ0IiwiYmZ1c2lvbnNjZW5hcmlvcmFkYXIiLCJiZnVzaW9uc2NoZWR1bGVyaXNrZm9yZWNhc3QiLCJiZnVzaW9uc2VsZWN0aW9ud2F0ZXJmYWxsIiwiYmZ1c2lvbnNlbnNpdGl2aXR5dG9ybmFkbyIsImJmdXNpb25zdGF0dXN0cmVuZHNwYXJrbGluZSIsImJmdXNpb25zdHJhdGVnaWNzdW5idXJzdCIsImJmdXNpb25zdW5rY29zdGRlY2lzaW9uYm9hcmQiLCJiZnVzaW9udGFza2twaWJvYXJkIiwiYmZ1c2lvbndhdGVybGluZW1vZGVsZXIiLCJwb3J0Zm9saW9yb2FkbWFwIl19.K-BTJTeqoSwsS4viYDTeqzKFSfjukSmX6CEZ0Jik9Vb0ak4invDKF_1-ltd8ShF5sZiIVOfPj9DkkNr3kjQEwdCTqTo020wq8oA9e47XVb-9dpuOffPuIqxdipBOdC5Pd5UOjMQ8USuNjLob0Ry8F33nt-cFrvPNNVxALepjRuNJBo46_6bxL1FEBMmotZWA_vzXLr-BC1TZVQldVKRyMhqQZb44unQ_X6oYvwBmO66iyn9SQPIk7-52ZhYnCx2THsfjJTzhmQ3fCDCXr5YmlQZEuxVIjAKtv_wf8vRt6-9HWQnsM7HqjcgXy9WeUGnpK7CTYxFDISIlCm_YSc0wkA'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "header": [
+        {
+          "properties": {
+            "subtitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "'MoM Analysis'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "colorSettings": [
+        {
+          "properties": {
+            "headerBgColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.5
+                    }
+                  }
+                }
+              }
+            },
+            "onTrackColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1FBD56'"
+                    }
+                  }
+                }
+              }
+            },
+            "barColorCurrent": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": -0.25
+                    }
+                  }
                 }
               }
             }
@@ -387,230 +459,6 @@
         },
         "type": "Categorical",
         "howCreated": "User"
-      },
-      {
-        "name": "1d3089207fb9326173ef",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimObjective"
-              }
-            },
-            "Property": "Summary_RiskStage"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "392d7150de94e7f165b9",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimDate"
-              }
-            },
-            "Property": "Date"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "1c7f4eafd33d568a7381",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimProject"
-              }
-            },
-            "Property": "Name"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "642b74b5c9d2e186e634",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimProject"
-              }
-            },
-            "Property": "ScheduleHealth_Value"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "6baffce88b256190567b",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Finance | Forecast Cost"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "cf6e7a80edbc6e5ee746",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Portfolio 360 | On-Time Target %"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "4a832f30e035c7cd9dc9",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Portfolio 360 | Budget Target"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "4470071e1b5d5b5bb0e3",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Project | Active Risks"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "5a1e7ff2b1e911854694",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Project | Active Issues"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "203c119fdd16ff1926ae",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Project | ROI% (Misc)"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "e237feddd40b430f67bb",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Resource Capacity"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "6644b2dbd243d196e5d9",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Resource Utilization%"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "04253476dbcf0de97828",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Demand"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "3f782d75e9ccd5d47b06",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimProject"
-              }
-            },
-            "Property": "BusinessUnit_Value"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "22296f83308ae7953053",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Portfolio 360 | On-Time Flag"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "d64317e36254c9515240",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Project | Total Budget"
-          }
-        },
-        "type": "Advanced"
       }
     ],
     "filterSortOrder": "Custom"

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "22129486c016c7d84009",
   "position": {
     "x": 460.377358490566,
@@ -187,23 +187,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "81d6b6330013f3b15c4d",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimPortfolio"
-              }
-            },
-            "Property": "BusinessUnit_Value"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

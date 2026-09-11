@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "4bba6c01f6ef4beca057",
   "position": {
     "x": 6.1559507523939816,
@@ -103,6 +103,42 @@
               "nativeQueryRef": "Initial Budget Cost"
             }
           ]
+        },
+        "periodDate": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Period Start"
+                }
+              },
+              "queryRef": "_Measures.Finance | Period Start",
+              "nativeQueryRef": "Finance | Period Start"
+            }
+          ]
+        },
+        "committed": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Committed Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Committed Cost",
+              "nativeQueryRef": "Finance | Committed Cost"
+            }
+          ]
         }
       }
     },
@@ -114,6 +150,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'€'"
+                }
+              }
+            },
+            "statusDate": {
+              "expr": {
+                "Literal": {
+                  "Value": "'2026-09-09'"
                 }
               }
             }

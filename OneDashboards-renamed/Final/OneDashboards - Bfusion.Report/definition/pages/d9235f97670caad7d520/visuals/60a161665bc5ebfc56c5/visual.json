@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "60a161665bc5ebfc56c5",
   "position": {
     "x": 899.5090016366612,
@@ -103,6 +103,42 @@
               "nativeQueryRef": "Initial Budget Cost"
             }
           ]
+        },
+        "periodDate": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Period Start"
+                }
+              },
+              "queryRef": "_Measures.Finance | Period Start",
+              "nativeQueryRef": "Finance | Period Start"
+            }
+          ]
+        },
+        "committed": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Committed Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Committed Cost",
+              "nativeQueryRef": "Finance | Committed Cost"
+            }
+          ]
         }
       }
     },
@@ -114,6 +150,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'€'"
+                }
+              }
+            },
+            "statusDate": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Thu Sep 10 2026 22:52:40 GMT+0200 (Central European Summer Time)'"
                 }
               }
             }

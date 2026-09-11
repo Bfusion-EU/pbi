@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "01bc1f087fa359c8117c",
   "position": {
     "x": 2119.4762684124385,
@@ -190,23 +190,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "4b6dbc747b5eea2279ac",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimProject"
-              }
-            },
-            "Property": "PlanType"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

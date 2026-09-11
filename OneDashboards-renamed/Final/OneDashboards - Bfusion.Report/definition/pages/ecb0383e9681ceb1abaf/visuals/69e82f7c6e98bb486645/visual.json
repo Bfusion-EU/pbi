@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "69e82f7c6e98bb486645",
   "position": {
     "x": 454.82815057283142,
@@ -272,95 +272,6 @@
           ]
         },
         "howCreated": "User"
-      },
-      {
-        "name": "b79d6031ff33986ee353",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimProject"
-              }
-            },
-            "Property": "Name"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "6b32c6ccf742a78bab21",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimTask"
-              }
-            },
-            "Property": "Name"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "b39471b7266808468125",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimTask"
-              }
-            },
-            "Property": "Impact"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "de40463bf01617cf6a4a",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimTask"
-              }
-            },
-            "Property": "Probability Category"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "9782774764d821f56efe",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimTask"
-              }
-            },
-            "Property": "Exposure"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "b9ae7bd17838e8600181",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "DimTask"
-                  }
-                },
-                "Property": "Exposure"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

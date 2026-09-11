@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "633cd03ed5721a8c6950",
   "position": {
     "x": 0,
@@ -56,23 +56,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "d1eb909ac73201d694ac",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimResource"
-              }
-            },
-            "Property": "Role_Value"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

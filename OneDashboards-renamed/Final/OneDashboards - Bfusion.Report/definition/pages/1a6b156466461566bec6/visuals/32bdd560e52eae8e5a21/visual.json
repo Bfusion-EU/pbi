@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "32bdd560e52eae8e5a21",
   "position": {
     "x": 838.62520458265146,
     "y": 108.01963993453356,
-    "z": 9000,
+    "z": 8000,
     "height": 479.21440261865797,
     "width": 1051.7184942716858,
-    "tabOrder": 9000
+    "tabOrder": 8000
   },
   "visual": {
     "visualType": "bfusionCapacityPlanning4E7F2A8B1C3D",
@@ -310,135 +310,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "1a4e39f47c93da35dba0",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimDate"
-              }
-            },
-            "Property": "Period"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "86e7e52a4a264d50f78e",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Resource | Capacity FTE"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "2ffdf0331594350f81db",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Committed FTE"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "2a7100bfcffc6dc24182",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Total Hours Scheduled"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "a002391fd09291613fe4",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Resource Capacity"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "0b01912980f06259507c",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Total Hours Committed"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "36d6e44eea18305b3306",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Total Hours Forecast"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "3900309aa7fbd7d61470",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Capacity | Total Hours Actuals"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "8fcfd63cafcdeb55f05f",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "License | BFusionLicenseKey"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }
