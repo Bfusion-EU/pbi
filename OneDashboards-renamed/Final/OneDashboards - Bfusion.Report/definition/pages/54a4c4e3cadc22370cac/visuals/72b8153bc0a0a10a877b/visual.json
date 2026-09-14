@@ -1,0 +1,80 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "72b8153bc0a0a10a877b",
+  "position": {
+    "x": 1440.640932265113,
+    "y": 49.526584122359793,
+    "z": 1000,
+    "height": 487.9825200291333,
+    "width": 559.35906773488716,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio Name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program Name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget variance"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget variance",
+              "nativeQueryRef": "Finance | Budget variance"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

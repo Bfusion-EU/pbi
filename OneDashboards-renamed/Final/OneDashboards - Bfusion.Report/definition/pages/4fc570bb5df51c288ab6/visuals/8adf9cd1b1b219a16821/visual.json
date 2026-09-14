@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "8adf9cd1b1b219a16821",
   "position": {
     "x": 1121.4659685863876,
@@ -13,6 +13,42 @@
     "visualType": "bfusionResourceGapAnalysis_CustomVisual",
     "query": {
       "queryState": {
+        "demand": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Scheduled"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "nativeQueryRef": "Capacity | Total Hours Scheduled"
+            }
+          ]
+        },
+        "supply": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity",
+              "nativeQueryRef": "Capacity | Resource Capacity"
+            }
+          ]
+        },
         "resourceName": {
           "projections": [
             {
@@ -23,12 +59,12 @@
                       "Entity": "DimResource"
                     }
                   },
-                  "Property": "Name"
+                  "Property": "Role_Value"
                 }
               },
-              "queryRef": "DimResource.Name",
-              "nativeQueryRef": "ResourceName",
-              "displayName": "ResourceName"
+              "queryRef": "DimResource.Role_Value",
+              "nativeQueryRef": "Role",
+              "displayName": "Role"
             }
           ],
           "fieldParameters": [
@@ -45,24 +81,6 @@
               },
               "index": 0,
               "length": 1
-            }
-          ]
-        },
-        "gap": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Resource Demand-Supply Gap"
-                }
-              },
-              "queryRef": "_Measures.Resource Demand-Supply Gap",
-              "nativeQueryRef": "Resource Demand-Supply Gap"
             }
           ]
         },
@@ -83,43 +101,7 @@
               "nativeQueryRef": "Period"
             }
           ]
-        },
-        "groupBy": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "OP_Financial_ResourceType_Value"
-                }
-              },
-              "queryRef": "DimResource.OP_Financial_ResourceType_Value",
-              "nativeQueryRef": "OP_Financial_ResourceType_Value"
-            }
-          ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Measures"
-                  }
-                },
-                "Property": "Capacity | Resource Demand-Supply Gap"
-              }
-            },
-            "direction": "Descending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -136,115 +118,9 @@
           }
         }
       ],
-      "sparklineSettings": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "groupCollapseSettings": [
-        {
-          "properties": {
-            "enabled": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "startCollapsed": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "averageLineSettings": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "benchmarkSettings": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "topNSettings": [
-        {
-          "properties": {
-            "enabled": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "dataLabelSettings": [
-        {
-          "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "11D"
-                }
-              }
-            },
-            "showSign": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ],
       "insightPanel": [
         {
           "properties": {
-            "panelExpanded": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "showInsights": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "showSmartInsights": {
               "expr": {
                 "Literal": {
@@ -257,39 +133,16 @@
       ],
       "fontSettings": [
         {
+          "properties": {}
+        }
+      ],
+      "controlState": [
+        {
           "properties": {
-            "axisTitleFontSize": {
+            "alertLevel": {
               "expr": {
                 "Literal": {
-                  "Value": "15D"
-                }
-              }
-            },
-            "axisLabelFontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "15D"
-                }
-              }
-            },
-            "resourceLabelFontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "16D"
-                }
-              }
-            },
-            "legendFontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "14D"
-                }
-              }
-            },
-            "breadcrumbFontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "14D"
+                  "Value": "100D"
                 }
               }
             }

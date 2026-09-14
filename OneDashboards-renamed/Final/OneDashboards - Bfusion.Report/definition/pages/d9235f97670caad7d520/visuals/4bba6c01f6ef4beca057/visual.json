@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "4bba6c01f6ef4beca057",
   "position": {
-    "x": 6.1559507523939816,
-    "y": 682.07934336525307,
+    "x": 586.01602330662786,
+    "y": 584.70502549162416,
     "z": 0,
-    "height": 501.09439124487005,
-    "width": 1779.0697674418604,
+    "height": 494.24617625637291,
+    "width": 1198.2520029133284,
     "tabOrder": 0
   },
   "visual": {
@@ -188,6 +188,32 @@
                       "Percent": -0.25
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "decisionRules": [
+        {
+          "properties": {
+            "eacMethod": {
+              "expr": {
+                "Literal": {
+                  "Value": "'planAdjusted'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "seriesStyle": [
+        {
+          "properties": {
+            "showNowMarker": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "24087ec3598611b38b21",
   "position": {
-    "x": 814.56628477905076,
-    "y": 12.029459901800326,
+    "x": 715.26956814405014,
+    "y": 11.308609773028461,
     "z": 2000,
-    "height": 82.48772504091653,
-    "width": 226.84124386252046,
+    "height": 81.987420854456346,
+    "width": 325.12253097456824,
     "tabOrder": 2000
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "DimDate"
                     }
                   },
-                  "Property": "Year"
+                  "Property": "Period"
                 }
               },
-              "queryRef": "DimDate.Year",
-              "nativeQueryRef": "Sum of Year",
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period",
               "active": true
             }
           ]
@@ -48,7 +48,7 @@
             "mode": {
               "expr": {
                 "Literal": {
-                  "Value": "'Between'"
+                  "Value": "'Basic'"
                 }
               }
             }
@@ -63,7 +63,7 @@
                 "Version": 2,
                 "From": [
                   {
-                    "Name": "c",
+                    "Name": "d",
                     "Entity": "DimDate",
                     "Type": 0
                   }
@@ -71,23 +71,42 @@
                 "Where": [
                   {
                     "Condition": {
-                      "Comparison": {
-                        "ComparisonKind": 4,
-                        "Left": {
-                          "Column": {
-                            "Expression": {
-                              "SourceRef": {
-                                "Source": "c"
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "d"
+                                }
+                              },
+                              "Property": "Period"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'Sep-26'"
                               }
-                            },
-                            "Property": "Year"
-                          }
-                        },
-                        "Right": {
-                          "Literal": {
-                            "Value": "2026D"
-                          }
-                        }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'Oct-26'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'Nov-26'"
+                              }
+                            }
+                          ]
+                        ]
                       }
                     }
                   }

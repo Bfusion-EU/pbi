@@ -1,0 +1,66 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "6a352534796c802da81a",
+  "position": {
+    "x": 10.474631751227495,
+    "y": 0,
+    "z": 0,
+    "height": 638.95253682487726,
+    "width": 1053.7479541734861,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactCapacity"
+                    }
+                  },
+                  "Property": "Date"
+                }
+              },
+              "queryRef": "FactCapacity.Date",
+              "nativeQueryRef": "Date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactCapacity"
+                    }
+                  },
+                  "Property": "Units"
+                }
+              },
+              "queryRef": "FactCapacity.Units",
+              "nativeQueryRef": "Units"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactCapacity"
+                    }
+                  },
+                  "Property": "Capacity"
+                }
+              },
+              "queryRef": "FactCapacity.Capacity",
+              "nativeQueryRef": "Capacity"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

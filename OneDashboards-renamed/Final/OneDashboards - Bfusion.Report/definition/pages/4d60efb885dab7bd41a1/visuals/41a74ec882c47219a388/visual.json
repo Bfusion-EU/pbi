@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "41a74ec882c47219a388",
   "position": {
     "x": 1101.5548281505728,
@@ -150,7 +150,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'''DimResource''[Role_Value]'"
+                                "Value": "'''DimResource''[Name]'"
                               }
                             }
                           ]
@@ -178,7 +178,7 @@
                                 "0": [
                                   {
                                     "Literal": {
-                                      "Value": "'''DimResource''[Role_Value]'"
+                                      "Value": "'''DimResource''[Name]'"
                                     }
                                   }
                                 ]
@@ -202,7 +202,7 @@
                         },
                         "valueMap": [
                           {
-                            "0": "Role"
+                            "0": "ResourceName"
                           }
                         ]
                       }

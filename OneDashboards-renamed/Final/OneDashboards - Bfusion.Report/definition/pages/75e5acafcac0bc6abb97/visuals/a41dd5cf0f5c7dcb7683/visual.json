@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "a41dd5cf0f5c7dcb7683",
   "position": {
     "x": 22.0949263502455,
@@ -13,43 +13,6 @@
     "visualType": "bfusionCapacityPlanning4E7F2A8B1C3D",
     "query": {
       "queryState": {
-        "period": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimDate"
-                    }
-                  },
-                  "Property": "Period"
-                }
-              },
-              "queryRef": "DimDate.Period",
-              "nativeQueryRef": "Period",
-              "active": true
-            }
-          ]
-        },
-        "capacity": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Resource | Capacity FTE"
-                }
-              },
-              "queryRef": "_Measures.Resources - Capacity FTE",
-              "nativeQueryRef": "Resources - Capacity FTE"
-            }
-          ]
-        },
         "scheduled": {
           "projections": [
             {
@@ -121,13 +84,76 @@
               "nativeQueryRef": "ResPlan - Total Hours Actuals"
             }
           ]
+        },
+        "capacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity (spread)"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity (spread)",
+              "nativeQueryRef": "Capacity | Resource Capacity (spread)"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Date"
+                }
+              },
+              "queryRef": "DimDate.Date",
+              "nativeQueryRef": "Date",
+              "active": true
+            }
+          ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimDate"
+                  }
+                },
+                "Property": "Date"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
       }
     },
     "objects": {
       "chart": [
         {
-          "properties": {}
+          "properties": {
+            "displayUnit": {
+              "expr": {
+                "Literal": {
+                  "Value": "'hours'"
+                }
+              }
+            }
+          }
         }
       ],
       "licenseSettings": [
@@ -149,7 +175,7 @@
             "collapsed": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             }
@@ -205,6 +231,19 @@
               "expr": {
                 "Literal": {
                   "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "properties": {
+            "grain": {
+              "expr": {
+                "Literal": {
+                  "Value": "'month'"
                 }
               }
             }

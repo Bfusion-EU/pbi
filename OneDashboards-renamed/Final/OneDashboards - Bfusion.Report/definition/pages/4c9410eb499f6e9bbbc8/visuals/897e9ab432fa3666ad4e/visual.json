@@ -3,51 +3,16 @@
   "name": "897e9ab432fa3666ad4e",
   "position": {
     "x": 0,
-    "y": 961.68941979522174,
+    "y": 961.23183070741914,
     "z": 0,
-    "height": 565.69965870307169,
-    "width": 1981.3993174061432,
+    "height": 588.18233450430171,
+    "width": 1981.9684890300596,
     "tabOrder": 0
   },
   "visual": {
     "visualType": "bfusionFTEDecisionBoard7A8B9C0D1E2F",
     "query": {
       "queryState": {
-        "rowCategory": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Role_Value"
-                }
-              },
-              "queryRef": "DimResource.Role_Value",
-              "nativeQueryRef": "Role_Value",
-              "displayName": "Role"
-            }
-          ],
-          "fieldParameters": [
-            {
-              "parameterExpr": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Category"
-                    }
-                  },
-                  "Property": "Category"
-                }
-              },
-              "index": 0,
-              "length": 1
-            }
-          ]
-        },
         "measures": {
           "projections": [
             {
@@ -119,6 +84,41 @@
               },
               "queryRef": "_Measures.Capacity | Capacity per FTE",
               "nativeQueryRef": "Capacity | Capacity per FTE"
+            }
+          ]
+        },
+        "rowCategory": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimResource"
+                    }
+                  },
+                  "Property": "Role_Value"
+                }
+              },
+              "queryRef": "DimResource.Role_Value",
+              "nativeQueryRef": "Role_Value",
+              "displayName": "Role"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Category"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "index": 0,
+              "length": 1
             }
           ]
         },
@@ -223,7 +223,7 @@
             "grain": {
               "expr": {
                 "Literal": {
-                  "Value": "'week'"
+                  "Value": "'month'"
                 }
               }
             },
@@ -237,7 +237,7 @@
             "insightsCollapsed": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             }

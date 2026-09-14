@@ -1,0 +1,213 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "cd48351f0902371d2d9c",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "height": 720.21356697925944,
+    "width": 1279.5619138886989,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "bfusionVarianceDriverTree7A3F9C2E1B4D",
+    "query": {
+      "queryState": {
+        "hierarchy": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio Name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program Name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "measures": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget vs Actuals Variance"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget vs Actuals Variance",
+              "nativeQueryRef": "Finance | Budget vs Actuals Variance"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Actual Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Actual Cost",
+              "nativeQueryRef": "Finance | Actual Cost"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Finance | Budget vs Actuals Variance"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzg5MTU1OTA5LCJleHAiOjE3OTE3NjMxOTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY184YWUwNjNlOTE4OTEiLCJ2ZXIiOjJ9.IblKlkceur2HCRQvWEe70SCcdpJf1bVihc4AVn7yS3fqsCHUFfIDokC6iNegfLFhPQlkjHZZpC05fUGw517zK1KNgYUJhmmy66PxQnLVRk6uzLnKuX4ZpPSKlhVC7iKtuCQQueiiQM7t_W1ijOI7M8plyjCSkaKJm-fBE7Uv6bRZIxtVhe81RWR7AX_qGOtTmxFGu5txnMAA3oODJQb8dM3VaULI3z2j-PA_2d05WscTOsfLHHZDnQiwak2dZDX45yHupzJN_E7xKJ2qV8gTUbGxBjxDJ-C2G-7F_RzJ4I79zKL5ALkmlv6sK8Rj0yTU4zjEXshYU9S8vwrersgw2Q'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "state": [
+        {
+          "properties": {
+            "rootKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'m:1'"
+                }
+              }
+            },
+            "expandedKeys": {
+              "expr": {
+                "Literal": {
+                  "Value": "'[\"0\\u001f(blank)\\u001f(blank)\\u001f(blank)\",\"0\\u001fData Analytics Transformation\\u001fEnterprise Data Platform\\u001fData Warehouse Migration\",\"0\\u001fOperational Excellence\",\"0\\u001fOperational Excellence\\u001fSupply Chain Optimization\",\"0\\u001fData Analytics Transformation\\u001fEnterprise Data Platform\",\"0\\u001fBusiness Transformation\",\"0\\u001fBusiness Transformation\\u001fDigital Transformation\",\"0\\u001fProduct Innovation Portfolio\",\"0\\u001fProduct Innovation Portfolio\\u001fDigital Marketing Program\",\"0\\u001fCapital Investment\",\"0\\u001fCapital Investment\\u001fAsset Replacement\",\"0\\u001f\\u001fother\",\"0\\u001fData Analytics Transformation\",\"0\\u001fBrand Management Portfolio\"]'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "cues": [
+        {
+          "properties": {
+            "method": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pareto'"
+                }
+              }
+            },
+            "direction": {
+              "expr": {
+                "Literal": {
+                  "Value": "'auto'"
+                }
+              }
+            },
+            "icon": {
+              "expr": {
+                "Literal": {
+                  "Value": "'warning'"
+                }
+              }
+            },
+            "iconSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

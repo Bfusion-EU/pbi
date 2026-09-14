@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "60a161665bc5ebfc56c5",
   "position": {
-    "x": 899.5090016366612,
-    "y": 124.71358428805237,
+    "x": 586.01602330662786,
+    "y": 112.74581209031318,
     "z": 3000,
-    "height": 518.49427168576108,
-    "width": 885.76104746317515,
+    "height": 456.2272396212673,
+    "width": 1199.5630007283321,
     "tabOrder": 3000
   },
   "visual": {
@@ -156,7 +156,7 @@
             "statusDate": {
               "expr": {
                 "Literal": {
-                  "Value": "'Thu Sep 10 2026 22:52:40 GMT+0200 (Central European Summer Time)'"
+                  "Value": "'2026-09-09'"
                 }
               }
             }
@@ -188,6 +188,33 @@
                       "Percent": -0.25
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "callouts": [
+        {
+          "properties": {
+            "showNow": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showPeakGap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showForecastBreach": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

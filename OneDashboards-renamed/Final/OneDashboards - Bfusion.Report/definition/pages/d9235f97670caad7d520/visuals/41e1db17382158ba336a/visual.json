@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "41e1db17382158ba336a",
   "position": {
     "x": 0,
-    "y": 113.26949384404925,
+    "y": 112.92962356792144,
     "z": 2000,
-    "height": 529.41176470588243,
-    "width": 879.06976744186056,
+    "height": 965.302782324059,
+    "width": 571.52209492635029,
     "tabOrder": 2000
   },
   "visual": {
@@ -103,6 +103,24 @@
               "nativeQueryRef": "Initial Budget Cost"
             }
           ]
+        },
+        "periodDate": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Period Start"
+                }
+              },
+              "queryRef": "_Measures.Finance | Period Start",
+              "nativeQueryRef": "Finance | Period Start"
+            }
+          ]
         }
       }
     },
@@ -114,6 +132,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'€'"
+                }
+              }
+            },
+            "statusDate": {
+              "expr": {
+                "Literal": {
+                  "Value": "'2026-09-09'"
                 }
               }
             }

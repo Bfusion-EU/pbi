@@ -2,51 +2,19 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "72a79d621ce3652520bd",
   "position": {
-    "x": 0,
-    "y": 681.05802047781572,
+    "x": 99.45194975078374,
+    "y": 698.04010013757647,
     "z": 10000,
-    "height": 480.29010238907853,
-    "width": 1981.0580204778157,
+    "height": 480.3716818151064,
+    "width": 1797.6409030424684,
     "tabOrder": 10000
   },
   "visual": {
     "visualType": "bfusionFTEDecisionBoard7A8B9C0D1E2F",
     "query": {
       "queryState": {
-        "rowCategory": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Role_Value"
-                }
-              },
-              "queryRef": "DimResource.Role_Value",
-              "nativeQueryRef": "Role_Value",
-              "displayName": "Role"
-            }
-          ],
-          "fieldParameters": [
-            {
-              "parameterExpr": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Category"
-                    }
-                  },
-                  "Property": "Category"
-                }
-              },
-              "index": 0,
-              "length": 1
-            }
-          ]
+        "licenseToken": {
+          "projections": []
         },
         "measures": {
           "projections": [
@@ -140,6 +108,41 @@
             }
           ]
         },
+        "rowCategory": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimResource"
+                    }
+                  },
+                  "Property": "Role_Value"
+                }
+              },
+              "queryRef": "DimResource.Role_Value",
+              "nativeQueryRef": "Role_Value",
+              "displayName": "Role"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Category"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "index": 0,
+              "length": 1
+            }
+          ]
+        },
         "fteDemand": {
           "projections": [
             {
@@ -150,11 +153,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Demand per FTE"
+                  "Property": "Capacity | Demand"
                 }
               },
-              "queryRef": "_Measures.Capacity | Demand per FTE",
-              "nativeQueryRef": "Capacity | Demand per FTE"
+              "queryRef": "_Measures.Capacity | Demand",
+              "nativeQueryRef": "Capacity | Demand"
             }
           ]
         },
@@ -223,7 +226,7 @@
             "grain": {
               "expr": {
                 "Literal": {
-                  "Value": "'week'"
+                  "Value": "'month'"
                 }
               }
             },

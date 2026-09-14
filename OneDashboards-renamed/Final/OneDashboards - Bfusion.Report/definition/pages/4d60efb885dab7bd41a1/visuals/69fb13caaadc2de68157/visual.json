@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "69fb13caaadc2de68157",
   "position": {
     "x": 1010.4746317512274,
@@ -13,40 +13,8 @@
     "visualType": "bfusionResourceEfficiencyBreakdown_2D5CAA9A6CAD4BEDAEEFABB89FC63D1C",
     "query": {
       "queryState": {
-        "category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Role_Value"
-                }
-              },
-              "queryRef": "DimResource.Role_Value",
-              "nativeQueryRef": "Role",
-              "displayName": "Role"
-            }
-          ],
-          "fieldParameters": [
-            {
-              "parameterExpr": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Category"
-                    }
-                  },
-                  "Property": "Category"
-                }
-              },
-              "index": 0,
-              "length": 1
-            }
-          ]
+        "licenseToken": {
+          "projections": []
         },
         "utilization": {
           "projections": [
@@ -61,7 +29,7 @@
                   "Property": "Capacity | Resource Utilization%"
                 }
               },
-              "queryRef": "_Measures.Resource Utilization%",
+              "queryRef": "_Measures.Capacity | Resource Utilization%",
               "nativeQueryRef": "Resource Utilization%"
             }
           ]
@@ -79,7 +47,7 @@
                   "Property": "Capacity | Total Hours Scheduled"
                 }
               },
-              "queryRef": "_Measures.ResPlan - Total Hours Scheduled",
+              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
               "nativeQueryRef": "ResPlan - Total Hours Scheduled"
             }
           ]
@@ -97,8 +65,43 @@
                   "Property": "Capacity | Resource Capacity"
                 }
               },
-              "queryRef": "_Measures.Resource Capacity",
+              "queryRef": "_Measures.Capacity | Resource Capacity",
               "nativeQueryRef": "Resource Capacity"
+            }
+          ]
+        },
+        "category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimResource"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimResource.Name",
+              "nativeQueryRef": "ResourceName",
+              "displayName": "ResourceName"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Category"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "index": 0,
+              "length": 1
             }
           ]
         }

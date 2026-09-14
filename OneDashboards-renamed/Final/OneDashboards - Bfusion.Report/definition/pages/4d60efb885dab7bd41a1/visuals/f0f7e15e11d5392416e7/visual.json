@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "f0f7e15e11d5392416e7",
   "position": {
     "x": 15.466448445171849,
@@ -13,42 +13,7 @@
     "visualType": "bfusionResourceGapAnalysis_CustomVisual",
     "query": {
       "queryState": {
-        "resourceName": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Role_Value"
-                }
-              },
-              "queryRef": "DimResource.Role_Value",
-              "nativeQueryRef": "Role",
-              "displayName": "Role"
-            }
-          ],
-          "fieldParameters": [
-            {
-              "parameterExpr": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Category"
-                    }
-                  },
-                  "Property": "Category"
-                }
-              },
-              "index": 0,
-              "length": 1
-            }
-          ]
-        },
-        "gap": {
+        "demand": {
           "projections": [
             {
               "field": {
@@ -58,32 +23,94 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Demand-Supply Gap"
+                  "Property": "Capacity | Total Hours Scheduled"
                 }
               },
-              "queryRef": "_Measures.Resource Demand-Supply Gap",
-              "nativeQueryRef": "Resource Demand-Supply Gap"
+              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "nativeQueryRef": "Capacity | Total Hours Scheduled"
             }
           ]
         },
-        "drillParent": {
+        "supply": {
           "projections": [
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimResource"
+                      "Entity": "_Measures"
                     }
                   },
-                  "Property": "Department_Value"
+                  "Property": "Capacity | Resource Capacity"
                 }
               },
-              "queryRef": "DimResource.Department_Value",
-              "nativeQueryRef": "Department",
-              "displayName": "Department"
+              "queryRef": "_Measures.Capacity | Resource Capacity",
+              "nativeQueryRef": "Capacity | Resource Capacity"
             }
           ]
+        },
+        "tooltipFields": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity (spread)"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity (spread)",
+              "nativeQueryRef": "Capacity | Resource Capacity (spread)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Forecast"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Total Hours Forecast",
+              "nativeQueryRef": "Capacity | Total Hours Forecast"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Available Capacity"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Available Capacity",
+              "nativeQueryRef": "Capacity | Available Capacity"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Utilization%"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Utilization%",
+              "nativeQueryRef": "Capacity | Resource Utilization%"
+            }
+          ]
+        },
+        "licenseToken": {
+          "projections": []
         },
         "period": {
           "projections": [
@@ -103,7 +130,7 @@
             }
           ]
         },
-        "groupBy": {
+        "resourceName": {
           "projections": [
             {
               "field": {
@@ -113,32 +140,31 @@
                       "Entity": "DimResource"
                     }
                   },
-                  "Property": "OP_Financial_ResourceType_Value"
+                  "Property": "Name"
                 }
               },
-              "queryRef": "DimResource.OP_Financial_ResourceType_Value",
-              "nativeQueryRef": "OP_Financial_ResourceType_Value"
+              "queryRef": "DimResource.Name",
+              "nativeQueryRef": "ResourceName",
+              "displayName": "ResourceName"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Category"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "index": 0,
+              "length": 1
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Measures"
-                  }
-                },
-                "Property": "Capacity | Resource Demand-Supply Gap"
-              }
-            },
-            "direction": "Descending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -155,115 +181,9 @@
           }
         }
       ],
-      "sparklineSettings": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "groupCollapseSettings": [
-        {
-          "properties": {
-            "enabled": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "startCollapsed": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "averageLineSettings": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "benchmarkSettings": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "topNSettings": [
-        {
-          "properties": {
-            "enabled": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "dataLabelSettings": [
-        {
-          "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "11D"
-                }
-              }
-            },
-            "showSign": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ],
       "insightPanel": [
         {
           "properties": {
-            "panelExpanded": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "showInsights": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "showSmartInsights": {
               "expr": {
                 "Literal": {
@@ -276,39 +196,50 @@
       ],
       "fontSettings": [
         {
+          "properties": {}
+        }
+      ],
+      "controlState": [
+        {
           "properties": {
-            "axisTitleFontSize": {
+            "rankMode": {
               "expr": {
                 "Literal": {
-                  "Value": "15D"
+                  "Value": "'risk'"
                 }
               }
             },
-            "axisLabelFontSize": {
+            "alertLevel": {
               "expr": {
                 "Literal": {
-                  "Value": "15D"
+                  "Value": "100D"
                 }
               }
             },
-            "resourceLabelFontSize": {
+            "insightsCollapsed": {
               "expr": {
                 "Literal": {
-                  "Value": "16D"
+                  "Value": "false"
                 }
               }
             },
-            "legendFontSize": {
+            "runwayFilter": {
               "expr": {
                 "Literal": {
-                  "Value": "14D"
+                  "Value": "'all'"
                 }
               }
-            },
-            "breadcrumbFontSize": {
+            }
+          }
+        }
+      ],
+      "displayOptions": [
+        {
+          "properties": {
+            "basis": {
               "expr": {
                 "Literal": {
-                  "Value": "14D"
+                  "Value": "'window'"
                 }
               }
             }
