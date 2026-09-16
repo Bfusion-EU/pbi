@@ -1,0 +1,602 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "28397bee00a45e6218a0",
+  "position": {
+    "x": 53.7542662116041,
+    "y": 151.02389078498294,
+    "z": 2001,
+    "height": 41.808873720136518,
+    "width": 1720.1365187713311,
+    "tabOrder": 8301
+  },
+  "visual": {
+    "visualType": "bfusionKpiTicker7C4A9E2B1D5F",
+    "query": {
+      "queryState": {
+        "status": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "State_Value"
+                }
+              },
+              "queryRef": "DimProject.State_Value",
+              "nativeQueryRef": "State_Value"
+            }
+          ]
+        },
+        "values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Actual Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Actual Cost",
+              "nativeQueryRef": "Actuals",
+              "displayName": "Actuals"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Forecast Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Forecast Cost",
+              "nativeQueryRef": "Forecast Cost",
+              "displayName": "Forecast Cost"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Remaining"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Remaining",
+              "nativeQueryRef": "Budget Remaining",
+              "displayName": "Budget Remaining"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Demand"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Demand",
+              "nativeQueryRef": "Capacity Demand",
+              "displayName": "Capacity Demand"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Availability"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Availability",
+              "nativeQueryRef": "Capacity Availability",
+              "displayName": "Capacity Availability"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Status Report | Status Reports - Total ActiveRisks"
+                }
+              },
+              "queryRef": "_Measures.Status Report | Status Reports - Total ActiveRisks",
+              "nativeQueryRef": "Active Risks",
+              "displayName": "Active Risks"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "EVM | Forecast Overrun"
+                }
+              },
+              "queryRef": "_Measures.EVM | Forecast Overrun",
+              "nativeQueryRef": "EVM Forecast Overrun",
+              "displayName": "EVM Forecast Overrun"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzg5Mzg0MDQxLCJleHAiOjE3OTIwMjIzOTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY18xMzEzMTg3NmQzMzciLCJ2ZXIiOjJ9.PzpPSnB2nSKmfXOjrBMJyIjfwuN7Dzxb2XesjeXVwFJGIs_NSnAkdmD1SQ499xZ5x2csdx7zHnpr3jDfU0yLMnX-qOmgRiNu_58b3Xeyt6JZz0hBYZtzprhQcM3YPoh1tvDBf_TcnKXThTFZZ4x9EIK_LxYdt2sllciNT9atPOSyDem0GZu1BxSIK_naCRHbxZObiiBHRn9wD3oVLkmb1ehnTlrqlDu4PqkzLH4l-n7rJu7pfP_MOMrJazHTso-PFsJYMUNzrYw8ClkOlDOpgdyF-4wlBYnSLqbIM2CVCmnfPv9p9J1wq78SRtZr8OmleNiDLcaTwpoW3JNzFdO0xw'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "ticker": [
+        {
+          "properties": {
+            "speed": {
+              "expr": {
+                "Literal": {
+                  "Value": "40D"
+                }
+              }
+            },
+            "separator": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pipe'"
+                }
+              }
+            },
+            "pauseOnHover": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gap": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "colorSettings": [
+        {
+          "properties": {
+            "backgroundTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            },
+            "valueColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#A6B3CC'"
+                    }
+                  }
+                }
+              }
+            },
+            "ruleColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "typography": [
+        {
+          "properties": {
+            "labelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "layout": [
+        {
+          "properties": {
+            "uppercaseLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showDots": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "variance": [
+        {
+          "properties": {
+            "display": {
+              "expr": {
+                "Literal": {
+                  "Value": "'both'"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Forecast Cost"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Actual Cost"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'higherBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Budget Remaining"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Capacity | Demand"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'higherBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Capacity | Availability"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Status Report | Status Reports - Total ActiveRisks"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.EVM | Forecast Overrun"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "9f8144d4650c70871c33",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "State_Value"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2a522f21d931eb8c6470",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Finance | Actual Cost"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "baa73600d415502404b8",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Finance | Forecast Cost"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "9b2c629589a3c804c479",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Finance | Budget Remaining"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "f60ecb9c503d6d930e81",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Capacity | Demand"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "bf6f62fbac0001aa0461",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Capacity | Availability"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "21fb1ea260a2138902c3",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Status Report | Status Reports - Total ActiveRisks"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "a8d298cfec774a85d1d8",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "EVM | Forecast Overrun"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "e84a2645c04a5ee7902b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimDate"
+              }
+            },
+            "Property": "Period"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "DimDate",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "Period"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Jul-26'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
