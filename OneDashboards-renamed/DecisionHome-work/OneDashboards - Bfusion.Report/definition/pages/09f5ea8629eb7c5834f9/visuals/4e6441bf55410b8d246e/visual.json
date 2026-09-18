@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "4e6441bf55410b8d246e",
   "position": {
     "x": 23.404255319148938,
@@ -172,24 +172,6 @@
             }
           ]
         },
-        "parentTaskId": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimTask"
-                    }
-                  },
-                  "Property": "ParentTaskId"
-                }
-              },
-              "queryRef": "DimTask.ParentTaskId",
-              "nativeQueryRef": "ParentTaskId"
-            }
-          ]
-        },
         "predecessors": {
           "projections": [
             {
@@ -205,24 +187,6 @@
               },
               "queryRef": "DimTask.Predecessors",
               "nativeQueryRef": "Predecessors"
-            }
-          ]
-        },
-        "resource": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Name"
-                }
-              },
-              "queryRef": "DimResource.Name",
-              "nativeQueryRef": "Name2"
             }
           ]
         },
@@ -298,7 +262,7 @@
             }
           ]
         },
-        "parentTaskName": {
+        "resource": {
           "projections": [
             {
               "field": {
@@ -308,11 +272,11 @@
                       "Entity": "DimTask"
                     }
                   },
-                  "Property": "ParentName"
+                  "Property": "AssignedResources"
                 }
               },
-              "queryRef": "DimTask.ParentName",
-              "nativeQueryRef": "ParentName"
+              "queryRef": "DimTask.AssignedResources",
+              "nativeQueryRef": "AssignedResources"
             }
           ]
         }

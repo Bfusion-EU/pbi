@@ -239,24 +239,6 @@
             }
           ]
         },
-        "resource": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Name"
-                }
-              },
-              "queryRef": "DimResource.Name",
-              "nativeQueryRef": "Name2"
-            }
-          ]
-        },
         "slack": {
           "projections": [
             {
@@ -280,7 +262,7 @@
             }
           ]
         },
-        "parentTaskId": {
+        "resource": {
           "projections": [
             {
               "field": {
@@ -290,29 +272,11 @@
                       "Entity": "DimTask"
                     }
                   },
-                  "Property": "ParentTaskId"
+                  "Property": "AssignedResources"
                 }
               },
-              "queryRef": "DimTask.ParentTaskId",
-              "nativeQueryRef": "ParentTaskId"
-            }
-          ]
-        },
-        "parentTaskName": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimTask"
-                    }
-                  },
-                  "Property": "ParentName"
-                }
-              },
-              "queryRef": "DimTask.ParentName",
-              "nativeQueryRef": "ParentName"
+              "queryRef": "DimTask.AssignedResources",
+              "nativeQueryRef": "AssignedResources"
             }
           ]
         }
