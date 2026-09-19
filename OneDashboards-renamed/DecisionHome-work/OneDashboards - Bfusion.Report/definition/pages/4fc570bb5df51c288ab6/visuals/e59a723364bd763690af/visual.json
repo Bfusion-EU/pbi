@@ -13,42 +13,6 @@
     "visualType": "bfusionOrgStructure_CustomVisual",
     "query": {
       "queryState": {
-        "measure1": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Total Hours Committed"
-                }
-              },
-              "queryRef": "_Measures.ResPlan - Total Hours Committed",
-              "nativeQueryRef": "ResPlan - Total Hours Committed"
-            }
-          ]
-        },
-        "measure2": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Resource Capacity"
-                }
-              },
-              "queryRef": "_Measures.Resource Capacity",
-              "nativeQueryRef": "Resource Capacity"
-            }
-          ]
-        },
         "capacity": {
           "projections": [
             {

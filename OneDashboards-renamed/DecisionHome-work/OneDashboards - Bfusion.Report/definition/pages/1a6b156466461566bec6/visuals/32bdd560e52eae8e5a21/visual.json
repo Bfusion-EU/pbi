@@ -32,42 +32,6 @@
             }
           ]
         },
-        "availability": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Resource | Capacity FTE"
-                }
-              },
-              "queryRef": "_Measures.Resources - Capacity FTE",
-              "nativeQueryRef": "Resources - Capacity FTE"
-            }
-          ]
-        },
-        "workload": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Committed FTE"
-                }
-              },
-              "queryRef": "_Measures.ResPlan - Committed FTE",
-              "nativeQueryRef": "ResPlan - Committed FTE"
-            }
-          ]
-        },
         "scheduled": {
           "projections": [
             {
