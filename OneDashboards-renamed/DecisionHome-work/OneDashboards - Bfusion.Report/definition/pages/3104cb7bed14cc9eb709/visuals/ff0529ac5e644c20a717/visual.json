@@ -217,22 +217,17 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "DimProject"
-                        }
-                      },
-                      "Property": "StrategicAlignment_Value"
+                    "SourceRef": {
+                      "Entity": "_Measures"
                     }
                   },
-                  "Function": 3
+                  "Property": "Modeler | Alignment Score"
                 }
               },
-              "queryRef": "Min(Plans.StrategicAlignment_Value)",
-              "nativeQueryRef": "First StrategicAlignment_Value"
+              "queryRef": "_Measures.Modeler | Alignment Score",
+              "nativeQueryRef": "Modeler | Alignment Score"
             }
           ]
         },
@@ -382,24 +377,6 @@
               },
               "queryRef": "_Measures.ScenarioCompare | Committed (A)",
               "nativeQueryRef": "ScenarioCompare | Committed (A)"
-            }
-          ]
-        },
-        "resourceRole": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Role_Value"
-                }
-              },
-              "queryRef": "DimResource.Role_Value",
-              "nativeQueryRef": "Role_Value"
             }
           ]
         }
