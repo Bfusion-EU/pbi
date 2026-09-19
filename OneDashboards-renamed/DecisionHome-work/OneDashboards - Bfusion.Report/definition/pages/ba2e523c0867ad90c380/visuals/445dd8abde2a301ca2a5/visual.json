@@ -115,13 +115,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimResource"
+                      "Entity": "DimTask"
                     }
                   },
-                  "Property": "Name"
+                  "Property": "AssignedResources"
                 }
               },
-              "queryRef": "DimResource.Name",
+              "queryRef": "DimTask.AssignedResources",
               "nativeQueryRef": "Name1"
             }
           ]

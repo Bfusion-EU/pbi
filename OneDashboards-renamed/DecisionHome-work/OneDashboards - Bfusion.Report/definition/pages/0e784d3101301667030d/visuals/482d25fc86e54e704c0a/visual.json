@@ -230,13 +230,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimProgram"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Name"
+                  "Property": "Program Name"
                 }
               },
-              "queryRef": "DimProgram.Name",
+              "queryRef": "DimProject.Program Name",
               "nativeQueryRef": "Name1",
               "active": true
             }
@@ -249,13 +249,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimPortfolio"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Name"
+                  "Property": "Portfolio Name"
                 }
               },
-              "queryRef": "DimPortfolio.Name",
+              "queryRef": "DimProject.Portfolio Name",
               "nativeQueryRef": "Name2",
               "active": true
             }
