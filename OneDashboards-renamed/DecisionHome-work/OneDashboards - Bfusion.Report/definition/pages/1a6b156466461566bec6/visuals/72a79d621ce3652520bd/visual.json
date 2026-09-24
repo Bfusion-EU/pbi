@@ -4,10 +4,10 @@
   "position": {
     "x": 99.45194975078374,
     "y": 698.04010013757647,
-    "z": 10000,
+    "z": 9000,
     "height": 480.3716818151064,
     "width": 1797.6409030424684,
-    "tabOrder": 10000
+    "tabOrder": 9000
   },
   "visual": {
     "visualType": "bfusionFTEDecisionBoard7A8B9C0D1E2F",
@@ -139,42 +139,6 @@
               "nativeQueryRef": "Date"
             }
           ]
-        },
-        "fteDemand": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Demand"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Demand",
-              "nativeQueryRef": "Capacity | Demand"
-            }
-          ]
-        },
-        "fteCapacity": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Capacity per FTE"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Capacity per FTE",
-              "nativeQueryRef": "Capacity | Capacity per FTE"
-            }
-          ]
         }
       },
       "sortDefinition": {
@@ -223,7 +187,7 @@
             "grain": {
               "expr": {
                 "Literal": {
-                  "Value": "'month'"
+                  "Value": "'year'"
                 }
               }
             },
@@ -271,7 +235,28 @@
             "c2A": {
               "expr": {
                 "Literal": {
+                  "Value": "3D"
+                }
+              }
+            },
+            "c2B": {
+              "expr": {
+                "Literal": {
                   "Value": "2D"
+                }
+              }
+            },
+            "c3A": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "c3B": {
+              "expr": {
+                "Literal": {
+                  "Value": "5D"
                 }
               }
             }

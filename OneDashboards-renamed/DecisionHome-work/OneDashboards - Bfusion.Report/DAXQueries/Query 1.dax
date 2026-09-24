@@ -1,11 +1,23 @@
+DEFINE
+    MEASURE _Measures[_Hours] = [Capacity | Total Hours Scheduled]
+    MEASURE _Measures[_CapIndependent] =
+        SUMX (
+            VALUES ( DimDate[Date] ),
+            VAR d  = DimDate[Date]
+            VAR ym = YEAR ( d ) * 100 + MONTH ( d )
+            VAR MonthCap =
+                CALCULATE ( [Capacity | Resource Capacity], REMOVEFILTERS ( DimDate ), DimDate[YearMonth] = ym )
+            RETURN DIVIDE ( MonthCap, DAY ( EOMONTH ( d, 0 ) ) )
+        )
 EVALUATE
-ROW (
-    "ProgramRows",          COUNTROWS ( 'DimProgram' ),
-    "ProgramKey_Distinct",  DISTINCTCOUNT ( 'DimProgram'[ProgramKey] ),
-    "ProgramBK_Distinct",   DISTINCTCOUNT ( 'DimProgram'[ProgramBK] ),
-    "PortfolioRows",        COUNTROWS ( 'DimPortfolio' ),
-    "PortfolioKey_Distinct",DISTINCTCOUNT ( 'DimPortfolio'[PortfolioKey] ),
-    "PortfolioBK_Distinct", DISTINCTCOUNT ( 'DimPortfolio'[PortfolioBK] ),
-    "ProjectRows",          COUNTROWS ( 'DimProject' ),
-    "ProjectKey_Distinct",  DISTINCTCOUNT ( 'DimProject'[ProjectKey] )
+SUMMARIZECOLUMNS (
+    DimResource[Role_Value],
+    DimDate[WeekStart],
+    FILTER ( ALL ( DimDate[WeekStart] ),
+        DimDate[WeekStart] >= DATE ( 2026, 4, 6 ) && DimDate[WeekStart] <= DATE ( 2026, 5, 11 ) ),
+    "Hours", [_Hours],
+    "Capacity", [_CapIndependent],
+    "Utilization %", ROUND ( 100 * DIVIDE ( [_Hours], [_CapIndependent] ), 0 ),
+    "Grain-safe measure %", ROUND ( 100 * [Capacity | Resource Utilization% (grain-safe)], 0 )
 )
+ORDER BY DimResource[Role_Value], DimDate[WeekStart]

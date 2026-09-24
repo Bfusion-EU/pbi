@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "c053326d0c94b50adb38",
   "position": {
-    "x": 10.714285714285715,
-    "y": 129.76190476190476,
+    "x": 11.061452513966481,
+    "y": 129.72067039106145,
     "z": 0,
-    "height": 605.952380952381,
-    "width": 730.952380952381,
+    "height": 748.15642458100558,
+    "width": 750.1675977653631,
     "tabOrder": 0
   },
   "visual": {
@@ -56,30 +56,32 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimPortfolio"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Name"
+                  "Property": "Portfolio Name"
                 }
               },
-              "queryRef": "DimPortfolio.Name",
-              "nativeQueryRef": "Name",
-              "active": true
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio",
+              "active": true,
+              "displayName": "Portfolio"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimProgram"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Name"
+                  "Property": "Program Name"
                 }
               },
-              "queryRef": "DimProgram.Name",
-              "nativeQueryRef": "Name1",
-              "active": false
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program",
+              "active": false,
+              "displayName": "Program"
             },
             {
               "field": {
@@ -93,8 +95,9 @@
                 }
               },
               "queryRef": "DimProject.Name",
-              "nativeQueryRef": "Name2",
-              "active": false
+              "nativeQueryRef": "Plan",
+              "active": false,
+              "displayName": "Plan"
             }
           ]
         }
@@ -131,6 +134,26 @@
             }
           }
         }
+      ],
+      "chart": [
+        {
+          "properties": {
+            "sortDescending": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showTargetMarkers": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -148,6 +171,19 @@
         }
       ],
       "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "divider": [
         {
           "properties": {
             "show": {

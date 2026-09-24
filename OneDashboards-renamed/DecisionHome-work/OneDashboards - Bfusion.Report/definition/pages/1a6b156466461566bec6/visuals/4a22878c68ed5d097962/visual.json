@@ -1,20 +1,53 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "6356557cab2677a68d4c",
+  "name": "4a22878c68ed5d097962",
   "position": {
-    "x": 16.693944353518823,
-    "y": 100.16366612111293,
-    "z": 7000,
-    "height": 544.02618657937808,
-    "width": 743.37152209492638,
-    "tabOrder": 7000
+    "x": 10.249494268374916,
+    "y": 142.21173297370194,
+    "z": 10000,
+    "height": 489.41335131490217,
+    "width": 807.14767363452461,
+    "tabOrder": 10000
   },
   "visual": {
     "visualType": "bfusionResourceHeatmap_CustomVisual",
     "query": {
       "queryState": {
-        "licenseToken": {
-          "projections": []
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "MonthStart"
+                }
+              },
+              "queryRef": "DimDate.MonthStart",
+              "nativeQueryRef": "Month",
+              "active": true,
+              "displayName": "Month"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Period Grain"
+                    }
+                  },
+                  "Property": "Period Grain"
+                }
+              },
+              "index": 0,
+              "length": 1
+            }
+          ]
         },
         "resourceName": {
           "projections": [
@@ -51,25 +84,6 @@
             }
           ]
         },
-        "period": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimDate"
-                    }
-                  },
-                  "Property": "Date"
-                }
-              },
-              "queryRef": "DimDate.Date",
-              "nativeQueryRef": "Date",
-              "active": true
-            }
-          ]
-        },
         "utilization": {
           "projections": [
             {
@@ -87,6 +101,42 @@
               "nativeQueryRef": "Capacity | Resource Utilization% (grain-safe)"
             }
           ]
+        },
+        "hours": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Scheduled"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "nativeQueryRef": "Capacity | Total Hours Scheduled"
+            }
+          ]
+        },
+        "capacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity (spread)"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity (spread)",
+              "nativeQueryRef": "Capacity | Resource Capacity (spread)"
+            }
+          ]
         }
       },
       "sortDefinition": {
@@ -99,7 +149,7 @@
                     "Entity": "DimDate"
                   }
                 },
-                "Property": "Date"
+                "Property": "MonthStart"
               }
             },
             "direction": "Ascending"
@@ -125,10 +175,82 @@
       "timeline": [
         {
           "properties": {
-            "grain": {
+            "labelFormat": {
               "expr": {
                 "Literal": {
-                  "Value": "'month'"
+                  "Value": "'short'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "heatmapSettings": [
+        {
+          "properties": {
+            "sortMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'avgDesc'"
+                }
+              }
+            },
+            "focusHighlight": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "valueScale": {
+              "expr": {
+                "Literal": {
+                  "Value": "'auto'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "trendSettings": [
+        {
+          "properties": {
+            "sparklineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.5
+                    }
+                  }
+                }
+              }
+            },
+            "showAvgColumn": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showSparklines": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "whatIf": [
+        {
+          "properties": {
+            "overloadThreshold": {
+              "expr": {
+                "Literal": {
+                  "Value": "85D"
                 }
               }
             }
@@ -140,17 +262,10 @@
       "title": [
         {
           "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Utilization Heatmap'"
+                  "Value": "'Resource Utilization '"
                 }
               }
             },
@@ -158,44 +273,6 @@
               "expr": {
                 "Literal": {
                   "Value": "'center'"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "background": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "visualHeader": [
-        {
-          "properties": {
-            "transparency": {
-              "expr": {
-                "Literal": {
-                  "Value": "100D"
-                }
-              }
-            },
-            "foreground": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 9,
-                      "Percent": 0
-                    }
-                  }
                 }
               }
             }

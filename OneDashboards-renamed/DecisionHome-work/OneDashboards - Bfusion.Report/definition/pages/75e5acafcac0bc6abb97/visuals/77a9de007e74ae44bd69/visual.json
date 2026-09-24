@@ -13,6 +13,42 @@
     "visualType": "bfusionResourceHeatmap_CustomVisual",
     "query": {
       "queryState": {
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "MonthStart"
+                }
+              },
+              "queryRef": "DimDate.MonthStart",
+              "nativeQueryRef": "Month",
+              "active": true,
+              "displayName": "Month"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Period Grain"
+                    }
+                  },
+                  "Property": "Period Grain"
+                }
+              },
+              "index": 0,
+              "length": 1
+            }
+          ]
+        },
         "resourceName": {
           "projections": [
             {
@@ -23,12 +59,12 @@
                       "Entity": "DimResource"
                     }
                   },
-                  "Property": "Department_Value"
+                  "Property": "Role_Value"
                 }
               },
-              "queryRef": "DimResource.Department_Value",
-              "nativeQueryRef": "Department",
-              "displayName": "Department"
+              "queryRef": "DimResource.Role_Value",
+              "nativeQueryRef": "Role",
+              "displayName": "Role"
             }
           ],
           "fieldParameters": [
@@ -66,22 +102,39 @@
             }
           ]
         },
-        "period": {
+        "hours": {
           "projections": [
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimDate"
+                      "Entity": "_Measures"
                     }
                   },
-                  "Property": "Date"
+                  "Property": "Capacity | Total Hours Scheduled"
                 }
               },
-              "queryRef": "DimDate.Date",
-              "nativeQueryRef": "Date",
-              "active": true
+              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "nativeQueryRef": "Capacity | Total Hours Scheduled"
+            }
+          ]
+        },
+        "capacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity (spread)"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity (spread)",
+              "nativeQueryRef": "Capacity | Resource Capacity (spread)"
             }
           ]
         }
@@ -96,7 +149,7 @@
                     "Entity": "DimDate"
                   }
                 },
-                "Property": "Date"
+                "Property": "MonthStart"
               }
             },
             "direction": "Ascending"
@@ -122,13 +175,6 @@
       "timeline": [
         {
           "properties": {
-            "grain": {
-              "expr": {
-                "Literal": {
-                  "Value": "'month'"
-                }
-              }
-            },
             "labelFormat": {
               "expr": {
                 "Literal": {

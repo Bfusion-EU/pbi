@@ -1,34 +1,20 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "d8a513de7069db036779",
   "position": {
-    "x": 17.184942716857609,
-    "y": 109.9836333878887,
+    "x": 17.54601226993865,
+    "y": 168.71165644171779,
     "z": 0,
-    "height": 1128.4779050736497,
-    "width": 2166.4484451718495,
+    "height": 1086.5030674846626,
+    "width": 2154.1104294478528,
     "tabOrder": 0
   },
   "visual": {
     "visualType": "bfusionKpiGridA7E2B4D9C816",
     "query": {
       "queryState": {
-        "rowMeta": {
+        "columns": {
           "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "PlanType"
-                }
-              },
-              "queryRef": "DimProject.PlanType",
-              "nativeQueryRef": "PlanType"
-            },
             {
               "field": {
                 "Column": {
@@ -42,68 +28,6 @@
               },
               "queryRef": "DimProject.ProcessStep",
               "nativeQueryRef": "ProcessStep"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "Owner_Value"
-                }
-              },
-              "queryRef": "DimProject.Owner_Value",
-              "nativeQueryRef": "Owner_Value"
-            }
-          ]
-        },
-        "columns": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "Portfolio Name"
-                }
-              },
-              "queryRef": "DimProject.Portfolio Name",
-              "nativeQueryRef": "Portfolio",
-              "displayName": "Portfolio"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "Program Name"
-                }
-              },
-              "queryRef": "DimProject.Program Name",
-              "nativeQueryRef": "Programme",
-              "displayName": "Programme"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "Name"
-                }
-              },
-              "queryRef": "DimProject.Name",
-              "nativeQueryRef": "Name2"
             },
             {
               "field": {
@@ -127,6 +51,51 @@
             },
             {
               "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "OverallHealth_Value"
+                }
+              },
+              "queryRef": "DimProject.OverallHealth_Value",
+              "nativeQueryRef": "Overall Health",
+              "displayName": "Overall Health"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "EstimatedStart"
+                }
+              },
+              "queryRef": "DimProject.EstimatedStart",
+              "nativeQueryRef": "Start",
+              "displayName": "Start"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "EstimatedEnd"
+                }
+              },
+              "queryRef": "DimProject.EstimatedEnd",
+              "nativeQueryRef": "Finnish",
+              "displayName": "Finnish"
+            },
+            {
+              "field": {
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
@@ -137,7 +106,8 @@
                 }
               },
               "queryRef": "_Measures.Budget Cost",
-              "nativeQueryRef": "Budget Cost"
+              "nativeQueryRef": "Budget Cost",
+              "displayName": "Budget Cost"
             },
             {
               "field": {
@@ -151,7 +121,8 @@
                 }
               },
               "queryRef": "_Measures.Actual Cost",
-              "nativeQueryRef": "Actual Cost"
+              "nativeQueryRef": "Actual Cost",
+              "displayName": "Actual Cost"
             },
             {
               "field": {
@@ -165,21 +136,8 @@
                 }
               },
               "queryRef": "_Measures.Forecast Cost",
-              "nativeQueryRef": "Forecast Cost"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "OverallHealth_Value"
-                }
-              },
-              "queryRef": "DimProject.OverallHealth_Value",
-              "nativeQueryRef": "OverallHealth_Value"
+              "nativeQueryRef": "Forecast Cost",
+              "displayName": "Forecast Cost"
             },
             {
               "field": {
@@ -193,7 +151,8 @@
                 }
               },
               "queryRef": "DimProject.EffortHealth_Value",
-              "nativeQueryRef": "EffortHealth_Value"
+              "nativeQueryRef": "Effort Health",
+              "displayName": "Effort Health"
             },
             {
               "field": {
@@ -207,7 +166,8 @@
                 }
               },
               "queryRef": "DimProject.FinancialHealth_Value",
-              "nativeQueryRef": "FinancialHealth_Value"
+              "nativeQueryRef": "Financial Health",
+              "displayName": "Financial Health"
             },
             {
               "field": {
@@ -221,7 +181,8 @@
                 }
               },
               "queryRef": "DimProject.IssueHealth_Value",
-              "nativeQueryRef": "IssueHealth_Value"
+              "nativeQueryRef": "Issue Health",
+              "displayName": "Issue Health"
             },
             {
               "field": {
@@ -235,7 +196,8 @@
                 }
               },
               "queryRef": "DimProject.OverallHealth_Value",
-              "nativeQueryRef": "OverallHealth_Value"
+              "nativeQueryRef": "Overall Health",
+              "displayName": "Overall Health"
             },
             {
               "field": {
@@ -249,7 +211,8 @@
                 }
               },
               "queryRef": "DimProject.ScheduleHealth_Value",
-              "nativeQueryRef": "ScheduleHealth_Value"
+              "nativeQueryRef": "Schedule Health",
+              "displayName": "Schedule Health"
             },
             {
               "field": {
@@ -263,25 +226,8 @@
                 }
               },
               "queryRef": "_Measures.Radar | Risk Count",
-              "nativeQueryRef": "Radar | Risk Count"
-            }
-          ]
-        },
-        "row": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "Name"
-                }
-              },
-              "queryRef": "DimProject.Name",
-              "nativeQueryRef": "Name2"
+              "nativeQueryRef": "Risk Count",
+              "displayName": "Risk Count"
             }
           ]
         },
@@ -317,7 +263,8 @@
                 }
               },
               "queryRef": "DimProject.OverallHealth_Value",
-              "nativeQueryRef": "OverallHealth_Value"
+              "nativeQueryRef": "Overall Health",
+              "displayName": "Overall Health"
             }
           ]
         },
@@ -335,7 +282,8 @@
                 }
               },
               "queryRef": "_Measures.Budget Cost",
-              "nativeQueryRef": "Budget Cost"
+              "nativeQueryRef": "Budget Cost",
+              "displayName": "Budget Cost"
             },
             {
               "field": {
@@ -349,7 +297,8 @@
                 }
               },
               "queryRef": "_Measures.Actual Cost",
-              "nativeQueryRef": "Actual Cost"
+              "nativeQueryRef": "Actual Cost",
+              "displayName": "Actual Cost"
             },
             {
               "field": {
@@ -363,21 +312,8 @@
                 }
               },
               "queryRef": "_Measures.Forecast Cost",
-              "nativeQueryRef": "Forecast Cost"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Risk & Issue | Risk Count"
-                }
-              },
-              "queryRef": "_Measures.Radar | Risk Count",
-              "nativeQueryRef": "Radar | Risk Count"
+              "nativeQueryRef": "Forecast Cost",
+              "displayName": "Forecast Cost"
             },
             {
               "field": {
@@ -391,7 +327,90 @@
                 }
               },
               "queryRef": "_Measures.Total Risk Exposure",
-              "nativeQueryRef": "Total Risk Exposure"
+              "nativeQueryRef": "Risk Exposure",
+              "displayName": "Risk Exposure"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Risk & Issue | Risk Count"
+                }
+              },
+              "queryRef": "_Measures.Radar | Risk Count",
+              "nativeQueryRef": "Risk Count",
+              "displayName": "Risk Count"
+            }
+          ]
+        },
+        "rowMeta": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Owner_Value"
+                }
+              },
+              "queryRef": "DimProject.Owner_Value",
+              "nativeQueryRef": "Owner_Value"
+            }
+          ]
+        },
+        "row": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio",
+              "displayName": "Portfolio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program",
+              "displayName": "Program"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Plan",
+              "displayName": "Plan"
             }
           ]
         }
@@ -427,7 +446,7 @@
                   "expr": {
                     "ThemeDataColor": {
                       "ColorId": 0,
-                      "Percent": -0.3
+                      "Percent": -0.2
                     }
                   }
                 }
@@ -443,49 +462,49 @@
             "showVGridlines": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
             "columnConfigs": {
               "expr": {
                 "Literal": {
-                  "Value": "'{\"name\":{\"renderAs\":\"pill\"},\"portfolio\":{\"renderAs\":\"pill\"},\"programme\":{\"renderAs\":\"text\"},\"radar | risk count\":{\"renderAs\":\"number\",\"periodAgg\":\"max\"}}'"
+                  "Value": "'{\"name\":{\"renderAs\":\"pill\"},\"portfolio\":{\"renderAs\":\"pill\"},\"programme\":{\"renderAs\":\"text\"},\"radar | risk count\":{\"renderAs\":\"number\",\"periodAgg\":\"max\"},\"%done\":{\"renderAs\":\"progress\",\"width\":50,\"periodAgg\":\"sum\"},\"finance | budget cost\":{\"renderAs\":\"number\"},\"issue health\":{\"renderAs\":\"auto\",\"width\":154},\"financial health\":{\"renderAs\":\"auto\",\"width\":142},\"effort health\":{\"renderAs\":\"auto\",\"width\":157},\"forecast cost\":{\"renderAs\":\"auto\",\"width\":152,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Budget Cost\"},\"actual cost\":{\"renderAs\":\"auto\",\"width\":75,\"tileStyle\":\"donut\",\"tileTargetColumn\":\"Budget Cost\"},\"budget cost\":{\"renderAs\":\"auto\",\"width\":123,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Actual Cost\"},\"schedule health\":{\"renderAs\":\"auto\",\"width\":236},\"risk count\":{\"renderAs\":\"auto\",\"width\":132,\"heatmap\":\"low-good\",\"tileStyle\":\"donut\"},\"__row__\":{\"renderAs\":\"auto\",\"width\":399},\"processstep\":{\"renderAs\":\"text\"},\"risk exposure\":{\"renderAs\":\"number\",\"tileStyle\":\"bars\",\"trendColumns\":[\"%Done\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Risk Count\"],\"trendStyle\":\"line\"}}'"
                 }
               }
             },
             "columnOrder": {
               "expr": {
                 "Literal": {
-                  "Value": "'[]'"
+                  "Value": "'[\"Start\",\"Finnish\",\"%Done\",\"Effort Health\",\"Overall Health\",\"Issue Health\",\"Financial Health\",\"Schedule Health\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Risk Count\",\"ProcessStep\"]'"
                 }
               }
             },
             "rowHeaderLabel": {
               "expr": {
                 "Literal": {
-                  "Value": "''"
+                  "Value": "'Portfolio > Programme > Plan'"
                 }
               }
             },
             "groupByColumns": {
               "expr": {
                 "Literal": {
-                  "Value": "'[\"Portfolio\",\"Programme\"]'"
+                  "Value": "'[\"ProcessStep\"]'"
                 }
               }
             },
             "groupByColumn": {
               "expr": {
                 "Literal": {
-                  "Value": "'Portfolio'"
+                  "Value": "'ProcessStep'"
                 }
               }
             },
             "collapsedGroups": {
               "expr": {
                 "Literal": {
-                  "Value": "'[\"Portfolio|—||Programme|—\",\"Portfolio|Brand Management Portfolio\"]'"
+                  "Value": "'[]'"
                 }
               }
             },
@@ -499,28 +518,28 @@
             "savedViews": {
               "expr": {
                 "Literal": {
-                  "Value": "'{}'"
+                  "Value": "'{\"Default\":{\"columnConfigs\":{\"name\":{\"renderAs\":\"pill\"},\"portfolio\":{\"renderAs\":\"pill\"},\"programme\":{\"renderAs\":\"text\"},\"radar | risk count\":{\"renderAs\":\"number\",\"periodAgg\":\"max\"},\"%done\":{\"renderAs\":\"progress\",\"periodAgg\":\"sum\",\"width\":119},\"finance | budget cost\":{\"renderAs\":\"number\"},\"issue health\":{\"renderAs\":\"auto\",\"width\":154},\"financial health\":{\"renderAs\":\"auto\",\"width\":142},\"effort health\":{\"renderAs\":\"auto\",\"width\":157},\"forecast cost\":{\"renderAs\":\"auto\",\"width\":152,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Budget Cost\"},\"actual cost\":{\"renderAs\":\"auto\",\"width\":147,\"tileStyle\":\"donut\",\"tileTargetColumn\":\"Budget Cost\"},\"budget cost\":{\"renderAs\":\"auto\",\"width\":123,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Actual Cost\"},\"schedule health\":{\"renderAs\":\"auto\",\"width\":147},\"risk count\":{\"renderAs\":\"auto\",\"width\":132,\"heatmap\":\"low-good\",\"tileStyle\":\"donut\"},\"__row__\":{\"renderAs\":\"auto\",\"width\":350},\"processstep\":{\"renderAs\":\"text\"},\"risk exposure\":{\"renderAs\":\"number\",\"tileStyle\":\"bars\",\"trendColumns\":[\"%Done\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Risk Count\"],\"trendStyle\":\"bar\"}},\"columnOrder\":[\"Start\",\"Finnish\",\"%Done\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Effort Health\",\"Schedule Health\",\"Financial Health\",\"Issue Health\",\"Risk Count\",\"ProcessStep\"],\"groupByColumns\":[\"ProcessStep\"],\"columnFilters\":{},\"sortColumnKey\":null,\"sortDir\":\"desc\",\"showKpiStrip\":true,\"rowHeaderLabel\":\"Portfolio > Programme > Plan\",\"calcColumns\":[{\"id\":\"cmu9qqn5i\",\"name\":\"Budget Var\",\"a\":\"Actual Cost\",\"b\":\"Budget Cost\",\"op\":\"sub\",\"lowerIsBetter\":true}]}}'"
                 }
               }
             },
             "stripedRows": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
             "freezeFirstColumn": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
             "showColumnTotals": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },
@@ -534,7 +553,7 @@
             "showSearchBox": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -548,18 +567,109 @@
             "showConfigGear": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
             "showKpiStrip": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
             "indentLowestLevel": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "mergeSingleChildLevels": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "calcColumns": {
+              "expr": {
+                "Literal": {
+                  "Value": "'[{\"id\":\"cmu9qqn5i\",\"name\":\"Budget Var\",\"a\":\"Actual Cost\",\"b\":\"Budget Cost\",\"op\":\"sub\",\"lowerIsBetter\":true},{\"id\":\"cmu9rivns\",\"name\":\"Forecast Var\",\"a\":\"Budget Cost\",\"b\":\"Forecast Cost\",\"op\":\"sub\"}]'"
+                }
+              }
+            },
+            "pinTotalsTop": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showDrillControls": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "rowDetailsInPanel": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "timelineConfig": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{\"progress\":\"%Done\",\"width\":350}'"
+                }
+              }
+            },
+            "showTimeline": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "focusMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "hiddenColumns": {
+              "expr": {
+                "Literal": {
+                  "Value": "'[]'"
+                }
+              }
+            },
+            "activeTab": {
+              "expr": {
+                "Literal": {
+                  "Value": "'s:overview'"
+                }
+              }
+            },
+            "showQuestions": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showStatusBar": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "projectFeatures": {
               "expr": {
                 "Literal": {
                   "Value": "true"
@@ -575,7 +685,7 @@
             "headerFontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "14D"
+                  "Value": "15D"
                 }
               }
             },
@@ -589,7 +699,7 @@
             "kpiFontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "23D"
+                  "Value": "24D"
                 }
               }
             },
@@ -640,7 +750,7 @@
                   "expr": {
                     "ThemeDataColor": {
                       "ColorId": 0,
-                      "Percent": -0.2
+                      "Percent": 0
                     }
                   }
                 }
@@ -664,7 +774,7 @@
                   "expr": {
                     "ThemeDataColor": {
                       "ColorId": 0,
-                      "Percent": -0.1
+                      "Percent": -0.2
                     }
                   }
                 }
@@ -674,10 +784,66 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#D0BF93'"
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.1
                     }
                   }
+                }
+              }
+            },
+            "grandTotalBg": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 1,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            },
+            "subtotalBg2": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "insightPanel": [
+        {
+          "properties": {
+            "accentColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 4,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "header": [
+        {
+          "properties": {
+            "title": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Portfolio | KPI Grid'"
                 }
               }
             }
@@ -701,5 +867,88 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2f105a22c60c08009b8b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "d"
+                              }
+                            },
+                            "Property": "Name"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "null"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Temlate Test'"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
   }
 }

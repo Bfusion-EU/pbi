@@ -190,24 +190,6 @@
             }
           ]
         },
-        "resource": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Name"
-                }
-              },
-              "queryRef": "DimResource.Name",
-              "nativeQueryRef": "Name2"
-            }
-          ]
-        },
         "status": {
           "projections": [
             {
@@ -277,6 +259,24 @@
               },
               "queryRef": "DimTask.ParentTaskId",
               "nativeQueryRef": "ParentTaskId"
+            }
+          ]
+        },
+        "resource": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "AssignedResources"
+                }
+              },
+              "queryRef": "DimTask.AssignedResources",
+              "nativeQueryRef": "AssignedResources"
             }
           ]
         }

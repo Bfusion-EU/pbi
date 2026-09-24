@@ -107,21 +107,21 @@
             "optimisticPct": {
               "expr": {
                 "Literal": {
-                  "Value": "25D"
+                  "Value": "23D"
                 }
               }
             },
             "pessimisticPct": {
               "expr": {
                 "Literal": {
-                  "Value": "65D"
+                  "Value": "95D"
                 }
               }
             },
             "method": {
               "expr": {
                 "Literal": {
-                  "Value": "'mc'"
+                  "Value": "'lognormal'"
                 }
               }
             },
@@ -129,6 +129,26 @@
               "expr": {
                 "Literal": {
                   "Value": "'scurve'"
+                }
+              }
+            },
+            "distribution": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pert'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataLabelSettings": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

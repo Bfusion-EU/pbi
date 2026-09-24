@@ -139,42 +139,6 @@
               "nativeQueryRef": "Date"
             }
           ]
-        },
-        "fteDemand": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Demand per FTE"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Demand per FTE",
-              "nativeQueryRef": "Capacity | Demand per FTE"
-            }
-          ]
-        },
-        "fteCapacity": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Capacity per FTE"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Capacity per FTE",
-              "nativeQueryRef": "Capacity | Capacity per FTE"
-            }
-          ]
         }
       },
       "sortDefinition": {
