@@ -1,0 +1,516 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/reportExtension/1.0.0/schema.json",
+  "name": "extension",
+  "entities": [
+    {
+      "name": "_Measures",
+      "measures": [
+        {
+          "name": "Home v2 | Track Value",
+          "dataType": "Text",
+          "expression": "VAR _n = COALESCE([PMO | Plans Reported Off Track], 0)\nRETURN FORMAT(_n, \"0\") & \" off track\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Plans Reported Off Track"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Track Status",
+          "dataType": "Text",
+          "expression": "VAR _n = COALESCE([PMO | Plans Reported Off Track], 0)\nRETURN IF(ISBLANK([PMO | Plans Reported Off Track]), \"● No data\", IF(_n > 2, \"● Act now\", IF(_n > 0, \"● Watch\", \"● On track\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Plans Reported Off Track"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Track Colour",
+          "dataType": "Text",
+          "expression": "VAR _n = COALESCE([PMO | Plans Reported Off Track], 0)\nRETURN IF(ISBLANK([PMO | Plans Reported Off Track]), \"#8A96B0\", IF(_n > 2, \"#F0616D\", IF(_n > 0, \"#F2A33A\", \"#3FB97A\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Plans Reported Off Track"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Track Insight",
+          "dataType": "Text",
+          "expression": "VAR _l = COALESCE([Task | Active Late Tasks], 0)\nRETURN \"plans reported off track · \" & FORMAT(_l, \"#,0\") & \" late tasks still open\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Task | Active Late Tasks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Cost Value",
+          "dataType": "Text",
+          "expression": "VAR _b = [Finance | Budget Cost]\nVAR _f = [Finance | Forecast Cost]\nVAR _p = DIVIDE(_f - _b, _b)\nRETURN IF(ISBLANK(_p), \"–\", FORMAT(_p, \"+0.0%;-0.0%;0.0%\") & \" vs budget\")",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Cost Status",
+          "dataType": "Text",
+          "expression": "VAR _b = [Finance | Budget Cost]\nVAR _f = [Finance | Forecast Cost]\nVAR _p = DIVIDE(_f - _b, _b)\nRETURN IF(ISBLANK(_p), \"● No data\", IF(_p > 0.05, \"● Over budget\", IF(_p > 0, \"● Watch\", \"● Within budget\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Cost Colour",
+          "dataType": "Text",
+          "expression": "VAR _b = [Finance | Budget Cost]\nVAR _f = [Finance | Forecast Cost]\nVAR _p = DIVIDE(_f - _b, _b)\nRETURN IF(ISBLANK(_p), \"#8A96B0\", IF(_p > 0.05, \"#F0616D\", IF(_p > 0, \"#F2A33A\", \"#3FB97A\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Cost Insight",
+          "dataType": "Text",
+          "expression": "VAR _mf = [Finance | Forecast Cost]\nVAR _mb = [Finance | Budget Cost]\nRETURN \"Forecast \" & IF(ISBLANK(_mf), \"–\", \"€\" & IF(ABS(_mf) >= 1000000, FORMAT(_mf / 1000000, \"#,0.0\") & \"M\", IF(ABS(_mf) >= 1000, FORMAT(_mf / 1000, \"#,0\") & \"k\", FORMAT(_mf, \"#,0\")))) & \" against budget \" & IF(ISBLANK(_mb), \"–\", \"€\" & IF(ABS(_mb) >= 1000000, FORMAT(_mb / 1000000, \"#,0.0\") & \"M\", IF(ABS(_mb) >= 1000, FORMAT(_mb / 1000, \"#,0\") & \"k\", FORMAT(_mb, \"#,0\"))))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Risk Value",
+          "dataType": "Text",
+          "expression": "VAR _r = COALESCE([Project | Active Risks], 0)\nRETURN FORMAT(_r, \"0\") & \" active risks\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Risk Status",
+          "dataType": "Text",
+          "expression": "VAR _r = COALESCE([Project | Active Risks], 0)\nRETURN IF(ISBLANK([Project | Active Risks]), \"● No data\", IF(_r > 5, \"● Act now\", IF(_r > 0, \"● Watch\", \"● Clear\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Risk Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = COALESCE([Project | Active Risks], 0)\nRETURN IF(ISBLANK([Project | Active Risks]), \"#8A96B0\", IF(_r > 5, \"#F0616D\", IF(_r > 0, \"#F2A33A\", \"#3FB97A\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Risk Insight",
+          "dataType": "Text",
+          "expression": "FORMAT(COALESCE([Project | Active Issues], 0), \"0\") & \" open issues · exposure \" & FORMAT(COALESCE([Risk & Issue | Total Risk Exposure], 0), \"#,0\")",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Issues"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Risk & Issue | Total Risk Exposure"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | People Value",
+          "dataType": "Text",
+          "expression": "VAR _o = COALESCE([Capacity | Over-Allocated Resource Count], 0)\nRETURN FORMAT(_o, \"0\") & \" over-allocated\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Over-Allocated Resource Count"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | People Status",
+          "dataType": "Text",
+          "expression": "VAR _o = COALESCE([Capacity | Over-Allocated Resource Count], 0)\nRETURN IF(ISBLANK([Capacity | Demand]), \"● No data\", IF(_o > 3, \"● Act now\", IF(_o > 0, \"● Watch\", \"● Covered\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Over-Allocated Resource Count"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Demand"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | People Colour",
+          "dataType": "Text",
+          "expression": "VAR _o = COALESCE([Capacity | Over-Allocated Resource Count], 0)\nRETURN IF(ISBLANK([Capacity | Demand]), \"#8A96B0\", IF(_o > 3, \"#F0616D\", IF(_o > 0, \"#F2A33A\", \"#3FB97A\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Over-Allocated Resource Count"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Demand"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | People Insight",
+          "dataType": "Text",
+          "expression": "\"Demand \" & FORMAT(COALESCE([Capacity | Demand], 0), \"#,0\") & \" h · \" & FORMAT(COALESCE([Capacity | Availability], 0), \"#,0\") & \" h still available\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Demand"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Availability"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Fund Value",
+          "dataType": "Text",
+          "expression": "VAR _pb = [Modeler | Portfolio Budget]\nVAR _tb = [Modeler | Target Budget]\nVAR _mp = _pb\nRETURN IF(ISBLANK(_mp), \"–\", \"€\" & IF(ABS(_mp) >= 1000000, FORMAT(_mp / 1000000, \"#,0.0\") & \"M\", IF(ABS(_mp) >= 1000, FORMAT(_mp / 1000, \"#,0\") & \"k\", FORMAT(_mp, \"#,0\")))) & \" selected\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Portfolio Budget"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Target Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Fund Status",
+          "dataType": "Text",
+          "expression": "VAR _pb = [Modeler | Portfolio Budget]\nVAR _tb = [Modeler | Target Budget]\nRETURN IF(ISBLANK(_pb) || ISBLANK(_tb), \"● No data\", IF(_pb > _tb * 1.05, \"● Over target\", IF(_pb > _tb, \"● At the limit\", \"● Fits target\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Portfolio Budget"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Target Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Fund Colour",
+          "dataType": "Text",
+          "expression": "VAR _pb = [Modeler | Portfolio Budget]\nVAR _tb = [Modeler | Target Budget]\nRETURN IF(ISBLANK(_pb) || ISBLANK(_tb), \"#8A96B0\", IF(_pb > _tb * 1.05, \"#F0616D\", IF(_pb > _tb, \"#F2A33A\", \"#3FB97A\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Portfolio Budget"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Target Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Fund Insight",
+          "dataType": "Text",
+          "expression": "VAR _mt = [Modeler | Target Budget]\nRETURN \"Target \" & IF(ISBLANK(_mt), \"–\", \"€\" & IF(ABS(_mt) >= 1000000, FORMAT(_mt / 1000000, \"#,0.0\") & \"M\", IF(ABS(_mt) >= 1000, FORMAT(_mt / 1000, \"#,0\") & \"k\", FORMAT(_mt, \"#,0\")))) & \" · \" & FORMAT(COALESCE([Modeler | Misaligned Plan Count], 0), \"0\") & \" plans misaligned to strategy\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Target Budget"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Modeler | Misaligned Plan Count"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Payoff Value",
+          "dataType": "Text",
+          "expression": "VAR _rate = DIVIDE([Benefits | Realized Benefits], [Benefits | Planned Benefits])\nRETURN IF(ISBLANK(_rate), \"–\", FORMAT(_rate, \"0%\") & \" realized\")",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Realized Benefits"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Planned Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Payoff Status",
+          "dataType": "Text",
+          "expression": "VAR _rate = DIVIDE([Benefits | Realized Benefits], [Benefits | Planned Benefits])\nRETURN IF(ISBLANK(_rate), \"● No data\", IF(_rate < 0.6, \"● Well behind\", IF(_rate < 0.9, \"● Behind plan\", \"● On plan\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Realized Benefits"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Planned Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Payoff Colour",
+          "dataType": "Text",
+          "expression": "VAR _rate = DIVIDE([Benefits | Realized Benefits], [Benefits | Planned Benefits])\nRETURN IF(ISBLANK(_rate), \"#8A96B0\", IF(_rate < 0.6, \"#F0616D\", IF(_rate < 0.9, \"#F2A33A\", \"#3FB97A\")))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Realized Benefits"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Planned Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Payoff Insight",
+          "dataType": "Text",
+          "expression": "VAR _mr = [Benefits | Realized Benefits]\nVAR _mpl = [Benefits | Planned Benefits]\nRETURN IF(ISBLANK(_mr), \"–\", \"€\" & IF(ABS(_mr) >= 1000000, FORMAT(_mr / 1000000, \"#,0.0\") & \"M\", IF(ABS(_mr) >= 1000, FORMAT(_mr / 1000, \"#,0\") & \"k\", FORMAT(_mr, \"#,0\")))) & \" of \" & IF(ISBLANK(_mpl), \"–\", \"€\" & IF(ABS(_mpl) >= 1000000, FORMAT(_mpl / 1000000, \"#,0.0\") & \"M\", IF(ABS(_mpl) >= 1000, FORMAT(_mpl / 1000, \"#,0\") & \"k\", FORMAT(_mpl, \"#,0\")))) & \" planned benefits\"",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Realized Benefits"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Planned Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Attention",
+          "dataType": "Text",
+          "expression": "VAR _a1 = IF([Home v2 | Track Colour] = \"#F0616D\", [Home v2 | Track Value], \"\")\nVAR _a2 = IF([Home v2 | Cost Colour] = \"#F0616D\", \"Forecast \" & [Home v2 | Cost Value], \"\")\nVAR _a3 = IF([Home v2 | Risk Colour] = \"#F0616D\", [Home v2 | Risk Value], \"\")\nVAR _a4 = IF([Home v2 | People Colour] = \"#F0616D\", [Home v2 | People Value] & \" people\", \"\")\nVAR _a5 = IF([Home v2 | Fund Colour] = \"#F0616D\", \"Funding over target\", \"\")\nVAR _a6 = IF([Home v2 | Payoff Colour] = \"#F0616D\", \"Benefits \" & [Home v2 | Payoff Value], \"\")\nVAR _t = FILTER({ (1, _a1), (2, _a2), (3, _a3), (4, _a4), (5, _a5), (6, _a6) }, [Value2] <> \"\")\nRETURN IF(COUNTROWS(_t) = 0, \"All clear · no question needs action today\",\n    \"Needs attention  ▸  \" & CONCATENATEX(_t, [Value2], \"   ·   \", [Value1], ASC))",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Track Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Track Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Cost Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Cost Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Risk Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Risk Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | People Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | People Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Fund Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Payoff Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Payoff Value"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Home v2 | Attention Colour",
+          "dataType": "Text",
+          "expression": "IF([Home v2 | Track Colour] = \"#F0616D\" || [Home v2 | Cost Colour] = \"#F0616D\" || [Home v2 | Risk Colour] = \"#F0616D\" || [Home v2 | People Colour] = \"#F0616D\" || [Home v2 | Fund Colour] = \"#F0616D\" || [Home v2 | Payoff Colour] = \"#F0616D\", \"#F0616D\", \"#3FB97A\")",
+          "displayFolder": "Home v2",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Track Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Cost Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Risk Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | People Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Fund Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Home v2 | Payoff Colour"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

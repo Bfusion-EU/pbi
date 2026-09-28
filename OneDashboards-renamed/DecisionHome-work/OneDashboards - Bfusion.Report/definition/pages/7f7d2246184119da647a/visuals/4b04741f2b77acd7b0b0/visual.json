@@ -1,0 +1,720 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "4b04741f2b77acd7b0b0",
+  "position": {
+    "x": 0,
+    "y": 80.196399345335522,
+    "z": 0,
+    "height": 821.60392798690668,
+    "width": 1400.163666121113,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "bfusionPMOCommandCenter5C2E8A71D4F9",
+    "query": {
+      "queryState": {
+        "project": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Plan",
+              "displayName": "Plan"
+            }
+          ]
+        },
+        "ruleArea": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimInsightRule"
+                    }
+                  },
+                  "Property": "RuleArea"
+                }
+              },
+              "queryRef": "DimInsightRule.RuleArea",
+              "nativeQueryRef": "RuleArea"
+            }
+          ]
+        },
+        "checks": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Checks"
+                }
+              },
+              "queryRef": "_Measures.PMO | Checks",
+              "nativeQueryRef": "PMO | Checks"
+            }
+          ]
+        },
+        "checksFailed": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Checks Failed"
+                }
+              },
+              "queryRef": "_Measures.PMO | Checks Failed",
+              "nativeQueryRef": "PMO | Checks Failed"
+            }
+          ]
+        },
+        "problems": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Problems"
+                }
+              },
+              "queryRef": "_Measures.PMO | Problems",
+              "nativeQueryRef": "PMO | Problems"
+            }
+          ]
+        },
+        "warnings": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Warnings"
+                }
+              },
+              "queryRef": "_Measures.PMO | Warnings",
+              "nativeQueryRef": "PMO | Warnings"
+            }
+          ]
+        },
+        "advisories": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Advisories"
+                }
+              },
+              "queryRef": "_Measures.PMO | Advisories",
+              "nativeQueryRef": "PMO | Advisories"
+            }
+          ]
+        },
+        "complianceChecks": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Compliance Checks"
+                }
+              },
+              "queryRef": "_Measures.PMO | Compliance Checks",
+              "nativeQueryRef": "PMO | Compliance Checks"
+            }
+          ]
+        },
+        "compliancePassed": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Compliance Checks Passed"
+                }
+              },
+              "queryRef": "_Measures.PMO | Compliance Checks Passed",
+              "nativeQueryRef": "PMO | Compliance Checks Passed"
+            }
+          ]
+        },
+        "nextAction": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Next Action"
+                }
+              },
+              "queryRef": "_Measures.PMO | Next Action",
+              "nativeQueryRef": "PMO | Next Action"
+            }
+          ]
+        },
+        "stage": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ProcessStep"
+                }
+              },
+              "queryRef": "DimProject.ProcessStep",
+              "nativeQueryRef": "ProcessStep"
+            }
+          ]
+        },
+        "stageOrder": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ProcessStepIndex"
+                }
+              },
+              "queryRef": "DimProject.ProcessStepIndex",
+              "nativeQueryRef": "ProcessStepIndex"
+            }
+          ]
+        },
+        "stageStart": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ProcessStepStart"
+                }
+              },
+              "queryRef": "DimProject.ProcessStepStart",
+              "nativeQueryRef": "ProcessStepStart"
+            }
+          ]
+        },
+        "manager": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Manager_Value"
+                }
+              },
+              "queryRef": "DimProject.Manager_Value",
+              "nativeQueryRef": "Manager_Value"
+            }
+          ]
+        },
+        "govScore": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Governance Score"
+                }
+              },
+              "queryRef": "_Measures.PMO | Governance Score",
+              "nativeQueryRef": "PMO | Governance Score"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Cost",
+              "nativeQueryRef": "Finance | Budget Cost"
+            }
+          ]
+        },
+        "forecast": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Forecast Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Forecast Cost",
+              "nativeQueryRef": "Finance | Forecast Cost"
+            }
+          ]
+        },
+        "lateTasks": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task | Active Late Tasks"
+                }
+              },
+              "queryRef": "_Measures.Task | Active Late Tasks",
+              "nativeQueryRef": "Task | Active Late Tasks"
+            }
+          ]
+        },
+        "tsHours": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Hours"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Hours",
+              "nativeQueryRef": "Timesheet | Hours"
+            }
+          ]
+        },
+        "tsAwaiting": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Awaiting Approval Hours"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Awaiting Approval Hours",
+              "nativeQueryRef": "Timesheet | Awaiting Approval Hours"
+            }
+          ]
+        },
+        "checkDetail": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Check Result Detail"
+                }
+              },
+              "queryRef": "_Measures.PMO | Check Result Detail",
+              "nativeQueryRef": "PMO | Check Result Detail"
+            }
+          ]
+        },
+        "projectLink": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "PMO Plan Url"
+                }
+              },
+              "queryRef": "DimProject.PMO Plan Url",
+              "nativeQueryRef": "PMO Plan Url"
+            }
+          ]
+        },
+        "managerEmail": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "PMO Manager Email"
+                }
+              },
+              "queryRef": "DimProject.PMO Manager Email",
+              "nativeQueryRef": "PMO Manager Email"
+            }
+          ]
+        },
+        "level1": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio",
+              "displayName": "Portfolio"
+            }
+          ]
+        },
+        "level2": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program",
+              "displayName": "Program"
+            }
+          ]
+        },
+        "complianceDetail": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Failed Compliance Checks"
+                }
+              },
+              "queryRef": "_Measures.PMO | Failed Compliance Checks",
+              "nativeQueryRef": "PMO | Failed Compliance Checks"
+            }
+          ]
+        },
+        "lastStatusReport": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Last Status Report Date"
+                }
+              },
+              "queryRef": "_Measures.PMO | Last Status Report Date",
+              "nativeQueryRef": "PMO | Last Status Report Date"
+            }
+          ]
+        },
+        "tsLateDetail": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Timesheet Lateness Detail"
+                }
+              },
+              "queryRef": "_Measures.PMO | Timesheet Lateness Detail",
+              "nativeQueryRef": "PMO | Timesheet Lateness Detail"
+            }
+          ]
+        },
+        "openReports": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Unsubmitted Status Reports"
+                }
+              },
+              "queryRef": "_Measures.PMO | Unsubmitted Status Reports",
+              "nativeQueryRef": "PMO | Unsubmitted Status Reports"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimProject"
+                  }
+                },
+                "Property": "ProcessStepStart"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkwNTMzNjE5LCJleHAiOjE3OTIyODE1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfNTkxMWNmYTYwMjU3IiwidmVyIjoyfQ.IOVbjnWzLsmC8uP2qCo6k0YYFKqZi6mCgnySAEsHTYN-LDOYH6F53_3tBWHUjsHcIvazoqxXFTtqwEg1zdw8qXaEd-5RwtYaSdJBo6kF0RarF21vNW6drDw4qMJjIH5HqVfUib8xFhdTNsNbxvdStQzKStpW9Wemt7QUFMkHyiq5lI3msDe7EmL9nQfkwL76gqH4YiSQtfi9M1TMDJbX3v7_kwS80Vjm4lBxl6Q-9n5Klz4sSWqbGoZXqsbMsnaoG43T8NjseztjVyrzCM4kEzT3qkWvn6lC98-PTqWJnTR0zqdlrHa1rxqi8zcyv1YeTgpO1G0fLD0lrVobKYEw9w'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "kpis": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "labelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "valueFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "23D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "questions": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "heatmap": [
+        {
+          "properties": {
+            "expandNotAssessed": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "startCollapsed": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "flow": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "17D"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "stageLimits": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Initiation=30;Planning=60;Execution=365;Monitoring=365;Closure=30'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "theme": [
+        {
+          "properties": {
+            "mode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'auto'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'PMO | Command Center'"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
