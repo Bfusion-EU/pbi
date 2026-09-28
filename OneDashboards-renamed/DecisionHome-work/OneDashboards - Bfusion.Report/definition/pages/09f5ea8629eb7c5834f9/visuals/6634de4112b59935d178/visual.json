@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "6634de4112b59935d178",
   "position": {
     "x": 1043.6860068259386,
@@ -13,40 +13,8 @@
     "visualType": "bfusionResourceHeatmap_CustomVisual",
     "query": {
       "queryState": {
-        "resourceName": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimResource"
-                    }
-                  },
-                  "Property": "Name"
-                }
-              },
-              "queryRef": "DimResource.Name",
-              "nativeQueryRef": "ResourceName",
-              "displayName": "ResourceName"
-            }
-          ],
-          "fieldParameters": [
-            {
-              "parameterExpr": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Category"
-                    }
-                  },
-                  "Property": "Category"
-                }
-              },
-              "index": 0,
-              "length": 1
-            }
-          ]
+        "licenseToken": {
+          "projections": []
         },
         "utilization": {
           "projections": [
@@ -84,25 +52,42 @@
               "active": true
             }
           ]
+        },
+        "resourceName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimResource"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimResource.Name",
+              "nativeQueryRef": "Name",
+              "displayName": "ResourceName"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Category"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "index": 0,
+              "length": 1
+            }
+          ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Measures"
-                  }
-                },
-                "Property": "Capacity | Resource Utilization%"
-              }
-            },
-            "direction": "Descending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -154,6 +139,19 @@
                       "Value": "'#139A45'"
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "heatmapSettings": [
+        {
+          "properties": {
+            "focusMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

@@ -1,0 +1,397 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "913c58d92421c65c150f",
+  "position": {
+    "x": 16,
+    "y": 80,
+    "z": 1600,
+    "width": 1248,
+    "height": 62,
+    "tabOrder": 1600
+  },
+  "visual": {
+    "visualType": "bfusionKpiTicker7C4A9E2B1D5F",
+    "query": {
+      "queryState": {
+        "values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Actual Hours"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Actual Hours",
+              "nativeQueryRef": "Timesheet | Actual Hours"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Approval %"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Approval %",
+              "nativeQueryRef": "Timesheet | Approval %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Billable %"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Billable %",
+              "nativeQueryRef": "Timesheet | Billable %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Rework %"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Rework %",
+              "nativeQueryRef": "Timesheet | Rework %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Avg Approval Lag (days)"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Avg Approval Lag (days)",
+              "nativeQueryRef": "Timesheet | Avg Approval Lag (days)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Draft Timesheets"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Draft Timesheets",
+              "nativeQueryRef": "Timesheet | Draft Timesheets"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Time Off Hours"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Time Off Hours",
+              "nativeQueryRef": "Timesheet | Time Off Hours"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzg5Mzg0MDQxLCJleHAiOjE3OTIwMjIzOTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY18xMzEzMTg3NmQzMzciLCJ2ZXIiOjJ9.PzpPSnB2nSKmfXOjrBMJyIjfwuN7Dzxb2XesjeXVwFJGIs_NSnAkdmD1SQ499xZ5x2csdx7zHnpr3jDfU0yLMnX-qOmgRiNu_58b3Xeyt6JZz0hBYZtzprhQcM3YPoh1tvDBf_TcnKXThTFZZ4x9EIK_LxYdt2sllciNT9atPOSyDem0GZu1BxSIK_naCRHbxZObiiBHRn9wD3oVLkmb1ehnTlrqlDu4PqkzLH4l-n7rJu7pfP_MOMrJazHTso-PFsJYMUNzrYw8ClkOlDOpgdyF-4wlBYnSLqbIM2CVCmnfPv9p9J1wq78SRtZr8OmleNiDLcaTwpoW3JNzFdO0xw'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "ticker": [
+        {
+          "properties": {
+            "speed": {
+              "expr": {
+                "Literal": {
+                  "Value": "40D"
+                }
+              }
+            },
+            "separator": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pipe'"
+                }
+              }
+            },
+            "pauseOnHover": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gap": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "colorSettings": [
+        {
+          "properties": {
+            "backgroundTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            },
+            "valueColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#A6B3CC'"
+                    }
+                  }
+                }
+              }
+            },
+            "ruleColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "typography": [
+        {
+          "properties": {
+            "labelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "layout": [
+        {
+          "properties": {
+            "uppercaseLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showDots": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "variance": [
+        {
+          "properties": {
+            "display": {
+              "expr": {
+                "Literal": {
+                  "Value": "'both'"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Forecast Cost"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Actual Cost"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'higherBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Budget Remaining"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Capacity | Demand"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'higherBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Capacity | Availability"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Status Report | Status Reports - Total ActiveRisks"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.EVM | Forecast Overrun"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Timesheets at a glance'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

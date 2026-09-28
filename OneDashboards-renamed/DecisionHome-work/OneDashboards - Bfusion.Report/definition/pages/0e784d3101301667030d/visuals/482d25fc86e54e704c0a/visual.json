@@ -280,7 +280,7 @@
             }
           ]
         },
-        "licenseToken": {
+        "actual": {
           "projections": [
             {
               "field": {
@@ -290,11 +290,83 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "License | BFusionLicenseKey"
+                  "Property": "Finance | Actual Cost"
                 }
               },
-              "queryRef": "_Measures.BFusionLicenseKey",
-              "nativeQueryRef": "BFusionLicenseKey"
+              "queryRef": "_Measures.Finance | Actual Cost",
+              "nativeQueryRef": "Finance | Actual Cost"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Cost",
+              "nativeQueryRef": "Finance | Budget Cost"
+            }
+          ]
+        },
+        "forecast": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Project | EAC (€)"
+                }
+              },
+              "queryRef": "_Measures.Project | EAC (€)",
+              "nativeQueryRef": "Project | EAC (€)"
+            }
+          ]
+        },
+        "stage": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ProcessStep"
+                }
+              },
+              "queryRef": "DimProject.ProcessStep",
+              "nativeQueryRef": "ProcessStep"
+            }
+          ]
+        },
+        "stageOrder": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "ProcessStepIndex"
+                }
+              },
+              "queryRef": "DimProject.ProcessStepIndex",
+              "nativeQueryRef": "ProcessStepIndex"
             }
           ]
         }
@@ -330,6 +402,34 @@
               }
             },
             "globalCollapse": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "planLevels": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{\"PL:Capital Investment:Asset Replacement:Energy Efficiency\":1}'"
+                }
+              }
+            },
+            "detailLevel": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "focusMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showQuestions": {
               "expr": {
                 "Literal": {
                   "Value": "true"
@@ -447,6 +547,45 @@
             }
           }
         }
+      ],
+      "theme": [
+        {
+          "properties": {
+            "mode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'dark'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "layout": [
+        {
+          "properties": {
+            "taskBarHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "lifecycleFlow": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -483,6 +622,19 @@
               "expr": {
                 "Literal": {
                   "Value": "19D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

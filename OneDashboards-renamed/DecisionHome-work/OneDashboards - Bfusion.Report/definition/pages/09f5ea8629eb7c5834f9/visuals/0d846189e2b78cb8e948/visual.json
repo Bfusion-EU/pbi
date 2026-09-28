@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "0d846189e2b78cb8e948",
   "position": {
-    "x": 9.38566552901024,
-    "y": 35.665529010238906,
+    "x": 8.6538461538461533,
+    "y": 31.73076923076923,
     "z": 8000,
-    "height": 63.822525597269625,
-    "width": 58.191126279863482,
+    "height": 60.576923076923073,
+    "width": 61.538461538461533,
     "tabOrder": 8000
   },
   "visual": {
@@ -33,10 +33,30 @@
                   }
                 }
               }
+            },
+            "iconSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "45D"
+                }
+              }
             }
           },
           "selector": {
             "id": "default"
+          }
+        }
+      ],
+      "fill": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
           }
         }
       ]

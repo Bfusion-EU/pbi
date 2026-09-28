@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "0670995134707d6aba44",
   "position": {
-    "x": 14.893617021276595,
-    "y": 737.80687397708675,
+    "x": 15.078146364037947,
+    "y": 793.4874524074969,
     "z": 0,
-    "height": 515.54828150572826,
-    "width": 439.93453355155481,
+    "height": 459.88346410315739,
+    "width": 439.15101285260516,
     "tabOrder": 0
   },
   "visual": {
@@ -172,6 +172,26 @@
             }
           }
         }
+      ],
+      "layoutSettings": [
+        {
+          "properties": {
+            "showStatusLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showDeltaLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -189,6 +209,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

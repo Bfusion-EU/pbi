@@ -469,14 +469,14 @@
             "columnConfigs": {
               "expr": {
                 "Literal": {
-                  "Value": "'{\"name\":{\"renderAs\":\"pill\"},\"portfolio\":{\"renderAs\":\"pill\"},\"programme\":{\"renderAs\":\"text\"},\"radar | risk count\":{\"renderAs\":\"number\",\"periodAgg\":\"max\"},\"%done\":{\"renderAs\":\"progress\",\"width\":50,\"periodAgg\":\"sum\"},\"finance | budget cost\":{\"renderAs\":\"number\"},\"issue health\":{\"renderAs\":\"auto\",\"width\":154},\"financial health\":{\"renderAs\":\"auto\",\"width\":142},\"effort health\":{\"renderAs\":\"auto\",\"width\":157},\"forecast cost\":{\"renderAs\":\"auto\",\"width\":152,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Budget Cost\"},\"actual cost\":{\"renderAs\":\"auto\",\"width\":75,\"tileStyle\":\"donut\",\"tileTargetColumn\":\"Budget Cost\"},\"budget cost\":{\"renderAs\":\"auto\",\"width\":123,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Actual Cost\"},\"schedule health\":{\"renderAs\":\"auto\",\"width\":236},\"risk count\":{\"renderAs\":\"auto\",\"width\":132,\"heatmap\":\"low-good\",\"tileStyle\":\"donut\"},\"__row__\":{\"renderAs\":\"auto\",\"width\":399},\"processstep\":{\"renderAs\":\"text\"},\"risk exposure\":{\"renderAs\":\"number\",\"tileStyle\":\"bars\",\"trendColumns\":[\"%Done\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Risk Count\"],\"trendStyle\":\"line\"}}'"
+                  "Value": "'{\"name\":{\"renderAs\":\"pill\"},\"portfolio\":{\"renderAs\":\"pill\"},\"programme\":{\"renderAs\":\"text\"},\"radar | risk count\":{\"renderAs\":\"number\",\"periodAgg\":\"max\"},\"%done\":{\"renderAs\":\"progress\",\"periodAgg\":\"sum\",\"width\":119},\"finance | budget cost\":{\"renderAs\":\"number\"},\"issue health\":{\"renderAs\":\"auto\",\"width\":154},\"financial health\":{\"renderAs\":\"auto\",\"width\":142},\"effort health\":{\"renderAs\":\"auto\",\"width\":157},\"forecast cost\":{\"renderAs\":\"auto\",\"width\":152,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Budget Cost\"},\"actual cost\":{\"renderAs\":\"auto\",\"width\":147,\"tileStyle\":\"donut\",\"tileTargetColumn\":\"Budget Cost\"},\"budget cost\":{\"renderAs\":\"auto\",\"width\":123,\"tileStyle\":\"bullet\",\"tileTargetColumn\":\"Actual Cost\"},\"schedule health\":{\"renderAs\":\"auto\",\"width\":147},\"risk count\":{\"renderAs\":\"auto\",\"width\":132,\"heatmap\":\"low-good\",\"tileStyle\":\"donut\"},\"__row__\":{\"renderAs\":\"auto\",\"width\":350},\"processstep\":{\"renderAs\":\"text\"},\"risk exposure\":{\"renderAs\":\"number\",\"tileStyle\":\"bars\",\"trendColumns\":[\"%Done\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Risk Count\"],\"trendStyle\":\"bar\"}}'"
                 }
               }
             },
             "columnOrder": {
               "expr": {
                 "Literal": {
-                  "Value": "'[\"Start\",\"Finnish\",\"%Done\",\"Effort Health\",\"Overall Health\",\"Issue Health\",\"Financial Health\",\"Schedule Health\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Risk Count\",\"ProcessStep\"]'"
+                  "Value": "'[\"Start\",\"Finnish\",\"%Done\",\"Budget Cost\",\"Actual Cost\",\"Forecast Cost\",\"Effort Health\",\"Schedule Health\",\"Financial Health\",\"Issue Health\",\"Risk Count\",\"ProcessStep\"]'"
                 }
               }
             },
@@ -595,14 +595,14 @@
             "calcColumns": {
               "expr": {
                 "Literal": {
-                  "Value": "'[{\"id\":\"cmu9qqn5i\",\"name\":\"Budget Var\",\"a\":\"Actual Cost\",\"b\":\"Budget Cost\",\"op\":\"sub\",\"lowerIsBetter\":true},{\"id\":\"cmu9rivns\",\"name\":\"Forecast Var\",\"a\":\"Budget Cost\",\"b\":\"Forecast Cost\",\"op\":\"sub\"}]'"
+                  "Value": "'[{\"id\":\"cmu9qqn5i\",\"name\":\"Budget Var\",\"a\":\"Actual Cost\",\"b\":\"Budget Cost\",\"op\":\"sub\",\"lowerIsBetter\":true}]'"
                 }
               }
             },
             "pinTotalsTop": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -637,7 +637,7 @@
             "focusMode": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -651,7 +651,7 @@
             "activeTab": {
               "expr": {
                 "Literal": {
-                  "Value": "'s:overview'"
+                  "Value": "'v:Default'"
                 }
               }
             },

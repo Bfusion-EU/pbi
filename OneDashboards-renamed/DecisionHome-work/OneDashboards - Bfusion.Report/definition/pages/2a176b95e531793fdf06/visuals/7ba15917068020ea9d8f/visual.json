@@ -1,0 +1,126 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "7ba15917068020ea9d8f",
+  "position": {
+    "x": 16,
+    "y": 164,
+    "z": 2300,
+    "height": 481,
+    "width": 618,
+    "tabOrder": 2300
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Columns": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimInsightRule"
+                    }
+                  },
+                  "Property": "Severity"
+                }
+              },
+              "queryRef": "DimInsightRule.Severity",
+              "nativeQueryRef": "Severity",
+              "active": true
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimInsightRule"
+                    }
+                  },
+                  "Property": "RuleArea"
+                }
+              },
+              "queryRef": "DimInsightRule.RuleArea",
+              "nativeQueryRef": "RuleArea",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimInsightRule"
+                    }
+                  },
+                  "Property": "RuleName"
+                }
+              },
+              "queryRef": "DimInsightRule.RuleName",
+              "nativeQueryRef": "RuleName",
+              "active": false
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "PMO | Plans Failing"
+                }
+              },
+              "queryRef": "_Measures.PMO | Plans Failing",
+              "nativeQueryRef": "PMO | Plans Failing"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Minimal'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Rule catalogue — plans failing, by severity'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

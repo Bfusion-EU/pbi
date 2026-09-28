@@ -2,17 +2,129 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "f0f7e15e11d5392416e7",
   "position": {
-    "x": 15.466448445171849,
-    "y": 936.57937806873974,
+    "x": 16.12627986348123,
+    "y": 951.45051194539246,
     "z": 9000,
-    "height": 620.37643207855967,
-    "width": 995.00818330605557,
+    "height": 605.63139931740614,
+    "width": 994.45392491467578,
     "tabOrder": 9000
   },
   "visual": {
     "visualType": "bfusionResourceGapAnalysis_CustomVisual",
     "query": {
       "queryState": {
+        "demand": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Scheduled"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "nativeQueryRef": "Hrs Scheduled",
+              "displayName": "Hrs Scheduled"
+            }
+          ]
+        },
+        "supply": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity",
+              "nativeQueryRef": "Res Capacity",
+              "displayName": "Res Capacity"
+            }
+          ]
+        },
+        "alertLevel": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity (spread)"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity (spread)",
+              "nativeQueryRef": "Res Capacity (spread)",
+              "displayName": "Res Capacity (spread)"
+            }
+          ]
+        },
+        "tooltipFields": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Available Capacity"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Available Capacity",
+              "nativeQueryRef": "Available Capacity",
+              "displayName": "Available Capacity"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Forecast"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Total Hours Forecast",
+              "nativeQueryRef": "Hours Forecast",
+              "displayName": "Hours Forecast"
+            }
+          ]
+        },
+        "licenseToken": {
+          "projections": []
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        },
         "resourceName": {
           "projections": [
             {
@@ -48,86 +160,8 @@
             }
           ]
         },
-        "demand": {
+        "gap": {
           "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Total Hours Scheduled"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
-              "nativeQueryRef": "Capacity | Total Hours Scheduled"
-            }
-          ]
-        },
-        "supply": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Resource Capacity"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Resource Capacity",
-              "nativeQueryRef": "Capacity | Resource Capacity"
-            }
-          ]
-        },
-        "tooltipFields": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Resource Capacity (spread)"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Resource Capacity (spread)",
-              "nativeQueryRef": "Capacity | Resource Capacity (spread)"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Total Hours Forecast"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Total Hours Forecast",
-              "nativeQueryRef": "Capacity | Total Hours Forecast"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Available Capacity"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Available Capacity",
-              "nativeQueryRef": "Capacity | Available Capacity"
-            },
             {
               "field": {
                 "Measure": {
@@ -140,25 +174,8 @@
                 }
               },
               "queryRef": "_Measures.Capacity | Resource Utilization%",
-              "nativeQueryRef": "Capacity | Resource Utilization%"
-            }
-          ]
-        },
-        "period": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimDate"
-                    }
-                  },
-                  "Property": "Period"
-                }
-              },
-              "queryRef": "DimDate.Period",
-              "nativeQueryRef": "Period"
+              "nativeQueryRef": "Resource Utilization%",
+              "displayName": "Resource Utilization%"
             }
           ]
         }
@@ -216,7 +233,7 @@
             "insightsCollapsed": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -224,6 +241,20 @@
               "expr": {
                 "Literal": {
                   "Value": "'all'"
+                }
+              }
+            },
+            "rangeFrom": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
+            },
+            "rangeTo": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
                 }
               }
             }
@@ -237,6 +268,46 @@
               "expr": {
                 "Literal": {
                   "Value": "'window'"
+                }
+              }
+            },
+            "rowHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "30D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "thresholds": [
+        {
+          "properties": {
+            "actPeriods": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "alertLevel": {
+              "expr": {
+                "Literal": {
+                  "Value": "91D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "theme": [
+        {
+          "properties": {
+            "mode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'light'"
                 }
               }
             }

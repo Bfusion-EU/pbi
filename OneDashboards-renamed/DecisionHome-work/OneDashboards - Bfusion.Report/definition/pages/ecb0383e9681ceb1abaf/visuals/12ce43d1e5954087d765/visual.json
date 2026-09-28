@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "12ce43d1e5954087d765",
   "position": {
-    "x": 1172.0130932896891,
-    "y": 113.42062193126023,
+    "x": 1172.3258798039503,
+    "y": 113.08609773028459,
     "z": 8000,
-    "height": 345.99018003273324,
-    "width": 1157.1194762684124,
+    "height": 316.64107364479685,
+    "width": 1157.2477334399123,
     "tabOrder": 8000
   },
   "visual": {
@@ -28,121 +28,6 @@
               },
               "queryRef": "DimProcessStep.Gate",
               "nativeQueryRef": "Gate"
-            }
-          ]
-        },
-        "stepState": {
-          "projections": [
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "FactPlanProcessStep"
-                        }
-                      },
-                      "Property": "StepState"
-                    }
-                  },
-                  "Function": 3
-                }
-              },
-              "queryRef": "Min(PlanProcessSteps.StepState)",
-              "nativeQueryRef": "First StepState"
-            }
-          ]
-        },
-        "approvalState": {
-          "projections": [
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "FactPlanProcessStep"
-                        }
-                      },
-                      "Property": "ApprovalState"
-                    }
-                  },
-                  "Function": 3
-                }
-              },
-              "queryRef": "Min(PlanProcessSteps.ApprovalState)",
-              "nativeQueryRef": "First ApprovalState"
-            }
-          ]
-        },
-        "startDate": {
-          "projections": [
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "FactPlanProcessStep"
-                        }
-                      },
-                      "Property": "Start"
-                    }
-                  },
-                  "Function": 3
-                }
-              },
-              "queryRef": "Min(PlanProcessSteps.Start)",
-              "nativeQueryRef": "Earliest Start"
-            }
-          ]
-        },
-        "endDate": {
-          "projections": [
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "FactPlanProcessStep"
-                        }
-                      },
-                      "Property": "End"
-                    }
-                  },
-                  "Function": 3
-                }
-              },
-              "queryRef": "Min(PlanProcessSteps.End)",
-              "nativeQueryRef": "Earliest End"
-            }
-          ]
-        },
-        "comments": {
-          "projections": [
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "FactPlanProcessStep"
-                        }
-                      },
-                      "Property": "Comments"
-                    }
-                  },
-                  "Function": 3
-                }
-              },
-              "queryRef": "Min(PlanProcessSteps.Comments)",
-              "nativeQueryRef": "First Comments"
             }
           ]
         },
@@ -181,24 +66,109 @@
               "nativeQueryRef": "Name"
             }
           ]
+        },
+        "stepState": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Lifecycle | Step State"
+                }
+              },
+              "queryRef": "_Measures.Lifecycle | Step State",
+              "nativeQueryRef": "Lifecycle | Step State"
+            }
+          ]
+        },
+        "startDate": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Lifecycle | Start"
+                }
+              },
+              "queryRef": "_Measures.Lifecycle | Start",
+              "nativeQueryRef": "Lifecycle | Start"
+            }
+          ]
+        },
+        "endDate": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Lifecycle | End"
+                }
+              },
+              "queryRef": "_Measures.Lifecycle | End",
+              "nativeQueryRef": "Lifecycle | End"
+            }
+          ]
+        },
+        "comments": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Lifecycle | Comments"
+                }
+              },
+              "queryRef": "_Measures.Lifecycle | Comments",
+              "nativeQueryRef": "Lifecycle | Comments"
+            }
+          ]
+        },
+        "approvalState": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Lifecycle | Approval"
+                }
+              },
+              "queryRef": "_Measures.Lifecycle | Approval",
+              "nativeQueryRef": "Lifecycle | Approval"
+            }
+          ]
         }
       },
       "sortDefinition": {
         "sort": [
           {
             "field": {
-              "Aggregation": {
+              "Measure": {
                 "Expression": {
-                  "Column": {
-                    "Expression": {
-                      "SourceRef": {
-                        "Entity": "FactPlanProcessStep"
-                      }
-                    },
-                    "Property": "Start"
+                  "SourceRef": {
+                    "Entity": "_Measures"
                   }
                 },
-                "Function": 3
+                "Property": "Lifecycle | Start"
               }
             },
             "direction": "Ascending"
@@ -230,6 +200,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'Life Cycle'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
