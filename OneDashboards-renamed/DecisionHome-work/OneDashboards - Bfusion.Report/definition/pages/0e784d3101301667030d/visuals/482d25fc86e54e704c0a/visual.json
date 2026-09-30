@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "482d25fc86e54e704c0a",
   "position": {
-    "x": 423.33333333333337,
-    "y": 160,
+    "x": 6.666666666666667,
+    "y": 171.66666666666669,
     "z": 2000,
-    "height": 1046.6666666666667,
-    "width": 1748.3333333333335,
+    "height": 1035,
+    "width": 2165,
     "tabOrder": 2000
   },
   "visual": {
@@ -45,8 +45,9 @@
                 }
               },
               "queryRef": "DimTask.Name",
-              "nativeQueryRef": "Name3",
-              "active": true
+              "nativeQueryRef": "Task",
+              "active": true,
+              "displayName": "Task"
             }
           ]
         },
@@ -218,8 +219,9 @@
                 }
               },
               "queryRef": "DimProject.Name",
-              "nativeQueryRef": "Name",
-              "active": true
+              "nativeQueryRef": "Plan",
+              "active": true,
+              "displayName": "Plan"
             }
           ]
         },
@@ -237,8 +239,9 @@
                 }
               },
               "queryRef": "DimProject.Program Name",
-              "nativeQueryRef": "Name1",
-              "active": true
+              "nativeQueryRef": "Program",
+              "active": true,
+              "displayName": "Program"
             }
           ]
         },
@@ -369,6 +372,60 @@
               "nativeQueryRef": "ProcessStepIndex"
             }
           ]
+        },
+        "baselineStart": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "BaselineStartDate"
+                }
+              },
+              "queryRef": "DimTask.BaselineStartDate",
+              "nativeQueryRef": "BaselineStartDate"
+            }
+          ]
+        },
+        "baselineEnd": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "BaselineEndDate"
+                }
+              },
+              "queryRef": "DimTask.BaselineEndDate",
+              "nativeQueryRef": "BaselineEndDate"
+            }
+          ]
+        },
+        "rowLink": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "PMO Plan Url"
+                }
+              },
+              "queryRef": "DimProject.PMO Plan Url",
+              "nativeQueryRef": "PMO Plan Url"
+            }
+          ]
         }
       },
       "sortDefinition": {
@@ -411,14 +468,14 @@
             "planLevels": {
               "expr": {
                 "Literal": {
-                  "Value": "'{\"PL:Capital Investment:Asset Replacement:Energy Efficiency\":1}'"
+                  "Value": "'{\"PL:Capital Investment:Asset Replacement:Energy Efficiency\":1,\"PL:Customer Engagements:OnePlan Programs:CUST Meat&More\":1,\"PL:Product Innovation Portfolio:Digital Marketing Program:Market Research\":1}'"
                 }
               }
             },
             "detailLevel": {
               "expr": {
                 "Literal": {
-                  "Value": "1D"
+                  "Value": "0D"
                 }
               }
             },
@@ -433,6 +490,13 @@
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            },
+            "viewPreset": {
+              "expr": {
+                "Literal": {
+                  "Value": "'portfolio'"
                 }
               }
             }
@@ -554,7 +618,7 @@
             "mode": {
               "expr": {
                 "Literal": {
-                  "Value": "'dark'"
+                  "Value": "'auto'"
                 }
               }
             }
@@ -570,6 +634,13 @@
                   "Value": "12D"
                 }
               }
+            },
+            "nameColWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "400D"
+                }
+              }
             }
           }
         }
@@ -581,6 +652,31 @@
               "expr": {
                 "Literal": {
                   "Value": "12D"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "baseline": [
+        {
+          "properties": {
+            "baselineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 8,
+                      "Percent": 0
+                    }
+                  }
                 }
               }
             }

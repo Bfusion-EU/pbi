@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "de448b4e8eeeb9edaf85",
   "position": {
-    "x": 37.026749393926941,
-    "y": 88.639794003643289,
+    "x": 18.085106382978726,
+    "y": 60.638297872340431,
     "z": 0,
-    "height": 568.86551341578661,
-    "width": 1197.1982304036378,
+    "height": 569.14893617021278,
+    "width": 1235.1063829787236,
     "tabOrder": 0
   },
   "visual": {
@@ -27,8 +27,9 @@
                 }
               },
               "queryRef": "DimProject.Name",
-              "nativeQueryRef": "Name",
-              "active": true
+              "nativeQueryRef": "Plan",
+              "active": true,
+              "displayName": "Plan"
             }
           ]
         },
@@ -236,6 +237,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'Modeler | Priority Score'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

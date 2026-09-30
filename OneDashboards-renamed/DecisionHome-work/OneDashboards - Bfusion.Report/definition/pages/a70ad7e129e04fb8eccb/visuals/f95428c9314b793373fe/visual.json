@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "f95428c9314b793373fe",
   "position": {
     "x": 19.588713534194166,
@@ -95,24 +95,6 @@
               },
               "queryRef": "_Measures.Modeler | Alignment Score",
               "nativeQueryRef": "Modeler | Alignment Score"
-            }
-          ]
-        },
-        "licenseToken": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "License | BFusionLicenseKey"
-                }
-              },
-              "queryRef": "_Measures.BFusionLicenseKey",
-              "nativeQueryRef": "BFusionLicenseKey"
             }
           ]
         }
