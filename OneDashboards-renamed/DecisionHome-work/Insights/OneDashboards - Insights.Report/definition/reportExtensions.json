@@ -1,0 +1,1036 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/reportExtension/1.0.0/schema.json",
+  "name": "extension",
+  "entities": [
+    {
+      "name": "_Measures",
+      "measures": [
+        {
+          "name": "Story | On Track %",
+          "dataType": "Double",
+          "expression": "DIVIDE (\n    CALCULATE ( COUNTROWS ( DimProject ), DimProject[OverallHealth_Value] = \"(1) On Track\" ),\n    CALCULATE ( COUNTROWS ( DimProject ), NOT ISBLANK ( DimProject[OverallHealth_Value] ) )\n)",
+          "displayFolder": "Story",
+          "formatString": "0%",
+          "description": "Share of projects whose overall health is (1) On Track."
+        },
+        {
+          "name": "Story | Refreshed",
+          "dataType": "Text",
+          "expression": "VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )\nRETURN IF ( ISBLANK ( _t ), \"POWERED BY ONEPLAN\", \"POWERED BY ONEPLAN  ·  REFRESHED \" & UPPER ( FORMAT ( _t, \"dd mmm yyyy hh:nn\" ) ) & \" CET\" )",
+          "displayFolder": "Story"
+        },
+        {
+          "name": "Story | Forecast Variance",
+          "dataType": "Double",
+          "expression": "[Finance | Forecast Cost] - [Finance | Budget Cost]",
+          "displayFolder": "Story\\Finance",
+          "formatString": "#,##0",
+          "description": "Forecast cost minus budget cost (FactCost). Positive = forecast over budget.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Forecast Variance %",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Story | Forecast Variance], [Finance | Budget Cost] )",
+          "displayFolder": "Story\\Finance",
+          "formatString": "+0.0%;-0.0%;0.0%",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Forecast Variance"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Burn %",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Finance | Actual Cost], [Finance | Budget Cost] )",
+          "displayFolder": "Story\\Finance",
+          "formatString": "0%",
+          "description": "Actual cost as a share of budget cost.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Actual Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Projects Over Budget",
+          "dataType": "Integer",
+          "expression": "COUNTROWS (\n    FILTER (\n        VALUES ( DimProject[Id] ),\n        [Finance | Budget Cost] > 0 && [Finance | Forecast Cost] > [Finance | Budget Cost]\n    )\n) + 0",
+          "displayFolder": "Story\\Finance",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Variance Colour",
+          "dataType": "Text",
+          "expression": "VAR _p = [Story | Forecast Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Forecast Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Burn Colour",
+          "dataType": "Text",
+          "expression": "VAR _p = [Story | Burn %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 1, \"#C0392B\", IF ( _p > 0.9, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Burn %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Finance Headline",
+          "dataType": "Text",
+          "expression": "VAR _b = [Finance | Budget Cost]\nVAR _a = [Finance | Actual Cost]\nVAR _f = [Finance | Forecast Cost]\nVAR _v = _f - _b\nVAR _absv = ABS ( _v )\nVAR _n = [Story | Projects Over Budget]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Name] ), \"@v\", [Finance | Forecast Cost] - [Finance | Budget Cost] ), [@v] > 0 ),\n        [@v], DESC )\nVAR _tn = MAXX ( _top, DimProject[Name] )\nVAR _tv = MAXX ( _top, [@v] )\nRETURN\n    IF ( ISBLANK ( _b ) && ISBLANK ( _f ),\n        \"No financial plan data in the current selection.\",\n        \"Budget \" & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \"  ·  actuals \" & IF ( ISBLANK ( _a ), \"–\", IF ( ABS ( _a ) >= 1000000, \"€\" & FORMAT ( _a / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _a ) >= 1000, \"€\" & FORMAT ( _a / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _a, \"#,0\" ) ) ) ) & \" (\" & IF ( ISBLANK ( DIVIDE ( _a, _b ) ), \"–\", FORMAT ( DIVIDE ( _a, _b ), \"0%\" ) ) & \" burned)  ·  forecast \"\n            & IF ( ISBLANK ( _f ), \"–\", IF ( ABS ( _f ) >= 1000000, \"€\" & FORMAT ( _f / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _f ) >= 1000, \"€\" & FORMAT ( _f / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _f, \"#,0\" ) ) ) ) & IF ( _v >= 0, \"  →  +\", \"  →  −\" ) & IF ( ISBLANK ( _absv ), \"–\", IF ( ABS ( _absv ) >= 1000000, \"€\" & FORMAT ( _absv / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _absv ) >= 1000, \"€\" & FORMAT ( _absv / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _absv, \"#,0\" ) ) ) ) & \" (\"\n            & IF ( ISBLANK ( DIVIDE ( _v, _b ) ), \"–\", FORMAT ( DIVIDE ( _v, _b ), \"+0.0%;-0.0%\" ) ) & \") versus budget. \"\n            & IF ( _n > 0,\n                FORMAT ( _n, \"0\" ) & \" project(s) forecast over budget; the largest overrun is \" & _tn & \" (+\" & IF ( ISBLANK ( _tv ), \"–\", IF ( ABS ( _tv ) >= 1000000, \"€\" & FORMAT ( _tv / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _tv ) >= 1000, \"€\" & FORMAT ( _tv / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _tv, \"#,0\" ) ) ) ) & \").\",\n                \"No project is forecast over budget.\" )\n    )",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Budget Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Actual Cost"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects Over Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Proposed Projects",
+          "dataType": "Integer",
+          "expression": "CALCULATE ( COUNTROWS ( DimProject ), DimProject[State_Value] = \"Proposed\" ) + 0",
+          "displayFolder": "Story\\Portfolio",
+          "formatString": "#,##0"
+        },
+        {
+          "name": "Story | Aligned Budget %",
+          "dataType": "Double",
+          "expression": "DIVIDE (\n    CALCULATE ( SUM ( DimProject[Budget] ), DimProject[StrategicAlignment_Value] IN { \"Strong\", \"Extreme\" } ),\n    SUM ( DimProject[Budget] )\n)",
+          "displayFolder": "Story\\Portfolio",
+          "formatString": "0%",
+          "description": "Share of plan budget in projects rated Strong or Extreme strategic alignment."
+        },
+        {
+          "name": "Story | Plan Budget",
+          "dataType": "Double",
+          "expression": "SUM ( DimProject[Budget] )",
+          "displayFolder": "Story\\Portfolio",
+          "formatString": "#,##0",
+          "description": "Budget field on the project plan (DimProject), not time-phased."
+        },
+        {
+          "name": "Story | Plan Forecast",
+          "dataType": "Double",
+          "expression": "SUM ( DimProject[Forecast] )",
+          "displayFolder": "Story\\Portfolio",
+          "formatString": "#,##0"
+        },
+        {
+          "name": "Story | Plan Variance %",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Story | Plan Forecast] - [Story | Plan Budget], [Story | Plan Budget] )",
+          "displayFolder": "Story\\Portfolio",
+          "formatString": "+0.0%;-0.0%;0.0%",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Forecast"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Plan Variance Colour",
+          "dataType": "Text",
+          "expression": "VAR _p = [Story | Plan Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Health Colour",
+          "dataType": "Text",
+          "expression": "SWITCH ( SELECTEDVALUE ( DimProject[OverallHealth_Value] ),\n    \"(1) On Track\", \"#1E6D6E\",\n    \"(2) At Risk\", \"#D9A832\",\n    \"(3) Off Track\", \"#C0392B\",\n    \"#666666\" )",
+          "displayFolder": "Story\\Colours"
+        },
+        {
+          "name": "Story | Portfolio Headline",
+          "dataType": "Text",
+          "expression": "VAR _n = COALESCE ( [Portfolio 360 | Active Projects], 0 )\nVAR _p = CALCULATE ( DISTINCTCOUNT ( DimProject[Portfolio Name] ), DimProject[Portfolio Name] <> \"(No portfolio)\" )\nVAR _b = [Story | Plan Budget]\nVAR _al = [Story | Aligned Budget %]\nVAR _top =\n    TOPN ( 1, ADDCOLUMNS ( VALUES ( DimProject[Portfolio Name] ), \"@b\", CALCULATE ( SUM ( DimProject[Budget] ) ) ), [@b], DESC )\nVAR _tn = MAXX ( _top, DimProject[Portfolio Name] )\nVAR _tb = MAXX ( _top, [@b] )\nVAR _prop = [Story | Proposed Projects]\nVAR _ot = [Story | On Track %]\nRETURN\n    FORMAT ( _n, \"0\" ) & \" active projects across \" & FORMAT ( COALESCE ( _p, 0 ), \"0\" ) & \" portfolios carry \" & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) )\n        & \" of plan budget. \" & IF ( ISBLANK ( _al ), \"–\", FORMAT ( _al, \"0%\" ) ) & \" of that budget sits in Strong/Extreme-aligned work; the largest share goes to \"\n        & _tn & \" (\" & IF ( ISBLANK ( DIVIDE ( _tb, _b ) ), \"–\", FORMAT ( DIVIDE ( _tb, _b ), \"0%\" ) ) & \"). \" & IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" of projects report On Track overall and \"\n        & FORMAT ( _prop, \"0\" ) & \" proposal(s) wait in the pipeline.\"",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Portfolio 360 | Active Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Budget"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Proposed Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | On Track %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Util Colour",
+          "dataType": "Text",
+          "expression": "VAR _u = [Capacity | Resource Utilization%]\nRETURN IF ( ISBLANK ( _u ) || _u = 0, \"#9AA3AF\", IF ( _u > 1, \"#C0392B\", IF ( _u >= 0.8, \"#1E6D6E\", IF ( _u >= 0.5, \"#D9A832\", \"#9AA3AF\" ) ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Resource Utilization%"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Util Cell Colour",
+          "dataType": "Text",
+          "expression": "VAR _u = [Capacity | Resource Utilization%]\nRETURN IF ( ISBLANK ( _u ) || _u = 0, \"#FFFFFF\", IF ( _u > 1, \"#F8D0CC\", IF ( _u >= 0.8, \"#D3EEDB\", IF ( _u >= 0.5, \"#FBEFD0\", \"#EEF0F3\" ) ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Resource Utilization%"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Soft Demand %",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Capacity | Forecast], [Capacity | Committed] + [Capacity | Forecast] + [Resource | Scheduled] )",
+          "displayFolder": "Story\\Resources",
+          "formatString": "0%",
+          "description": "Share of planned demand that is still Forecast (not Committed or Scheduled).",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Forecast"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Committed"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Resource | Scheduled"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Resource Headline",
+          "dataType": "Text",
+          "expression": "VAR _r = [Resource KPI | Total Resources]\nVAR _c = [Capacity | Resource Capacity]\nVAR _s = [Capacity | Total Hours Scheduled]\nVAR _u = DIVIDE ( _s, _c )\nVAR _o = COALESCE ( [Capacity | Over-Allocated Resource Count], 0 )\nVAR _role =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimResource[Role_Value] ), \"@u\", [Capacity | Resource Utilization%] ),\n            NOT ISBLANK ( DimResource[Role_Value] ) && [@u] > 0 ),\n        [@u], DESC )\nVAR _rn = TRIM ( MAXX ( _role, DimResource[Role_Value] ) )\nVAR _ru = MAXX ( _role, [@u] )\nVAR _soft = [Story | Soft Demand %]\nRETURN\n    IF ( ISBLANK ( _c ),\n        \"No capacity in the current selection — pick a year or department with resource calendars.\",\n        FORMAT ( COALESCE ( _r, 0 ), \"#,0\" ) & \" people offer \" & FORMAT ( _c, \"#,0\" ) & \" h of capacity; \" & FORMAT ( COALESCE ( _s, 0 ), \"#,0\" )\n            & \" h are scheduled  →  \" & IF ( ISBLANK ( _u ), \"–\", FORMAT ( _u, \"0%\" ) ) & \" utilised. \" & FORMAT ( _o, \"0\" )\n            & \" people are over-allocated (above 100%)\"\n            & IF ( NOT ISBLANK ( _rn ), \"; the most stretched role is \" & _rn & \" at \" & IF ( ISBLANK ( _ru ), \"–\", FORMAT ( _ru, \"0%\" ) ), \"\" ) & \". \"\n            & IF ( ISBLANK ( _soft ), \"–\", FORMAT ( _soft, \"0%\" ) ) & \" of demand is still soft forecast — firm it up before committing new work.\"\n    )",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Resource KPI | Total Resources"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Resource Capacity"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Total Hours Scheduled"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Over-Allocated Resource Count"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Resource Utilization%"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Soft Demand %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Milestones Next 30d",
+          "dataType": "Integer",
+          "expression": "CALCULATE (\n    COUNTROWS ( DimTask ),\n    DimTask[Milestone] = TRUE (),\n    DimTask[PercentDone] < 100,\n    DimTask[EndDate] >= TODAY (),\n    DimTask[EndDate] < TODAY () + 31\n) + 0",
+          "displayFolder": "Story\\Schedule",
+          "formatString": "#,##0"
+        },
+        {
+          "name": "Story | Project Slip (days)",
+          "dataType": "Double",
+          "expression": "AVERAGEX (\n    FILTER ( DimProject, NOT ISBLANK ( DimProject[Summary_EndDate] ) && NOT ISBLANK ( DimProject[Summary_BaselineEndDate] ) ),\n    INT ( DimProject[Summary_EndDate] ) - INT ( DimProject[Summary_BaselineEndDate] )\n)",
+          "displayFolder": "Story\\Schedule",
+          "formatString": "#,##0",
+          "description": "Average finish date minus baseline finish date, in days (projects with a baseline)."
+        },
+        {
+          "name": "Story | Task Slip (days)",
+          "dataType": "Double",
+          "expression": "AVERAGEX (\n    FILTER ( DimTask, NOT ISBLANK ( DimTask[EndDate] ) && NOT ISBLANK ( DimTask[BaselineEndDate] ) ),\n    INT ( DimTask[EndDate] ) - INT ( DimTask[BaselineEndDate] )\n)",
+          "displayFolder": "Story\\Schedule",
+          "formatString": "#,##0"
+        },
+        {
+          "name": "Story | Slipped Tasks",
+          "dataType": "Integer",
+          "expression": "COUNTROWS (\n    FILTER ( DimTask,\n        DimTask[WorkType] = \"Tasks\"\n            && NOT ISBLANK ( DimTask[BaselineEndDate] )\n            && DimTask[EndDate] > DimTask[BaselineEndDate]\n            && DimTask[Status] <> \"Completed\" )\n) + 0",
+          "displayFolder": "Story\\Schedule",
+          "formatString": "#,##0",
+          "description": "Open tasks whose current finish is later than their baseline finish."
+        },
+        {
+          "name": "Story | Due Colour",
+          "dataType": "Text",
+          "expression": "VAR _d = MAX ( DimTask[EndDate] )\nVAR _p = MAX ( DimTask[PercentDone] )\nRETURN IF ( ISBLANK ( _d ), \"#666666\", IF ( _d < TODAY () && _p < 100, \"#C0392B\", IF ( _d < TODAY () + 14, \"#D9A832\", \"#1F2A44\" ) ) )",
+          "displayFolder": "Story\\Colours"
+        },
+        {
+          "name": "Story | Slip Colour",
+          "dataType": "Text",
+          "expression": "VAR _d = [Story | Task Slip (days)]\nRETURN IF ( ISBLANK ( _d ), \"#666666\", IF ( _d > 20, \"#C0392B\", IF ( _d > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Task Slip (days)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Schedule Headline",
+          "dataType": "Text",
+          "expression": "VAR _ot = [Portfolio 360 | On-Time Delivery %]\nVAR _ar = COALESCE ( [Portfolio 360 | At-Risk Count], 0 )\nVAR _sl = COALESCE ( [Portfolio 360 | Slipping Count], 0 )\nVAR _od = COALESCE ( [Task | Overdue Tasks], 0 )\nVAR _ms = [Story | Milestones Next 30d]\nVAR _slip = [Story | Project Slip (days)]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Name] ), \"@d\", [Story | Project Slip (days)] ), [@d] > 0 ),\n        [@d], DESC )\nRETURN\n    IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" of projects are on schedule; \" & FORMAT ( _ar, \"0\" ) & \" are at risk and \" & FORMAT ( _sl, \"0\" )\n        & \" are slipping. \" & FORMAT ( _od, \"#,0\" ) & \" tasks are overdue and \" & FORMAT ( _ms, \"0\" )\n        & \" milestone(s) fall due in the next 30 days. \"\n        & IF ( ISBLANK ( _slip ), \"No baselines are set, so slippage cannot be measured yet.\",\n            \"Projects now finish on average \" & FORMAT ( _slip, \"0\" ) & \" days \" & IF ( _slip >= 0, \"later\", \"earlier\" )\n                & \" than baselined\"\n                & IF ( COUNTROWS ( _top ) > 0,\n                    \"; the biggest move is \" & MAXX ( _top, DimProject[Name] ) & \" (+\" & FORMAT ( MAXX ( _top, [@d] ), \"0\" ) & \" days).\",\n                    \".\" ) )",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Portfolio 360 | On-Time Delivery %"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Portfolio 360 | At-Risk Count"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Portfolio 360 | Slipping Count"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Task | Overdue Tasks"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Milestones Next 30d"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project Slip (days)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Critical High Risks",
+          "dataType": "Integer",
+          "expression": "CALCULATE ( [Project | Active Risks], DimTask[Impact] IN { \"(1) Critical\", \"(2) High\" } ) + 0",
+          "displayFolder": "Story\\Risk",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Risk Exposure",
+          "dataType": "Double",
+          "expression": "CALCULATE ( SUM ( DimTask[Exposure] ), DimTask[WorkType] = \"Risks\", DimTask[State] = \"Active\" )",
+          "displayFolder": "Story\\Risk",
+          "formatString": "#,##0",
+          "description": "Sum of the Exposure field on active risks."
+        },
+        {
+          "name": "Story | Avg Risk Probability",
+          "dataType": "Double",
+          "expression": "DIVIDE ( CALCULATE ( AVERAGE ( DimTask[Probability] ), DimTask[WorkType] = \"Risks\", DimTask[State] = \"Active\" ), 100 )",
+          "displayFolder": "Story\\Risk",
+          "formatString": "0%"
+        },
+        {
+          "name": "Story | Unmitigated Risk %",
+          "dataType": "Double",
+          "expression": "DIVIDE ( CALCULATE ( [Project | Active Risks], DimTask[RiskStage] = \"Identify\" ), [Project | Active Risks] )",
+          "displayFolder": "Story\\Risk",
+          "formatString": "0%",
+          "description": "Share of active risks still in the Identify stage (no mitigation started).",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Active Risk Count",
+          "dataType": "Integer",
+          "expression": "[Project | Active Risks] + 0",
+          "displayFolder": "Story\\Risk",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Heat Colour",
+          "dataType": "Text",
+          "expression": "VAR _i = SWITCH ( LEFT ( SELECTEDVALUE ( DimTask[Impact] ), 3 ), \"(1)\", 4, \"(2)\", 3, \"(3)\", 2, \"(4)\", 1, 0 )\nVAR _p = SWITCH ( LEFT ( SELECTEDVALUE ( DimTask[Probability Category] ), 3 ), \"(1)\", 4, \"(2)\", 3, \"(3)\", 2, \"(4)\", 1, 0 )\nVAR _sc = _i * _p\nRETURN IF ( _sc = 0, \"#FFFFFF\", IF ( _sc >= 12, \"#E57368\", IF ( _sc >= 6, \"#F2B880\", IF ( _sc >= 3, \"#F7E3A1\", \"#D3EEDB\" ) ) ) )",
+          "displayFolder": "Story\\Colours"
+        },
+        {
+          "name": "Story | Impact Colour",
+          "dataType": "Text",
+          "expression": "SWITCH ( LEFT ( SELECTEDVALUE ( DimTask[Impact] ), 3 ),\n    \"(1)\", \"#C0392B\", \"(2)\", \"#E8612A\", \"(3)\", \"#D9A832\", \"(4)\", \"#1E6D6E\", \"#666666\" )",
+          "displayFolder": "Story\\Colours"
+        },
+        {
+          "name": "Story | Risk Headline",
+          "dataType": "Text",
+          "expression": "VAR _r = COALESCE ( [Project | Active Risks], 0 )\nVAR _ch = [Story | Critical High Risks]\nVAR _e = [Story | Risk Exposure]\nVAR _i = COALESCE ( [Project | Active Issues], 0 )\nVAR _u = [Story | Unmitigated Risk %]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Program Name] ), \"@e\", [Story | Risk Exposure] ), [@e] > 0 ),\n        [@e], DESC )\nRETURN\n    FORMAT ( _r, \"0\" ) & \" active risks (\" & FORMAT ( _ch, \"0\" ) & \" critical or high) carry \" & IF ( ISBLANK ( _e ), \"–\", IF ( ABS ( _e ) >= 1000000, \"€\" & FORMAT ( _e / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _e ) >= 1000, \"€\" & FORMAT ( _e / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _e, \"#,0\" ) ) ) )\n        & \" of exposure, and \" & FORMAT ( _i, \"0\" ) & \" issue(s) are open. \"\n        & IF ( COUNTROWS ( _top ) > 0,\n            \"Exposure is concentrated in \" & MAXX ( _top, DimProject[Program Name] ) & \" (\"\n                & IF ( ISBLANK ( DIVIDE ( MAXX ( _top, [@e] ), _e ) ), \"–\", FORMAT ( DIVIDE ( MAXX ( _top, [@e] ), _e ), \"0%\" ) ) & \"). \", \"\" )\n        & IF ( ISBLANK ( _u ), \"–\", FORMAT ( _u, \"0%\" ) ) & \" of risks are still at 'Identify' with no mitigation started.\"",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Risks"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Critical High Risks"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Risk Exposure"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Project | Active Issues"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Unmitigated Risk %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Benefit Cost Ratio",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Benefits | Planned Benefits], [Story | Plan Budget] )",
+          "displayFolder": "Story\\Benefits",
+          "formatString": "0.00",
+          "description": "Planned benefits divided by plan budget.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Planned Benefits"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ratio Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = [Story | Benefit Cost Ratio]\nRETURN IF ( ISBLANK ( _r ), \"#666666\", IF ( _r >= 2, \"#1E6D6E\", IF ( _r >= 1, \"#D9A832\", \"#C0392B\" ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefit Cost Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Benefits Headline",
+          "dataType": "Text",
+          "expression": "VAR _b = [Benefits | Planned Benefits]\nVAR _c = [Story | Plan Budget]\nVAR _r = [Benefits | Realized Benefits]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Name] ), \"@x\", [Story | Benefit Cost Ratio] ), [@x] > 0 ),\n        [@x], DESC )\nVAR _neg = COUNTROWS ( FILTER ( VALUES ( DimProject[Id] ), [Story | Plan Budget] > 0 && COALESCE ( [Benefits | Planned Benefits], 0 ) = 0 ) )\nRETURN\n    IF ( COALESCE ( _b, 0 ) = 0,\n        \"No benefits are recorded on the plans in this selection — capture expected benefits in OnePlan to tell the value story.\",\n        \"The selection plans \" & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" of benefits on \" & IF ( ISBLANK ( _c ), \"–\", IF ( ABS ( _c ) >= 1000000, \"€\" & FORMAT ( _c / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _c ) >= 1000, \"€\" & FORMAT ( _c / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _c, \"#,0\" ) ) ) ) & \" of budget (\"\n            & FORMAT ( DIVIDE ( _b, _c ), \"0.0\" ) & \"× return). Pro-rata on progress, \" & IF ( ISBLANK ( _r ), \"–\", IF ( ABS ( _r ) >= 1000000, \"€\" & FORMAT ( _r / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _r ) >= 1000, \"€\" & FORMAT ( _r / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _r, \"#,0\" ) ) ) ) & \" (\"\n            & IF ( ISBLANK ( DIVIDE ( _r, _b ) ), \"–\", FORMAT ( DIVIDE ( _r, _b ), \"0%\" ) ) & \") is realised so far. Best value for money: \" & MAXX ( _top, DimProject[Name] )\n            & \" (\" & FORMAT ( MAXX ( _top, [@x] ), \"0.0\" ) & \"×). \" & FORMAT ( COALESCE ( _neg, 0 ), \"0\" )\n            & \" funded project(s) have no benefit recorded.\"\n    )",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Planned Benefits"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Budget"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Realized Benefits"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefit Cost Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Exec Headline",
+          "dataType": "Text",
+          "expression": "VAR _n = COALESCE ( [Portfolio 360 | Active Projects], 0 )\nVAR _ot = [Story | On Track %]\nVAR _vp = [Story | Forecast Variance %]\nVAR _u = [Capacity | Resource Utilization%]\nVAR _o = COALESCE ( [Capacity | Over-Allocated Resource Count], 0 )\nVAR _ch = [Story | Critical High Risks]\nVAR _focus =\n    SWITCH ( TRUE (),\n        _vp > 0.05, \"cost overrun\",\n        _o > 0 && _u > 1, \"resource overload\",\n        _ot < 0.7, \"delivery health\",\n        _ch > 5, \"risk exposure\",\n        \"keeping the course\" )\nRETURN\n    FORMAT ( _n, \"0\" ) & \" active projects, \" & IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" on track. Forecast is \"\n        & IF ( ISBLANK ( _vp ), \"–\", FORMAT ( _vp, \"+0.0%;-0.0%;0.0%\" ) ) & \" versus budget, people are \" & IF ( ISBLANK ( _u ), \"–\", FORMAT ( _u, \"0%\" ) ) & \" utilised (\"\n        & FORMAT ( _o, \"0\" ) & \" over-allocated) and \" & FORMAT ( _ch, \"0\" )\n        & \" critical/high risks are open. This month's focus: \" & _focus & \".\"",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Portfolio 360 | Active Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | On Track %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Forecast Variance %"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Resource Utilization%"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Over-Allocated Resource Count"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Critical High Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Exec Action Money",
+          "dataType": "Text",
+          "expression": "VAR _n = [Story | Projects Over Budget]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Name] ), \"@v\", [Story | Forecast Variance] ), [@v] > 0 ),\n        [@v], DESC )\nRETURN\n    IF ( _n > 0,\n        \"1 · Money — review the \" & FORMAT ( _n, \"0\" ) & \" project(s) forecast over budget — start with \" & MAXX ( _top, DimProject[Name] )\n            & \" (+\" & IF ( ISBLANK ( MAXX ( _top, [@v] ) ), \"–\", IF ( ABS ( MAXX ( _top, [@v] ) ) >= 1000000, \"€\" & FORMAT ( MAXX ( _top, [@v] ) / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( MAXX ( _top, [@v] ) ) >= 1000, \"€\" & FORMAT ( MAXX ( _top, [@v] ) / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( MAXX ( _top, [@v] ), \"#,0\" ) ) ) ) & \").\",\n        \"1 · Money — spend is within budget on every project — protect the contingency and release unused budget.\" )",
+          "displayFolder": "Story\\Actions",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects Over Budget"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Forecast Variance"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Exec Action People",
+          "dataType": "Text",
+          "expression": "VAR _o = COALESCE ( [Capacity | Over-Allocated Resource Count], 0 )\nVAR _role =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimResource[Role_Value] ), \"@u\", [Capacity | Resource Utilization%] ),\n            NOT ISBLANK ( DimResource[Role_Value] ) && [@u] > 0 ),\n        [@u], DESC )\nRETURN\n    IF ( _o > 0,\n        \"2 · People — rebalance \" & FORMAT ( _o, \"0\" ) & \" over-allocated people; the most stretched role is \"\n            & TRIM ( MAXX ( _role, DimResource[Role_Value] ) ) & \" (\" & IF ( ISBLANK ( MAXX ( _role, [@u] ) ), \"–\", FORMAT ( MAXX ( _role, [@u] ), \"0%\" ) ) & \").\",\n        \"2 · People — nobody is over-allocated — there is room to pull work forward from the pipeline.\" )",
+          "displayFolder": "Story\\Actions",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Over-Allocated Resource Count"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Capacity | Resource Utilization%"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Exec Action Risk",
+          "dataType": "Text",
+          "expression": "VAR _ch = [Story | Critical High Risks]\nVAR _od = COALESCE ( [Task | Overdue Tasks], 0 )\nRETURN\n    IF ( _ch > 0,\n        \"3 · Risk — escalate \" & FORMAT ( _ch, \"0\" ) & \" critical/high risk(s) to their owners and clear \" & FORMAT ( _od, \"#,0\" ) & \" overdue task(s).\",\n        \"3 · Risk — no critical or high risk is open — \" & FORMAT ( _od, \"#,0\" ) & \" overdue task(s) remain to clear.\" )",
+          "displayFolder": "Story\\Actions",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Critical High Risks"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Task | Overdue Tasks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Overrun",
+          "dataType": "Double",
+          "expression": "SUMX ( VALUES ( DimProject[Name] ), VAR _v = [Story | Forecast Variance] RETURN IF ( _v > 0, _v ) )",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "#,##0",
+          "description": "Sum of positive project overruns (forecast above budget); underruns do not net them off.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Forecast Variance"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Spend Cum %",
+          "dataType": "Double",
+          "expression": "VAR _cur = [Finance | Forecast Cost]\nVAR _t = ADDCOLUMNS ( ALLSELECTED ( DimProject[Name] ), \"@c\", [Finance | Forecast Cost] )\nVAR _all = SUMX ( _t, [@c] )\nRETURN\n    IF ( ISINSCOPE ( DimProject[Name] ) && _cur > 0, DIVIDE ( SUMX ( FILTER ( _t, [@c] >= _cur ), [@c] ), _all ) )",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "0%",
+          "description": "Pareto line: cumulative share of forecast cost, projects ranked from largest to smallest.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Overrun Cum %",
+          "dataType": "Double",
+          "expression": "VAR _cur = [Story | Overrun]\nVAR _t = ADDCOLUMNS ( ALLSELECTED ( DimProject[Name] ), \"@c\", [Story | Overrun] )\nVAR _all = SUMX ( _t, [@c] )\nRETURN\n    IF ( ISINSCOPE ( DimProject[Name] ) && _cur > 0, DIVIDE ( SUMX ( FILTER ( _t, [@c] >= _cur ), [@c] ), _all ) )",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "0%",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Overrun"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Spend Share",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Finance | Forecast Cost], CALCULATE ( [Finance | Forecast Cost], ALLSELECTED ( DimProject[Name] ) ) )",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "0.0%",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Pareto Class",
+          "dataType": "Text",
+          "expression": "VAR _cum = [Story | Spend Cum %]\nVAR _prev = _cum - [Story | Spend Share]\nRETURN IF ( ISBLANK ( _cum ), BLANK (), IF ( _prev < 0.8, \"A · top 80%\", IF ( _prev < 0.95, \"B · next 15%\", \"C · tail 5%\" ) ) )",
+          "displayFolder": "Story\\Pareto",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Spend Cum %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Spend Share"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Pareto Class Colour",
+          "dataType": "Text",
+          "expression": "VAR _c = LEFT ( [Story | Pareto Class], 1 )\nRETURN SWITCH ( _c, \"A\", \"#E8612A\", \"B\", \"#1F2A44\", \"C\", \"#9AA3AF\", \"#666666\" )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Pareto Class"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Projects For 80% Spend",
+          "dataType": "Integer",
+          "expression": "VAR _t = FILTER ( ADDCOLUMNS ( ALLSELECTED ( DimProject[Name] ), \"@c\", [Finance | Forecast Cost] ), [@c] > 0 )\nVAR _all = SUMX ( _t, [@c] )\nVAR _r = ADDCOLUMNS ( _t, \"@prev\", VAR _x = [@c] RETURN SUMX ( FILTER ( _t, [@c] > _x ), [@c] ) )\nRETURN COUNTROWS ( FILTER ( _r, [@prev] < 0.8 * _all ) ) + 0",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "#,##0",
+          "description": "How many of the largest projects together make up 80% of forecast cost.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Projects With Spend",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( ALLSELECTED ( DimProject[Name] ), [Finance | Forecast Cost] > 0 ) ) + 0",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Concentration %",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Story | Projects For 80% Spend], [Story | Projects With Spend] )",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "0%",
+          "description": "Share of projects that make up 80% of forecast cost (lower = more concentrated).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects For 80% Spend"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects With Spend"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Top3 Overrun Share",
+          "dataType": "Double",
+          "expression": "VAR _t = ADDCOLUMNS ( ALLSELECTED ( DimProject[Name] ), \"@o\", [Story | Overrun] )\nRETURN DIVIDE ( SUMX ( TOPN ( 3, _t, [@o], DESC ), [@o] ), SUMX ( _t, [@o] ) )",
+          "displayFolder": "Story\\Pareto",
+          "formatString": "0%",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Overrun"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Plan Revenue",
+          "dataType": "Double",
+          "expression": "SUM ( DimProject[EstimatedRevenue] )",
+          "displayFolder": "Story\\P&L",
+          "formatString": "#,##0",
+          "description": "Estimated revenue recorded on the plan."
+        },
+        {
+          "name": "Story | Total Value",
+          "dataType": "Double",
+          "expression": "COALESCE ( [Story | Plan Revenue], 0 ) + COALESCE ( [Benefits | Planned Benefits], 0 )",
+          "displayFolder": "Story\\P&L",
+          "formatString": "#,##0",
+          "description": "Revenue plus planned benefits: everything the plan promises back.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Revenue"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Benefits | Planned Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Net Value",
+          "dataType": "Double",
+          "expression": "[Story | Total Value] - COALESCE ( [Story | Plan Forecast], 0 )",
+          "displayFolder": "Story\\P&L",
+          "formatString": "#,##0",
+          "description": "Total value minus forecast cost at completion (plan fields, lifetime).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Total Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Forecast"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Net Margin %",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Story | Net Value], [Story | Total Value] )",
+          "displayFolder": "Story\\P&L",
+          "formatString": "0%;-0%;0%",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Net Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Total Value"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Net ROI",
+          "dataType": "Double",
+          "expression": "DIVIDE ( [Story | Net Value], [Story | Plan Forecast] )",
+          "displayFolder": "Story\\P&L",
+          "formatString": "0%;-0%;0%",
+          "description": "Net value as a share of forecast cost.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Net Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Forecast"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Net Colour",
+          "dataType": "Text",
+          "expression": "VAR _n = [Story | Net Value]\nRETURN IF ( ISBLANK ( _n ), \"#666666\", IF ( _n < 0, \"#C0392B\", IF ( [Story | Net Margin %] < 0.2, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Net Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Net Margin %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Pareto PnL Headline",
+          "dataType": "Text",
+          "expression": "VAR _k = [Story | Projects For 80% Spend]\nVAR _m = [Story | Projects With Spend]\nVAR _top =\n    TOPN ( 1, ADDCOLUMNS ( ALLSELECTED ( DimProject[Name] ), \"@c\", [Finance | Forecast Cost] ), [@c], DESC )\nVAR _tshare = DIVIDE ( MAXX ( _top, [@c] ), CALCULATE ( [Finance | Forecast Cost], ALLSELECTED ( DimProject[Name] ) ) )\nVAR _o = [Story | Overrun]\nVAR _o3 = [Story | Top3 Overrun Share]\nVAR _v = [Story | Total Value]\nVAR _c = [Story | Plan Forecast]\nVAR _n = [Story | Net Value]\nVAR _p =\n    ADDCOLUMNS ( FILTER ( VALUES ( DimProject[Portfolio Name] ), DimProject[Portfolio Name] <> \"(No portfolio)\" ),\n        \"@n\", [Story | Net Value] )\nVAR _best = TOPN ( 1, _p, [@n], DESC )\nVAR _worst = TOPN ( 1, _p, [@n], ASC )\nRETURN\n    IF ( _m = 0, \"No forecast cost in the current selection.\",\n        FORMAT ( _k, \"0\" ) & \" of \" & FORMAT ( _m, \"0\" ) & \" projects (\" & IF ( ISBLANK ( DIVIDE ( _k, _m ) ), \"–\", FORMAT ( DIVIDE ( _k, _m ), \"0%\" ) )\n            & \") drive 80% of forecast spend; the largest, \" & MAXX ( _top, DimProject[Name] ) & \", alone takes \"\n            & IF ( ISBLANK ( _tshare ), \"–\", FORMAT ( _tshare, \"0%\" ) ) & \". \"\n            & IF ( COALESCE ( _o, 0 ) > 0,\n                \"Overruns total \" & IF ( ISBLANK ( _o ), \"–\", IF ( ABS ( _o ) >= 1000000, \"€\" & FORMAT ( _o / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _o ) >= 1000, \"€\" & FORMAT ( _o / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _o, \"#,0\" ) ) ) ) & \" and the top 3 projects carry \" & IF ( ISBLANK ( _o3 ), \"–\", FORMAT ( _o3, \"0%\" ) ) & \" of it. \",\n                \"No project is forecast over budget. \" )\n            & \"Lifetime P&L: value \" & IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, \"€\" & FORMAT ( _v / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _v ) >= 1000, \"€\" & FORMAT ( _v / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _v, \"#,0\" ) ) ) ) & \" against forecast cost \" & IF ( ISBLANK ( _c ), \"–\", IF ( ABS ( _c ) >= 1000000, \"€\" & FORMAT ( _c / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _c ) >= 1000, \"€\" & FORMAT ( _c / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _c, \"#,0\" ) ) ) ) & \"  →  net \"\n            & IF ( ISBLANK ( _n ), \"–\", IF ( ABS ( _n ) >= 1000000, \"€\" & FORMAT ( _n / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _n ) >= 1000, \"€\" & FORMAT ( _n / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _n, \"#,0\" ) ) ) ) & \" (\" & IF ( ISBLANK ( DIVIDE ( _n, _v ) ), \"–\", FORMAT ( DIVIDE ( _n, _v ), \"0%\" ) ) & \" margin)\"\n            & IF ( COUNTROWS ( _best ) > 0,\n                \"; strongest portfolio \" & MAXX ( _best, DimProject[Portfolio Name] ) & \" (\" & IF ( ISBLANK ( MAXX ( _best, [@n] ) ), \"–\", IF ( ABS ( MAXX ( _best, [@n] ) ) >= 1000000, \"€\" & FORMAT ( MAXX ( _best, [@n] ) / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( MAXX ( _best, [@n] ) ) >= 1000, \"€\" & FORMAT ( MAXX ( _best, [@n] ) / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( MAXX ( _best, [@n] ), \"#,0\" ) ) ) )\n                    & \"), weakest \" & MAXX ( _worst, DimProject[Portfolio Name] ) & \" (\" & IF ( ISBLANK ( MAXX ( _worst, [@n] ) ), \"–\", IF ( ABS ( MAXX ( _worst, [@n] ) ) >= 1000000, \"€\" & FORMAT ( MAXX ( _worst, [@n] ) / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( MAXX ( _worst, [@n] ) ) >= 1000, \"€\" & FORMAT ( MAXX ( _worst, [@n] ) / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( MAXX ( _worst, [@n] ), \"#,0\" ) ) ) ) & \").\",\n                \".\" )\n    )",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects For 80% Spend"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects With Spend"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Finance | Forecast Cost"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Overrun"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Top3 Overrun Share"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Total Value"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Forecast"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Net Value"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

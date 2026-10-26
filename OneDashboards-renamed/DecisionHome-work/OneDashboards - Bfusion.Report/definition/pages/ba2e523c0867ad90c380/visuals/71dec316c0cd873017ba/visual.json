@@ -105,12 +105,50 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Social Media Strategy'"
+                                "Value": "'Market Research'"
                               }
                             }
                           ]
                         ]
                       }
+                    }
+                  }
+                ]
+              }
+            },
+            "selfFilter": {
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "d",
+                    "Entity": "DimProject",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "Contains": {
+                        "Left": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "d"
+                              }
+                            },
+                            "Property": "Name"
+                          }
+                        },
+                        "Right": {
+                          "Literal": {
+                            "Value": "'market'"
+                          }
+                        }
+                      }
+                    },
+                    "Annotations": {
+                      "PowerBI.MParameterBehavior": 1
                     }
                   }
                 ]

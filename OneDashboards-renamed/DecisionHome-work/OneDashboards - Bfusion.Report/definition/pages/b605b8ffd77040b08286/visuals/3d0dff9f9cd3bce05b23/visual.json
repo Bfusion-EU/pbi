@@ -317,6 +317,109 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "bdc2f2ec76c795044ee0",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "d14fa4bf4e024012b702",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6eb668a282e00929876a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Impact"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b13024ece08172be5778",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Probability Category"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "353fe357553c336439b7",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "Exposure"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "bf1a3ce42b8d5aa1384a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Urgency"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b369492c75a975b4b6d1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "RiskMagnitude"
+          }
+        },
+        "type": "Categorical"
       }
     ]
   }

@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "DimProject.Portfolio Name",
-              "nativeQueryRef": "Portfolio Name"
+              "nativeQueryRef": "Portfolio",
+              "displayName": "Portfolio"
             },
             {
               "field": {
@@ -41,7 +42,8 @@
                 }
               },
               "queryRef": "DimProject.Program Name",
-              "nativeQueryRef": "Program Name"
+              "nativeQueryRef": "Program",
+              "displayName": "Program"
             },
             {
               "field": {
@@ -55,7 +57,8 @@
                 }
               },
               "queryRef": "DimProject.Name",
-              "nativeQueryRef": "Name"
+              "nativeQueryRef": "Plan",
+              "displayName": "Plan"
             }
           ]
         },
@@ -73,7 +76,23 @@
                 }
               },
               "queryRef": "_Measures.Finance | Budget vs Actuals Variance",
-              "nativeQueryRef": "Finance | Budget vs Actuals Variance"
+              "nativeQueryRef": "Budget Variance",
+              "displayName": "Budget Variance"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Cost",
+              "nativeQueryRef": "Budget",
+              "displayName": "Budget"
             },
             {
               "field": {
@@ -87,28 +106,44 @@
                 }
               },
               "queryRef": "_Measures.Finance | Actual Cost",
-              "nativeQueryRef": "Finance | Actual Cost"
+              "nativeQueryRef": "Actual Cost",
+              "displayName": "Actual Cost"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Cost - Forecast"
+                }
+              },
+              "queryRef": "_Measures.Finance | Cost - Forecast",
+              "nativeQueryRef": "Cost Forecast",
+              "displayName": "Cost Forecast"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Measures"
-                  }
-                },
-                "Property": "Finance | Budget vs Actuals Variance"
-              }
-            },
-            "direction": "Descending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -131,14 +166,14 @@
             "rootKey": {
               "expr": {
                 "Literal": {
-                  "Value": "'m:1'"
+                  "Value": "'m:0'"
                 }
               }
             },
             "expandedKeys": {
               "expr": {
                 "Literal": {
-                  "Value": "'[\"0\\u001f(blank)\\u001f(blank)\\u001f(blank)\",\"0\\u001fData Analytics Transformation\\u001fEnterprise Data Platform\\u001fData Warehouse Migration\",\"0\\u001fOperational Excellence\",\"0\\u001fOperational Excellence\\u001fSupply Chain Optimization\",\"0\\u001fData Analytics Transformation\\u001fEnterprise Data Platform\",\"0\\u001fBusiness Transformation\",\"0\\u001fBusiness Transformation\\u001fDigital Transformation\",\"0\\u001fProduct Innovation Portfolio\",\"0\\u001fProduct Innovation Portfolio\\u001fDigital Marketing Program\",\"0\\u001fCapital Investment\",\"0\\u001fCapital Investment\\u001fAsset Replacement\",\"0\\u001fBrand Management Portfolio\",\"0\\u001f\\u001fother\",\"0\\u001f\\u001fother\\u001f\\u001fother\"]'"
+                  "Value": "'[\"0\",\"0\\u001fData Analytics Transformation\",\"0\\u001fData Analytics Transformation\\u001fEnterprise Data Platform\"]'"
                 }
               }
             }
@@ -151,7 +186,7 @@
             "method": {
               "expr": {
                 "Literal": {
-                  "Value": "'pareto'"
+                  "Value": "'momentum'"
                 }
               }
             },
@@ -185,6 +220,52 @@
                       "Percent": 0
                     }
                   }
+                }
+              }
+            },
+            "maxMarks": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "insights": [
+        {
+          "properties": {
+            "showVerdict": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "root": [
+        {
+          "properties": {
+            "badDirectionOverrides": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Finance | Budget vs Actuals Variance=negative;Budget Variance=negative'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tree": [
+        {
+          "properties": {
+            "showMeasures": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

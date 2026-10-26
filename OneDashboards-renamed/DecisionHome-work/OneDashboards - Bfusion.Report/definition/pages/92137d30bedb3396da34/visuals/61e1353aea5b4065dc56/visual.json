@@ -1,0 +1,125 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "61e1353aea5b4065dc56",
+  "position": {
+    "x": 10.40650406504065,
+    "y": 0,
+    "z": 0,
+    "height": 995.12195121951208,
+    "width": 360.32520325203251,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "bfusionHierarchySlicerD3F81B6E92A4",
+    "query": {
+      "queryState": {
+        "hierarchy": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio Name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program Name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkwNjkyOTk4LCJleHAiOjE3OTI0NTQzOTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY19hZWUyZThhM2UwMzIiLCJ2ZXIiOjJ9.YaDbF3MTnNhEoyjt_cDlPWPZH_PLo-cDU1MCQ1_x6DEdT6LT5COdq4UfOR2OnNL-7mVJUEG61Dth2fc3cjxkKOObZV-mvgUGEgfajNPAXWiOLckmlWwMiXiBigk8wsy5cAtNT0OYOvm8PYPQKlQ67z8QFhUWdafKr98pwctpw-6YYgsHmfiQq4j5gGiB3Sr19MW7TTRdaOdNLo6o385DeQzSOXq5ZnbztRoAEg5QWIIDKg3Qo6UHHbiuQyi__KDTlwCSJHUNZN0o0y0mjbT3WDct1--ATCsqvMUnDExLLRx5_nX6dNaFH705GWH2N5d0OOo4htN7dbkng9Atn5tVDg'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "state": [
+        {
+          "properties": {
+            "expandedKeys": {
+              "expr": {
+                "Literal": {
+                  "Value": "'[\"Brand Management Portfolio\",\"Brand Management Portfolio\\u001fBrand Management\"]'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -3,10 +3,10 @@
   "name": "9d35c95db6bdd350aabe",
   "position": {
     "x": 0,
-    "y": 122.78481012658227,
+    "y": 123.856202276026,
     "z": 2000,
-    "height": 564.55696202531647,
-    "width": 1812.6582278481012,
+    "height": 759.29237047476806,
+    "width": 1981.6992364164159,
     "tabOrder": 1000
   },
   "visual": {
@@ -331,5 +331,275 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "4befa60c2040ce90ced7",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "AssignedResources"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f1ad86421090c3a695b8",
+        "ordinal": 1,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "BaselineStartDate"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2c58e00b3c512330bdaa",
+        "ordinal": 2,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "WorkType"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "DimTask",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "WorkType"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Tasks'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "0ed8a480c65cd701b01e",
+        "ordinal": 3,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "EndDate"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "23a1b07036ec50e007bb",
+        "ordinal": 4,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "65fbb6f2b797c8a09024",
+        "ordinal": 5,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "33596bcb93bd0108002c",
+        "ordinal": 6,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "525f233c0e63c1e7e97d",
+        "ordinal": 7,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "ParentTaskId"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "99f5e11c14204322ba47",
+        "ordinal": 8,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Predecessors"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1396dc3f223e261696b0",
+        "ordinal": 9,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "StartDate"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "99a0c6d02a08031b5084",
+        "ordinal": 10,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "Duration"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "8568f54dd700eec2a992",
+        "ordinal": 11,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "PercentDone"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "735b5378c098debb0026",
+        "ordinal": 12,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "Slack (days)"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "7c0fd8822d9505a703ea",
+        "ordinal": 13,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "TaskStatus"
+          }
+        },
+        "type": "Categorical"
+      }
+    ],
+    "filterSortOrder": "Custom"
   }
 }
