@@ -208,16 +208,35 @@ class Page:
         """Page-level filters (filter pane 'Filters on this page')."""
         self.page.setdefault("filterConfig", {"filters": []})["filters"].extend(filters)
 
-    def add(self, x, y, w, h, visual, filters=None, key=None):
+    def add(self, x, y, w, h, visual, filters=None, key=None, parent=None):
+        """Add a visual. x/y are ABSOLUTE page coordinates; when parent (a group name from add_group) is set they are
+        converted to group-relative, because PBIR stores child positions relative to the parent group (verified in Desktop)."""
         self.z += 100
         name = uid(self.id, key or len(self.visuals), visual.get("visualType"))
+        if parent:
+            pp = next(v for v in self.visuals if v["name"] == parent)["position"]
+            x, y = x - pp["x"], y - pp["y"]
         vc = {"$schema": VC_SCHEMA, "name": name,
               "position": {"x": x, "y": y, "z": self.z, "width": w, "height": h, "tabOrder": self.z},
               "visual": visual}
         if filters:
             vc["filterConfig"] = {"filters": filters}
+        if parent:
+            vc["parentGroupName"] = parent
         self.visuals.append(vc)
         return vc
+
+    def add_group(self, x, y, w, h, display_name, key, hidden=False):
+        """Visual group container (no visual of its own). Children pass parent=<returned name>."""
+        self.z += 100
+        name = uid(self.id, key, "group")
+        vc = {"$schema": VC_SCHEMA, "name": name,
+              "position": {"x": x, "y": y, "z": self.z, "width": w, "height": h, "tabOrder": self.z},
+              "visualGroup": {"displayName": display_name, "groupMode": "ScaleMode"}}
+        if hidden:
+            vc["isHidden"] = True
+        self.visuals.append(vc)
+        return name
 
 
 # ---------- visual factories ----------
@@ -295,6 +314,40 @@ def home_icon_button(target_page, colour=ORANGE):
                 "border": [{"properties": {"show": b(False)}}],
                 "background": [{"properties": {"show": b(False)}}]},
             "drillFilterOtherVisuals": True}
+
+BOOKMARK_SCHEMA = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json"
+BOOKMARKS = []  # filled by page builders, written by build.py
+
+
+def bookmark(display_name, key, page_id, groups_hidden):
+    """Display-only bookmark: shows/hides visual groups on one page; data and slicers untouched."""
+    name = uid("bookmark", key)
+    BOOKMARKS.append({
+        "$schema": BOOKMARK_SCHEMA, "displayName": display_name, "name": name,
+        "options": {"suppressData": True, "applyOnlyToTargetVisuals": True,
+                    "targetVisualNames": list(groups_hidden)},
+        "explorationState": {"version": "1.3", "activeSection": page_id,
+                             "sections": {page_id: {"visualContainers": {},
+                                                    "visualContainerGroups": {g: {"isHidden": h}
+                                                                              for g, h in groups_hidden.items()}}}}})
+    return name
+
+
+def _relink(btn, props):
+    btn["visualContainerObjects"]["visualLink"] = [{"properties": props}]
+    return btn
+
+
+def bookmark_button(text, bookmark_name, tooltip="", **kw):
+    return _relink(nav_button(text, "", tooltip, **kw),
+                   {"show": b(True), "type": s("Bookmark"), "bookmark": s(bookmark_name), "tooltip": s(tooltip)})
+
+
+def drill_button(text, target_page, tooltip="", **kw):
+    return _relink(nav_button(text, "", tooltip, **kw),
+                   {"show": b(True), "type": s("Drillthrough"), "drillthroughSection": s(target_page),
+                    "tooltip": s(tooltip)})
+
 
 
 def image(item_name, display_name):

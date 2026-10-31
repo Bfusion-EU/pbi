@@ -126,6 +126,13 @@ def build():
     dump(OUT / "definition" / "pages" / "pages.json",
          {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
           "pageOrder": [pg.id for pg in built], "activePageName": built[0].id})
+    if pbir.BOOKMARKS:
+        bdir = OUT / "definition" / "bookmarks"
+        for bm in pbir.BOOKMARKS:
+            dump(bdir / f"{bm['name']}.bookmark.json", bm)
+        dump(bdir / "bookmarks.json",
+             {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+              "items": [{"name": bm["name"]} for bm in pbir.BOOKMARKS]})
     print(f"built {len(built)} pages, {sum(len(p.visuals) for p in built)} visuals, {len(MEASURES)} story measures -> {OUT}")
     return built
 
@@ -226,7 +233,7 @@ def check(built):
             p = vc["position"]
             if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
                 errors += 1
-                print(f"LAYOUT {pg.display}: {vc['visual']['visualType']} at {p} outside page/footer")
+                print(f"LAYOUT {pg.display}: {vc.get('visual', {}).get('visualType', 'group')} at {p} outside page/footer")
     print("OK" if errors == 0 else f"{errors} problem(s)")
     return errors
 

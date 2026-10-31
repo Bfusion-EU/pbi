@@ -859,7 +859,9 @@ def filter_real_projects(story_pages):
     FactStatusReport rows of non-project plans land — can never show up as a '(Blank)' bar or row."""
     for pg in story_pages:
         for vc in pg.visuals:
-            v = vc["visual"]
+            v = vc.get("visual")
+            if v is None:  # visual group container
+                continue
             if v.get("visualType") not in GROUPING_TYPES:
                 continue
             if not any(r.startswith("DimProject.") for r in _refs(v)):
@@ -878,7 +880,9 @@ def attach_tooltips(story_pages):
     Visuals that also group by a DimTask or FactPlanProcessStep column get no project tooltip."""
     for pg in story_pages:
         for vc in pg.visuals:
-            v = vc["visual"]
+            v = vc.get("visual")
+            if v is None:  # visual group container
+                continue
             if v.get("visualType") not in TOOLTIP_TYPES:
                 continue
             refs = _refs(v)
