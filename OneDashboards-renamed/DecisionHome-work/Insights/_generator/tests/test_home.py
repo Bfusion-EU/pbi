@@ -16,6 +16,14 @@ HOME = (["Greeting", "Refreshed", "Briefing", "Briefing Reasons", "Act Score", "
         + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS])
 
 
+REMOVED = [f"Line {s}" for s in ["Portfolio", "Financials", "Resources", "Schedule", "Risk", "Benefits", "Timesheets",
+                                  "Governance"]] + [f"Answer {a}" for a in ["Finance", "Schedule", "Resources", "Benefits"]]           + ["Colour Timesheets"]
+
+
+def test_removed_measures_gone():
+    assert [n for n in REMOVED if f"Story | Home · {n}" in NAMES] == []
+
+
 def test_home_measures_registered():
     missing = [n for n in HOME if f"Story | Home · {n}" not in NAMES]
     assert missing == []
@@ -87,10 +95,6 @@ def test_home_slicers_sync():
     assert all("syncGroup" in vc["visual"] for vc in sl)
 
 
-def test_body_area_fits():
-    assert ext_home.BODY_Y >= 388 + 12 and ext_home.BODY_Y + 588 <= 988
-
-
 def _bm(name):
     return next(bm for bm in pbir.BOOKMARKS if bm["displayName"] == name)
 
@@ -109,7 +113,7 @@ def test_two_view_groups_and_bookmarks():
     assert not groups["PMO view"].get("isHidden")
     assert {bm["displayName"] for bm in pbir.BOOKMARKS} == {"Home · PMO view", "Home · Executive view"}
     children = [vc for vc in pg.visuals if vc.get("parentGroupName")]
-    assert len(children) > 20
+    assert len(children) > 15
 
 
 VTYPES = ("shape", "textbox", "tableEx", "actionButton", "card", "lineChart", "clusteredBarChart", "image", "slicer")
@@ -123,19 +127,62 @@ def _parent(pg, key):
     return hits[0].get("parentGroupName")
 
 
-def test_children_belong_to_the_right_group():
-    pbir.BOOKMARKS.clear()
+CARD_KEYS = ["fin", "sch", "res", "risk", "port", "ben", "sr", "gov"]
+# visual names are uid(page, key, visualType) hashes; _name() (already in this file) rebuilds them
+PART_TYPE = {"bg": "shape", "icon": "image", "title": "textbox", "pill": "card", "lbl": "textbox",
+             "go": "actionButton"}
+
+
+def _vc(pg, key, vtype):
+    return next((vc for vc in pg.visuals if vc["name"] == _name(pg, key, vtype)), None)
+
+
+def test_eight_subject_cards_with_five_rows():
     pg = _home()
-    pmo, ex = (pbir.uid(pg.id, k, "group") for k in ("grp_pmo", "grp_exec"))
-    for k in ["act_bg", "act_title", "act_tbl", "act_drill", "act_hint", "next_title", "next_tbl", "area_bg0",
-              "area_lbl7", "area_stripe3", "area_line5", "area_link0_0", "view_pill_pmo"]:
-        assert _parent(pg, k) == pmo, k
-    for k in ["dec_bg0", "dec_bg2", "dec_stripe1", "dec0", "dec_go1", "ans_bg3", "ans_q2", "ans3", "ans_go0",
-              "view_pill_exec"]:
-        assert _parent(pg, k) == ex, k
-    # switch buttons and the briefing link stay on top level
-    for k in ("switch0", "switch1", "brief_link"):
-        assert _parent(pg, k) is None, k
+    for c in CARD_KEYS:
+        for part, vtype in PART_TYPE.items():
+            assert _vc(pg, f"card_{c}_{part}", vtype) is not None, (c, part)
+        for part in ("num", "sent"):
+            assert _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL) is not None, (c, part)
+
+
+def test_cards_align_in_grid():
+    pg = _home()
+    pos = [_vc(pg, f"card_{c}_bg", "shape")["position"] for c in CARD_KEYS]
+    assert {round(p["x"]) for p in pos} == {104, 417, 730, 1043}
+    assert {round(p["y"]) for p in pos} == {160, 582}
+    assert {(round(p["width"]), round(p["height"])) for p in pos} == {(297, 406)}
+
+
+def test_only_right_column_is_grouped():
+    pg = _home()
+    groups = {vc["name"]: vc for vc in pg.visuals if "visualGroup" in vc}
+    assert {g["visualGroup"]["displayName"] for g in groups.values()} == {"PMO view", "Executive view"}
+    for vc in pg.visuals:
+        if vc.get("parentGroupName"):
+            gx = groups[vc["parentGroupName"]]["position"]["x"]
+            assert gx + vc["position"]["x"] >= 1356 - 0.5, vc["name"]
+
+
+def test_footer_links_target_pages():
+    pg = _home()
+    targets = {p["navigationSection"]["expr"]["Literal"]["Value"].strip("'")
+               for p in _links(pg) if "navigationSection" in p}
+    for key in ["finance", "finance2", "schedule", "gantt", "baseline", "resources", "timesheets", "resource",
+                "risk", "lifecycle", "scenarios", "onepager", "benefits", "status", "governance"]:
+        assert pages.PID[key] in targets, key
+
+
+def test_children_belong_to_the_right_group():
+    pg = _home()
+    gid = {vc["visualGroup"]["displayName"]: vc["name"] for vc in pg.visuals if "visualGroup" in vc}
+    pmo = [("act_bg", "shape"), ("act_title", "textbox"), ("act_tbl", "tableEx"), ("act_drill", "actionButton"),
+           ("next_title", "textbox"), ("next_tbl", "tableEx"), ("view_pill_pmo", "shape")]
+    exe = [(f"dec_bg{k}", "shape") for k in range(3)] + [(f"dec_go{k}", "actionButton") for k in range(3)]           + [("view_pill_exec", "shape")]
+    for key, vt in pmo:
+        assert _vc(pg, key, vt).get("parentGroupName") == gid["PMO view"], key
+    for key, vt in exe:
+        assert _vc(pg, key, vt).get("parentGroupName") == gid["Executive view"], key
 
 
 def test_bookmarks_hide_the_other_view():
@@ -160,7 +207,6 @@ def test_switch_buttons_target_their_bookmark():
     by = {vc["name"]: vc for vc in pg.visuals}
     assert _bookmark_target(by[pbir.uid(pg.id, "switch0", "actionButton")]) == _bm("Home · PMO view")["name"]
     assert _bookmark_target(by[pbir.uid(pg.id, "switch1", "actionButton")]) == _bm("Home · Executive view")["name"]
-    assert _bookmark_target(by[pbir.uid(pg.id, "brief_link", "actionButton")]) == _bm("Home · PMO view")["name"]
 
 
 def test_next30_due_is_a_short_date_measure():
@@ -185,15 +231,6 @@ def test_all_pages_reachable_from_home():
     assert pages.PID["project"] in targets  # drill-through to the One-Pager twin
 
 
-def test_briefing_link_targets_pmo_bookmark():
-    pbir.BOOKMARKS.clear()
-    pg = _home()
-    pmo = next(bm for bm in pbir.BOOKMARKS if bm["displayName"] == "Home · PMO view")["name"]
-    hits = [p for p in _links(pg) if p.get("bookmark", {}).get("expr", {}).get("Literal", {}).get("Value", "").strip("'") == pmo]
-    # one switch button + one briefing link point at the PMO bookmark
-    assert len(hits) == 2
-
-
 @pytest.fixture(autouse=True)
 def _clear_bookmarks():
     pbir.BOOKMARKS.clear()
@@ -206,18 +243,9 @@ def test_z_order_background_groups_buttons():
     z = {vc["name"]: vc["position"]["z"] for vc in pg.visuals}
     bg = z[_name(pg, "switch_bg", "shape")]
     groups = [z[_name(pg, "grp_pmo", "group")], z[_name(pg, "grp_exec", "group")]]
-    buttons = [z[_name(pg, "switch0", "actionButton")], z[_name(pg, "switch1", "actionButton")],
-               z[_name(pg, "brief_link", "actionButton")]]
+    buttons = [z[_name(pg, "switch0", "actionButton")], z[_name(pg, "switch1", "actionButton")]]
     assert bg < min(groups)
     assert max(groups) < min(buttons)
-
-
-def test_stripes_inset_from_rounded_corners():
-    pg = _home()
-    by_name = {vc["name"]: vc for vc in pg.visuals}
-    for key, bgkey in [("area_stripe0", "area_bg0"), ("dec_stripe0", "dec_bg0"), ("ans_stripe0", "ans_bg0")]:
-        st_, bg = by_name[_name(pg, key, "shape")]["position"], by_name[_name(pg, bgkey, "shape")]["position"]
-        assert st_["x"] - bg["x"] == 14 and (bg["x"] + bg["width"]) - (st_["x"] + st_["width"]) == 14
 
 
 def test_briefing_breaks_down_act_count():

@@ -6,7 +6,7 @@ Layout: see build() (Task 4/5). Spec: docs/superpowers/specs/2026-10-31-insights
 """
 import pages
 import pbir
-from pbir import (ORANGE, GREY, Page, card, headline, chart, textbox, st, shape, image, slicer, nav_button,
+from pbir import (ORANGE, GREY, Page, headline, chart, textbox, st, shape, image, slicer, nav_button,
                   P, M, C, s, b, n, col_solid, measure_colour, measure_fill, legend)
 from story_measures import add, T, D, I, money
 from ext_status import STALE_DAYS  # same threshold as Story | Status · Not Reporting
@@ -137,15 +137,6 @@ _add("Colour Trust", T, f"""
 VAR _g = [PMO | Governance Score]
 RETURN IF ( ISBLANK ( _g ), BLANK (), IF ( _g >= 90, "{C_TEAL}", IF ( _g >= 75, "{C_AMBER}", "{C_RED}" ) ) )""",
      desc="Same thresholds as PMO | Governance RAG Colour (90 / 75), light-on-dark colours.", folder=_COL)
-# ---------------------------------------------------------------- area tiles
-_add("Line Portfolio", T, 'IF ( NOT ISBLANK ( [Story | Aligned Budget %] ), FORMAT ( [Story | Aligned Budget %], "0%" ) & " budget aligned" )')
-_add("Line Financials", T, 'FORMAT ( [Story | Projects Over Budget] + 0, "0" ) & " over EAC"')
-_add("Line Resources", T, 'FORMAT ( [Story | Over-allocated People] + 0, "0" ) & " over 100% (in view)"')
-_add("Line Schedule", T, 'FORMAT ( [Story | Baseline · Late Projects] + 0, "0" ) & " slipping"')
-_add("Line Risk", T, 'FORMAT ( [Story | Critical High Risks] + 0, "0" ) & " critical"')
-_add("Line Benefits", T, 'IF ( ISBLANK ( [Story | Benefit Cost Ratio] ), "no benefits plan", "Benefit/cost " & FORMAT ( [Story | Benefit Cost Ratio], "0.0" ) )')
-_add("Line Timesheets", T, 'FORMAT ( [Story | TS Status · Missing Timesheets] + 0, "0" ) & " missing"')
-_add("Line Governance", T, 'IF ( NOT ISBLANK ( [PMO | Governance Score] ), "Score " & FORMAT ( [PMO | Governance Score], "0" ) )')
 _add("Colour Portfolio", T, f"""
 VAR _p = [Story | Aligned Budget %]
 RETURN IF ( ISBLANK ( _p ), "{GREY}", IF ( _p >= 0.8, "{C_TEAL}", IF ( _p >= 0.6, "{C_AMBER}", "{C_RED}" ) ) )""",
@@ -156,15 +147,6 @@ RETURN IF ( _late10 > 0, "{C_RED}", IF ( [Story | Baseline · Late Projects] > 0
      folder=FOLDER + "\\Colours")
 _add("Colour Risk", T, f'IF ( [Story | Critical High Risks] > 0, "{C_RED}", "{C_TEAL}" )', folder=FOLDER + "\\Colours")
 _add("Colour Benefits", T, f'IF ( [Story | Benefit Cost Ratio] >= 1, "{C_TEAL}", "{C_AMBER}" )', folder=FOLDER + "\\Colours")
-_add("Colour Timesheets", T, f'IF ( [Story | TS Status · Missing Timesheets] > 0, "{C_AMBER}", "{C_TEAL}" )',
-     folder=FOLDER + "\\Colours")
-
-# ---------------------------------------------------------------- executive answers: first sentence of each headline
-FIRST = 'VAR _h = [{src}] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( ". ", _h & ". " ) ) )'
-for _a, _src in [("Finance", "Story | Finance Headline"), ("Schedule", "Story | Schedule Headline"),
-                 ("Resources", "Story | Resource Headline"), ("Benefits", "Story | Benefits Headline")]:
-    _add(f"Answer {_a}", T, FIRST.format(src=_src))
-
 
 _add("Colour Status", T, f"""
 VAR _w = [Story | Status · Overall Worsened] + 0
@@ -241,7 +223,6 @@ RETURN SWITCH ( _c, "{C_RED}", "#3A1E22", "{C_AMBER}", "#3A2F18", "{C_TEAL}", "#
 CANVAS, PANEL, INK2, LABEL = "#141C2F", "#1B2540", "#E8ECF4", "#8C98B3"
 X0, X1 = 104, 1784          # body left / right edge
 CHART_H = 110              # progress-bar chart height (Desktop min ~100px)
-BODY_Y = 400                # top of the view bodies
 RAIL = [("cc", "home", "Command center"),
         ("exec", "exec", "1 Executive summary"),
         ("portfolio", "portfolio", "2 Portfolio — Gates · Scenarios · Project One-Pager"),
@@ -267,15 +248,6 @@ def ghost_link(target_key, tooltip):
     return v
 
 
-def dark_card(measure, label, colour_measure=None, colour=INK2, size=26):
-    v = card(measure, label, value_colour=colour, colour_measure=colour_measure, size=size, dark=True)
-    vco = v["visualContainerObjects"]
-    vco["title"] = pbir.title(label, 10, LABEL)
-    vco["background"] = [{"properties": {"show": b(False)}}]
-    vco["border"] = [{"properties": {"show": b(False)}}]
-    return v
-
-
 def text_line(measure, size=11, colour=INK2, bg=PANEL):
     v = headline(measure, bg=bg, border=bg, size=size, colour=colour)
     # card chrome padding eats the text box; zero it so short single-line cards do not clip
@@ -286,16 +258,16 @@ def text_line(measure, size=11, colour=INK2, bg=PANEL):
 VALUE_VISUAL = "tableEx"
 
 
-def _cell(measure, size, colour_measure=None, colour=INK2):
+def _cell(measure, size, colour_measure=None, colour=INK2, bg=PANEL):
     """One-cell table: left-aligned, wrapping text; header blended into the card (panel colour, 1pt)."""
     fc = measure_colour(colour_measure) if colour_measure else col_solid(colour)
-    obj = {"columnHeaders": [{"properties": {"backColor": col_solid(PANEL), "fontColor": col_solid(PANEL),
+    obj = {"columnHeaders": [{"properties": {"backColor": col_solid(bg), "fontColor": col_solid(bg),
                                              "fontSize": n(1), "outline": s("None")}}],
-           "values": [{"properties": {"fontSize": n(size), "fontColorPrimary": fc, "backColorPrimary": col_solid(PANEL),
-                                      "fontColorSecondary": fc, "backColorSecondary": col_solid(PANEL),
+           "values": [{"properties": {"fontSize": n(size), "fontColorPrimary": fc, "backColorPrimary": col_solid(bg),
+                                      "fontColorSecondary": fc, "backColorSecondary": col_solid(bg),
                                       "wordWrap": b(True), "outline": s("None")}}],
            "grid": [{"properties": {"gridHorizontal": b(False), "gridVertical": b(False), "rowPadding": n(0),
-                                    "outlineColor": col_solid(PANEL)}}],
+                                    "outlineColor": col_solid(bg)}}],
            "total": [{"properties": {"totals": b(False)}}]}
     if colour_measure:
         obj["values"].append(pbir.cf_font(M(measure), colour_measure))
@@ -311,8 +283,8 @@ def value_cell(measure, colour_measure=None, size=28):
     return _cell(measure, size, colour_measure)
 
 
-def text_cell(measure, size=11, colour=INK2, colour_measure=None):
-    return _cell(measure, size, colour_measure, colour)
+def text_cell(measure, size=11, colour=INK2, colour_measure=None, bg=PANEL):
+    return _cell(measure, size, colour_measure, colour, bg)
 
 def fx_fill(measure_field, colour_measure):
     """Series fill driven by a colour measure (fx field value), as the stripes do."""
@@ -379,50 +351,40 @@ def build_top(pg):
     pg.add(1370, 14, 180, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
 
-def build_pulse(pg):
-    # briefing (orange) + two lead KPIs with sparkline and change chip
-    panel(pg, X0, 92, 640, 150, "brief_bg", fill=ORANGE)
-    pg.add(X0 + 16, 96, 608, 22, textbox([[("This week's briefing", st("Segoe UI", 10, "#FFFFFF"))]]), key="brief_lbl")
-    # zero-padding text line, ~100px tall so the whole sentence wraps instead of ending in an ellipsis
-    pg.add(X0 + 16, 118, 608, 98, text_line(hm("Briefing"), size=13, colour="#FFFFFF", bg=ORANGE), key="brief")
-    for k, (m, label, cm, series, chg, col) in enumerate([
-            ("Story | EAC Variance %", "EAC vs budget", hm("Colour EAC"), hm("EAC Var % (reports)"),
-             hm("EAC Change"), hm("Colour EAC")),
-            ("Story | On Track %", "On track", None, hm("On Track % (reports)"), hm("On Track Change"), C_TEAL)]):
-        x = X0 + 656 + k * 520
-        panel(pg, x, 92, 504, 150, f"lead_bg{k}")
-        pg.add(x + 8, 96, 250, 104, dark_card(m, label, colour_measure=cm, size=30), key=f"lead{k}")
-        pg.add(x + 270, 100, 220, 44, text_line(chg, size=11, colour=LABEL), key=f"lead_chg{k}")
-        pg.add(x + 270, 148, 226, 88, sparkline(series, col), key=f"lead_spark{k}")
-        pg.add(x, 92, 504, 150, ghost_link("finance" if k == 0 else "exec", label), key=f"lead_go{k}")
-    # four small KPIs
-    small = [("Story | Active Projects", "Active projects", None, None, "portfolio"),
-             ("Story | Utilisation %", "Utilisation", hm("Colour Util"), (0, 1, hm("Colour Util")), "resources"),
-             ("Story | Critical High Risks", "Critical risks", None, None, "risk"),
-             ("PMO | Governance Score", "Data trust", hm("Colour Trust"), (0, 100, hm("Colour Trust")), "governance")]
-    w = (X1 - X0 - 3 * 16) / 4
-    for k, (m, label, cm, bar, target) in enumerate(small):
-        x = round(X0 + k * (w + 16), 2)
-        panel(pg, x, 254, round(w, 2), 134, f"kpi_bg{k}")
-        pg.add(x + 8, 258, round(w - 16, 2), 92, dark_card(m, label, colour_measure=cm), key=f"kpi{k}")
-        if bar:
-            progress(pg, x + 16, 356, round(w - 32, 2), 16, m, bar[0], bar[1], bar[2], f"kpi_bar{k}")
-        pg.add(x, 254, round(w, 2), 134, ghost_link(target, label), key=f"kpi_go{k}")
+GRID_X0, GRID_Y, COL_W, ROW_H, GAP = 104, (160, 582), 297, 406, 16
+RIGHT_X, RIGHT_W, RIGHT_Y, RIGHT_H = 1356, 428, 160, 828
 
-
-AREAS = [  # (label, line measure, colour measure, [(link text, page key)])
-    ("Portfolio", "Line Portfolio", hm("Colour Portfolio"), [("Portfolio", "portfolio"), ("Gates", "lifecycle"),
-                                                             ("Scenarios", "scenarios"), ("Project", "onepager")]),
-    ("Financials", "Line Financials", hm("Colour EAC"), [("Spend", "finance"), ("Pareto", "finance2")]),
-    ("Resources", "Line Resources", hm("Colour Util"), [("People", "resources"), ("Time", "timesheets"),
-                                                           ("Person", "resource")]),
-    ("Schedule", "Line Schedule", hm("Colour Schedule"), [("Schedule", "schedule"), ("Gantt", "gantt"),
-                                                          ("Trend", "status"), ("Baseline", "baseline")]),
-    ("Risk", "Line Risk", hm("Colour Risk"), [("Risk", "risk")]),
-    ("Benefits", "Line Benefits", hm("Colour Benefits"), [("Benefits", "benefits")]),
-    ("Timesheets", "Line Timesheets", hm("Colour Timesheets"), [("TS status", "tsstatus")]),
-    ("Governance", "Line Governance", hm("Colour Trust"), [("Governance", "governance")]),
+# (key, subject, icon, number measure, label, row-3 kind, row-3 arg, colour measure, card link page,
+#  footer [(text, page)])
+SUBJECTS_LAYOUT = [
+    ("fin", "Financials", "finance", "Story | Projects Over Budget", "projects over EAC",
+     "spark", hm("EAC Var % (reports)"), hm("Colour EAC"), "finance", [("Spend", "finance"), ("Pareto", "finance2")]),
+    ("sch", "Schedule", "schedule", "Story | Baseline · Late Projects", "slipping vs baseline",
+     "spark", hm("On Track % (reports)"), hm("Colour Schedule"), "schedule",
+     [("Schedule", "schedule"), ("Gantt", "gantt"), ("Baseline", "baseline")]),
+    ("res", "Resources", "resources", "Story | Utilisation %", "utilisation",
+     "bar", (0, 1), hm("Colour Util"), "resources",
+     [("People", "resources"), ("Time", "timesheets"), ("Sheets", "tsstatus"), ("Person", "resource")]),
+    ("risk", "Risk", "risk", "Story | Critical High Risks", "critical risks",
+     None, None, hm("Colour Risk"), "risk", [("Risk", "risk")]),
+    ("port", "Portfolio", "portfolio", "Story | Aligned Budget %", "budget aligned",
+     "bar", (0, 1), hm("Colour Portfolio"), "portfolio",
+     [("Gates", "lifecycle"), ("Scenarios", "scenarios"), ("Project", "onepager")]),
+    ("ben", "Benefits", "benefits", "Story | Benefit Cost Ratio", "benefit / cost",
+     None, None, hm("Colour Benefits"), "benefits", [("Benefits", "benefits")]),
+    ("sr", "Status reports", "exec", "Story | Status · Overall Worsened", "worse since last report",
+     None, None, hm("Colour Status"), "status", [("Trend", "status")]),
+    ("gov", "Governance", "governance", "PMO | Governance Score", "data trust score",
+     "bar", (0, 100), hm("Colour Trust"), "governance", [("Governance", "governance")]),
 ]
+_PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk": "Risk", "port": "Portfolio",
+              "ben": "Benefits", "sr": "Status", "gov": "Governance"}
+
+# Row offsets inside a card (y relative to the card top). Every cell is ~16 px taller than its text needs.
+R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 14, 38, 88, 126, 142, 100, 190, 250, 100
+R_RULE, R_FOOT = ROW_H - 52, ROW_H - 44
+CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
+ACT_H = 368                # Act-now table: header + 8 rows
 
 
 def link_chip(text, target):
@@ -430,107 +392,118 @@ def link_chip(text, target):
                       press=ORANGE, font="#F29A6B", size=9, align="left", margin=4)
 
 
-def stripe(measure):
-    """Thin status stripe: a rectangle whose fill is the colour measure (fx field value). Callers inset it by the
-    14 px panel radius on both sides so it does not poke past the rounded corners."""
-    v = shape(PANEL)
-    v["objects"]["fill"] = [{"properties": {"show": b(True), "fillColor": measure_colour(measure), "transparency": n(0)},
-                             "selector": {"id": "default"}}]
-    return v
-
-
 def view_pill(pg, grp, k, key):
     """Orange rounded pill behind a view-switch button; lives in the view's group so it shows only for that view."""
     pg.add(1586 + k * 94, 30, 90, 32, shape(ORANGE, radius=16), key=key, parent=grp)
 
 
-def build_pmo(pg, grp):
+def pill(measure_word, measure_fill_name):
+    v = text_line(measure_word, size=9, colour=INK2, bg="#26314F")
+    v["visualContainerObjects"]["background"] = [{"properties": {"show": b(True),
+                                                                 "color": measure_colour(measure_fill_name)}}]
+    return v
+
+
+def subject_card(pg, x, y, spec):
+    key, name, icon, num, label, kind, arg, colour, link, footer = spec
+    p = f"card_{key}"
+    panel(pg, x, y, COL_W, ROW_H, f"{p}_bg")
+    pg.add(x + 16, y + R_HEAD + 2, 20, 20, image(f"rail-{icon}-grey.png", f"{name} icon"), key=f"{p}_icon")
+    pg.add(x + 44, y + R_HEAD, 170, 24, textbox([[(name, st("Segoe UI Semibold", 11, INK2, True))]]), key=f"{p}_title")
+    pg.add(x + COL_W - 76, y + R_HEAD + 2, 60, 22, pill(hm(f"Pill {_PILL_NAME[key]}"), hm(f"Pill Fill {_PILL_NAME[key]}")),
+           key=f"{p}_pill")
+    pg.add(x + CELL_X, y + R_NUM, COL_W - CELL_X - 14, NUM_H, value_cell(num, colour_measure=colour, size=28), key=f"{p}_num")
+    pg.add(x + 16, y + R_LBL, COL_W - 32, 22, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"{p}_lbl")
+    if kind == "spark":
+        pg.add(x + 8, y + R_ROW3, COL_W - 16, ROW3_H, sparkline(arg, colour), key=f"{p}_spark")
+    elif kind == "bar":
+        progress(pg, x + 16, y + R_BAR, COL_W - 32, 12, num, arg[0], arg[1], colour, f"{p}_bar")
+    pg.add(x + CELL_X, y + R_SENT, COL_W - CELL_X - 14, SENT_H, text_cell(hm(f"Insight {_PILL_NAME[key]}"), size=11), key=f"{p}_sent")
+    pg.add(x + 16, y + R_RULE, COL_W - 32, 1, shape("#26314F"), key=f"{p}_rule")
+    # whole-card link first, footer links on top of it
+    pg.add(x, y, COL_W, R_RULE - 4, ghost_link(link, name), key=f"{p}_go")
+    cw = (COL_W - 32 - 6 * (len(footer) - 1)) / len(footer)
+    for j, (txt, target) in enumerate(footer):
+        pg.add(round(x + 16 + j * (cw + 6), 2), y + R_FOOT, round(min(cw, 110), 2), 28, link_chip(txt, target),
+               key=f"{p}_ft{j}")
+
+
+def build_brief(pg):
+    panel(pg, GRID_X0, 86, X1 - GRID_X0, 66, "brief_bg", fill=ORANGE)
+    pg.add(GRID_X0 + 16, 88, 700, 62, text_cell(hm("Briefing"), size=14, colour="#FFFFFF", bg=ORANGE), key="brief")
+    pg.add(GRID_X0 + 740, 88, X1 - GRID_X0 - 756, 62,
+           text_cell(hm("Briefing Reasons"), size=11, colour="#FFFFFF", bg=ORANGE), key="brief_reasons")
+
+
+def build_cards(pg):
+    for k, spec in enumerate(SUBJECTS_LAYOUT):
+        x = GRID_X0 + (k % 4) * (COL_W + GAP)
+        y = GRID_Y[k // 4]
+        subject_card(pg, x, y, spec)
+
+
+def build_right_pmo(pg, grp):
     view_pill(pg, grp, 0, "view_pill_pmo")
-    # left: act now + next 30 days
-    lw = 820
-    panel(pg, X0, BODY_Y, lw, 588, "act_bg", parent=grp)
-    pg.add(X0 + 16, BODY_Y + 8, 400, 30, textbox([[("Act now", st("Segoe UI Semibold", 14, INK2, True)),
-                                                   ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
+    x, y = RIGHT_X, RIGHT_Y
+    panel(pg, x, y, RIGHT_W, RIGHT_H, "act_bg", parent=grp)
+    pg.add(x + 16, y + 12, 380, 28, textbox([[("Act now", st("Segoe UI Semibold", 13, INK2, True)),
+                                              ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
            key="act_title", parent=grp)
     obj = pbir.table_style(10, header_bg=PANEL)
     obj["values"] = [{"properties": {"fontSize": n(10), "fontColorPrimary": col_solid(INK2),
                                      "backColorPrimary": col_solid(PANEL), "fontColorSecondary": col_solid(INK2),
-                                     "backColorSecondary": col_solid(PANEL)}},
+                                     "backColorSecondary": col_solid(PANEL), "wordWrap": b(True)}},
                      pbir.cf_font(M(hm("Act Reason")), hm("Act Colour"))]
     obj["grid"] = [{"properties": {"gridHorizontal": b(True), "gridHorizontalColor": col_solid("#26314F"),
                                    "rowPadding": n(6)}}]
     obj["total"] = [{"properties": {"totals": b(False)}}]
+    fields = [pages.DP("Name"), M(hm("Act Reason")), M(hm("Act Score"))]
+    # fixed column widths: auto-sizing pushes the Impact column off to a horizontal scrollbar
+    obj["columnWidth"] = [{"properties": {"value": n(w)}, "selector": {"metadata": pbir.qref(f)}}
+                          for f, w in zip(fields, (146, 146, 58))]
     tbl = chart("tableEx", {"Values": [P(pages.DP("Name"), "Project"), P(M(hm("Act Reason")), "Why"),
-                                       P(pages.DP("Manager_Value"), "Owner"), P(M(hm("Act Score")), "Impact")]},
+                                       P(M(hm("Act Score")), "Impact")]},
                 "", obj, sort=[(M(hm("Act Score")), "Descending")])
-    tbl["visualContainerObjects"]["title"] = [{"properties": {"show": b(False)}}]
-    tbl["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
-    tbl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
-    pg.add(X0 + 8, BODY_Y + 42, lw - 16, 318, tbl, key="act_tbl", parent=grp, filters=[pages.REAL_PROJECTS])
-    pg.add(X0 + 16, BODY_Y + 364, 260, 34, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
+    for o in ("title", "background", "border"):
+        tbl["visualContainerObjects"][o] = [{"properties": {"show": b(False)}}]
+    pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, tbl, key="act_tbl", parent=grp, filters=[pages.REAL_PROJECTS])
+    pg.add(x + 16, y + 44 + ACT_H + 8, 200, 32, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
            "Select a project row first", fill=ORANGE, size=10), key="act_drill", parent=grp)
-    pg.add(X0 + 290, BODY_Y + 368, 500, 26, textbox([[("Select a row, then open — or right-click › Drill through",
-                                                      st("Segoe UI", 9, LABEL))]]), key="act_hint", parent=grp)
-    pg.add(X0 + 16, BODY_Y + 400, 400, 28, textbox([[("Next 30 days", st("Segoe UI Semibold", 13, INK2, True))]]),
+    pg.add(x + 224, y + 44 + ACT_H + 12, RIGHT_W - 240, 26, textbox([[("or right-click › Drill through", st("Segoe UI", 9, LABEL))]]),
+           key="act_hint", parent=grp)
+    pg.add(x + 16, y + 44 + ACT_H + 60, 300, 28, textbox([[("Next 30 days", st("Segoe UI Semibold", 13, INK2, True))]]),
            key="next_title", parent=grp)
     mobj = pbir.table_style(10, header_bg=PANEL)
     mobj["values"] = obj["values"][:1]
     mobj["grid"] = obj["grid"]
     mobj["total"] = obj["total"]
+    mobj["columnWidth"] = [{"properties": {"value": n(w)}, "selector": {"metadata": pbir.qref(f)}}
+                           for f, w in zip((M(hm("Due")), pages.DP("Name"), pages.DT("Name")), (88, 130, 156))]
     due = M(hm("Due"))
     # rows outside the next 30 days vanish: the only measure in the row (Due) is blank for them
     miles = chart("tableEx", {"Values": [P(due, "Due"), P(pages.DP("Name"), "Project"), P(pages.DT("Name"), "Milestone")]},
                   "", mobj, sort=[(due, "Ascending")])
-    miles["visualContainerObjects"]["title"] = [{"properties": {"show": b(False)}}]
-    miles["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
-    miles["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
-    pg.add(X0 + 8, BODY_Y + 430, lw - 16, 150, miles, key="next_tbl", parent=grp,
+    for o in ("title", "background", "border"):
+        miles["visualContainerObjects"][o] = [{"properties": {"show": b(False)}}]
+    pg.add(x + 8, y + 44 + ACT_H + 92, RIGHT_W - 16, RIGHT_H - (44 + ACT_H + 92) - 12, miles, key="next_tbl", parent=grp,
            filters=[pbir.f_in("DimTask", "Milestone", [True]), pbir.f_cmp("DimTask", "PercentDone", 3, 100),
                     pages.PROJECT_TASKS])
-    # right: area health 2 x 4
-    ax, aw = X0 + lw + 16, X1 - (X0 + lw + 16)
-    tw, th = (aw - 16) / 2, (588 - 3 * 12) / 4
-    for k, (label, line, colour, links) in enumerate(AREAS):
-        x = round(ax + (k % 2) * (tw + 16), 2)
-        y = round(BODY_Y + (k // 2) * (th + 12), 2)
-        panel(pg, x, y, round(tw, 2), round(th, 2), f"area_bg{k}", parent=grp)
-        pg.add(x + 14, y, round(tw - 28, 2), 4, stripe(colour), key=f"area_stripe{k}", parent=grp)
-        pg.add(x + 14, y + 10, 300, 22, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"area_lbl{k}", parent=grp)
-        pg.add(x + 8, y + 32, round(tw - 16, 2), 38, text_line(hm(line), size=14), key=f"area_line{k}", parent=grp)
-        cw = min(110, (tw - 28 - 6 * (len(links) - 1)) / len(links))
-        for j, (txt, target) in enumerate(links):
-            pg.add(round(x + 14 + j * (cw + 6), 2), round(y + th - 38, 2), round(cw, 2), 28, link_chip(txt, target),
-                   key=f"area_link{k}_{j}", parent=grp)
 
 
-def build_exec(pg, grp):
+def build_right_exec(pg, grp):
     view_pill(pg, grp, 1, "view_pill_exec")
     decisions = [("Money decision", "Story | Exec Action Money", hm("Colour EAC"), "finance"),
                  ("People decision", "Story | Exec Action People", hm("Colour Util"), "resources"),
                  ("Risk decision", "Story | Exec Action Risk", hm("Colour Risk"), "risk")]
-    dw = (X1 - X0 - 2 * 16) / 3
+    h = (RIGHT_H - 2 * GAP) / 3
     for k, (label, m, colour, target) in enumerate(decisions):
-        x = round(X0 + k * (dw + 16), 2)
-        panel(pg, x, BODY_Y, round(dw, 2), 280, f"dec_bg{k}", parent=grp)
-        pg.add(x + 14, BODY_Y, round(dw - 28, 2), 4, stripe(colour), key=f"dec_stripe{k}", parent=grp)
-        pg.add(x + 16, BODY_Y + 12, 300, 24, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"dec_lbl{k}", parent=grp)
-        pg.add(x + 8, BODY_Y + 40, round(dw - 16, 2), 190, text_line(m, size=16), key=f"dec{k}", parent=grp)
-        pg.add(x + 16, BODY_Y + 238, 160, 30, link_chip(dict(pages.PAGES)[target].split("·", 1)[-1].strip(), target),
-               key=f"dec_go{k}", parent=grp)
-    answers = [("Are we spending as planned?", "Answer Finance", hm("Colour EAC"), "finance"),
-               ("Will we deliver on time?", "Answer Schedule", hm("Colour Schedule"), "schedule"),
-               ("Do we have the people?", "Answer Resources", hm("Colour Util"), "resources"),
-               ("Will it pay off?", "Answer Benefits", hm("Colour Benefits"), "benefits")]
-    aw = (X1 - X0 - 3 * 16) / 4
-    for k, (q, m, colour, target) in enumerate(answers):
-        x = round(X0 + k * (aw + 16), 2)
-        y = BODY_Y + 296
-        panel(pg, x, y, round(aw, 2), 292, f"ans_bg{k}", parent=grp)
-        pg.add(x + 14, y, round(aw - 28, 2), 4, stripe(colour), key=f"ans_stripe{k}", parent=grp)
-        pg.add(x + 16, y + 12, round(aw - 32, 2), 26, textbox([[(q, st("Segoe UI Semibold", 11, INK2, True))]]),
-               key=f"ans_q{k}", parent=grp)
-        pg.add(x + 8, y + 44, round(aw - 16, 2), 196, text_line(hm(m), size=13), key=f"ans{k}", parent=grp)
-        pg.add(x + 16, y + 250, 120, 30, link_chip("Open", target), key=f"ans_go{k}", parent=grp)
+        y = round(RIGHT_Y + k * (h + GAP), 2)
+        panel(pg, RIGHT_X, y, RIGHT_W, round(h, 2), f"dec_bg{k}", parent=grp)
+        pg.add(RIGHT_X + 16, y + 14, 300, 24, textbox([[(label, st("Segoe UI Semibold", 11, INK2, True))]]),
+               key=f"dec_lbl{k}", parent=grp)
+        pg.add(RIGHT_X + 16, y + 44, RIGHT_W - 32, round(h - 104, 2), text_cell(m, size=12), key=f"dec{k}", parent=grp)
+        pg.add(RIGHT_X + 16, round(y + h - 44, 2), 180, 28,
+               link_chip(dict(pages.PAGES)[target].split("·", 1)[-1].strip(), target), key=f"dec_go{k}", parent=grp)
 
 
 def build_switch(pg, bm_pmo, bm_exec):
@@ -548,18 +521,15 @@ def build():
               display_option="FitToPage")
     build_rail(pg)
     build_top(pg)
-    build_pulse(pg)
+    build_brief(pg)
+    build_cards(pg)
     panel(pg, 1580, 24, 196, 44, "switch_bg")
-    # groups start at y=24 so they also contain their view-switch pill (pill is group-relative)
-    g_pmo = pg.add_group(X0, 24, X1 - X0, BODY_Y + 588 - 24, "PMO view", key="grp_pmo")
-    g_exec = pg.add_group(X0, 24, X1 - X0, BODY_Y + 588 - 24, "Executive view", key="grp_exec", hidden=True)
-    build_pmo(pg, g_pmo)
-    build_exec(pg, g_exec)
+    # groups hold only the right column and their view pill (pill sits at y 30, so the group starts at y 24)
+    g_pmo = pg.add_group(RIGHT_X, 24, 1784 - RIGHT_X, 988 - 24, "PMO view", key="grp_pmo")
+    g_exec = pg.add_group(RIGHT_X, 24, 1784 - RIGHT_X, 988 - 24, "Executive view", key="grp_exec", hidden=True)
+    build_right_pmo(pg, g_pmo)
+    build_right_exec(pg, g_exec)
     bm_pmo = pbir.bookmark("Home · PMO view", "home_pmo", pg.id, {g_pmo: False, g_exec: True})
     bm_exec = pbir.bookmark("Home · Executive view", "home_exec", pg.id, {g_pmo: True, g_exec: False})
     build_switch(pg, bm_pmo, bm_exec)
-    pg.add(X0 + 16, 216, 220, 24, pbir.bookmark_button("See the act-now list ›", bm_pmo, "Show the PMO view",
-           fill=ORANGE, hover="#C84F1D", press="#C84F1D", font="#FFFFFF", size=10, align="left", margin=8,
-           outline="#FFFFFF", radius=12),
-           key="brief_link")
     return [pg]
