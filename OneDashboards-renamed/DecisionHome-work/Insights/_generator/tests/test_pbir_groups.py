@@ -56,3 +56,25 @@ def test_icons_present():
             f = d / f"rail-{k}-{c}.png"
             assert f.exists(), f
             assert f.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+@pytest.fixture(autouse=True)
+def _clear_bookmarks():
+    pbir.BOOKMARKS.clear()
+    yield
+    pbir.BOOKMARKS.clear()
+
+
+def test_layout_errors_resolves_group_relative_positions():
+    import build
+    pg = pbir.Page("p1", "Test", 1800, 1000)
+    g = pg.add_group(100, 100, 400, 300, "G", key="g")
+    # absolute x=1750 + w=100 -> 1850 > 1800: stored group-relative (1650), must still be flagged
+    pg.add(1750, 120, 100, 50, pbir.textbox([[("x", pbir.st())]]), key="out", parent=g)
+    errs = build.layout_errors([pg])
+    assert len(errs) == 1 and "textbox" in errs[0]
+    # a child that is inside the page in absolute terms is not flagged
+    pg2 = pbir.Page("p2", "Test2", 1800, 1000)
+    g2 = pg2.add_group(100, 100, 400, 300, "G", key="g")
+    pg2.add(120, 120, 100, 50, pbir.textbox([[("x", pbir.st())]]), key="in", parent=g2)
+    assert build.layout_errors([pg2]) == []

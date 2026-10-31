@@ -99,6 +99,8 @@ def report_json():
 
 
 def build():
+    assert len(ICONS) == 18, (f"expected 18 rail icons (9 icons x white/grey) in {ICON_DIR}, found {len(ICONS)}: "
+                              "an icon is missing or an extra one was added")
     if OUT.exists():
         shutil.rmtree(OUT)
     # pbip + item metadata
@@ -143,6 +145,24 @@ def build():
 
 
 # ------------------------------------------------------------------ checks
+def layout_errors(pages_):
+    """Visuals must sit inside the page and above the footer band. Child positions are stored relative to their
+    parent group, so they are resolved to page coordinates first."""
+    out = []
+    for pg in pages_:
+        limit = pg.height * 0.928 if pg.height == 1800 else pg.height
+        groups = {v["name"]: v["position"] for v in pg.visuals}
+        for vc in pg.visuals:
+            p = dict(vc["position"])
+            if vc.get("parentGroupName"):
+                gp = groups[vc["parentGroupName"]]
+                p["x"] += gp["x"]
+                p["y"] += gp["y"]
+            if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
+                out.append(f"LAYOUT {pg.display}: {vc.get('visual', {}).get('visualType', 'group')} at {p} outside page/footer")
+    return out
+
+
 def check(built):
     import jsonschema
     from referencing import Registry, Resource
@@ -231,20 +251,9 @@ def check(built):
     for kind, nm in sorted(missing):
         errors += 1
         print(f"REF {kind}: {nm}")
-    # layout: visuals inside page, above footer band
-    for pg in built:
-        limit = pg.height * 0.928 if pg.height == 1800 else pg.height
-        groups = {v["name"]: v["position"] for v in pg.visuals}
-        for vc in pg.visuals:
-            p = dict(vc["position"])
-            if vc.get("parentGroupName"):
-                # child positions are stored relative to the parent group; resolve to page coordinates
-                gp = groups[vc["parentGroupName"]]
-                p["x"] += gp["x"]
-                p["y"] += gp["y"]
-            if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
-                errors += 1
-                print(f"LAYOUT {pg.display}: {vc.get('visual', {}).get('visualType', 'group')} at {p} outside page/footer")
+    for msg in layout_errors(built):
+        errors += 1
+        print(msg)
     print("OK" if errors == 0 else f"{errors} problem(s)")
     return errors
 

@@ -1,4 +1,5 @@
 import sys
+import pytest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -191,3 +192,35 @@ def test_briefing_link_targets_pmo_bookmark():
     hits = [p for p in _links(pg) if p.get("bookmark", {}).get("expr", {}).get("Literal", {}).get("Value", "").strip("'") == pmo]
     # one switch button + one briefing link point at the PMO bookmark
     assert len(hits) == 2
+
+
+@pytest.fixture(autouse=True)
+def _clear_bookmarks():
+    pbir.BOOKMARKS.clear()
+    yield
+    pbir.BOOKMARKS.clear()
+
+
+def test_z_order_background_groups_buttons():
+    pg = _home()
+    z = {vc["name"]: vc["position"]["z"] for vc in pg.visuals}
+    bg = z[_name(pg, "switch_bg", "shape")]
+    groups = [z[_name(pg, "grp_pmo", "group")], z[_name(pg, "grp_exec", "group")]]
+    buttons = [z[_name(pg, "switch0", "actionButton")], z[_name(pg, "switch1", "actionButton")],
+               z[_name(pg, "brief_link", "actionButton")]]
+    assert bg < min(groups)
+    assert max(groups) < min(buttons)
+
+
+def test_stripes_inset_from_rounded_corners():
+    pg = _home()
+    by_name = {vc["name"]: vc for vc in pg.visuals}
+    for key, bgkey in [("area_stripe0", "area_bg0"), ("dec_stripe0", "dec_bg0"), ("ans_stripe0", "ans_bg0")]:
+        st_, bg = by_name[_name(pg, key, "shape")]["position"], by_name[_name(pg, bgkey, "shape")]["position"]
+        assert st_["x"] - bg["x"] == 14 and (bg["x"] + bg["width"]) - (st_["x"] + st_["width"]) == 14
+
+
+def test_briefing_breaks_down_act_count():
+    expr = next(m["expression"] for m in MEASURES if m["name"] == "Story | Home · Briefing")
+    for k in (100, 90, 80, 60, 50, 40):
+        assert f"[Story | Home · Act Score] = {k}" in expr
