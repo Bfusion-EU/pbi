@@ -78,8 +78,8 @@ x: 16 ─ 88  │ 104 ───────────────────�
   - On-track % by month from FactStatusReport OverallHealth per report month.
   Change chip = this month vs previous report month (new `… Change` text measures).
 - **Four small KPI cards**: Active projects (`Story | Active Projects`), Utilisation
-  (`Story | Utilisation %` + progress bar), Critical risks (`Story | Critical High Risks`, chip =
-  change vs previous status report), Data trust (`PMO | Governance Score` + progress bar).
+  (`Story | Utilisation %` + progress bar), Critical risks (`Story | Critical High Risks`; no chip - risk heat has
+  no history), Data trust (`PMO | Governance Score` + progress bar).
   The progress bar is a 100% stacked bar chart (the value and its remainder to 100%), because a
   shape cannot be bound to data.
 - Every KPI card has a transparent page-navigation button over it to its chapter.
