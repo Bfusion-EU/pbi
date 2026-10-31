@@ -12,7 +12,7 @@ HOME = ["Greeting", "Briefing", "Act Score", "Act Reason", "Act Colour", "Act Co
         "Line Portfolio", "Line Financials", "Line Resources", "Line Schedule", "Line Risk", "Line Benefits",
         "Line Timesheets", "Line Governance", "Colour Portfolio", "Colour Schedule", "Colour Risk",
         "Colour Benefits", "Colour Timesheets", "Answer Finance", "Answer Schedule", "Answer Resources",
-        "Answer Benefits", "Due In 30d"]
+        "Answer Benefits", "Due In 30d", "Due"]
 
 
 def test_home_measures_registered():
@@ -90,6 +90,15 @@ def test_body_area_fits():
     assert ext_home.BODY_Y >= 388 + 12 and ext_home.BODY_Y + 588 <= 988
 
 
+def _bm(name):
+    return next(bm for bm in pbir.BOOKMARKS if bm["displayName"] == name)
+
+
+def _hidden(bm):
+    sec = next(iter(bm["explorationState"]["sections"].values()))
+    return {g: v["isHidden"] for g, v in sec["visualContainerGroups"].items()}
+
+
 def test_two_view_groups_and_bookmarks():
     pbir.BOOKMARKS.clear()
     pg = _home()
@@ -97,10 +106,69 @@ def test_two_view_groups_and_bookmarks():
     assert set(groups) == {"PMO view", "Executive view"}
     assert groups["Executive view"].get("isHidden") is True
     assert not groups["PMO view"].get("isHidden")
-    names = {bm["displayName"] for bm in pbir.BOOKMARKS}
-    assert names == {"Home · PMO view", "Home · Executive view"}
+    assert {bm["displayName"] for bm in pbir.BOOKMARKS} == {"Home · PMO view", "Home · Executive view"}
     children = [vc for vc in pg.visuals if vc.get("parentGroupName")]
     assert len(children) > 20
+
+
+VTYPES = ("shape", "textbox", "tableEx", "actionButton", "card", "lineChart", "clusteredBarChart", "image", "slicer")
+
+
+def _parent(pg, key):
+    """parentGroupName of the visual added with `key` (None = top level); fails if no such visual."""
+    by = {vc["name"]: vc for vc in pg.visuals}
+    hits = [by[pbir.uid(pg.id, key, t)] for t in VTYPES if pbir.uid(pg.id, key, t) in by]
+    assert len(hits) == 1, key
+    return hits[0].get("parentGroupName")
+
+
+def test_children_belong_to_the_right_group():
+    pbir.BOOKMARKS.clear()
+    pg = _home()
+    pmo, ex = (pbir.uid(pg.id, k, "group") for k in ("grp_pmo", "grp_exec"))
+    for k in ["act_bg", "act_title", "act_tbl", "act_drill", "act_hint", "next_title", "next_tbl", "area_bg0",
+              "area_lbl7", "area_stripe3", "area_line5", "area_link0_0", "view_pill_pmo"]:
+        assert _parent(pg, k) == pmo, k
+    for k in ["dec_bg0", "dec_bg2", "dec_stripe1", "dec0", "dec_go1", "ans_bg3", "ans_q2", "ans3", "ans_go0",
+              "view_pill_exec"]:
+        assert _parent(pg, k) == ex, k
+    # switch buttons and the briefing link stay on top level
+    for k in ("switch0", "switch1", "brief_link"):
+        assert _parent(pg, k) is None, k
+
+
+def test_bookmarks_hide_the_other_view():
+    pbir.BOOKMARKS.clear()
+    pg = _home()
+    pmo_g, ex_g = (pbir.uid(pg.id, k, "group") for k in ("grp_pmo", "grp_exec"))
+    assert _hidden(_bm("Home · PMO view")) == {pmo_g: False, ex_g: True}
+    assert _hidden(_bm("Home · Executive view")) == {pmo_g: True, ex_g: False}
+    for bm in pbir.BOOKMARKS:
+        assert bm["options"]["suppressData"] is True
+
+
+def _bookmark_target(vc):
+    link = vc["visual"]["visualContainerObjects"]["visualLink"][0]["properties"]
+    assert link["type"]["expr"]["Literal"]["Value"].strip("'") == "Bookmark"
+    return link["bookmark"]["expr"]["Literal"]["Value"].strip("'")
+
+
+def test_switch_buttons_target_their_bookmark():
+    pbir.BOOKMARKS.clear()
+    pg = _home()
+    by = {vc["name"]: vc for vc in pg.visuals}
+    assert _bookmark_target(by[pbir.uid(pg.id, "switch0", "actionButton")]) == _bm("Home · PMO view")["name"]
+    assert _bookmark_target(by[pbir.uid(pg.id, "switch1", "actionButton")]) == _bm("Home · Executive view")["name"]
+    assert _bookmark_target(by[pbir.uid(pg.id, "brief_link", "actionButton")]) == _bm("Home · PMO view")["name"]
+
+
+def test_next30_due_is_a_short_date_measure():
+    m = next(m for m in MEASURES if m["name"] == "Story | Home · Due")
+    assert m["dataType"] == "DateTime" and m["formatString"] == "dd mmm yyyy"
+    pg = _home()
+    tbl = next(vc for vc in pg.visuals if vc["name"] == pbir.uid(pg.id, "next_tbl", "tableEx"))
+    assert "EndDate" not in repr(tbl["visual"]["query"]["queryState"])
+    assert "Home · Due" in repr(tbl["visual"]["query"]["queryState"])
 
 
 def test_all_pages_reachable_from_home():

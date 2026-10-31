@@ -103,6 +103,9 @@ _add("EAC Change", T, CHANGE.format(src=hm("EAC Var % (reports)")), desc="Change
 _add("On Track Change", T, CHANGE.format(src=hm("On Track % (reports)")), desc="Change vs previous report month, points.")
 
 # ---------------------------------------------------------------- next 30 days (milestone table row filter)
+_add("Due", "DateTime", 'VAR _d = MIN ( DimTask[EndDate] ) RETURN IF ( _d >= TODAY () && _d <= TODAY () + 30, _d )',
+     "dd mmm yyyy", "Due date of a task due in the next 30 days (blank otherwise); the Next 30 days table on Home lists "
+     "only rows where it is not blank.")
 _add("Due In 30d", I, 'VAR _d = MAX ( DimTask[EndDate] ) RETURN IF ( _d >= TODAY () && _d <= TODAY () + 30, 1 )', "0",
      "1 for a task due in the next 30 days; drives the Next 30 days table on Home.")
 
@@ -256,8 +259,9 @@ def build_top(pg):
 def build_pulse(pg):
     # briefing (orange) + two lead KPIs with sparkline and change chip
     panel(pg, X0, 92, 640, 150, "brief_bg", fill=ORANGE)
-    pg.add(X0 + 16, 100, 608, 24, textbox([[("This week's briefing", st("Segoe UI", 10, "#FFFFFF"))]]), key="brief_lbl")
-    pg.add(X0 + 8, 124, 624, 84, headline(hm("Briefing"), bg=ORANGE, border=ORANGE, size=14, colour="#FFFFFF"), key="brief")
+    pg.add(X0 + 16, 96, 608, 22, textbox([[("This week's briefing", st("Segoe UI", 10, "#FFFFFF"))]]), key="brief_lbl")
+    # zero-padding text line, ~100px tall so the whole sentence wraps instead of ending in an ellipsis
+    pg.add(X0 + 16, 118, 608, 98, text_line(hm("Briefing"), size=13, colour="#FFFFFF", bg=ORANGE), key="brief")
     for k, (m, label, cm, series, chg, col) in enumerate([
             ("Story | EAC Variance %", "EAC vs budget", hm("Colour EAC"), hm("EAC Var % (reports)"),
              hm("EAC Change"), C_RED),
@@ -311,7 +315,13 @@ def stripe(measure):
     return v
 
 
+def view_pill(pg, grp, k, key):
+    """Orange rounded pill behind a view-switch button; lives in the view's group so it shows only for that view."""
+    pg.add(1586 + k * 94, 30, 90, 32, shape(ORANGE, radius=16), key=key, parent=grp)
+
+
 def build_pmo(pg, grp):
+    view_pill(pg, grp, 0, "view_pill_pmo")
     # left: act now + next 30 days
     lw = 820
     panel(pg, X0, BODY_Y, lw, 588, "act_bg", parent=grp)
@@ -343,12 +353,10 @@ def build_pmo(pg, grp):
     mobj["values"] = obj["values"][:1]
     mobj["grid"] = obj["grid"]
     mobj["total"] = obj["total"]
-    due = M(hm("Due In 30d"))
-    # rows outside the next 30 days vanish: the only measure in the row is blank for them
-    mobj["columnWidth"] = [{"properties": {"value": n(1)}, "selector": {"metadata": pbir.qref(due)}}]
-    miles = chart("tableEx", {"Values": [P(pages.DT("EndDate"), "Due"), P(pages.DP("Name"), "Project"),
-                                         P(pages.DT("Name"), "Milestone"), P(due, " ")]}, "", mobj,
-                  sort=[(pages.DT("EndDate"), "Ascending")])
+    due = M(hm("Due"))
+    # rows outside the next 30 days vanish: the only measure in the row (Due) is blank for them
+    miles = chart("tableEx", {"Values": [P(due, "Due"), P(pages.DP("Name"), "Project"), P(pages.DT("Name"), "Milestone")]},
+                  "", mobj, sort=[(due, "Ascending")])
     miles["visualContainerObjects"]["title"] = [{"properties": {"show": b(False)}}]
     miles["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
     miles["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
@@ -372,6 +380,7 @@ def build_pmo(pg, grp):
 
 
 def build_exec(pg, grp):
+    view_pill(pg, grp, 1, "view_pill_exec")
     decisions = [("Money decision", "Story | Exec Action Money", hm("Colour EAC"), "finance"),
                  ("People decision", "Story | Exec Action People", hm("Colour Util"), "resources"),
                  ("Risk decision", "Story | Exec Action Risk", hm("Colour Risk"), "risk")]
@@ -401,10 +410,13 @@ def build_exec(pg, grp):
 
 
 def build_switch(pg, bm_pmo, bm_exec):
-    panel(pg, 1580, 24, 196, 44, "switch_bg")
+    """Buttons only (the backing panel is added before the groups so the pills show through)."""
     for k, (txt, bm) in enumerate([("PMO", bm_pmo), ("Executive", bm_exec)]):
-        pg.add(1586 + k * 94, 30, 90, 32, pbir.bookmark_button(txt, bm, f"Show the {txt} view", fill=PANEL,
-               hover=ORANGE, press=ORANGE, font=INK2, size=10, radius=16), key=f"switch{k}")
+        v = pbir.bookmark_button(txt, bm, f"Show the {txt} view", fill=PANEL, hover=ORANGE, press=ORANGE, font=INK2,
+                                 size=10, radius=16)
+        # transparent by default so the active view's pill shows through
+        v["objects"]["fill"][1]["properties"]["transparency"] = n(100)
+        pg.add(1586 + k * 94, 30, 90, 32, v, key=f"switch{k}")
 
 
 def build():
@@ -413,14 +425,17 @@ def build():
     build_rail(pg)
     build_top(pg)
     build_pulse(pg)
-    g_pmo = pg.add_group(X0, BODY_Y, X1 - X0, 588, "PMO view", key="grp_pmo")
-    g_exec = pg.add_group(X0, BODY_Y, X1 - X0, 588, "Executive view", key="grp_exec", hidden=True)
+    panel(pg, 1580, 24, 196, 44, "switch_bg")
+    # groups start at y=24 so they also contain their view-switch pill (pill is group-relative)
+    g_pmo = pg.add_group(X0, 24, X1 - X0, BODY_Y + 588 - 24, "PMO view", key="grp_pmo")
+    g_exec = pg.add_group(X0, 24, X1 - X0, BODY_Y + 588 - 24, "Executive view", key="grp_exec", hidden=True)
     build_pmo(pg, g_pmo)
     build_exec(pg, g_exec)
     bm_pmo = pbir.bookmark("Home · PMO view", "home_pmo", pg.id, {g_pmo: False, g_exec: True})
     bm_exec = pbir.bookmark("Home · Executive view", "home_exec", pg.id, {g_pmo: True, g_exec: False})
     build_switch(pg, bm_pmo, bm_exec)
-    pg.add(X0 + 8, 208, 220, 28, pbir.bookmark_button("See the act-now list ›", bm_pmo, "Show the PMO view",
-           fill=ORANGE, hover="#C84F1D", press="#C84F1D", font="#FFFFFF", size=10, align="left", margin=8),
+    pg.add(X0 + 16, 216, 220, 24, pbir.bookmark_button("See the act-now list ›", bm_pmo, "Show the PMO view",
+           fill=ORANGE, hover="#C84F1D", press="#C84F1D", font="#FFFFFF", size=10, align="left", margin=8,
+           outline="#FFFFFF", radius=12),
            key="brief_link")
     return [pg]
