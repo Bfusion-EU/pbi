@@ -1,11 +1,15 @@
 // One-off: renders the command-center rail icons (Tabler outline) to 96 px PNGs.
 // Usage (from a scratch folder):  npm i @resvg/resvg-js @tabler/icons  &&  node <path>/make_icons.mjs <outDir>
-import { Resvg } from '@resvg/resvg-js';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
+if (!process.argv[2]) {
+  console.error('usage: node make_icons.mjs <outDir>');
+  process.exit(1);
+}
 const require = createRequire(path.join(process.cwd(), 'x.js'));
+const { Resvg } = require('@resvg/resvg-js');
 const iconDir = path.dirname(require.resolve('@tabler/icons/outline/layout-dashboard.svg'));
 const ICONS = { cc: 'layout-dashboard', exec: 'crown', portfolio: 'briefcase', finance: 'coin-euro',
   resources: 'users', schedule: 'calendar-time', risk: 'alert-triangle', benefits: 'trending-up',
