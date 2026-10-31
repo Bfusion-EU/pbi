@@ -166,7 +166,9 @@ for _a, _src in [("Finance", "Story | Finance Headline"), ("Schedule", "Story | 
 
 _add("Colour Status", T, f"""
 VAR _w = [Story | Status · Overall Worsened] + 0
-RETURN IF ( _w >= 3, "{C_RED}", IF ( _w >= 1, "{C_AMBER}", "{C_TEAL}" ) )""", folder=_COL)
+VAR _n = [Story | Status · Not Reporting] + 0
+RETURN IF ( _w >= 3 || _n >= 5, "{C_RED}", IF ( _w >= 1 || _n >= 1, "{C_AMBER}", "{C_TEAL}" ) )""",
+     folder=_COL, desc="Red: 3+ projects worse since their last report or 5+ not reporting; amber: any; else teal.")
 
 # ---------------------------------------------------------------- subject cards: sentence, pill word, pill fill
 WORST = """
@@ -181,9 +183,11 @@ RETURN IF ( ISBLANK ( _v ), "No EAC in the financial plans yet.",
         & IF ( _wv > 0, "; worst " & _wn & " " & FORMAT ( _wv, "+0%" ) & ".", "." ) )""")
 _add("Insight Schedule", T, f"""
 VAR _o = [Story | On Track %]
-VAR _c = [{hm("On Track Change")}]
+VAR _c0 = [{hm("On Track Change")}]
+VAR _c = SUBSTITUTE ( _c0 & "", " vs last month", "" )
+VAR _cd = IF ( _c = "" || _c = "= 0.0 pt", "", " (" & _c & ")" )
 {WORST.format(projects=PROJECTS, expr="[Story | Baseline · Finish Slip (days)]")}
-RETURN FORMAT ( _o, "0%" ) & " on track" & IF ( ISBLANK ( _c ), "", " (" & _c & ")" )
+RETURN FORMAT ( _o, "0%" ) & " on track" & _cd
     & IF ( _wv > 0, "; " & _wn & " +" & FORMAT ( _wv, "0" ) & " d vs baseline.", "." )""")
 _add("Insight Resources", T, """
 VAR _o = [Story | Over-allocated People] + 0
