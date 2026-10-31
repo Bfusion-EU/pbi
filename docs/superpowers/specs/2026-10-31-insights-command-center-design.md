@@ -125,11 +125,14 @@ Every card has the same five rows, top to bottom, all left-aligned:
   back to the legacy card for the number and accept centred text there, and say so before going
   on.
 
+- **Implementation note:** Card (new) did not wrap sentences, so values and sentences use the one-cell table route.
+
 ### 5 · Right column, PMO view: Act now
 
 - Title "Act now", subtitle "top 8, ranked by impact".
 - Table with Project, Why and a narrow Impact column (sort key), descending. Up to 8 whole rows
   are visible. The Why text is coloured by `Act Colour`.
+  Implementation note: the list is not capped at 8 — a TopN visual filter on the extension measure rendered an empty table in Desktop, so the table scrolls and is ranked by impact.
 - The ranking rules are unchanged from rev 1 (first match wins): off track 100 · EAC > 5% over
   budget 90 · > 10 d later than baseline 80 · > 10 overdue tasks 60 · no status report > 30 d 50
   · failing Plan Insights rules 40. Projects with no reason are hidden.

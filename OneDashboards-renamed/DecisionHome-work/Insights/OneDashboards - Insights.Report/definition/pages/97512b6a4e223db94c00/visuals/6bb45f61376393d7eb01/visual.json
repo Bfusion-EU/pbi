@@ -3,11 +3,11 @@
   "name": "6bb45f61376393d7eb01",
   "position": {
     "x": 8,
-    "y": 418,
-    "z": 6900,
-    "width": 804,
-    "height": 318,
-    "tabOrder": 6900
+    "y": 180,
+    "z": 13900,
+    "width": 412,
+    "height": 368,
+    "tabOrder": 13900
   },
   "visual": {
     "visualType": "tableEx",
@@ -45,21 +45,6 @@
               "queryRef": "_Measures.Story | Home · Act Reason",
               "nativeQueryRef": "Why",
               "displayName": "Why"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "Manager_Value"
-                }
-              },
-              "queryRef": "DimProject.Manager_Value",
-              "nativeQueryRef": "Owner",
-              "displayName": "Owner"
             },
             {
               "field": {
@@ -272,6 +257,13 @@
                   }
                 }
               }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         },
@@ -348,6 +340,50 @@
                 }
               }
             }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "146D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "DimProject.Name"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "138D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | Home · Act Reason"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "66D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | Home · Act Score"
           }
         }
       ]

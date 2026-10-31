@@ -53,19 +53,19 @@ Strategic/Portfolio planning, Financial plans, Resource plans, Work plans, Plan 
 
 ## Home — command center
 
-The Home page is a command center for two audiences, switched by the PMO / Executive buttons (bookmarks,
-display only — slicers stay):
+One card per subject area, all built the same way (status pill, number, trend or bar, one sentence, links):
+Financials, Schedule, Resources, Risk, Portfolio, Benefits, Status reports, Governance.
 
-- **Icon rail** (left, always visible): one icon per chapter; hover for the chapter and its follow-on pages.
-- **Pulse**: weekly briefing sentence, EAC vs budget and On track with 6-month sparklines and a change chip
-  (vs the previous status-report month), active projects, utilisation, critical risks, data trust.
-- **PMO view**: *Act now* (active projects ranked by their worst reason: off track > EAC +5% > 10 d late vs
-  baseline > 10 overdue tasks > no report 30 d > failing rules; open the One-Pager from a selected row),
-  *Next 30 days* milestones, and eight *area health* tiles with links to every follow-on page.
-- **Executive view**: the three decisions (money, people, risk) and the board's four questions answered.
+- **Briefing strip**: how many active projects need a decision, and why (counts per reason; they add up).
+- **Right column**, switched by the PMO / Executive buttons (display-only bookmarks — slicers stay):
+  PMO = *Act now* (active projects ranked by worst reason: off track > EAC +5% > 10 d late vs baseline >
+  10 overdue tasks > no report 30 d > failing rules; the list scrolls; open the One-Pager from a selected row) and *Next 30 days*;
+  Executive = the three decisions (money, people, risk).
+- Trend lines and "vs last month" chips come from status-report history (each active project's latest report
+  as of month end, last 6 months).
+- Icon rail on the left to every chapter; card footers link to every follow-on page.
 - Portfolio and Program slicers on Home are synced with every chapter.
 - Measures: report-level, folder `Story\Home` (`ext_home.py`).
-
 ## Storytelling measures
 
 The headlines, action prompts and colour rules are **report-level measures** (`reportExtensions.json`,

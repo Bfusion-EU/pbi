@@ -7443,9 +7443,9 @@
         {
           "name": "Story | Home · Briefing",
           "dataType": "Text",
-          "expression": "VAR _n = [Story | Home · Act Count]\nVAR _a = [Story | Active Projects]\nVAR _b100 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) )\nVAR _b90 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) )\nVAR _b80 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) )\nVAR _b60 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) )\nVAR _b50 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) )\nVAR _b40 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) )\nVAR _p = IF ( _b100 > 0, \", \" & FORMAT ( _b100, \"0\" ) & \" off track\" )\n        & IF ( _b90 > 0, \", \" & FORMAT ( _b90, \"0\" ) & \" over budget\" )\n        & IF ( _b80 > 0, \", \" & FORMAT ( _b80, \"0\" ) & \" late vs baseline\" )\n        & IF ( _b60 > 0, \", \" & FORMAT ( _b60, \"0\" ) & \" with overdue work\" )\n        & IF ( _b50 > 0, \", \" & FORMAT ( _b50, \"0\" ) & \" with no recent report\" )\n        & IF ( _b40 > 0, \", \" & FORMAT ( _b40, \"0\" ) & \" with failing rules\" )\nRETURN\n    IF ( _n = 0, \"No active project needs a decision this week. Keep the data fresh.\",\n        FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _a, \"0\" ) & \" active projects need a decision — \" & MID ( _p, 3, LEN ( _p ) ) & \".\" )",
+          "expression": "VAR _n = [Story | Home · Act Count]\nVAR _a = [Story | Active Projects] + 0\nRETURN IF ( _n = 0, \"No active project needs a decision this week\",\n    FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _a, \"0\" ) & IF ( _n = 1, \" active projects needs\", \" active projects need\" )\n        & \" a decision\" )",
           "displayFolder": "Story\\Home",
-          "description": "Act-now count with its breakdown by reason; the parts add up to Act Count.",
+          "description": "How many active projects need a decision (Act-now count).",
           "references": {
             "measures": [
               {
@@ -7457,7 +7457,18 @@
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | Active Projects"
-              },
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Briefing Reasons",
+          "dataType": "Text",
+          "expression": "VAR _b100 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) )\nVAR _b90 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) )\nVAR _b80 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) )\nVAR _b60 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) )\nVAR _b50 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) )\nVAR _b40 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) )\nVAR _p = IF ( _b100 > 0, \"  ·  \" & FORMAT ( _b100, \"0\" ) & \" off track\" )\n        & IF ( _b90 > 0, \"  ·  \" & FORMAT ( _b90, \"0\" ) & \" over budget\" )\n        & IF ( _b80 > 0, \"  ·  \" & FORMAT ( _b80, \"0\" ) & \" late\" )\n        & IF ( _b60 > 0, \"  ·  \" & FORMAT ( _b60, \"0\" ) & \" overdue work\" )\n        & IF ( _b50 > 0, \"  ·  \" & FORMAT ( _b50, \"0\" ) & \" not reporting\" )\n        & IF ( _b40 > 0, \"  ·  \" & FORMAT ( _b40, \"0\" ) & \" failing rules\" )\nRETURN IF ( LEN ( _p ) > 0, MID ( _p, 6, LEN ( _p ) ) )",
+          "displayFolder": "Story\\Home",
+          "description": "Act-now projects per reason (same Act Score buckets, so the parts add up to Act Count).",
+          "references": {
+            "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
@@ -7576,125 +7587,6 @@
           }
         },
         {
-          "name": "Story | Home · Line Portfolio",
-          "dataType": "Text",
-          "expression": "IF ( NOT ISBLANK ( [Story | Aligned Budget %] ), FORMAT ( [Story | Aligned Budget %], \"0%\" ) & \" budget aligned\" )",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Aligned Budget %"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Story | Home · Line Financials",
-          "dataType": "Text",
-          "expression": "FORMAT ( [Story | Projects Over Budget] + 0, \"0\" ) & \" over EAC\"",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Projects Over Budget"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Story | Home · Line Resources",
-          "dataType": "Text",
-          "expression": "FORMAT ( [Story | Over-allocated People] + 0, \"0\" ) & \" over 100% (in view)\"",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Over-allocated People"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Story | Home · Line Schedule",
-          "dataType": "Text",
-          "expression": "FORMAT ( [Story | Baseline · Late Projects] + 0, \"0\" ) & \" slipping\"",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Baseline · Late Projects"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Story | Home · Line Risk",
-          "dataType": "Text",
-          "expression": "FORMAT ( [Story | Critical High Risks] + 0, \"0\" ) & \" critical\"",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Critical High Risks"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Story | Home · Line Benefits",
-          "dataType": "Text",
-          "expression": "IF ( ISBLANK ( [Story | Benefit Cost Ratio] ), \"no benefits plan\", \"Benefit/cost \" & FORMAT ( [Story | Benefit Cost Ratio], \"0.0\" ) )",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Benefit Cost Ratio"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Story | Home · Line Timesheets",
-          "dataType": "Text",
-          "expression": "FORMAT ( [Story | TS Status · Missing Timesheets] + 0, \"0\" ) & \" missing\"",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | TS Status · Missing Timesheets"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Story | Home · Line Governance",
-          "dataType": "Text",
-          "expression": "IF ( NOT ISBLANK ( [PMO | Governance Score] ), \"Score \" & FORMAT ( [PMO | Governance Score], \"0\" ) )",
-          "displayFolder": "Story\\Home",
-          "references": {
-            "measures": [
-              {
-                "entity": "_Measures",
-                "name": "PMO | Governance Score"
-              }
-            ]
-          }
-        },
-        {
           "name": "Story | Home · Colour Portfolio",
           "dataType": "Text",
           "expression": "VAR _p = [Story | Aligned Budget %]\nRETURN IF ( ISBLANK ( _p ), \"#9AA3AF\", IF ( _p >= 0.8, \"#5DCAA5\", IF ( _p >= 0.6, \"#F2C46B\", \"#FF8A80\" ) ) )",
@@ -7760,12 +7652,78 @@
           }
         },
         {
-          "name": "Story | Home · Colour Timesheets",
+          "name": "Story | Home · Colour Status",
           "dataType": "Text",
-          "expression": "IF ( [Story | TS Status · Missing Timesheets] > 0, \"#F2C46B\", \"#5DCAA5\" )",
+          "expression": "VAR _w = [Story | Status · Overall Worsened] + 0\nVAR _n = [Story | Status · Not Reporting] + 0\nRETURN IF ( _w >= 3 || _n >= 5, \"#FF8A80\", IF ( _w >= 1 || _n >= 1, \"#F2C46B\", \"#5DCAA5\" ) )",
           "displayFolder": "Story\\Home\\Colours",
+          "description": "Red: 3+ projects worse since their last report or 5+ not reporting; amber: any; else teal.",
           "references": {
             "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Overall Worsened"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Not Reporting"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Insight Financials",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | EAC Variance %]\n\nVAR _w = TOPN ( 1, FILTER ( ADDCOLUMNS ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), \"@v\", [Story | EAC Variance %] ), NOT ISBLANK ( [@v] ) ), [@v], DESC, DimProject[Id], ASC )\nVAR _wn = CALCULATE ( SELECTEDVALUE ( DimProject[Name] ), TREATAS ( SELECTCOLUMNS ( _w, \"@id\", DimProject[Id] ), DimProject[Id] ) )\nVAR _wv = MAXX ( _w, [@v] )\nRETURN IF ( ISBLANK ( _v ), \"No EAC in the financial plans yet.\",\n    \"EAC \" & FORMAT ( _v, \"+0.0%;-0.0%;0.0%\" ) & \" vs budget\"\n        & IF ( _wv > 0, \"; worst \" & _wn & \" \" & FORMAT ( _wv, \"+0.0%\" ) & \".\", \".\" ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Insight Schedule",
+          "dataType": "Text",
+          "expression": "VAR _o = [Story | On Track %]\nVAR _c0 = [Story | Home · On Track Change]\nVAR _c = SUBSTITUTE ( _c0 & \"\", \" vs last month\", \"\" )\nVAR _cd = IF ( _c = \"\" || _c = \"= 0.0 pt\", \"\", \" (\" & _c & \")\" )\n\nVAR _w = TOPN ( 1, FILTER ( ADDCOLUMNS ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), \"@v\", [Story | Baseline · Finish Slip (days)] ), NOT ISBLANK ( [@v] ) ), [@v], DESC, DimProject[Id], ASC )\nVAR _wn = CALCULATE ( SELECTEDVALUE ( DimProject[Name] ), TREATAS ( SELECTCOLUMNS ( _w, \"@id\", DimProject[Id] ), DimProject[Id] ) )\nVAR _wv = MAXX ( _w, [@v] )\nRETURN IF ( ISBLANK ( _o ), \"No status reports yet.\",\n    FORMAT ( _o, \"0%\" ) & \" on track\" & _cd\n    & IF ( _wv > 0, \"; \" & _wn & \" +\" & FORMAT ( _wv, \"0\" ) & \" d vs baseline.\", \".\" ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | On Track %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · On Track Change"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Finish Slip (days)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Insight Resources",
+          "dataType": "Text",
+          "expression": "VAR _o = [Story | Over-allocated People] + 0\nVAR _m = [Story | TS Status · Missing Timesheets] + 0\nRETURN FORMAT ( _o, \"0\" ) & IF ( _o = 1, \" person\", \" people\" ) & \" over 100% in view; \"\n    & FORMAT ( _m, \"0\" ) & IF ( _m = 1, \" timesheet\", \" timesheets\" ) & \" missing.\"",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Over-allocated People"
+              },
               {
                 "schema": "extension",
                 "entity": "_Measures",
@@ -7775,61 +7733,350 @@
           }
         },
         {
-          "name": "Story | Home · Answer Finance",
+          "name": "Story | Home · Insight Risk",
           "dataType": "Text",
-          "expression": "VAR _h = [Story | Finance Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "expression": "VAR _a = [Story | Active Risk Count] + 0\nVAR _u = [Story | Unmitigated Risk %]\nRETURN IF ( _a = 1, \"1 active risk\", FORMAT ( _a, \"0\" ) & \" active risks\" )\n    & IF ( ISBLANK ( _u ), \".\", \"; \" & FORMAT ( _u, \"0%\" ) & \" without mitigation.\" )",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Finance Headline"
+                "name": "Story | Active Risk Count"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Unmitigated Risk %"
               }
             ]
           }
         },
         {
-          "name": "Story | Home · Answer Schedule",
+          "name": "Story | Home · Insight Portfolio",
           "dataType": "Text",
-          "expression": "VAR _h = [Story | Schedule Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "expression": "VAR _a = [Story | Active Projects] + 0\nVAR _p = [Story | Proposed Projects] + 0\nRETURN FORMAT ( _a, \"0\" ) & \" active, \" & FORMAT ( _p, \"0\" ) & \" proposed in the pipeline.\"",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Schedule Headline"
+                "name": "Story | Active Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Proposed Projects"
               }
             ]
           }
         },
         {
-          "name": "Story | Home · Answer Resources",
+          "name": "Story | Home · Insight Benefits",
           "dataType": "Text",
-          "expression": "VAR _h = [Story | Resource Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "expression": "VAR _b = [Story | Benefits At Completion]\nVAR _e = [Story | Finance EAC]\nRETURN IF ( ISBLANK ( _b ), \"No benefits plan in view.\",\n    IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" planned benefits against \" & IF ( ISBLANK ( _e ), \"–\", IF ( ABS ( _e ) >= 1000000, \"€\" & FORMAT ( _e / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _e ) >= 1000, \"€\" & FORMAT ( _e / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _e, \"#,0\" ) ) ) ) & \" EAC.\" )",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Resource Headline"
+                "name": "Story | Benefits At Completion"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance EAC"
               }
             ]
           }
         },
         {
-          "name": "Story | Home · Answer Benefits",
+          "name": "Story | Home · Insight Status",
           "dataType": "Text",
-          "expression": "VAR _h = [Story | Benefits Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "expression": "VAR _n = [Story | Status · Not Reporting] + 0\nRETURN IF ( _n = 0, \"Every project reported recently.\",\n    FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" project has\", \" projects have\" ) & \" not reported for more than 30 days.\" )",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Benefits Headline"
+                "name": "Story | Status · Not Reporting"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Insight Governance",
+          "dataType": "Text",
+          "expression": "VAR _f = [PMO | Plans Failing] + 0\nVAR _g = [PMO | Governance Score]\nVAR _lead = IF ( ISBLANK ( _g ), \"\", \"Data trust \" & FORMAT ( _g, \"0\" ) & \"; \" )\nRETURN IF ( _f = 0,\n    _lead & IF ( ISBLANK ( _g ), \"All plans pass\", \"all plans pass\" ) & \" the Plan Insights rules.\",\n    _lead & FORMAT ( _f, \"0\" ) & IF ( _f = 1, \" plan fails\", \" plans fail\" ) & \" Plan Insights rules.\" )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Plans Failing"
+              },
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Financials",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour EAC]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Financials card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour EAC"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Financials",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour EAC]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Financials card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour EAC"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Schedule",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Schedule]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Schedule card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Schedule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Schedule",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Schedule]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Schedule card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Schedule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Resources",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Util]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Resources card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Util"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Resources",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Util]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Resources card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Util"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Risk",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Risk]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Risk card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Risk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Risk",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Risk]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Risk card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Risk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Portfolio",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Portfolio]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Portfolio card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Portfolio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Portfolio",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Portfolio]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Portfolio card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Portfolio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Benefits",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Benefits]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Benefits card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Benefits",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Benefits]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Benefits card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Status",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Status]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Status card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Status"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Status",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Status]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Status card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Status"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Governance",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Trust]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Status word of the Governance card, from its colour measure.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Trust"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Pill Fill Governance",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Home · Colour Trust]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Pill background of the Governance card.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Colour Trust"
               }
             ]
           }
