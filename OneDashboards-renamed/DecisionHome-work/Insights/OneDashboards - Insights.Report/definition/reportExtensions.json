@@ -22,12 +22,6 @@
           "description": "Share of active projects whose overall health is (1) On Track."
         },
         {
-          "name": "Story | Refreshed",
-          "dataType": "Text",
-          "expression": "VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )\nRETURN IF ( ISBLANK ( _t ), \"POWERED BY ONEPLAN\", \"POWERED BY ONEPLAN  ·  REFRESHED \" & UPPER ( FORMAT ( _t, \"dd mmm yyyy hh:nn\" ) ) & \" CET\" )",
-          "displayFolder": "Story"
-        },
-        {
           "name": "Story | Finance EAC",
           "dataType": "Double",
           "expression": "CALCULATE ( SUM ( FactCost[Cost] ), KEEPFILTERS ( FactCost[CostType] = \"EAC\" ), REMOVEFILTERS ( DimDate ), KEEPFILTERS ( NOT ISBLANK ( DimProject[Id] ) ) )",
@@ -7449,8 +7443,9 @@
         {
           "name": "Story | Home · Briefing",
           "dataType": "Text",
-          "expression": "VAR _n = [Story | Home · Act Count]\nVAR _a = [Story | Active Projects]\nVAR _ob = [Story | Projects Over Budget] + 0\nVAR _sl = [Story | Baseline · Late Projects] + 0\nVAR _nm = EOMONTH ( TODAY (), 0 ) + 1\nVAR _op = CALCULATE ( [Story | Over-allocated People], DimDate[MonthStart] = _nm, REMOVEFILTERS ( DimDate ) ) + 0\nRETURN\n    IF ( _n = 0, \"No active project needs a decision this week. Keep the data fresh.\",\n        FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _a, \"0\" ) & \" active projects need a decision — \"\n            & FORMAT ( _ob, \"0\" ) & \" over budget, \" & FORMAT ( _sl, \"0\" ) & \" slipping, \"\n            & FORMAT ( _op, \"0\" ) & \" people above 100% in \" & FORMAT ( _nm, \"mmmm\" ) & \".\" )",
+          "expression": "VAR _n = [Story | Home · Act Count]\nVAR _a = [Story | Active Projects]\nVAR _b100 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) )\nVAR _b90 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) )\nVAR _b80 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) )\nVAR _b60 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) )\nVAR _b50 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) )\nVAR _b40 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) )\nVAR _p = IF ( _b100 > 0, \", \" & FORMAT ( _b100, \"0\" ) & \" off track\" )\n        & IF ( _b90 > 0, \", \" & FORMAT ( _b90, \"0\" ) & \" over budget\" )\n        & IF ( _b80 > 0, \", \" & FORMAT ( _b80, \"0\" ) & \" late vs baseline\" )\n        & IF ( _b60 > 0, \", \" & FORMAT ( _b60, \"0\" ) & \" with overdue work\" )\n        & IF ( _b50 > 0, \", \" & FORMAT ( _b50, \"0\" ) & \" with no recent report\" )\n        & IF ( _b40 > 0, \", \" & FORMAT ( _b40, \"0\" ) & \" with failing rules\" )\nRETURN\n    IF ( _n = 0, \"No active project needs a decision this week. Keep the data fresh.\",\n        FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _a, \"0\" ) & \" active projects need a decision — \" & MID ( _p, 3, LEN ( _p ) ) & \".\" )",
           "displayFolder": "Story\\Home",
+          "description": "Act-now count with its breakdown by reason; the parts add up to Act Count.",
           "references": {
             "measures": [
               {
@@ -7466,17 +7461,7 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Projects Over Budget"
-              },
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Baseline · Late Projects"
-              },
-              {
-                "schema": "extension",
-                "entity": "_Measures",
-                "name": "Story | Over-allocated People"
+                "name": "Story | Home · Act Score"
               }
             ]
           }
@@ -7484,18 +7469,18 @@
         {
           "name": "Story | Home · EAC Var % (reports)",
           "dataType": "Double",
-          "expression": "VAR _b = SUMX ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )\n            RETURN CALCULATE ( MAX ( FactStatusReport[Budget] ), FactStatusReport[Report_ReportEnd] = _e ) ) )\nVAR _f = SUMX ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )\n            RETURN CALCULATE ( MAX ( FactStatusReport[Forecast] ), FactStatusReport[Report_ReportEnd] = _e ) ) )\nRETURN IF ( MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY (), DIVIDE ( _f - _b, _b ) )",
+          "expression": "VAR _me = EOMONTH ( MAX ( DimDate[MonthStart] ), 0 )\nVAR _act = CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), DimProject[State_Value] = \"Active\" )\nVAR _b = SUMX ( _act, ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ),\n                              FactStatusReport[Report_ReportEnd] < _me + 1 )\n            RETURN CALCULATE ( MAX ( FactStatusReport[Budget] ), REMOVEFILTERS ( DimDate ),\n                               FactStatusReport[Report_ReportEnd] = _e ) ) )\nVAR _f = SUMX ( _act, ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ),\n                              FactStatusReport[Report_ReportEnd] < _me + 1 )\n            RETURN CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ),\n                               FactStatusReport[Report_ReportEnd] = _e ) ) )\nRETURN IF ( MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY (), DIVIDE ( _f - _b, _b ) )",
           "displayFolder": "Story\\Home",
           "formatString": "+0.0%;-0.0%;0.0%",
-          "description": "Forecast vs budget as reported in the status reports of the month (latest report per project)."
+          "description": "Forecast vs budget of active projects, each on its latest status report as of the month end (carried forward)."
         },
         {
           "name": "Story | Home · On Track % (reports)",
           "dataType": "Double",
-          "expression": "VAR _t = ADDCOLUMNS ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), \"@h\", ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )\n            RETURN CALCULATE ( MAX ( FactStatusReport[OverallHealth] ), FactStatusReport[Report_ReportEnd] = _e ) ) )\nVAR _n = COUNTROWS ( FILTER ( _t, NOT ISBLANK ( [@h] ) ) )\nVAR _ok = COUNTROWS ( FILTER ( _t, LEFT ( [@h], 3 ) = \"(1)\" ) )\nRETURN IF ( MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY () && _n > 0, DIVIDE ( _ok, _n ) )",
+          "expression": "VAR _me = EOMONTH ( MAX ( DimDate[MonthStart] ), 0 )\nVAR _t = ADDCOLUMNS ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), DimProject[State_Value] = \"Active\" ), \"@h\", ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ),\n                              FactStatusReport[Report_ReportEnd] < _me + 1 )\n            RETURN CALCULATE ( MAX ( FactStatusReport[OverallHealth] ), REMOVEFILTERS ( DimDate ),\n                               FactStatusReport[Report_ReportEnd] = _e ) ) )\nVAR _n = COUNTROWS ( FILTER ( _t, NOT ISBLANK ( [@h] ) ) )\nVAR _ok = COUNTROWS ( FILTER ( _t, LEFT ( [@h], 3 ) = \"(1)\" ) )\nRETURN IF ( MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY () && _n > 0, DIVIDE ( _ok, _n ) )",
           "displayFolder": "Story\\Home",
           "formatString": "0%",
-          "description": "Share of reporting projects whose latest report in the month says On Track."
+          "description": "Share of active projects whose latest report as of the month end says On Track (carried forward)."
         },
         {
           "name": "Story | Home · EAC Change",
@@ -7623,7 +7608,7 @@
         {
           "name": "Story | Home · Line Resources",
           "dataType": "Text",
-          "expression": "FORMAT ( [Story | Over-allocated People] + 0, \"0\" ) & \" over 100%\"",
+          "expression": "FORMAT ( [Story | Over-allocated People] + 0, \"0\" ) & \" over 100% (in view)\"",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
