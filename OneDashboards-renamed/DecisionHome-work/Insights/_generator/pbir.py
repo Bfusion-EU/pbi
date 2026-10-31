@@ -313,7 +313,7 @@ def home_icon_button(target_page, colour=ORANGE):
             "visualContainerObjects": {
                 "visualLink": [{"properties": {"show": b(True), "type": s("PageNavigation"),
                                                "navigationSection": s(target_page),
-                                               "tooltip": s("Back to the story navigator")}}],
+                                               "tooltip": s("Back to the command center")}}],
                 "border": [{"properties": {"show": b(False)}}],
                 "background": [{"properties": {"show": b(False)}}]},
             "drillFilterOtherVisuals": True}

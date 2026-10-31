@@ -337,7 +337,7 @@ def _build_page(key, drill):
         pages.next_chapter(pg, key, pages.YNEXT)
     else:
         pg.add(16, pages.YNEXT, 180, 36, back_button(icon=False), key="back")
-        pg.add(206, pages.YNEXT, 220, 36, pbir.nav_button("‹  Story navigator", pages.PID["home"], "Back to the home page",
+        pg.add(206, pages.YNEXT, 220, 36, pbir.nav_button("‹  Command center", pages.PID["home"], "Back to the home page",
                                                           fill="#FFFFFF", hover=pbir.ORANGE_SOFT, press=pbir.ORANGE,
                                                           font=NAVY, outline=pbir.BORDER), key="home_btn")
     return pg

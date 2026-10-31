@@ -19,7 +19,7 @@ Every chapter answers **one question** and reads from top to bottom:
 4. **② Trend / composition**: where things are heading.
 5. **③ Drivers**: why the numbers are what they are.
 6. **④ The list to act on**: a register sorted so the first row is the first thing to do.
-7. **Next chapter ›**: a button to the next page in the story, plus a link back to the navigator.
+7. **Next chapter ›**: a button to the next page in the story, plus a link back to the command center.
 
 | # | Page | Question | Audience |
 |---|---|---|---|

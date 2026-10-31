@@ -439,7 +439,7 @@ def build_project(drill):
     # footer buttons
     if drill:
         pg.add(16, 1620, 180, 36, back_button(icon=False), key="back")
-        pg.add(206, 1620, 220, 36, nav_button("Story navigator", PID["home"], "Back to the home page",
+        pg.add(206, 1620, 220, 36, nav_button("Command center", PID["home"], "Back to the home page",
                                               fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY, outline=BORDER),
                key="home")
     else:

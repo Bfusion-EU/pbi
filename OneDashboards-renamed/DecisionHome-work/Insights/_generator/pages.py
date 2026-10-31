@@ -14,7 +14,7 @@ TALL = 1800
 BG_TALL = "bfv5_footer_band_1800x1800.png"
 
 PAGES = [  # (key, display name) — the story order; "Next chapter" follows this list
-    ("home", "Home — Story Navigator"),
+    ("home", "Home — Command center"),
     ("exec", "1 · Executive Summary"),
     ("portfolio", "2 · Portfolio"),
     ("lifecycle", "2b · Pipeline, Gates & Dependencies"),
@@ -91,7 +91,7 @@ def next_chapter(pg, key, y):
         label = dict(PAGES)[nxt].split("·", 1)[-1].strip()
         pg.add(W - 16 - 340, y, 340, 36, nav_button((f"Next chapter: {label}  ›" if len(label) <= 26 else f"Next: {label}  ›"), PID[nxt],
                                                      "Continue the story on the next page"), key="next")
-    pg.add(16, y, 220, 36, nav_button("‹  Story navigator", PID["home"], "Back to the home page",
+    pg.add(16, y, 220, 36, nav_button("‹  Command center", PID["home"], "Back to the home page",
                                       fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY, outline=BORDER),
            key="back")
 
