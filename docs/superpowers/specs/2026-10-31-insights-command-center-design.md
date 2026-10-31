@@ -116,7 +116,8 @@ The old greeting line, refresh line and the separate orange briefing strip are g
   the same `Act Score` buckets as the Act-now list, so the six counts always add up to the pill's N (`Act Count`).
 - Pill and chip texts are card visuals (transparent background, no header, no scroll), not one-cell tables: the
   table header row (about 26 px) leaves no room in a 28 px chip, and its background would paint outside the band.
-- No link: the Act-now list is always visible in the PMO view.
+- Hover and click (rev 2.3): hovering the pill or a chip lists the projects behind it; clicking the count part of a
+  chip filters the Act-now column to that reason, clicking the count part of the pill shows all again. See section 8.
 
 ### 4 · Subject cards (both views): the one card anatomy
 
@@ -197,6 +198,56 @@ Every card has the same five rows, top to bottom, all left-aligned:
   The default is PMO.
 - The bookmark JSON format is the one from rev 1. It has not yet been click-tested in Desktop, so
   that test is part of the acceptance checks.
+- Rev 2.3 splits the PMO group (see section 8): `grp_pmo_rest` (panel, PMO pill, Open One-Pager, Next 30 days),
+  `grp_act_all` and six `grp_act_<bucket>` (the Act-now list versions) and `grp_exec`; eight bookmarks in total.
+
+### 8 · What's behind this number: hover lists and click-to-filter (rev 2.3)
+
+**Hover: report-page tooltips.** Fifteen hidden pages (page type Tooltip, 360 × 260, white, `HiddenInViewMode`,
+registered in `pages.HIDDEN_PAGES` under stable keys `tip_home_*`). Each has a title, a one-line subtitle, an orange
+rule and ONE light table. Every table lists rows through measures that are blank unless the row qualifies, so the
+other rows vanish; there is never a visual filter on a measure (that rendered an empty table in Desktop). Column
+filters (real projects, risk work type / state) are fine.
+
+| Page | Attached to | Rows | Columns (blank-unless measure in bold) | Same rule as |
+|---|---|---|---|---|
+| `tip_home_act` | pill | projects | Project, **Act Reason**, Act Score | Act Count |
+| `tip_home_<bucket>` × 6 | chip text | projects | Project, **`Home · Tip <Bucket>`** = `IF ( [Act Score] = k, [Act Reason] )` | Chip <Bucket> |
+| `tip_home_fin` | Financials number | projects | Project, **Tip Financials** (EAC variance %) | Projects Over Budget |
+| `tip_home_sch` | Schedule number | projects | Project, **Tip Schedule** (finish slip, days) | Baseline · Late Projects |
+| `tip_home_res` | Resources number | people | Person, **Tip Resources** (peak monthly utilisation > 100%, active people) | Over-allocated People |
+| `tip_home_risk` | Risk number | risks (DimTask) | Risk, Project, **Tip Risk** (exposure of active risks scoring 9+) | Critical High Risks |
+| `tip_home_port` | Portfolio number | projects | Project, **Tip Portfolio** (Aligned / Not aligned, "· proposed"), **Tip Portfolio Budget** | Aligned Budget % |
+| `tip_home_ben` | Benefits number | projects | Project, **Tip Benefits** (benefit / cost) | Benefit Cost Ratio |
+| `tip_home_sr` | Status reports number | projects | Project, **Tip Status** (Overdue / Nothing submitted), **Tip Status Days** | Status · Not Reporting |
+| `tip_home_gov` | Governance number | project plans | Project, **Tip Governance** (failing rule count) | Plans Failing (project plans only) |
+
+The tooltip is set on the visual with `visualTooltip` `{show, type "Canvas", section <page id>}`. A button cannot show
+a report-page tooltip, so every visual that carries one sits ABOVE the whole-card ghost link: the card number cell is
+added after the ghost link and is only 180 px wide (`NUM_W`), so the rest of its row still clicks through to the
+chapter. A tooltip cannot scroll: a list longer than about eight rows shows its top rows (each list is sorted by its
+figure, worst first).
+
+**Click: the Act-now column filtered by reason.** Seven versions of the Act-now list sit in the same place, each in
+its own top-level group: `grp_act_all` (Project, Why = `Act Reason`, Impact; the rev 2 table) and `grp_act_<bucket>`
+× 6 (title "Act now — <bucket>", a "Show all ›" bookmark button, and a table with Project and Why = that bucket's
+`Tip <Bucket>` measure, so only that bucket's projects show). The rest of the PMO column is `grp_pmo_rest`.
+
+| Bookmark (display only, `suppressData`) | Visible | Hidden |
+|---|---|---|
+| Home · PMO view (default) | pmo_rest, act_all | act buckets, exec |
+| Home · Executive view | exec | everything else |
+| Home · Act now — <bucket> × 6 | pmo_rest, act_<bucket> | act_all, other buckets, exec |
+
+**Hover and click on the same chip.** A data visual on top is needed for the hover list, a button on top for the
+click, and Power BI passes neither through the other. Each chip is therefore split: the LEFT zone (dot and count,
+47 px, `CHIP_HIT_W`) is a transparent bookmark button above the text with a faint white tint on hover, so it reads
+as clickable; the rest of the chip (the label words) is the text card, which shows the list on hover. The pill works
+the same way: its left 100 px (the "11 of 15" part of the centred text) is a button back to the PMO view (all
+projects), the rest hovers. The PMO switch also returns to the PMO view, and each bucket view has "Show all ›".
+Alternatives rejected: a button over the whole chip (no hover list at all), the text on top of a full-size button
+(only the 2-4 px rims would click).
+
 
 ## History rules (unchanged from rev 1)
 
@@ -210,6 +261,9 @@ Every card has the same five rows, top to bottom, all left-aligned:
 - **New** (`Story | Home · …`): `Briefing Pill`, `Chip <Bucket>` (6) and `Chip Colour <Bucket>` (6), `Insight Financials / Schedule / Resources /
   Risk / Portfolio / Benefits / Status / Governance`, `Pill <Subject>` (8), `Colour Status`,
   and `Pill Fill <Subject>` if the pill background needs its own colour measure.
+- **New in rev 2.3** (folder `Story\Home\Tooltips`): `Tip <Bucket>` (6), `Tip Financials`, `Tip Schedule`,
+  `Tip Resources`, `Tip Risk`, `Tip Portfolio`, `Tip Portfolio Budget`, `Tip Benefits`, `Tip Status`, `Tip Status Days`,
+  `Tip Governance`: each blank unless the row qualifies (section 8).
 - **Removed** once nothing uses them: `Line …` (8), `Answer …` (4), the rev-1 KPI-row
   arrangement in `build_pulse`, and (rev 2.2) `Greeting`, `Refreshed`, `Briefing` and `Briefing Reasons`. Measures and helpers no longer used by Home are deleted.
 - **Reused**: everything named in the card table, the Act-now and history measures and `Due`.
@@ -226,6 +280,9 @@ Every card has the same five rows, top to bottom, all left-aligned:
 - **Manual click checks (user)**: the view switch toggles the right column; a slicer pick survives
   the switch and carries into a chapter; rail icons, card links and footers land on the right
   pages; "Open One-Pager ›" opens the selected project.
+- **Manual hover / click checks (user, rev 2.3)**: hovering the pill, each chip's label and each card number shows
+  its list; clicking a chip's count shows "Act now — <bucket>" with only those projects; "Show all ›", the pill's
+  count and the PMO switch bring the full list back; the rest of each card still opens its chapter.
 
 ## Risks / open points
 

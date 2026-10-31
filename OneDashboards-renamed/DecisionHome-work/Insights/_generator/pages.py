@@ -41,6 +41,15 @@ HIDDEN_PAGES = [
     ("tip_resource", "Tooltip · Resource"),
     ("resource_dt", "Resource Detail (drill-through)"),
 ]
+# Home "what's behind this number" tooltip pages (built by ext_home): the Act pill, the six reason chips
+# (one per Act-score bucket) and the eight subject-card numbers. Keys are stable, so the page ids are too.
+HOME_TIP_BUCKETS = ["off_track", "over_budget", "late", "overdue_work", "not_reporting", "failing_rules"]
+HOME_TIP_CARDS = [("fin", "Financials"), ("sch", "Schedule"), ("res", "Resources"), ("risk", "Risk"),
+                  ("port", "Portfolio"), ("ben", "Benefits"), ("sr", "Status reports"), ("gov", "Governance")]
+HOME_TIPS = ([("tip_home_act", "Tooltip · Home · Act now")]
+             + [(f"tip_home_{b}", f"Tooltip · Home · {b.replace('_', ' ')}") for b in HOME_TIP_BUCKETS]
+             + [(f"tip_home_{k}", f"Tooltip · Home · {nm}") for k, nm in HOME_TIP_CARDS])
+HIDDEN_PAGES += HOME_TIPS
 PID = {k: uid("insights-page", k) for k, _ in PAGES + HIDDEN_PAGES}
 ORDER = [k for k, _ in PAGES]
 

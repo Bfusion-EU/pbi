@@ -8,7 +8,7 @@ import pages
 import pbir
 from pbir import (ORANGE, PEACH, GREY, Page, headline, chart, textbox, st, shape, image, slicer, nav_button,
                   P, M, C, s, b, n, col_solid, measure_colour, measure_fill, legend)
-from story_measures import add, T, D, I, money
+from story_measures import add, T, D, I, money, RISK, IMPACT_SCORE, PROB_SCORE, HIGH_HEAT
 from ext_status import STALE_DAYS  # same threshold as Story | Status · Not Reporting
 
 PX = "Story | Home · "
@@ -74,6 +74,77 @@ for _k, _lbl, _nm, _dot in CHIPS:
          desc=f"Active projects whose Act score is {_k} ({_lbl}); 0 when none. The six chips add up to Act Count.")
     _add(f"Chip Colour {_nm}", T, f'''IF ( {_cnt} > 0, "{CHIP_ON}", "{CHIP_OFF}" )''',
          desc=f"Chip text colour: light when the count is above 0, dim when 0.", folder=FOLDER + "\\Colours")
+
+# ---------------------------------------------------------------- hover lists: "what's behind this number"
+# Every list is a table whose only measures are blank unless the row qualifies, so the other rows vanish (a visual
+# filter on an extension measure rendered an EMPTY table in Desktop, so no visual measure filters).
+_TIPS = FOLDER + "\\Tooltips"
+ONE_PROJECT = "HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) )"
+for _k, _lbl, _nm, _dot in CHIPS:
+    _add(f"Tip {_nm}", T, f'IF ( [{hm("Act Score")}] = {_k}, [{hm("Act Reason")}] )', folder=_TIPS,
+         desc=f"Act-now reason of a project whose Act score is {_k} ({_lbl}); blank for every other project, so the "
+              f"chip's hover list and the '{_lbl}' Act-now view show only that bucket.")
+_add("Tip Financials", D, f"""
+VAR _b = [Story | Budget At Completion]
+VAR _e = [Story | Finance EAC]
+RETURN IF ( {ONE_PROJECT} && _b > 0 && _e > _b, [Story | EAC Variance %] )""", "+0.0%;-0.0%;0.0%",
+     "EAC variance % of a project whose EAC is above its budget (same rule as Story | Projects Over Budget); blank otherwise.",
+     folder=_TIPS)
+_add("Tip Schedule", D, f"""
+VAR _s = [Story | Baseline · Finish Slip (days)]
+RETURN IF ( {ONE_PROJECT} && _s > 0, _s )""", "+0",
+     "Finish slip in days of a project finishing later than its baseline (same rule as Story | Baseline · Late "
+     "Projects); blank otherwise.", folder=_TIPS)
+_add("Tip Resources", D, """
+VAR _pk =
+    MAXX (
+        CALCULATETABLE (
+            ADDCOLUMNS ( SUMMARIZE ( FactCapacity, DimDate[MonthStart] ), "@u", [Story | Utilisation %] ),
+            KEEPFILTERS ( DimResource[Inactive] = FALSE () )
+        ),
+        [@u]
+    )
+RETURN IF ( HASONEVALUE ( DimResource[Name] ) && _pk > 1, _pk )""", "0%",
+     "Peak monthly utilisation of an active person above 100% in at least one month in view (same rule as Story | "
+     "Over-allocated People); blank otherwise.", folder=_TIPS)
+_add("Tip Risk", D, f"""
+VAR _t =
+    FILTER (
+        CALCULATETABLE ( DimTask, {RISK} ),
+        VAR _i = {IMPACT_SCORE}
+        VAR _p = {PROB_SCORE}
+        RETURN _i * _p >= {HIGH_HEAT}
+    )
+RETURN IF ( HASONEVALUE ( DimTask[Name] ) && NOT ISEMPTY ( _t ), SUMX ( _t, DimTask[Exposure] ) + 0 )""", "#,##0",
+     f"Exposure score of an active project risk scoring {HIGH_HEAT}+ on the 4×4 grid (same rule as Story | Critical "
+     "High Risks); blank otherwise.", folder=_TIPS)
+_add("Tip Portfolio", T, f"""
+VAR _b = SUM ( DimProject[Budget] )
+VAR _st = SELECTEDVALUE ( DimProject[State_Value] )
+VAR _al = SELECTEDVALUE ( DimProject[StrategicAlignment_Value] )
+RETURN
+    IF ( {ONE_PROJECT} && ( _b > 0 || _st = "Proposed" ),
+        IF ( _al IN {{ "Strong", "Extreme" }}, "Aligned", "Not aligned" ) & IF ( _st = "Proposed", " · proposed", "" ) )""",
+     desc="Aligned (Strong / Extreme strategic alignment) or Not aligned, for a project with plan budget or proposed in "
+          "the pipeline; blank otherwise.", folder=_TIPS)
+_add("Tip Portfolio Budget", D, f'IF ( NOT ISBLANK ( [{hm("Tip Portfolio")}] ), SUM ( DimProject[Budget] ) )', "#,##0",
+     "Plan-field budget of a project listed by Tip Portfolio; blank otherwise.", folder=_TIPS)
+_add("Tip Benefits", D, f"""
+VAR _r = [Story | Benefit Cost Ratio]
+RETURN IF ( {ONE_PROJECT} && _r > 0, _r )""", "0.00",
+     "Benefit / cost ratio of a project that has one; blank otherwise.", folder=_TIPS)
+_add("Tip Status", T, """
+SWITCH ( [Story | Status · Reporting Gap], 1, "Overdue", 2, "Nothing submitted" )""",
+     desc="Overdue / Nothing submitted for a project that counts as not reporting (same rule as Story | Status · Not "
+          "Reporting); blank otherwise.", folder=_TIPS)
+_add("Tip Status Days", I, """
+IF ( [Story | Status · Reporting Gap] >= 1, [Story | Status · Days Since Report] )""", "0",
+     "Days since the last submitted report of a project that counts as not reporting; blank otherwise (and blank "
+     "when it never reported).", folder=_TIPS)
+_add("Tip Governance", I, f"""
+VAR _f = [Story | Project · Failing Rules]
+RETURN IF ( {ONE_PROJECT} && _f > 0, _f )""", "0",
+     "Number of Plan Insights rules failing for a plan that fails at least one; blank otherwise.", folder=_TIPS)
 
 # ---------------------------------------------------------------- history from status-report snapshots
 # Per month: every ACTIVE project's latest report as of month end (carried forward, not only projects that reported
@@ -411,6 +482,43 @@ def chip_outline(line="#3A4768"):
     return v
 
 
+CHIP_SLUG = {k: lbl.replace(" ", "_") for k, (_s, lbl, _n, _d) in enumerate(CHIPS)}
+assert list(CHIP_SLUG.values()) == pages.HOME_TIP_BUCKETS
+
+
+def with_tip(v, tip_key):
+    """Report-page tooltip (Canvas) on a visual: hovering it shows the hidden Tooltip page tip_key."""
+    v.setdefault("visualContainerObjects", {})["visualTooltip"] = [{"properties": {
+        "show": b(True), "type": s("Canvas"), "section": s(pages.PID[tip_key])}}]
+    return v
+
+
+def ghost_bookmark(bm, tooltip):
+    """Transparent bookmark button (click zone); a faint white tint on hover shows it is clickable."""
+    v = pbir.bookmark_button("", bm, tooltip, fill=CANVAS, hover=CANVAS, press=CANVAS)
+    v["objects"]["fill"] = [{"properties": {"show": b(True)}},
+                            {"properties": {"fillColor": col_solid(CANVAS), "transparency": n(100)}, "selector": {"id": "default"}},
+                            {"properties": {"fillColor": col_solid("#FFFFFF"), "transparency": n(85)}, "selector": {"id": "hover"}},
+                            {"properties": {"fillColor": col_solid("#FFFFFF"), "transparency": n(75)}, "selector": {"id": "press"}}]
+    return v
+
+
+# Hover AND click on one chip: a report-page tooltip needs a data visual on top (buttons cannot show one), and a click
+# needs a button on top. So each chip is split: the LEFT click zone (dot + count, CHIP_HIT_W) is a transparent bookmark
+# button above the text; the rest of the chip (the label words) is the text card, which shows the hover list.
+# The pill works the same way: its left zone ("11 of 15") clicks back to the full list, the rest hovers.
+CHIP_HIT_W = CH_DOT_X + CH_DOT + 4 + 2 * CH_CHAR_PX + 8     # 47 px: dot, gap and a two-digit count
+PILL_HIT_W = 100                                             # the "11 of 15" part of the centred pill text
+
+
+def build_band_links(pg, bm_all, bm_bucket):
+    """Click zones over the pill and the chips; added after the band texts so they sit above them in z-order."""
+    pg.add(PILL_X, PILL_Y, PILL_HIT_W, PILL_H, ghost_bookmark(bm_all, "Show every Act-now project"), key="pill_go")
+    for k, x, y, w in chip_geometry():
+        pg.add(x, y, CHIP_HIT_W, CH_H, ghost_bookmark(bm_bucket[CHIP_SLUG[k]], f"Show only the {CHIPS[k][1]} projects "
+                                                                               "in Act now"), key=f"chip_go{k}")
+
+
 def band_text(measure, size, colour=INK2, colour_measure=None):
     """Single-line card on a transparent ground (no header row, no scroll), text centred."""
     v = text_line(measure, size=size, colour=colour)
@@ -426,14 +534,16 @@ def build_band(pg):
     build_brand(pg)
     # decision pill: orange shape, white text on top
     pg.add(PILL_X, PILL_Y, PILL_W, PILL_H, shape(ORANGE, radius=10), key="pill_bg")
-    pg.add(PILL_X + 8, PILL_Y + 4, PILL_W - 16, PILL_H - 8, band_text(hm("Briefing Pill"), 15, "#FFFFFF"), key="pill")
+    pg.add(PILL_X + 8, PILL_Y + 4, PILL_W - 16, PILL_H - 8,
+           with_tip(band_text(hm("Briefing Pill"), 15, "#FFFFFF"), "tip_home_act"), key="pill")
     for k, x, y, w in chip_geometry():
         nm = CHIPS[k][2]
         pg.add(x, y, w, CH_H, chip_outline(), key=f"chip_bg{k}")
         pg.add(x + CH_DOT_X, y + (CH_H - CH_DOT) / 2, CH_DOT, CH_DOT, shape(CHIPS[k][3], radius=50), key=f"chip_dot{k}")
         tx = x + CH_DOT_X + CH_DOT + 4
         pg.add(tx, y + 2, x + w - 6 - tx, CH_H - 4,
-               band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")), key=f"chip{k}")
+               with_tip(band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")),
+                        f"tip_home_{CHIP_SLUG[k]}"), key=f"chip{k}")
     pg.add(1220, 15, 160, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
     pg.add(1390, 15, 160, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
@@ -471,6 +581,7 @@ _PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk"
 # renders text taller than Desktop and shows a scroll thumb when it does not fit. R_BAR is the bar's centre line.
 R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 40, 120, 120, 160, 96, 212, 256, 126
 R_RULE, R_FOOT, CHIP_H = ROW_H - 50, ROW_H - 42, 30
+NUM_W = 180                # number cell width: a 34 pt KPI ("100%", "93.4") plus the cell padding
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
 ACT_H = 398                # Act-now table: header + 8 rows
 
@@ -519,7 +630,6 @@ def subject_card(pg, x, y, spec):
     pg.add(x + 52, y + R_HEAD - 2, 160, 32, textbox([[(name, st("Segoe UI Semibold", 14, INK2, True))]]), key=f"{p}_title")
     pg.add(x + COL_W - 88, y + R_HEAD, 72, 28, pill(hm(f"Pill {_PILL_NAME[key]}"), hm(f"Pill Fill {_PILL_NAME[key]}")),
            key=f"{p}_pill")
-    pg.add(x + CELL_X, y + R_NUM, COL_W - CELL_X - 14, NUM_H, value_cell(num, colour_measure=colour, size=34), key=f"{p}_num")
     pg.add(x + 16, y + R_LBL, COL_W - 32, 26, textbox([[(label, st("Segoe UI", 12, LABEL))]]), key=f"{p}_lbl")
     # cells are taller than the room they show text in (the table header row + Service text height need the extra),
     # so the sentence cell is added BEFORE the spark / bar and those sit on top of its empty upper part
@@ -531,6 +641,10 @@ def subject_card(pg, x, y, spec):
     pg.add(x + 16, y + R_RULE, COL_W - 32, 1, shape("#26314F"), key=f"{p}_rule")
     # whole-card link first, footer links on top of it
     pg.add(x, y, COL_W, R_RULE - 4, ghost_link(link, name), key=f"{p}_go")
+    # the number sits ABOVE the ghost link so hovering it shows its list (a button cannot show a report-page tooltip);
+    # it is only NUM_W wide, so the rest of its row still clicks through to the chapter
+    pg.add(x + CELL_X, y + R_NUM, NUM_W, NUM_H,
+           with_tip(value_cell(num, colour_measure=colour, size=34), f"tip_home_{key}"), key=f"{p}_num")
     labels, size, widths = chip_layout(footer)
     cx = x + 16
     for j, ((txt, target), label, w) in enumerate(zip(footer, labels, widths)):
@@ -545,44 +659,75 @@ def build_cards(pg):
         subject_card(pg, x, y, spec)
 
 
-def build_right_pmo(pg, grp):
-    view_pill(pg, grp, 0, "view_pill_pmo")
-    x, y = RIGHT_X, RIGHT_Y
-    panel(pg, x, y, RIGHT_W, RIGHT_H, "act_bg", parent=grp)
-    pg.add(x + 16, y + 10, 400, 32, textbox([[("Act now", st("Segoe UI Semibold", 15, INK2, True)),
-                                              ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
-           key="act_title", parent=grp)
+def _dark_table_obj(fields, widths, why=None):
     obj = pbir.table_style(11, header_bg=PANEL)
     obj["values"] = [{"properties": {"fontSize": n(11), "fontColorPrimary": col_solid(INK2),
                                      "backColorPrimary": col_solid(PANEL), "fontColorSecondary": col_solid(INK2),
-                                     "backColorSecondary": col_solid(PANEL), "wordWrap": b(True)}},
-                     pbir.cf_font(M(hm("Act Reason")), hm("Act Colour"))]
+                                     "backColorSecondary": col_solid(PANEL), "wordWrap": b(True)}}]
+    if why:
+        obj["values"].append(pbir.cf_font(M(why), hm("Act Colour")))
     obj["grid"] = [{"properties": {"gridHorizontal": b(True), "gridHorizontalColor": col_solid("#26314F"),
                                    "rowPadding": n(6)}}]
     obj["total"] = [{"properties": {"totals": b(False)}}]
-    fields = [pages.DP("Name"), M(hm("Act Reason")), M(hm("Act Score"))]
-    # fixed column widths: auto-sizing pushes the Impact column off to a horizontal scrollbar
+    # fixed column widths: auto-sizing pushes the last column off to a horizontal scrollbar
     obj["columnWidth"] = [{"properties": {"value": n(w)}, "selector": {"metadata": pbir.qref(f)}}
-                          for f, w in zip(fields, (146, 138, 66))]
-    tbl = chart("tableEx", {"Values": [P(pages.DP("Name"), "Project"), P(M(hm("Act Reason")), "Why"),
-                                       P(M(hm("Act Score")), "Impact")]},
-                "", obj, sort=[(M(hm("Act Score")), "Descending")])
+                          for f, w in zip(fields, widths)]
+    return obj
+
+
+def act_table(why, impact=True):
+    """Act-now table. why = the Why measure: Act Reason (all projects with a reason) or a bucket's Tip measure
+    (blank for every other project, so only that bucket's rows show)."""
+    if impact:
+        fields, widths = [pages.DP("Name"), M(why), M(hm("Act Score"))], (146, 138, 66)
+        roles = [P(pages.DP("Name"), "Project"), P(M(why), "Why"), P(M(hm("Act Score")), "Impact")]
+        sort = [(M(hm("Act Score")), "Descending")]
+    else:
+        fields, widths = [pages.DP("Name"), M(why)], (160, 200)
+        roles = [P(pages.DP("Name"), "Project"), P(M(why), "Why")]
+        sort = [(pages.DP("Name"), "Ascending")]
+    tbl = chart("tableEx", {"Values": roles}, "", _dark_table_obj(fields, widths, why), sort=sort)
     for o in ("title", "background", "border"):
         tbl["visualContainerObjects"][o] = [{"properties": {"show": b(False)}}]
-    pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, tbl, key="act_tbl", parent=grp, filters=[pages.REAL_PROJECTS])
+    return tbl
+
+
+ACT_GRP = (RIGHT_X, RIGHT_Y, RIGHT_W, 44 + ACT_H)   # one Act-now version: title row + table
+
+
+def build_act(pg, g_all, g_bucket, bm_all):
+    """Seven versions of the Act-now list, each its own top-level group: all reasons, and one per chip bucket."""
+    x, y = RIGHT_X, RIGHT_Y
+    pg.add(x + 16, y + 10, 400, 32, textbox([[("Act now", st("Segoe UI Semibold", 15, INK2, True)),
+                                              ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
+           key="act_title", parent=g_all)
+    pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, act_table(hm("Act Reason")), key="act_tbl", parent=g_all,
+           filters=[pages.REAL_PROJECTS])
+    for k, (_s, lbl, nm, _d) in enumerate(CHIPS):
+        slug, grp = CHIP_SLUG[k], g_bucket[CHIP_SLUG[k]]
+        pg.add(x + 16, y + 10, 300, 32, textbox([[(f"Act now — {lbl}", st("Segoe UI Semibold", 15, INK2, True))]]),
+               key=f"act_title_{slug}", parent=grp)
+        pg.add(x + RIGHT_W - 16 - 96, y + 14, 96, 26,
+               pbir.bookmark_button("Show all ›", bm_all, "Show every Act-now project", fill=PANEL, hover="#26314F",
+                                    press=ORANGE, font="#F29A6B", size=10, align="right", margin=4),
+               key=f"act_all_{slug}", parent=grp)
+        pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, act_table(hm(f"Tip {nm}"), impact=False), key=f"act_tbl_{slug}",
+               parent=grp, filters=[pages.REAL_PROJECTS])
+
+
+def build_right_pmo(pg, grp):
+    """Everything in the PMO right column except the Act-now list (that lives in the act groups)."""
+    view_pill(pg, grp, 0, "view_pill_pmo")
+    x, y = RIGHT_X, RIGHT_Y
+    panel(pg, x, y, RIGHT_W, RIGHT_H, "act_bg", parent=grp)
     pg.add(x + 16, y + 44 + ACT_H + 8, 200, 32, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
            "Select a project row first", fill=ORANGE, size=10), key="act_drill", parent=grp)
     pg.add(x + 224, y + 44 + ACT_H + 12, RIGHT_W - 240, 26, textbox([[("or right-click › Drill through", st("Segoe UI", 10, LABEL))]]),
            key="act_hint", parent=grp)
     pg.add(x + 16, y + 44 + ACT_H + 60, 300, 32, textbox([[("Next 30 days", st("Segoe UI Semibold", 15, INK2, True))]]),
            key="next_title", parent=grp)
-    mobj = pbir.table_style(11, header_bg=PANEL)
-    mobj["values"] = obj["values"][:1]
-    mobj["grid"] = obj["grid"]
-    mobj["total"] = obj["total"]
-    mobj["columnWidth"] = [{"properties": {"value": n(w)}, "selector": {"metadata": pbir.qref(f)}}
-                           for f, w in zip((M(hm("Due")), pages.DP("Name"), pages.DT("Name")), (88, 130, 156))]
     due = M(hm("Due"))
+    mobj = _dark_table_obj((due, pages.DP("Name"), pages.DT("Name")), (88, 130, 156))
     # rows outside the next 30 days vanish: the only measure in the row (Due) is blank for them
     miles = chart("tableEx", {"Values": [P(due, "Due"), P(pages.DP("Name"), "Project"), P(pages.DT("Name"), "Milestone")]},
                   "", mobj, sort=[(due, "Ascending")])
@@ -630,6 +775,89 @@ def build_switch(pg, bm_pmo, bm_exec):
         pg.add(1586 + k * 94, 30, 90, 32, v, key=f"switch{k}")
 
 
+# ====================================================================== hover lists: report-page tooltips
+TIP_W, TIP_H = 360, 260
+TIP_COLS = 290             # total column width of a tooltip table (see tip_page)
+
+
+def tip_page(key, title, subtitle, columns, sort, filters=()):
+    """Hidden Tooltip page: title, one-line subtitle, orange rule and ONE light table.
+    columns: [(field, display name, width)]. The table's measures are blank unless the row qualifies."""
+    pg = Page(pages.PID[key], dict(pages.HIDDEN_PAGES)[key], TIP_W, TIP_H, background_colour="#FFFFFF",
+              display_option="ActualSize")
+    pg.page["type"] = "Tooltip"
+    pg.page["pageBinding"] = {"name": pbir.uid("bind", key), "type": "Tooltip", "parameters": []}
+    pg.page["visibility"] = "HiddenInViewMode"
+    pg.add(10, 4, 340, 28, textbox([[(title, st("Segoe UI Semibold", 12, pbir.NAVY, True))]]), key="tip_title")
+    pg.add(10, 30, 340, 22, textbox([[(subtitle, st("Segoe UI", 9, pbir.MUTED))]]), key="tip_sub")
+    pg.add(14, 54, 332, 2, shape(ORANGE), key="tip_rule")
+    # 9 pt, one line per row and tight padding: a tooltip cannot scroll, so fit as many rows as possible (~9).
+    # Desktop draws columns wider than their set width (padding), so the widths are capped at TIP_COLS in total
+    # or the last column spills into a horizontal scrollbar (seen in Desktop at 10 pt / 325 px).
+    obj = pbir.table_style(9)
+    obj["columnHeaders"][0]["properties"]["wordWrap"] = b(False)
+    obj["values"][0]["properties"]["wordWrap"] = b(False)
+    obj["grid"][0]["properties"]["rowPadding"] = n(2)
+    obj["total"] = [{"properties": {"totals": b(False)}}]
+    k = min(1.0, TIP_COLS / sum(w for _f, _d, w in columns))
+    obj["columnWidth"] = [{"properties": {"value": n(round(w * k))}, "selector": {"metadata": pbir.qref(f)}}
+                          for f, _d, w in columns]
+    tbl = chart("tableEx", {"Values": [P(f, d) for f, d, _w in columns]}, "", obj, sort=sort)
+    for o in ("title", "background", "border"):
+        tbl["visualContainerObjects"][o] = [{"properties": {"show": b(False)}}]
+    pg.add(6, 60, TIP_W - 12, TIP_H - 66, tbl, key="tip_tbl", filters=list(filters))
+    return pg
+
+
+def _desc(m):
+    return [(M(m), "Descending")]
+
+
+DPN = pages.DP("Name")
+def card_tips():
+    """card key -> (title, subtitle, columns, sort, extra filters); each list uses the same rule as the card's number.
+    A function, not a constant: M() must run after build.py has registered the extension measures."""
+    return {
+        "fin": ("Financials · projects over EAC", "EAC above the budget at completion",
+                [(DPN, "Project", 210), (M(hm("Tip Financials")), "EAC vs budget", 110)], _desc(hm("Tip Financials")), ()),
+        "sch": ("Schedule · slipping vs baseline", "Finish later than the baseline, in days",
+                [(DPN, "Project", 210), (M(hm("Tip Schedule")), "Finish slip (d)", 110)], _desc(hm("Tip Schedule")), ()),
+        "res": ("Resources · people over 100%", "Peak monthly utilisation in view (active people)",
+                [(pages.DR("Name"), "Person", 210), (M(hm("Tip Resources")), "Peak util.", 110)], _desc(hm("Tip Resources")), ()),
+        "risk": ("Risk · critical and high risks", f"Active project risks scoring {HIGH_HEAT}+ on the 4×4 grid",
+                 [(pages.DT("Name"), "Risk", 150), (DPN, "Project", 110), (M(hm("Tip Risk")), "Exposure", 70)],
+                 _desc(hm("Tip Risk")), (pages.PROJECT_TASKS, pbir.f_in("DimTask", "WorkType", ["Risks"]),
+                                         pbir.f_in("DimTask", "State", ["Active"]))),
+        "port": ("Portfolio · strategic alignment", "Aligned = Strong / Extreme; plan-field budget",
+                 [(DPN, "Project", 150), (M(hm("Tip Portfolio")), "Alignment", 100),
+                  (M(hm("Tip Portfolio Budget")), "Budget", 80)], _desc(hm("Tip Portfolio Budget")), ()),
+        "ben": ("Benefits · benefit / cost per project", "Planned benefits at completion ÷ EAC",
+                [(DPN, "Project", 220), (M(hm("Tip Benefits")), "Benefit / cost", 100)], _desc(hm("Tip Benefits")), ()),
+        "sr": (f"Status reports · not reporting {STALE_DAYS}+ days", "Days since the last submitted report",
+               [(DPN, "Project", 170), (M(hm("Tip Status")), "Reporting", 100), (M(hm("Tip Status Days")), "Days", 60)],
+               _desc(hm("Tip Status Days")), ()),
+        "gov": ("Governance · plans failing rules", "Plan Insights rules failing per plan",
+                [(DPN, "Project", 220), (M(hm("Tip Governance")), "Failing rules", 100)], _desc(hm("Tip Governance")), ()),
+    }
+assert [k for k, _ in pages.HOME_TIP_CARDS] == [s_[0] for s_ in SUBJECTS_LAYOUT]
+
+
+def build_tips():
+    out = [tip_page("tip_home_act", "Act now · every project needing a decision", "Worst reason first, ranked by impact",
+                    [(DPN, "Project", 120), (M(hm("Act Reason")), "Why", 150), (M(hm("Act Score")), "Impact", 55)],
+                    _desc(hm("Act Score")), (pages.REAL_PROJECTS,))]
+    for k, (score, lbl, nm, _d) in enumerate(CHIPS):
+        out.append(tip_page(f"tip_home_{CHIP_SLUG[k]}", f"Act now · {lbl}", f"Projects whose worst reason is {lbl}",
+                            [(DPN, "Project", 140), (M(hm(f"Tip {nm}")), "Why", 185)], [(DPN, "Ascending")],
+                            (pages.REAL_PROJECTS,)))
+    tips = card_tips()
+    assert list(tips) == [k for k, _ in pages.HOME_TIP_CARDS]
+    for key, (title, sub, cols, sort, flt) in tips.items():
+        real = (pages.REAL_PROJECTS,) if any(f is DPN for f, _d, _w in cols) else ()
+        out.append(tip_page(f"tip_home_{key}", title, sub, cols, sort, real + tuple(flt)))
+    return out
+
+
 def build():
     pg = Page(pages.PID["home"], dict(pages.PAGES)["home"], pages.W, 1000, background_colour=CANVAS,
               display_option="FitToPage")
@@ -637,13 +865,26 @@ def build():
     build_band(pg)
     build_cards(pg)
     pg.add(1580, 24, 196, 44, shape("#26314F", radius=14), key="switch_bg")
-    # groups hold only the right column and their view pill (pill sits at y 30, so the group starts at y 24)
-    g_pmo = pg.add_group(RIGHT_X, 24, 1784 - RIGHT_X, 988 - 24, "PMO view", key="grp_pmo")
+    # Groups hold only the right column. grp_pmo_rest: the PMO panel, pill, One-Pager button, Next 30 days.
+    # grp_act_all / grp_act_<bucket>: the seven Act-now versions on top of that panel. grp_exec: the Executive view.
+    # The panel group (and its children) come first so the Act-now tables sit above the panel in z-order.
+    g_rest = pg.add_group(RIGHT_X, 24, 1784 - RIGHT_X, 988 - 24, "PMO view", key="grp_pmo_rest")
+    build_right_pmo(pg, g_rest)
+    g_all = pg.add_group(*ACT_GRP, "Act now · all", key="grp_act_all")
+    g_bucket = {CHIP_SLUG[k]: pg.add_group(*ACT_GRP, f"Act now · {CHIPS[k][1]}", key=f"grp_act_{CHIP_SLUG[k]}",
+                                           hidden=True) for k in range(len(CHIPS))}
     g_exec = pg.add_group(RIGHT_X, 24, 1784 - RIGHT_X, 988 - 24, "Executive view", key="grp_exec", hidden=True)
-    build_right_pmo(pg, g_pmo)
+    every = [g_rest, g_all, *g_bucket.values(), g_exec]
+
+    def shown(*visible):
+        return {g: g not in visible for g in every}
+    bm_pmo = pbir.bookmark("Home · PMO view", "home_pmo", pg.id, shown(g_rest, g_all))
+    bm_exec = pbir.bookmark("Home · Executive view", "home_exec", pg.id, shown(g_exec))
+    bm_bucket = {slug: pbir.bookmark(f"Home · Act now — {CHIPS[k][1]}", f"home_act_{slug}", pg.id, shown(g_rest, g))
+                 for k, (slug, g) in enumerate(g_bucket.items())}
+    build_act(pg, g_all, g_bucket, bm_pmo)
     build_right_exec(pg, g_exec)
-    bm_pmo = pbir.bookmark("Home · PMO view", "home_pmo", pg.id, {g_pmo: False, g_exec: True})
-    bm_exec = pbir.bookmark("Home · Executive view", "home_exec", pg.id, {g_pmo: True, g_exec: False})
     build_switch(pg, bm_pmo, bm_exec)
+    build_band_links(pg, bm_pmo, bm_bucket)
     build_logo(pg)
-    return [pg]
+    return [pg] + build_tips()

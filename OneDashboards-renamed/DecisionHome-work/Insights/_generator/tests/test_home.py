@@ -15,7 +15,10 @@ HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
          "Colour Financials", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
          "Colour Benefits", "Colour Status"]
         + [f"Chip {c}" for c in CHIPN] + [f"Chip Colour {c}" for c in CHIPN]
-        + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS])
+        + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS]
+        + [f"Tip {c}" for c in CHIPN]
+        + [f"Tip {t}" for t in ("Financials", "Schedule", "Resources", "Risk", "Portfolio", "Portfolio Budget",
+                                "Benefits", "Status", "Status Days", "Governance")])
 
 
 REMOVED = ([f"Line {s}" for s in ["Portfolio", "Financials", "Resources", "Schedule", "Risk", "Benefits", "Timesheets",
@@ -107,14 +110,20 @@ def _hidden(bm):
     return {g: v["isHidden"] for g, v in sec["visualContainerGroups"].items()}
 
 
-def test_two_view_groups_and_bookmarks():
+BUCKETS = ["off track", "over budget", "late", "overdue work", "not reporting", "failing rules"]
+SLUGS = [b.replace(" ", "_") for b in BUCKETS]
+GROUP_NAMES = {"PMO view", "Executive view", "Act now · all"} | {f"Act now · {b}" for b in BUCKETS}
+BOOKMARK_NAMES = ({"Home · PMO view", "Home · Executive view"} | {f"Home · Act now — {b}" for b in BUCKETS})
+
+
+def test_view_groups_and_bookmarks():
     pbir.BOOKMARKS.clear()
     pg = _home()
     groups = {vc["visualGroup"]["displayName"]: vc for vc in pg.visuals if "visualGroup" in vc}
-    assert set(groups) == {"PMO view", "Executive view"}
-    assert groups["Executive view"].get("isHidden") is True
-    assert not groups["PMO view"].get("isHidden")
-    assert {bm["displayName"] for bm in pbir.BOOKMARKS} == {"Home · PMO view", "Home · Executive view"}
+    assert set(groups) == GROUP_NAMES
+    # default = PMO view with the full Act-now list: only the PMO panel group and act_all are visible
+    assert {n for n, g in groups.items() if not g.get("isHidden")} == {"PMO view", "Act now · all"}
+    assert {bm["displayName"] for bm in pbir.BOOKMARKS} == BOOKMARK_NAMES
     children = [vc for vc in pg.visuals if vc.get("parentGroupName")]
     assert len(children) > 15
 
@@ -158,7 +167,7 @@ def test_cards_align_in_grid():
 def test_only_right_column_is_grouped():
     pg = _home()
     groups = {vc["name"]: vc for vc in pg.visuals if "visualGroup" in vc}
-    assert {g["visualGroup"]["displayName"] for g in groups.values()} == {"PMO view", "Executive view"}
+    assert {g["visualGroup"]["displayName"] for g in groups.values()} == GROUP_NAMES
     for vc in pg.visuals:
         if vc.get("parentGroupName"):
             gx = groups[vc["parentGroupName"]]["position"]["x"]
@@ -177,24 +186,40 @@ def test_footer_links_target_pages():
 def test_children_belong_to_the_right_group():
     pg = _home()
     gid = {vc["visualGroup"]["displayName"]: vc["name"] for vc in pg.visuals if "visualGroup" in vc}
-    pmo = [("act_bg", "shape"), ("act_title", "textbox"), ("act_tbl", "tableEx"), ("act_drill", "actionButton"),
-           ("next_title", "textbox"), ("next_tbl", "tableEx"), ("view_pill_pmo", "shape")]
-    exe = ([(f"dec_bg{k}", "shape") for k in range(3)] + [(f"dec_go{k}", "actionButton") for k in range(3)]
+    rest = [("act_bg", "shape"), ("act_drill", "actionButton"), ("act_hint", "textbox"),
+            ("next_title", "textbox"), ("next_tbl", "tableEx"), ("view_pill_pmo", "shape")]
+    act_all = [("act_title", "textbox"), ("act_tbl", "tableEx")]
+    exe = ([(f"dec_bg{k}", "shape") for k in range(3)] + [(f"dec_lbl{k}", "textbox") for k in range(3)]
+           + [(f"dec{k}", "tableEx") for k in range(3)] + [(f"dec_go{k}", "actionButton") for k in range(3)]
            + [("view_pill_exec", "shape")])
-    for key, vt in pmo:
-        assert _vc(pg, key, vt).get("parentGroupName") == gid["PMO view"], key
-    for key, vt in exe:
-        assert _vc(pg, key, vt).get("parentGroupName") == gid["Executive view"], key
+    expect = {gid["PMO view"]: rest, gid["Act now · all"]: act_all, gid["Executive view"]: exe}
+    for b, slug in zip(BUCKETS, SLUGS):
+        expect[gid[f"Act now · {b}"]] = [(f"act_title_{slug}", "textbox"), (f"act_all_{slug}", "actionButton"),
+                                         (f"act_tbl_{slug}", "tableEx")]
+    for g, members in expect.items():
+        for key, vt in members:
+            assert _vc(pg, key, vt).get("parentGroupName") == g, key
+        # and nothing else sits in that group
+        assert len([vc for vc in pg.visuals if vc.get("parentGroupName") == g]) == len(members), g
 
 
 def test_bookmarks_hide_the_other_view():
     pbir.BOOKMARKS.clear()
     pg = _home()
-    pmo_g, ex_g = (pbir.uid(pg.id, k, "group") for k in ("grp_pmo", "grp_exec"))
-    assert _hidden(_bm("Home · PMO view")) == {pmo_g: False, ex_g: True}
-    assert _hidden(_bm("Home · Executive view")) == {pmo_g: True, ex_g: False}
+    g = {k: pbir.uid(pg.id, k, "group") for k in ["grp_pmo_rest", "grp_act_all", "grp_exec"]
+         + [f"grp_act_{s_}" for s_ in SLUGS]}
+    every = set(g.values())
+
+    def only(*keys):
+        return {name: name not in {g[k] for k in keys} for name in every}
+    assert len(pbir.BOOKMARKS) == 8
+    assert _hidden(_bm("Home · PMO view")) == only("grp_pmo_rest", "grp_act_all")
+    assert _hidden(_bm("Home · Executive view")) == only("grp_exec")
+    for b, slug in zip(BUCKETS, SLUGS):
+        assert _hidden(_bm(f"Home · Act now — {b}")) == only("grp_pmo_rest", f"grp_act_{slug}"), b
     for bm in pbir.BOOKMARKS:
         assert bm["options"]["suppressData"] is True
+        assert set(bm["options"]["targetVisualNames"]) == every
 
 
 def _bookmark_target(vc):
@@ -244,7 +269,8 @@ def test_z_order_background_groups_buttons():
     pg = _home()
     z = {vc["name"]: vc["position"]["z"] for vc in pg.visuals}
     bg = z[_name(pg, "switch_bg", "shape")]
-    groups = [z[_name(pg, "grp_pmo", "group")], z[_name(pg, "grp_exec", "group")]]
+    groups = [z[_name(pg, k, "group")] for k in ["grp_pmo_rest", "grp_act_all", "grp_exec"]
+              + [f"grp_act_{s_}" for s_ in SLUGS]]
     buttons = [z[_name(pg, "switch0", "actionButton")], z[_name(pg, "switch1", "actionButton")]]
     assert bg < min(groups)
     assert max(groups) < min(buttons)
@@ -376,8 +402,121 @@ def test_header_single_band():
 
 def test_view_groups_contain_their_pills():
     pg = _home()
-    for gkey, pkey in (("grp_pmo", "view_pill_pmo"), ("grp_exec", "view_pill_exec")):
+    for gkey, pkey in (("grp_pmo_rest", "view_pill_pmo"), ("grp_exec", "view_pill_exec")):
         g, p = _vc(pg, gkey, "group")["position"], _vc(pg, pkey, "shape")["position"]
         px, py = g["x"] + p["x"], g["y"] + p["y"]      # group children are stored relative to the group
         assert g["x"] <= px and px + p["width"] <= g["x"] + g["width"]
         assert g["y"] <= py and py + p["height"] <= g["y"] + g["height"]
+
+
+# ---------------------------------------------------------------- hover lists and click-to-filter
+def _all_home_pages():
+    return {pg.id: pg for pg in ext_home.build()}
+
+
+def _tip_section(vc):
+    t = vc["visual"]["visualContainerObjects"]["visualTooltip"][0]["properties"]
+    assert t["show"] == pbir.b(True) and t["type"] == pbir.s("Canvas")
+    return t["section"]["expr"]["Literal"]["Value"].strip("'")
+
+
+def _tip_measures(tip):
+    tbl = next(vc for vc in tip.visuals if vc["name"] == pbir.uid(tip.id, "tip_tbl", "tableEx"))
+    return [pr["field"]["Measure"]["Property"] for pr in tbl["visual"]["query"]["queryState"]["Values"]["projections"]
+            if "Measure" in pr["field"]], tbl
+
+
+def _is_tooltip_page(pg):
+    return (pg.page.get("type") == "Tooltip" and pg.page.get("visibility") == "HiddenInViewMode"
+            and (pg.width, pg.height) == (360, 260) and pg.page["pageBinding"]["type"] == "Tooltip")
+
+
+def test_tooltip_pages_registered_hidden():
+    keys = [k for k, _ in pages.HIDDEN_PAGES if k.startswith("tip_home_")]
+    assert len(keys) == 1 + 6 + 8
+    assert len({pages.PID[k] for k in keys}) == 15
+    built = _all_home_pages()
+    for k in keys:
+        assert pages.PID[k] in built, k
+        assert _is_tooltip_page(built[pages.PID[k]]), k
+    # the tooltip pages come out of build_all() too, and none of them is in the story flow
+    ids = {p.id for p in pages.build_all()}
+    assert {pages.PID[k] for k in keys} <= ids
+    assert not {k for k, _ in pages.PAGES} & set(keys)
+
+
+def test_pill_chips_and_numbers_point_to_their_tooltip_page():
+    built = _all_home_pages()
+    pg = built[pages.PID["home"]]
+    assert _tip_section(_vc(pg, "pill", "card")) == pages.PID["tip_home_act"]
+    for k, slug in enumerate(SLUGS):
+        assert _tip_section(_vc(pg, f"chip{k}", "card")) == pages.PID[f"tip_home_{slug}"], slug
+    for c in CARD_KEYS:
+        assert _tip_section(_vc(pg, f"card_{c}_num", ext_home.VALUE_VISUAL)) == pages.PID[f"tip_home_{c}"], c
+    for sec in [pages.PID["tip_home_act"]] + [pages.PID[f"tip_home_{x}"] for x in SLUGS + CARD_KEYS]:
+        assert _is_tooltip_page(built[sec])
+
+
+def test_each_tooltip_table_uses_its_own_blank_unless_measure():
+    built = _all_home_pages()
+    act, _ = _tip_measures(built[pages.PID["tip_home_act"]])
+    assert act[0] == "Story | Home · Act Reason"
+    for slug, nm in zip(SLUGS, CHIPN):
+        ms, tbl = _tip_measures(built[pages.PID[f"tip_home_{slug}"]])
+        assert ms == [f"Story | Home · Tip {nm}"], slug
+        assert all("Measure" not in f["field"] for f in tbl.get("filterConfig", {}).get("filters", []))
+    own = {"fin": "Tip Financials", "sch": "Tip Schedule", "res": "Tip Resources", "risk": "Tip Risk",
+           "port": "Tip Portfolio", "ben": "Tip Benefits", "sr": "Tip Status", "gov": "Tip Governance"}
+    for c, m in own.items():
+        ms, tbl = _tip_measures(built[pages.PID[f"tip_home_{c}"]])
+        assert ms and all(x.startswith("Story | Home · Tip ") for x in ms), c       # only blank-unless measures
+        assert f"Story | Home · {m}" in ms, c
+        # never a visual measure filter (rendered an empty table in Desktop)
+        assert all("Measure" not in f["field"] for f in tbl.get("filterConfig", {}).get("filters", [])), c
+    # each bucket measure is blank unless the Act score is that bucket's
+    for k, nm in zip((100, 90, 80, 60, 50, 40), CHIPN):
+        expr = next(m["expression"] for m in MEASURES if m["name"] == f"Story | Home · Tip {nm}")
+        assert f"[Story | Home · Act Score] = {k}" in expr and expr.strip().startswith("IF"), nm
+
+
+def test_tooltip_visuals_sit_above_ghost_links():
+    pg = _home()
+    for c in CARD_KEYS:
+        num, go = _vc(pg, f"card_{c}_num", ext_home.VALUE_VISUAL), _vc(pg, f"card_{c}_go", "actionButton")
+        assert num["position"]["z"] > go["position"]["z"], c
+        # the number does not cover the whole row, so the rest of the card still clicks through
+        assert num["position"]["width"] < go["position"]["width"] - 80, c
+
+
+def test_each_chip_has_a_bookmark_button_to_its_bucket():
+    pbir.BOOKMARKS.clear()
+    pg = _home()
+    for k, (b, slug) in enumerate(zip(BUCKETS, SLUGS)):
+        btn, txt = _vc(pg, f"chip_go{k}", "actionButton"), _vc(pg, f"chip{k}", "card")
+        bg = _vc(pg, f"chip_bg{k}", "shape")
+        assert _bookmark_target(btn) == _bm(f"Home · Act now — {b}")["name"], b
+        assert "parentGroupName" not in btn
+        bp, tp, cp = btn["position"], txt["position"], bg["position"]
+        # click zone: the left part of the chip (dot + count), above the text; hover zone: the rest of the text
+        assert bp["z"] > tp["z"] and bp["x"] == cp["x"] and bp["height"] == cp["height"], b
+        assert tp["x"] < bp["x"] + bp["width"] < tp["x"] + tp["width"] - 30, b
+    pill_go = _vc(pg, "pill_go", "actionButton")
+    assert _bookmark_target(pill_go) == _bm("Home · PMO view")["name"]
+    assert pill_go["position"]["z"] > _vc(pg, "pill", "card")["position"]["z"]
+    assert pill_go["position"]["width"] < ext_home.PILL_W / 2
+
+
+def test_bucket_views_show_only_their_bucket():
+    pbir.BOOKMARKS.clear()
+    pg = _home()
+    full = _vc(pg, "act_tbl", "tableEx")["position"]
+    for b, slug, nm in zip(BUCKETS, SLUGS, CHIPN):
+        tbl = _vc(pg, f"act_tbl_{slug}", "tableEx")
+        ms = [pr["field"]["Measure"]["Property"] for pr in tbl["visual"]["query"]["queryState"]["Values"]["projections"]
+              if "Measure" in pr["field"]]
+        assert ms == [f"Story | Home · Tip {nm}"], b             # the only measure: other projects' rows vanish
+        assert all("Measure" not in f["field"] for f in tbl["filterConfig"]["filters"])
+        assert f"Act now — {b}" in repr(_vc(pg, f"act_title_{slug}", "textbox")["visual"]["objects"])
+        assert _bookmark_target(_vc(pg, f"act_all_{slug}", "actionButton")) == _bm("Home · PMO view")["name"]
+        p = tbl["position"]
+        assert (p["x"], p["y"], p["width"], p["height"]) == (full["x"], full["y"], full["width"], full["height"]), b
