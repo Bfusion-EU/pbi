@@ -44,3 +44,15 @@ def test_bookmark_and_drill_buttons():
     link = db["visualContainerObjects"]["visualLink"][0]["properties"]
     assert link["type"] == pbir.s("Drillthrough") and link["drillthroughSection"] == pbir.s("pageX")
 
+
+
+ICON_KEYS = ["cc", "exec", "portfolio", "finance", "resources", "schedule", "risk", "benefits", "governance"]
+
+
+def test_icons_present():
+    d = Path(__file__).resolve().parents[1] / "assets" / "icons"
+    for k in ICON_KEYS:
+        for c in ("grey", "white"):
+            f = d / f"rail-{k}-{c}.png"
+            assert f.exists(), f
+            assert f.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"

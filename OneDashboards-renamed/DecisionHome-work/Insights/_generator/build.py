@@ -33,6 +33,8 @@ pbir.EXTENSION_MEASURES.update(m["name"] for m in MEASURES)
 
 RESOURCES = ["bfv5_footer_band_1800x1800.png", "bfv5_footer_band_1800x1000.png",
              "OnePlan_logo_-_dark_background9901469509814106.png"]
+ICON_DIR = HERE / "assets" / "icons"
+ICONS = sorted(p.name for p in ICON_DIR.glob("rail-*.png"))
 
 
 def dump(path: Path, obj):
@@ -89,7 +91,7 @@ def report_json():
         keep.append(f)
     rp = [p for p in ref["resourcePackages"] if p["type"] == "SharedResources"]
     rp.append({"name": "RegisteredResources", "type": "RegisteredResources",
-               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES]})
+               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES + ICONS]})
     return {"$schema": ref["$schema"], "themeCollection": ref["themeCollection"],
             "filterConfig": {"filters": keep}, "objects": ref.get("objects", {}),
             "resourcePackages": rp, "settings": ref["settings"],
@@ -114,6 +116,9 @@ def build():
         dst = OUT / "StaticResources" / "RegisteredResources" / r
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(REF / "StaticResources" / "RegisteredResources" / r, dst)
+    for r in ICONS:
+        dst = OUT / "StaticResources" / "RegisteredResources" / r
+        shutil.copy(ICON_DIR / r, dst)
     _, model_measures = load_model()
     dump(OUT / "definition" / "report.json", report_json())
     dump(OUT / "definition" / "reportExtensions.json", extension_json(model_measures))
