@@ -42,12 +42,6 @@ HIDDEN_PAGES = [
     ("resource_dt", "Resource Detail (drill-through)"),
 ]
 PID = {k: uid("insights-page", k) for k, _ in PAGES + HIDDEN_PAGES}
-# Home tiles: chapters with follow-on pages, and the short button labels used on the tile
-SUBPAGES = {"portfolio": ["lifecycle", "scenarios", "onepager"], "finance": ["finance2"], "resources": ["timesheets", "tsstatus", "resource"],
-            "schedule": ["gantt", "status", "baseline"]}
-SHORT = {"portfolio": "Portfolio", "lifecycle": "Gates", "scenarios": "Scenarios", "finance": "Spend",
-         "finance2": "Pareto & P&L", "resources": "People", "timesheets": "Time", "tsstatus": "TS status", "resource": "Person", "gantt": "Gantt", "schedule": "Schedule",
-         "status": "Status trend", "onepager": "Project", "baseline": "Baseline"}
 ORDER = [k for k, _ in PAGES]
 
 # ---------------------------------------------------------------- common bits
@@ -140,87 +134,6 @@ Y2, Y2V, H2 = 294, 334, 340  # ② section + visuals
 Y3, Y3V, H3 = 690, 730, 400  # ③
 Y4, Y4V, H4 = 1146, 1186, 400  # ④
 YNEXT = 1606
-
-
-# ================================================================= HOME
-def build_home():
-    pg = Page(PID["home"], dict(PAGES)["home"], W, 1000, background_colour=NAVY_BG, display_option="FitToPage")
-    # brand mark (equaliser bars like the Pulse home page)
-    for k, (x, h) in enumerate([(40, 10), (48, 17), (56, 13), (64, 20), (72, 9)]):
-        pg.add(x, 30 - h / 2 + 5, 5, h, shape(ORANGE), key=f"bar{k}")
-    pg.add(87, 16, 240, 41, textbox([[("BFUSION", st("DIN", 18, "#FFFFFF", True))]]), key="brand")
-    pg.add(1648, 12, 125, 55, image("OnePlan_logo_-_dark_background9901469509814106.png", "OnePlan logo"), key="logo")
-    pg.add(40, 52, 1100, 60, textbox([[("PPM Insights 360°", st("DIN", 28, "#FFFFFF", True)),
-                                       ("   native story pack", st("DIN", 16, PEACH, False))]]), key="title")
-    pg.add(40, 108, 1300, 32, textbox([[("Eight chapters, one question each. Read the orange headline first, "
-                                         "then follow ① → ④ down the page to the list you act on.",
-                                         st("Segoe UI", 12, SLATE))]]), key="sub")
-    pg.add(40, 146, 1720, 1, shape(NAVY_LINE), key="rule1")
-    # pulse strip
-    pulse = [("Story | Active Projects", "Active projects", {}),
-             ("Story | On Track %", "Active projects on track", {}),
-             ("Story | EAC Variance %", "EAC vs budget", {"colour_measure": "Story | Variance Colour"}),
-             ("Story | Utilisation %", "Utilisation (org-wide)", {"colour_measure": "Story | Util Colour"}),
-             ("Story | Critical High Risks", "Critical / high risks", {"value_colour": "#FF8A80"}),
-             ("Story | Benefits Realised KPI", "Benefits realised vs due", {"size": 18})]
-    w = (1720 - 5 * 12) / 6
-    for k, (m, label, o) in enumerate(pulse):
-        o = dict(o)
-        o.setdefault("value_colour", "#FFFFFF")
-        o.setdefault("size", 22)
-        pg.add(round(40 + k * (w + 12), 2), 158, round(w, 2), 84, card(m, label, dark=True, **o), key=f"pulse{k}")
-    # chapter tiles 4 x 2
-    tiles = [
-        ("exec", "Are we on course?", "Executive board · monthly",
-         "One number per question, the three decisions this month asks for."),
-        ("portfolio", "Are we funding the right work?", "Portfolio board · quarterly",
-         "Where the money goes, strategic fit, value versus priority."),
-        ("finance", "Are we spending as planned?", "Finance & PMO · monthly close",
-         "Budget, EAC and variance at completion, budget to date — then Pareto and the portfolio P&L."),
-        ("resources", "Do we have the people?", "Resource managers · monthly",
-         "Capacity against scheduled work, who is overloaded, where committed and scheduled hours disagree."),
-        ("schedule", "Will we deliver on time?", "Delivery leads · weekly",
-         "Schedule health, milestones, late work — and plan vs baseline: cost, days, hours, FTE."),
-        ("risk", "What could go wrong?", "Risk owners · fortnightly",
-         "Heat map, exposure concentration and the risks to escalate."),
-        ("benefits", "Will it pay off?", "Sponsors & benefit owners · quarterly",
-         "Planned benefits against EAC, benefits due to date and what is actually realised."),
-        ("governance", "Can we trust the data?", "PMO · weekly",
-         "Governance score, failing OnePlan insight rules, hygiene gaps."),
-    ]
-    tw, th, gx, gy = (1720 - 3 * 20) / 4, 330, 20, 20
-    for k, (pk, q, who, what) in enumerate(tiles):
-        col, row = k % 4, k // 4
-        x = round(40 + col * (tw + gx), 2)
-        y = 262 + row * (th + gy)
-        pg.add(x, y, round(tw, 2), th, shape(NAVY_TILE, radius=8, line=NAVY_LINE), key=f"tile{k}")
-        pg.add(x, y, 4, th, shape(ORANGE), key=f"tilebar{k}")
-        pg.add(x + 18, y + 14, 60, 34, textbox([[(f"0{k + 1}", st("DIN", 20, ORANGE, True))]]), key=f"tnum{k}")
-        pg.add(x + 18, y + 50, round(tw - 36, 2), 90, textbox([[(q, st("DIN", 19, "#FFFFFF", True))]]), key=f"tq{k}")
-        pg.add(x + 18, y + 142, round(tw - 36, 2), 30, textbox([[(who, st("Segoe UI", 10, PEACH, True))]]), key=f"tw{k}")
-        pg.add(x + 18, y + 174, round(tw - 36, 2), 80, textbox([[(what, st("Segoe UI", 11, SLATE))]]), key=f"td{k}")
-        # a chapter with follow-on pages gets one button per page on its tile
-        keys = [pk] + SUBPAGES.get(pk, [])
-        bw_ = round((tw - 36 - 8 * (len(keys) - 1)) / len(keys), 2)
-        # Segoe UI Bold ≈ 7 px/char at 10pt, 6.3 at 9pt. Only the first button carries the chapter number
-        # ("4 · People ›"); follow-on buttons show the short name ("Time ›"). Four buttons (≈ 89 px each) need 9pt
-        # and a 4 px left margin; three (≈ 121 px) fit at 10pt with 8 px; one or two keep 11pt / 12 px.
-        size, margin = (9, 4) if len(keys) > 3 else (10, 8) if len(keys) > 2 else (11, 12)
-        for j, kk in enumerate(keys):
-            if len(keys) == 1:
-                label = f"Open chapter {k + 1}  ›"
-            elif j == 0:
-                label = dict(PAGES)[kk].split(" · ")[0] + " · " + SHORT[kk] + " ›"
-            else:
-                label = SHORT[kk] + " ›"
-            pg.add(round(x + 18 + j * (bw_ + 8), 2), y + th - 56, bw_, 38,
-                   nav_button(label, PID[kk], what if j == 0 else dict(PAGES)[kk], fill=NAVY_BTN, hover=NAVY_BTN,
-                              press=ORANGE, font=PEACH, align="left", outline=ORANGE, size=size, margin=margin),
-                   key=f"tb{k}" + ("" if j == 0 else f"_{kk}"))
-    pg.add(40, 952, 1720, 1, shape(NAVY_LINE), key="rule2")
-    pg.add(40, 960, 400, 31, textbox([[("BFUSION  ·  bfusion.eu", st("Segoe UI", 9, SLATE, True))]]), key="foot1")
-    pg.add(960, 958, 800, 34, headline("Story | Refreshed", bg=NAVY_BG, border=NAVY_BG, size=9, colour=SLATE), key="foot2")
-    return pg
 
 
 def people_combo(ttl):

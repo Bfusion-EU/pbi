@@ -70,7 +70,7 @@ def test_rail_buttons_target_their_pages():
         vc = by_name[_name(pg, f"rail_btn_{icon}", "actionButton")]
         link = vc["visual"]["visualContainerObjects"]["visualLink"][0]["properties"]
         assert link["navigationSection"]["expr"]["Literal"]["Value"].strip("'") == pages.PID[target]
-    assert sum(1 for vc in pg.visuals if vc["visual"].get("visualType") == "actionButton"
+    assert sum(1 for vc in pg.visuals if vc.get("visual", {}).get("visualType") == "actionButton"
                and vc["name"] in {_name(pg, f"rail_btn_{i}", "actionButton") for i, _ in rail}) == 8
 
 
@@ -81,10 +81,45 @@ def test_build_all_has_single_ext_home_page():
 
 
 def test_home_slicers_sync():
-    sl = [vc for vc in _home().visuals if vc["visual"]["visualType"] == "slicer"]
+    sl = [vc for vc in _home().visuals if vc.get("visual", {}).get("visualType") == "slicer"]
     assert len(sl) == 2
     assert all("syncGroup" in vc["visual"] for vc in sl)
 
 
 def test_body_area_fits():
     assert ext_home.BODY_Y >= 388 + 12 and ext_home.BODY_Y + 588 <= 988
+
+
+def test_two_view_groups_and_bookmarks():
+    pbir.BOOKMARKS.clear()
+    pg = _home()
+    groups = {vc["visualGroup"]["displayName"]: vc for vc in pg.visuals if "visualGroup" in vc}
+    assert set(groups) == {"PMO view", "Executive view"}
+    assert groups["Executive view"].get("isHidden") is True
+    assert not groups["PMO view"].get("isHidden")
+    names = {bm["displayName"] for bm in pbir.BOOKMARKS}
+    assert names == {"Home · PMO view", "Home · Executive view"}
+    children = [vc for vc in pg.visuals if vc.get("parentGroupName")]
+    assert len(children) > 20
+
+
+def test_all_pages_reachable_from_home():
+    pg = _home()
+    targets = set()
+    for p in _links(pg):
+        for key in ("navigationSection", "drillthroughSection"):
+            if key in p:
+                targets.add(p[key]["expr"]["Literal"]["Value"].strip("'"))
+    story = [k for k, _ in pages.PAGES if k != "home"]
+    missing = [k for k in story if pages.PID[k] not in targets]
+    assert missing == [], missing
+    assert pages.PID["project"] in targets  # drill-through to the One-Pager twin
+
+
+def test_briefing_link_targets_pmo_bookmark():
+    pbir.BOOKMARKS.clear()
+    pg = _home()
+    pmo = next(bm for bm in pbir.BOOKMARKS if bm["displayName"] == "Home · PMO view")["name"]
+    hits = [p for p in _links(pg) if p.get("bookmark", {}).get("expr", {}).get("Literal", {}).get("Value", "").strip("'") == pmo]
+    # one switch button + one briefing link point at the PMO bookmark
+    assert len(hits) == 2

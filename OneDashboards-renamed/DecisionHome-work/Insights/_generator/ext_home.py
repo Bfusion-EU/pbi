@@ -257,7 +257,7 @@ def build_pulse(pg):
     # briefing (orange) + two lead KPIs with sparkline and change chip
     panel(pg, X0, 92, 640, 150, "brief_bg", fill=ORANGE)
     pg.add(X0 + 16, 100, 608, 24, textbox([[("This week's briefing", st("Segoe UI", 10, "#FFFFFF"))]]), key="brief_lbl")
-    pg.add(X0 + 8, 124, 624, 108, headline(hm("Briefing"), bg=ORANGE, border=ORANGE, size=14, colour="#FFFFFF"), key="brief")
+    pg.add(X0 + 8, 124, 624, 84, headline(hm("Briefing"), bg=ORANGE, border=ORANGE, size=14, colour="#FFFFFF"), key="brief")
     for k, (m, label, cm, series, chg, col) in enumerate([
             ("Story | EAC Variance %", "EAC vs budget", hm("Colour EAC"), hm("EAC Var % (reports)"),
              hm("EAC Change"), C_RED),
@@ -283,10 +283,144 @@ def build_pulse(pg):
         pg.add(x, 254, round(w, 2), 134, ghost_link(target, label), key=f"kpi_go{k}")
 
 
+AREAS = [  # (label, line measure, colour measure, [(link text, page key)])
+    ("Portfolio", "Line Portfolio", hm("Colour Portfolio"), [("Portfolio", "portfolio"), ("Gates", "lifecycle"),
+                                                             ("Scenarios", "scenarios"), ("Project", "onepager")]),
+    ("Financials", "Line Financials", hm("Colour EAC"), [("Spend", "finance"), ("Pareto", "finance2")]),
+    ("Resources", "Line Resources", hm("Colour Util"), [("People", "resources"), ("Time", "timesheets"),
+                                                           ("Person", "resource")]),
+    ("Schedule", "Line Schedule", hm("Colour Schedule"), [("Schedule", "schedule"), ("Gantt", "gantt"),
+                                                          ("Trend", "status"), ("Baseline", "baseline")]),
+    ("Risk", "Line Risk", hm("Colour Risk"), [("Risk", "risk")]),
+    ("Benefits", "Line Benefits", hm("Colour Benefits"), [("Benefits", "benefits")]),
+    ("Timesheets", "Line Timesheets", hm("Colour Timesheets"), [("TS status", "tsstatus")]),
+    ("Governance", "Line Governance", hm("Colour Trust"), [("Governance", "governance")]),
+]
+
+
+def link_chip(text, target):
+    return nav_button(f"{text} ›", pages.PID[target], dict(pages.PAGES)[target], fill=PANEL, hover="#26314F",
+                      press=ORANGE, font="#F29A6B", size=9, align="left", margin=4)
+
+
+def stripe(measure):
+    """Thin status stripe: a rectangle whose fill is the colour measure (fx field value)."""
+    v = shape(PANEL)
+    v["objects"]["fill"] = [{"properties": {"show": b(True), "fillColor": measure_colour(measure), "transparency": n(0)},
+                             "selector": {"id": "default"}}]
+    return v
+
+
+def build_pmo(pg, grp):
+    # left: act now + next 30 days
+    lw = 820
+    panel(pg, X0, BODY_Y, lw, 588, "act_bg", parent=grp)
+    pg.add(X0 + 16, BODY_Y + 8, 400, 30, textbox([[("Act now", st("Segoe UI Semibold", 14, INK2, True)),
+                                                   ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
+           key="act_title", parent=grp)
+    obj = pbir.table_style(10, header_bg=PANEL)
+    obj["values"] = [{"properties": {"fontSize": n(10), "fontColorPrimary": col_solid(INK2),
+                                     "backColorPrimary": col_solid(PANEL), "fontColorSecondary": col_solid(INK2),
+                                     "backColorSecondary": col_solid(PANEL)}},
+                     pbir.cf_font(M(hm("Act Reason")), hm("Act Colour"))]
+    obj["grid"] = [{"properties": {"gridHorizontal": b(True), "gridHorizontalColor": col_solid("#26314F"),
+                                   "rowPadding": n(6)}}]
+    obj["total"] = [{"properties": {"totals": b(False)}}]
+    tbl = chart("tableEx", {"Values": [P(pages.DP("Name"), "Project"), P(M(hm("Act Reason")), "Why"),
+                                       P(pages.DP("Manager_Value"), "Owner"), P(M(hm("Act Score")), "Impact")]},
+                "", obj, sort=[(M(hm("Act Score")), "Descending")])
+    tbl["visualContainerObjects"]["title"] = [{"properties": {"show": b(False)}}]
+    tbl["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
+    tbl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
+    pg.add(X0 + 8, BODY_Y + 42, lw - 16, 300, tbl, key="act_tbl", parent=grp, filters=[pages.REAL_PROJECTS])
+    pg.add(X0 + 16, BODY_Y + 348, 260, 34, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
+           "Select a project row first", fill=ORANGE, size=10), key="act_drill", parent=grp)
+    pg.add(X0 + 290, BODY_Y + 352, 500, 26, textbox([[("Select a row, then open — or right-click › Drill through",
+                                                      st("Segoe UI", 9, LABEL))]]), key="act_hint", parent=grp)
+    pg.add(X0 + 16, BODY_Y + 392, 400, 28, textbox([[("Next 30 days", st("Segoe UI Semibold", 13, INK2, True))]]),
+           key="next_title", parent=grp)
+    mobj = pbir.table_style(10, header_bg=PANEL)
+    mobj["values"] = obj["values"][:1]
+    mobj["grid"] = obj["grid"]
+    mobj["total"] = obj["total"]
+    due = M(hm("Due In 30d"))
+    # rows outside the next 30 days vanish: the only measure in the row is blank for them
+    mobj["columnWidth"] = [{"properties": {"value": n(1)}, "selector": {"metadata": pbir.qref(due)}}]
+    miles = chart("tableEx", {"Values": [P(pages.DT("EndDate"), "Due"), P(pages.DP("Name"), "Project"),
+                                         P(pages.DT("Name"), "Milestone"), P(due, " ")]}, "", mobj,
+                  sort=[(pages.DT("EndDate"), "Ascending")])
+    miles["visualContainerObjects"]["title"] = [{"properties": {"show": b(False)}}]
+    miles["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
+    miles["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
+    pg.add(X0 + 8, BODY_Y + 422, lw - 16, 158, miles, key="next_tbl", parent=grp,
+           filters=[pbir.f_in("DimTask", "Milestone", [True]), pbir.f_cmp("DimTask", "PercentDone", 3, 100),
+                    pages.PROJECT_TASKS])
+    # right: area health 2 x 4
+    ax, aw = X0 + lw + 16, X1 - (X0 + lw + 16)
+    tw, th = (aw - 16) / 2, (588 - 3 * 12) / 4
+    for k, (label, line, colour, links) in enumerate(AREAS):
+        x = round(ax + (k % 2) * (tw + 16), 2)
+        y = round(BODY_Y + (k // 2) * (th + 12), 2)
+        panel(pg, x, y, round(tw, 2), round(th, 2), f"area_bg{k}", parent=grp)
+        pg.add(x, y, round(tw, 2), 4, stripe(colour), key=f"area_stripe{k}", parent=grp)
+        pg.add(x + 14, y + 10, 300, 22, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"area_lbl{k}", parent=grp)
+        pg.add(x + 8, y + 32, round(tw - 16, 2), 38, text_line(hm(line), size=14), key=f"area_line{k}", parent=grp)
+        cw = min(110, (tw - 28 - 6 * (len(links) - 1)) / len(links))
+        for j, (txt, target) in enumerate(links):
+            pg.add(round(x + 14 + j * (cw + 6), 2), round(y + th - 38, 2), round(cw, 2), 28, link_chip(txt, target),
+                   key=f"area_link{k}_{j}", parent=grp)
+
+
+def build_exec(pg, grp):
+    decisions = [("Money decision", "Story | Exec Action Money", hm("Colour EAC"), "finance"),
+                 ("People decision", "Story | Exec Action People", hm("Colour Util"), "resources"),
+                 ("Risk decision", "Story | Exec Action Risk", hm("Colour Risk"), "risk")]
+    dw = (X1 - X0 - 2 * 16) / 3
+    for k, (label, m, colour, target) in enumerate(decisions):
+        x = round(X0 + k * (dw + 16), 2)
+        panel(pg, x, BODY_Y, round(dw, 2), 280, f"dec_bg{k}", parent=grp)
+        pg.add(x, BODY_Y, round(dw, 2), 4, stripe(colour), key=f"dec_stripe{k}", parent=grp)
+        pg.add(x + 16, BODY_Y + 12, 300, 24, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"dec_lbl{k}", parent=grp)
+        pg.add(x + 8, BODY_Y + 40, round(dw - 16, 2), 190, text_line(m, size=16), key=f"dec{k}", parent=grp)
+        pg.add(x + 16, BODY_Y + 238, 160, 30, link_chip(dict(pages.PAGES)[target].split("·", 1)[-1].strip(), target),
+               key=f"dec_go{k}", parent=grp)
+    answers = [("Are we spending as planned?", "Answer Finance", hm("Colour EAC"), "finance"),
+               ("Will we deliver on time?", "Answer Schedule", hm("Colour Schedule"), "schedule"),
+               ("Do we have the people?", "Answer Resources", hm("Colour Util"), "resources"),
+               ("Will it pay off?", "Answer Benefits", hm("Colour Benefits"), "benefits")]
+    aw = (X1 - X0 - 3 * 16) / 4
+    for k, (q, m, colour, target) in enumerate(answers):
+        x = round(X0 + k * (aw + 16), 2)
+        y = BODY_Y + 296
+        panel(pg, x, y, round(aw, 2), 292, f"ans_bg{k}", parent=grp)
+        pg.add(x, y, round(aw, 2), 4, stripe(colour), key=f"ans_stripe{k}", parent=grp)
+        pg.add(x + 16, y + 12, round(aw - 32, 2), 26, textbox([[(q, st("Segoe UI Semibold", 11, INK2, True))]]),
+               key=f"ans_q{k}", parent=grp)
+        pg.add(x + 8, y + 44, round(aw - 16, 2), 196, text_line(hm(m), size=13), key=f"ans{k}", parent=grp)
+        pg.add(x + 16, y + 250, 120, 30, link_chip("Open", target), key=f"ans_go{k}", parent=grp)
+
+
+def build_switch(pg, bm_pmo, bm_exec):
+    panel(pg, 1580, 24, 196, 44, "switch_bg")
+    for k, (txt, bm) in enumerate([("PMO", bm_pmo), ("Executive", bm_exec)]):
+        pg.add(1586 + k * 94, 30, 90, 32, pbir.bookmark_button(txt, bm, f"Show the {txt} view", fill=PANEL,
+               hover=ORANGE, press=ORANGE, font=INK2, size=10, radius=16), key=f"switch{k}")
+
+
 def build():
     pg = Page(pages.PID["home"], dict(pages.PAGES)["home"], pages.W, 1000, background_colour=CANVAS,
               display_option="FitToPage")
     build_rail(pg)
     build_top(pg)
     build_pulse(pg)
+    g_pmo = pg.add_group(X0, BODY_Y, X1 - X0, 588, "PMO view", key="grp_pmo")
+    g_exec = pg.add_group(X0, BODY_Y, X1 - X0, 588, "Executive view", key="grp_exec", hidden=True)
+    build_pmo(pg, g_pmo)
+    build_exec(pg, g_exec)
+    bm_pmo = pbir.bookmark("Home · PMO view", "home_pmo", pg.id, {g_pmo: False, g_exec: True})
+    bm_exec = pbir.bookmark("Home · Executive view", "home_exec", pg.id, {g_pmo: True, g_exec: False})
+    build_switch(pg, bm_pmo, bm_exec)
+    pg.add(X0 + 8, 208, 220, 28, pbir.bookmark_button("See the act-now list ›", bm_pmo, "Show the PMO view",
+           fill=ORANGE, hover="#C84F1D", press="#C84F1D", font="#FFFFFF", size=10, align="left", margin=8),
+           key="brief_link")
     return [pg]
