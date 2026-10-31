@@ -6,7 +6,7 @@ Layout: see build() (Task 4/5). Spec: docs/superpowers/specs/2026-10-31-insights
 """
 import pages
 import pbir
-from pbir import (ORANGE, GREY, Page, headline, chart, textbox, st, shape, image, slicer, nav_button,
+from pbir import (ORANGE, PEACH, GREY, Page, headline, chart, textbox, st, shape, image, slicer, nav_button,
                   P, M, C, s, b, n, col_solid, measure_colour, measure_fill, legend)
 from story_measures import add, T, D, I, money
 from ext_status import STALE_DAYS  # same threshold as Story | Status · Not Reporting
@@ -287,7 +287,7 @@ def _cell(measure, size, colour_measure=None, colour=INK2, bg=PANEL):
     return v
 
 
-def value_cell(measure, colour_measure=None, size=28):
+def value_cell(measure, colour_measure=None, size=34):
     return _cell(measure, size, colour_measure)
 
 
@@ -350,11 +350,28 @@ def build_rail(pg):
         pg.add(36, y + 10, 32, 32, image(f"rail-{icon}-{'white' if on else 'grey'}.png", f"{icon} icon"), key=f"rail_img_{icon}")
         if not on:
             pg.add(26, y, 52, 52, ghost_link(target, tip), key=f"rail_btn_{icon}")
+    pg.add(16, 944, 72, 24, textbox([[("bfusion.eu", st("Segoe UI", 9, LABEL))]], align="center"), key="rail_site")
+
+
+GREET_X = 520
+BAR_H = (10, 17, 13, 20, 9)   # the BFusion "equaliser" mark
+
+
+def build_brand(pg):
+    """BFusion brand mark (5 orange bars), wordmark and product subtitle, top-left."""
+    for k, h in enumerate(BAR_H):
+        pg.add(X0 + 8 * k, round(28 - h / 2, 2), 5, h, shape(ORANGE), key=f"brand_bar{k}")
+    pg.add(146, 12, 200, 34, textbox([[("BFUSION", st("DIN", 18, "#FFFFFF", True))]]), key="brand_word")
+    pg.add(X0, 46, 400, 28, textbox([[("PPM Insights 360°  ·  Command center", st("DIN", 14, PEACH))]]), key="brand_sub")
 
 
 def build_top(pg):
-    pg.add(X0, 8, 700, 40, text_line(hm("Greeting"), size=16, bg=CANVAS), key="greet")
-    pg.add(X0, 50, 700, 32, text_line(hm("Refreshed"), size=11, colour=LABEL, bg=CANVAS), key="refreshed")
+    build_brand(pg)
+    pg.add(GREET_X, 8, 500, 40, text_line(hm("Greeting"), size=16, bg=CANVAS), key="greet")
+    pg.add(GREET_X, 50, 500, 32, text_line(hm("Refreshed"), size=11, colour=LABEL, bg=CANVAS), key="refreshed")
+    logo = image("OnePlan_logo_-_dark_background9901469509814106.png", "OnePlan logo")
+    logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")  # 211x92 source, 110x48 box
+    pg.add(1050, 18, 110, 48, logo, key="oneplan_logo")
     pg.add(1180, 14, 180, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
     pg.add(1370, 14, 180, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
@@ -372,7 +389,7 @@ SUBJECTS_LAYOUT = [
      [("Schedule", "schedule"), ("Gantt", "gantt"), ("Baseline", "baseline")]),
     ("res", "Resources", "resources", "Story | Utilisation %", "utilisation",
      "bar", (0, 1), hm("Colour Util"), "resources",
-     [("People", "resources"), ("Time", "timesheets"), ("Sheets", "tsstatus"), ("Person", "resource")]),
+     [("People", "resources"), ("Time", "timesheets"), ("TS", "tsstatus"), ("Person", "resource")]),
     ("risk", "Risk", "risk", "Story | Critical High Risks", "critical risks",
      None, None, hm("Colour Risk"), "risk", [("Risk", "risk")]),
     ("port", "Portfolio", "portfolio", "Story | Aligned Budget %", "budget aligned",
@@ -389,15 +406,34 @@ _PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk"
               "ben": "Benefits", "sr": "Status", "gov": "Governance"}
 
 # Row offsets inside a card (y relative to the card top). Every cell is ~16 px taller than its text needs.
-R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 14, 38, 88, 126, 142, 100, 190, 250, 100
-R_RULE, R_FOOT = ROW_H - 52, ROW_H - 44
+R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 40, 96, 122, 150, 100, 198, 250, 104
+R_RULE, R_FOOT, CHIP_H = ROW_H - 50, ROW_H - 42, 30
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
 ACT_H = 368                # Act-now table: header + 8 rows
 
 
-def link_chip(text, target):
-    return nav_button(f"{text} ›", pages.PID[target], dict(pages.PAGES)[target], fill=PANEL, hover="#26314F",
-                      press=ORANGE, font="#F29A6B", size=9, align="left", margin=4)
+CHIP_GAP, CHIP_PAD, CHAR_PX = 10, 22, 8.0     # Desktop pads a button ~16 px beyond its text; bold Segoe UI is ~8 px per character at 11 pt
+
+
+def chip_text_w(label, size=11):
+    return len(label) * CHAR_PX * size / 11
+
+
+def chip_layout(footer):
+    """-> (labels, size, widths). Each chip is as wide as its text plus padding; chips sit left to right with a
+    CHIP_GAP gap. Preference: 11 pt with the arrow, then 11 pt without, then 10 pt without. Text is never cut."""
+    room = COL_W - 32
+    for arrow, size in ((True, 11), (False, 11), (False, 10)):
+        labels = [f"{t} ›" if arrow else t for t, _ in footer]
+        widths = [round(chip_text_w(l, size) + CHIP_PAD, 2) for l in labels]
+        if sum(widths) + CHIP_GAP * (len(widths) - 1) <= room:
+            break
+    return labels, size, widths
+
+
+def link_chip(label, target, size=11):
+    return nav_button(label, pages.PID[target], dict(pages.PAGES)[target], fill=PANEL,
+                      hover="#26314F", press=ORANGE, font="#F29A6B", size=size, align="left", margin=4)
 
 
 def view_pill(pg, grp, k, key):
@@ -406,7 +442,7 @@ def view_pill(pg, grp, k, key):
 
 
 def pill(measure_word, measure_fill_name):
-    v = text_line(measure_word, size=9, colour=INK2, bg="#26314F")
+    v = text_line(measure_word, size=11, colour=INK2, bg="#26314F")
     v["visualContainerObjects"]["background"] = [{"properties": {"show": b(True),
                                                                  "color": measure_colour(measure_fill_name)}}]
     return v
@@ -416,31 +452,32 @@ def subject_card(pg, x, y, spec):
     key, name, icon, num, label, kind, arg, colour, link, footer = spec
     p = f"card_{key}"
     panel(pg, x, y, COL_W, ROW_H, f"{p}_bg")
-    pg.add(x + 16, y + R_HEAD + 2, 20, 20, image(f"rail-{icon}-grey.png", f"{name} icon"), key=f"{p}_icon")
-    pg.add(x + 44, y + R_HEAD, 170, 24, textbox([[(name, st("Segoe UI Semibold", 11, INK2, True))]]), key=f"{p}_title")
-    pg.add(x + COL_W - 76, y + R_HEAD + 2, 60, 22, pill(hm(f"Pill {_PILL_NAME[key]}"), hm(f"Pill Fill {_PILL_NAME[key]}")),
+    pg.add(x + 16, y + R_HEAD, 28, 28, image(f"rail-{icon}-grey.png", f"{name} icon"), key=f"{p}_icon")
+    pg.add(x + 52, y + R_HEAD - 2, 160, 32, textbox([[(name, st("Segoe UI Semibold", 14, INK2, True))]]), key=f"{p}_title")
+    pg.add(x + COL_W - 88, y + R_HEAD, 72, 28, pill(hm(f"Pill {_PILL_NAME[key]}"), hm(f"Pill Fill {_PILL_NAME[key]}")),
            key=f"{p}_pill")
-    pg.add(x + CELL_X, y + R_NUM, COL_W - CELL_X - 14, NUM_H, value_cell(num, colour_measure=colour, size=28), key=f"{p}_num")
-    pg.add(x + 16, y + R_LBL, COL_W - 32, 22, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"{p}_lbl")
+    pg.add(x + CELL_X, y + R_NUM, COL_W - CELL_X - 14, NUM_H, value_cell(num, colour_measure=colour, size=34), key=f"{p}_num")
+    pg.add(x + 16, y + R_LBL, COL_W - 32, 26, textbox([[(label, st("Segoe UI", 12, LABEL))]]), key=f"{p}_lbl")
     if kind == "spark":
         pg.add(x + 8, y + R_ROW3, COL_W - 16, ROW3_H, sparkline(arg, colour), key=f"{p}_spark")
     elif kind == "bar":
         progress(pg, x + 16, y + R_BAR, COL_W - 32, 12, num, arg[0], arg[1], colour, f"{p}_bar")
-    pg.add(x + CELL_X, y + R_SENT, COL_W - CELL_X - 14, SENT_H, text_cell(hm(f"Insight {_PILL_NAME[key]}"), size=11), key=f"{p}_sent")
+    pg.add(x + CELL_X, y + R_SENT, COL_W - CELL_X - 14, SENT_H, text_cell(hm(f"Insight {_PILL_NAME[key]}"), size=13), key=f"{p}_sent")
     pg.add(x + 16, y + R_RULE, COL_W - 32, 1, shape("#26314F"), key=f"{p}_rule")
     # whole-card link first, footer links on top of it
     pg.add(x, y, COL_W, R_RULE - 4, ghost_link(link, name), key=f"{p}_go")
-    cw = (COL_W - 32 - 6 * (len(footer) - 1)) / len(footer)
-    for j, (txt, target) in enumerate(footer):
-        pg.add(round(x + 16 + j * (cw + 6), 2), y + R_FOOT, round(min(cw, 110), 2), 28, link_chip(txt, target),
-               key=f"{p}_ft{j}")
+    labels, size, widths = chip_layout(footer)
+    cx = x + 16
+    for j, ((txt, target), label, w) in enumerate(zip(footer, labels, widths)):
+        pg.add(round(cx, 2), y + R_FOOT, w, CHIP_H, link_chip(label, target, size), key=f"{p}_ft{j}")
+        cx += w + CHIP_GAP
 
 
 def build_brief(pg):
-    panel(pg, GRID_X0, 86, X1 - GRID_X0, 66, "brief_bg", fill=ORANGE)
-    pg.add(GRID_X0 + 16, 88, 700, 62, text_cell(hm("Briefing"), size=14, colour="#FFFFFF", bg=ORANGE), key="brief")
-    pg.add(GRID_X0 + 740, 88, X1 - GRID_X0 - 756, 62,
-           text_cell(hm("Briefing Reasons"), size=11, colour="#FFFFFF", bg=ORANGE), key="brief_reasons")
+    panel(pg, GRID_X0, 82, X1 - GRID_X0, 70, "brief_bg", fill=ORANGE)
+    pg.add(GRID_X0 + 16, 84, 700, 66, text_cell(hm("Briefing"), size=16, colour="#FFFFFF", bg=ORANGE), key="brief")
+    pg.add(GRID_X0 + 740, 84, X1 - GRID_X0 - 756, 66,
+           text_cell(hm("Briefing Reasons"), size=13, colour="#FFFFFF", bg=ORANGE), key="brief_reasons")
 
 
 def build_cards(pg):
@@ -454,11 +491,11 @@ def build_right_pmo(pg, grp):
     view_pill(pg, grp, 0, "view_pill_pmo")
     x, y = RIGHT_X, RIGHT_Y
     panel(pg, x, y, RIGHT_W, RIGHT_H, "act_bg", parent=grp)
-    pg.add(x + 16, y + 12, 380, 28, textbox([[("Act now", st("Segoe UI Semibold", 13, INK2, True)),
+    pg.add(x + 16, y + 10, 400, 32, textbox([[("Act now", st("Segoe UI Semibold", 15, INK2, True)),
                                               ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
            key="act_title", parent=grp)
-    obj = pbir.table_style(10, header_bg=PANEL)
-    obj["values"] = [{"properties": {"fontSize": n(10), "fontColorPrimary": col_solid(INK2),
+    obj = pbir.table_style(11, header_bg=PANEL)
+    obj["values"] = [{"properties": {"fontSize": n(11), "fontColorPrimary": col_solid(INK2),
                                      "backColorPrimary": col_solid(PANEL), "fontColorSecondary": col_solid(INK2),
                                      "backColorSecondary": col_solid(PANEL), "wordWrap": b(True)}},
                      pbir.cf_font(M(hm("Act Reason")), hm("Act Colour"))]
@@ -477,11 +514,11 @@ def build_right_pmo(pg, grp):
     pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, tbl, key="act_tbl", parent=grp, filters=[pages.REAL_PROJECTS])
     pg.add(x + 16, y + 44 + ACT_H + 8, 200, 32, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
            "Select a project row first", fill=ORANGE, size=10), key="act_drill", parent=grp)
-    pg.add(x + 224, y + 44 + ACT_H + 12, RIGHT_W - 240, 26, textbox([[("or right-click › Drill through", st("Segoe UI", 9, LABEL))]]),
+    pg.add(x + 224, y + 44 + ACT_H + 12, RIGHT_W - 240, 26, textbox([[("or right-click › Drill through", st("Segoe UI", 10, LABEL))]]),
            key="act_hint", parent=grp)
-    pg.add(x + 16, y + 44 + ACT_H + 60, 300, 28, textbox([[("Next 30 days", st("Segoe UI Semibold", 13, INK2, True))]]),
+    pg.add(x + 16, y + 44 + ACT_H + 60, 300, 32, textbox([[("Next 30 days", st("Segoe UI Semibold", 15, INK2, True))]]),
            key="next_title", parent=grp)
-    mobj = pbir.table_style(10, header_bg=PANEL)
+    mobj = pbir.table_style(11, header_bg=PANEL)
     mobj["values"] = obj["values"][:1]
     mobj["grid"] = obj["grid"]
     mobj["total"] = obj["total"]
@@ -507,11 +544,12 @@ def build_right_exec(pg, grp):
     for k, (label, m, colour, target) in enumerate(decisions):
         y = round(RIGHT_Y + k * (h + GAP), 2)
         panel(pg, RIGHT_X, y, RIGHT_W, round(h, 2), f"dec_bg{k}", parent=grp)
-        pg.add(RIGHT_X + 16, y + 14, 300, 24, textbox([[(label, st("Segoe UI Semibold", 11, INK2, True))]]),
+        pg.add(RIGHT_X + 16, y + 12, 300, 30, textbox([[(label, st("Segoe UI Semibold", 13, INK2, True))]]),
                key=f"dec_lbl{k}", parent=grp)
-        pg.add(RIGHT_X + 16, y + 44, RIGHT_W - 32, round(h - 104, 2), text_cell(m, size=12), key=f"dec{k}", parent=grp)
-        pg.add(RIGHT_X + 16, round(y + h - 44, 2), 180, 28,
-               link_chip(dict(pages.PAGES)[target].split("·", 1)[-1].strip(), target), key=f"dec_go{k}", parent=grp)
+        pg.add(RIGHT_X + 16, y + 44, RIGHT_W - 32, round(h - 104, 2), text_cell(m, size=13), key=f"dec{k}", parent=grp)
+        chip = dict(pages.PAGES)[target].split("·", 1)[-1].strip() + " ›"
+        pg.add(RIGHT_X + 16, round(y + h - 44, 2), round(chip_text_w(chip) + CHIP_PAD, 2), CHIP_H,
+               link_chip(chip, target), key=f"dec_go{k}", parent=grp)
 
 
 def build_switch(pg, bm_pmo, bm_exec):

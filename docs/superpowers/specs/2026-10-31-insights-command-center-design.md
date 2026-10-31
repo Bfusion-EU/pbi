@@ -46,8 +46,13 @@ visuals, row-level security and a mobile layout.
 - Accent `#E8612A`: selected rail icon, briefing strip, view switch "on" state.
 - Status colours on dark: red `#FF8A80`, amber `#F2C46B`, teal `#5DCAA5`, grey `#8C98B3` (no
   status). Pill fills: `#3A1E22` / `#3A2F18` / `#173A33` / `#26314F`.
-- Fonts: Segoe UI (Semibold for numbers and titles), sentence case. Card number 28 pt, sentence
-  11 pt, labels 10 pt.
+- Fonts: Segoe UI (Semibold for numbers and titles), sentence case.
+- Sizes (rev 2.1, enlarged for readability): card title 14 pt Semibold, card icon 28 px, status
+  pill 11 pt (box 72 x 28), card number 34 pt, number label 12 pt, sentence 13 pt (up to three
+  lines), footer link chips 11 pt (30 high; each chip is sized to its text, 8 px per character + 22 px,
+  laid out left to right with a 10 px gap; the arrow is dropped, then the font goes to 10 pt, when a card's chips do not fit). Right column: "Act now" / "Next 30 days" titles 15 pt,
+  table header and body 11 pt, hint 10 pt, decision labels and decision text 13 pt. Briefing
+  strip: sentence 16 pt, reasons 13 pt, strip 70 high (y 82-152).
 
 ## Layout (1800 × 1000)
 
@@ -71,16 +76,24 @@ x 16─88 │ 104 ────────────────────�
 - Each icon is an image visual with a transparent page-navigation button over it. The tooltip names
   the chapter and its follow-on pages. The 18 rail PNGs are already in the generator assets.
 
-### 2 · Top bar (unchanged from rev 1, with one change)
+### 2 · Top bar (BFusion branding restored, rev 2.1)
 
-- Title "Command center", then the greeting (`Story | Home · Greeting`) and the refresh line
-  (`Story | Home · Refreshed`).
+- **Brand mark** at x 104 (bars y 18-38): five orange (`#E8612A`) bars, the "equaliser", at x offsets 0, 8, 16, 24,
+  32, each 5 wide and 10 / 17 / 13 / 20 / 9 high, vertically centred on y 28.
+- **Wordmark** "BFUSION" at x 146, y 12: DIN 18, white, bold.
+- **Subtitle** under the mark (x 104, y 46): "PPM Insights 360°  ·  Command center", DIN 14, peach `#FFB38A`.
+  It replaces the old "Command center" title.
+- **Greeting** (`Story | Home · Greeting`) and the refresh line (`Story | Home · Refreshed`) start at
+  x 520, to the right of the brand block.
+- **OnePlan logo** (dark-background version) about 110 x 48 at x 1050, y 18, between the greeting and
+  the Portfolio slicer (x 1180).
 - Portfolio and Program dropdown slicers, **synced report-wide**.
 - PMO / Executive switch: bookmark buttons, with an orange pill marking the active view.
+- The rail carries a small "bfusion.eu" text (Segoe UI 9, label colour, centred) at y 944, below the nine icons.
 
 ### 3 · Briefing strip (both views)
 
-- One orange strip, full width (x 104–1784), 56 high.
+- One orange strip, full width (x 104–1784), 70 high (y 82–152).
 - Left: `Story | Home · Briefing` without its reason breakdown, as a short sentence: "11 of 15 active
   projects need a decision".
 - Right: `Story | Home · Briefing Reasons`, one line listing the non-zero reason buckets:
@@ -95,10 +108,10 @@ Every card has the same five rows, top to bottom, all left-aligned:
 1. **Header**: subject icon (small grey PNG, from the rail set), subject name, and a **status
    pill** on the right showing "Act" (red), "Watch" (amber), "OK" (teal) or "–" (grey). The pill
    text and colour come from the subject's Home colour measure.
-2. **Number**: one big KPI (28 pt) in the status colour, with its label under it (10 pt, grey).
+2. **Number**: one big KPI (34 pt) in the status colour, with its label under it (12 pt, grey).
 3. **Trend or bar**: a 6-month sparkline where history exists. Otherwise a progress bar where the
    KPI is a share. Otherwise this row is left empty, so the rows still line up across cards.
-4. **Sentence**: one 11 pt sentence (`Story | Home · Insight <Subject>`), at most two lines,
+4. **Sentence**: one 13 pt sentence (`Story | Home · Insight <Subject>`), at most three lines,
    saying why the number is what it is.
 5. **Footer**: text links to the chapter and its follow-on pages. The whole card also has a
    transparent link to the chapter.
@@ -107,7 +120,7 @@ Every card has the same five rows, top to bottom, all left-aligned:
 |---|---|---|---|---|---|---|
 | Financials | `Story | Projects Over Budget` | projects over EAC | sparkline `Home · EAC Var % (reports)` | `Story | EAC Variance %` + worst over-budget project | new `Home · Colour Financials` (red: any project > 5% over EAC; amber: any project over budget; else teal) | Spend · Pareto |
 | Schedule | `Story | Baseline · Late Projects` | slipping vs baseline | sparkline `Home · On Track % (reports)` | `Story | On Track %` + `On Track Change` + worst slip | `Home · Colour Schedule` | Schedule · Gantt · Baseline |
-| Resources | `Story | Utilisation %` | utilisation | progress bar (0..1) | `Story | Over-allocated People` (in view) + `Story | TS Status · Missing Timesheets` | `Home · Colour Util` | People · Time · Sheets · Person |
+| Resources | `Story | Utilisation %` | utilisation | progress bar (0..1) | `Story | Over-allocated People` (in view) + `Story | TS Status · Missing Timesheets` | `Home · Colour Util` | People · Time · TS · Person |
 | Risk | `Story | Critical High Risks` | critical risks | — | `Story | Active Risk Count` + `Story | Unmitigated Risk %` | `Home · Colour Risk` | Risk |
 | Portfolio | `Story | Aligned Budget %` | budget aligned | progress bar (0..1) | `Story | Active Projects` + `Story | Proposed Projects` | `Home · Colour Portfolio` | Gates · Scenarios · Project |
 | Benefits | `Story | Benefit Cost Ratio` (format `0.00`, the model's) | benefit / cost | — | `Story | Benefits At Completion` vs `Story | Finance EAC` | `Home · Colour Benefits` (grey when no ratio) | Benefits |
@@ -121,7 +134,7 @@ Every card has the same five rows, top to bottom, all left-aligned:
   Implementation note: `Home · Colour Status` is red when worsened ≥ 3 or not reporting ≥ 5, amber when at least one of either is ≥ 1, else teal.
   Implementation note: the Financials card has its own count-based `Home · Colour Financials` (red if any project > 5% over EAC, amber if any project is over budget, else teal), so the number, pill and sparkline agree. `Colour EAC` stays for the Executive Money decision.
   Implementation note: the Status reports card number is "not reporting" (30+ days); the Insight sentence describes the worsened count.
-  Implementation note: the Resources footer has a "Sheets" chip to the Timesheet Status page, which keeps that page reachable from Home.
+  Implementation note: the Resources footer has a "TS" chip to the Timesheet Status page, which keeps that page reachable from Home.
   Implementation note: Benefits shows the model's 0.00 ratio format, and `Colour Benefits` is grey (pill "–") when the ratio is blank; the Insight sentence omits the EAC clause when EAC is blank.
 - Timesheets no longer has its own card. It moves into the Resources sentence and links (Time,
   and TS status through the rail tooltip of chapter 4).

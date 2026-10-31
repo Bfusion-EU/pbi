@@ -263,3 +263,35 @@ def test_value_and_text_cells():
         roles = vis["query"]["queryState"]
         projs = [p for r in roles.values() for p in r["projections"]]
         assert len(projs) == 1  # exactly one measure, nothing else
+
+
+def test_branding_present():
+    pg = _home()
+    word = _vc(pg, "brand_word", "textbox")
+    assert word is not None
+    assert "BFUSION" in repr(word["visual"]["objects"]["general"])
+    assert all(_vc(pg, f"brand_bar{k}", "shape") is not None for k in range(5))
+    logo = _vc(pg, "oneplan_logo", "image")
+    assert logo is not None and "OnePlan_logo" in repr(logo["visual"]["objects"]["image"])
+    sub = _vc(pg, "brand_sub", "textbox")
+    assert "Command center" in repr(sub["visual"]["objects"]["general"])
+    # greeting sits right of the brand block, left of the logo
+    greet = _vc(pg, "greet", "card")["position"]
+    assert greet["x"] >= 500 and greet["x"] + greet["width"] <= logo["position"]["x"]
+
+
+def test_footer_chips_wide_enough_for_their_text():
+    pg = _home()
+    for spec in ext_home.SUBJECTS_LAYOUT:
+        c, footer = spec[0], spec[-1]
+        labels, size, widths = ext_home.chip_layout(footer)
+        edge = None
+        for j, (label, w) in enumerate(zip(labels, widths)):
+            vc = _vc(pg, f"card_{c}_ft{j}", "actionButton")
+            pos = vc["position"]
+            assert pos["width"] >= ext_home.chip_text_w(label, size) + 8, (c, label)
+            if edge is not None:
+                assert pos["x"] - edge >= ext_home.CHIP_GAP - 0.01, (c, label)   # 10 px gap, no overlap
+            edge = pos["x"] + pos["width"]
+        card = _vc(pg, f"card_{c}_bg", "shape")["position"]
+        assert edge <= card["x"] + card["width"] - 16 + 0.01, c
