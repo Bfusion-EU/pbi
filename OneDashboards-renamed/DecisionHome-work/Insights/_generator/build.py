@@ -229,8 +229,14 @@ def check(built):
     # layout: visuals inside page, above footer band
     for pg in built:
         limit = pg.height * 0.928 if pg.height == 1800 else pg.height
+        groups = {v["name"]: v["position"] for v in pg.visuals}
         for vc in pg.visuals:
-            p = vc["position"]
+            p = dict(vc["position"])
+            if vc.get("parentGroupName"):
+                # child positions are stored relative to the parent group; resolve to page coordinates
+                gp = groups[vc["parentGroupName"]]
+                p["x"] += gp["x"]
+                p["y"] += gp["y"]
             if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
                 errors += 1
                 print(f"LAYOUT {pg.display}: {vc.get('visual', {}).get('visualType', 'group')} at {p} outside page/footer")

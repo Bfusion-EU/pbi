@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import pbir  # noqa: E402
 
@@ -14,7 +16,13 @@ def test_group_and_children():
     assert grp["visualGroup"] == {"displayName": "PMO view", "groupMode": "ScaleMode"}
     assert grp["isHidden"] is True
     assert "visual" not in grp
-    assert child["position"]["x"] == 20  # group-relative (Desktop spike)
+    assert (child["position"]["x"], child["position"]["y"]) == (20, 20)  # group-relative (Desktop spike)
+
+
+def test_unknown_parent_raises():
+    pg = pbir.Page("p1", "Test", 1800, 1000)
+    with pytest.raises(ValueError):
+        pg.add(120, 120, 100, 50, pbir.textbox([[("x", pbir.st())]]), key="c", parent="nope")
 
 
 def test_bookmark_registry():
@@ -35,9 +43,4 @@ def test_bookmark_and_drill_buttons():
     db = pbir.drill_button("Open One-Pager ›", "pageX")
     link = db["visualContainerObjects"]["visualLink"][0]["properties"]
     assert link["type"] == pbir.s("Drillthrough") and link["drillthroughSection"] == pbir.s("pageX")
-def test_child_position_is_group_relative_in_file():
-    pg = pbir.Page("p1", "Test", 1800, 1000)
-    g = pg.add_group(100, 100, 400, 300, "G", key="g")
-    c = pg.add(120, 130, 10, 10, pbir.textbox([[("x", pbir.st())]]), key="c", parent=g)
-    assert (c["position"]["x"], c["position"]["y"]) == (20, 30)
 

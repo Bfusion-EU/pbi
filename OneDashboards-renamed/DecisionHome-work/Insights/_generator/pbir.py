@@ -214,7 +214,10 @@ class Page:
         self.z += 100
         name = uid(self.id, key or len(self.visuals), visual.get("visualType"))
         if parent:
-            pp = next(v for v in self.visuals if v["name"] == parent)["position"]
+            grp = next((v for v in self.visuals if v["name"] == parent), None)
+            if grp is None:
+                raise ValueError(f"unknown parent group {parent!r}: add the group before its children")
+            pp = grp["position"]
             x, y = x - pp["x"], y - pp["y"]
         vc = {"$schema": VC_SCHEMA, "name": name,
               "position": {"x": x, "y": y, "z": self.z, "width": w, "height": h, "tabOrder": self.z},
