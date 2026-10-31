@@ -87,11 +87,6 @@ VAR _ok = CALCULATE ( COUNTROWS ( DimProject ), {ACTIVE}, KEEPFILTERS ( DimProje
 RETURN IF ( _tot > 0, DIVIDE ( COALESCE ( _ok, 0 ), _tot ) )""", "0%",
     desc="Share of active projects whose overall health is (1) On Track.")
 
-add("Story | Refreshed", T, """
-VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )
-RETURN IF ( ISBLANK ( _t ), "POWERED BY ONEPLAN", "POWERED BY ONEPLAN  ·  REFRESHED " & UPPER ( FORMAT ( _t, "dd mmm yyyy hh:nn" ) ) & " CET" )
-""")
-
 # ------------------------------------------------------------------ finance (FactCost, time-phased plan)
 add("Story | Finance EAC", D, f"""
 CALCULATE ( SUM ( FactCost[Cost] ), KEEPFILTERS ( FactCost[CostType] = "{EAC_COST_TYPE}" ), REMOVEFILTERS ( DimDate ), {PROJ} )""",
