@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "327eac210c424e6308c9",
+  "name": "9ee7085340838af53229",
   "position": {
-    "x": 105,
-    "y": 731.0,
-    "z": 10300,
-    "width": 295,
+    "x": 746,
+    "y": 286.0,
+    "z": 7700,
+    "width": 265,
     "height": 110,
-    "tabOrder": 10300
+    "tabOrder": 7700
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "barChart",
     "query": {
       "queryState": {
         "Y": {
@@ -24,12 +24,28 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Aligned Budget %"
+                  "Property": "Story | Utilisation %"
                 }
               },
-              "queryRef": "_Measures.Story | Aligned Budget %",
+              "queryRef": "_Measures.Story | Utilisation %",
               "nativeQueryRef": "v",
               "displayName": "v"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Home · Util Rest"
+                }
+              },
+              "queryRef": "_Measures.Story | Home · Util Rest",
+              "nativeQueryRef": "rest",
+              "displayName": "rest"
             }
           ]
         }
@@ -74,6 +90,40 @@
             }
           }
         }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
@@ -92,7 +142,7 @@
                           "Entity": "_Measures"
                         }
                       },
-                      "Property": "Story | Home · Colour Portfolio"
+                      "Property": "Story | Home · Colour Util"
                     }
                   }
                 }
@@ -100,7 +150,25 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Story | Aligned Budget %"
+            "metadata": "_Measures.Story | Utilisation %"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#3A4768'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | Home · Util Rest"
           }
         }
       ],
@@ -131,6 +199,19 @@
           }
         }
       ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
       "categoryAxis": [
         {
           "properties": {
@@ -138,6 +219,13 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            },
+            "innerPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "60D"
                 }
               }
             }
@@ -165,6 +253,13 @@
               "expr": {
                 "Literal": {
                   "Value": "1D"
+                }
+              }
+            },
+            "gridlineShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

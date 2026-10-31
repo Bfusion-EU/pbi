@@ -275,9 +275,15 @@ def test_branding_present():
     assert logo is not None and "OnePlan_logo" in repr(logo["visual"]["objects"]["image"])
     sub = _vc(pg, "brand_sub", "textbox")
     assert "Command center" in repr(sub["visual"]["objects"]["general"])
-    # greeting sits right of the brand block, left of the logo
+    # logo: bottom-right corner of the right-column panel, above the groups, not in a group
+    pos = logo["position"]
+    assert (pos["x"], pos["y"], pos["width"], pos["height"]) == (1646, 924, 110, 48)
+    assert "parentGroupName" not in logo
+    assert pos["z"] > max(vc["position"]["z"] for vc in pg.visuals if vc.get("parentGroupName"))
+    assert logo["visual"]["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"]["expr"]["Literal"][
+        "Value"] == "'Fit'"
     greet = _vc(pg, "greet", "card")["position"]
-    assert greet["x"] >= 500 and greet["x"] + greet["width"] <= logo["position"]["x"]
+    assert greet["x"] >= 500
 
 
 def test_footer_chips_wide_enough_for_their_text():
@@ -295,3 +301,30 @@ def test_footer_chips_wide_enough_for_their_text():
             edge = pos["x"] + pos["width"]
         card = _vc(pg, f"card_{c}_bg", "shape")["position"]
         assert edge <= card["x"] + card["width"] - 16 + 0.01, c
+
+
+def test_progress_bars_are_one_stacked_chart():
+    pg = _home()
+    for c in ("res", "port", "gov"):
+        bar = _vc(pg, f"card_{c}_bar", "barChart")
+        assert bar is not None, c
+        assert _vc(pg, f"card_{c}_bar_track", "shape") is None, c      # no separate track shape
+        proj = bar["visual"]["query"]["queryState"]["Y"]["projections"]
+        assert len(proj) == 2 and "Rest" in repr(proj[1]), c           # value + remainder
+        assert bar["position"]["height"] >= 100                        # Desktop placeholder below ~100 px
+    names = {m["name"] for m in MEASURES}
+    assert {f"Story | Home · {n}" for n in ("Util Rest", "Aligned Rest", "Trust Rest")} <= names
+
+
+def test_cells_have_service_headroom():
+    """The Service renders text taller than Desktop; every value/text cell needs >= 28 px over its text height."""
+    pg = _home()
+    pts = {"num": 34, "sent": 13 * 4}   # sentence: 4 lines in the Service
+    for c in CARD_KEYS:
+        for part, size in pts.items():
+            vc = _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL)
+            assert vc["position"]["height"] >= size * 1.33 + 22 + 28, (c, part)
+    # header row ~22 px; the sentence cell may sit under the spark / bar (they are drawn on top of it)
+    # rows stay inside the card
+    r = ext_home
+    assert r.R_SENT + r.SENT_H <= r.R_RULE

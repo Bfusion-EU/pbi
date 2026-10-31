@@ -126,6 +126,16 @@ _add("Refreshed", T, """
 VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )
 RETURN IF ( ISBLANK ( _t ), "Powered by OnePlan", "Powered by OnePlan  ·  refreshed " & FORMAT ( _t, "dd mmm yyyy hh:nn" ) & " CET" )""")
 _COL = FOLDER + "\\Colours"
+# remainder to the axis max for the stacked progress bars (fill + remainder = one visual, so they always line up)
+_add("Util Rest", D, """VAR _u = [Story | Utilisation %]
+RETURN MAX ( 0, 1 - COALESCE ( _u, 0 ) )""", "0%",
+     "Remainder of the utilisation progress bar (1 minus utilisation, never below 0; full track when blank).")
+_add("Aligned Rest", D, """VAR _p = [Story | Aligned Budget %]
+RETURN MAX ( 0, 1 - COALESCE ( _p, 0 ) )""", "0%",
+     "Remainder of the budget-aligned progress bar (1 minus aligned share, never below 0; full track when blank).")
+_add("Trust Rest", D, """VAR _g = [PMO | Governance Score]
+RETURN MAX ( 0, 100 - COALESCE ( _g, 0 ) )""", "0.0",
+     "Remainder of the data-trust progress bar (100 minus the score, never below 0; full track when blank).")
 _add("Colour EAC", T, f"""
 VAR _p = [Story | EAC Variance %]
 RETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, "{C_RED}", IF ( _p > 0, "{C_AMBER}", "{C_TEAL}" ) ) )""",
@@ -314,22 +324,30 @@ def sparkline(measure, colour):
     return v
 
 
-def progress(pg, x, y, w, h, value_measure, lo, hi, colour, key):
-    """Track (grey rounded shape, x/y/w/h) with a single-measure bar chart on top; value axis fixed to lo..hi.
-    Desktop shows only a placeholder icon for a bar chart shorter than ~100px, so the chart is CHART_H tall and
-    centred on the track (its bar is a thin line in the middle). It is transparent and sits below the Task 5 body."""
-    pg.add(x, y, w, h, shape("#3A4768", radius=4), key=f"{key}_track")
+BAR_REST = "#3A4768"
+BAR_PAD = 60               # category inner padding (%)
+BAR_DY = 14                # Desktop draws the single bar ~14 px below the chart centre (hidden axis space)
+
+
+def progress(pg, x, y, w, h, value_measure, rest_measure, lo, hi, colour, key):
+    """One stacked bar chart (barChart) with two measures: the value (status colour) and the remainder to the axis
+    max (BAR_REST). Fill and track are the same bars, so they line up by construction. The value axis is fixed to
+    lo..hi. Desktop shows only a placeholder for a chart shorter than ~100px, so the chart is CHART_H tall, centred
+    on y + h/2; the category inner padding (BAR_PAD %) sets the bar thickness (~14 px). With zero container padding the plot
+    area spans the whole chart width, so the chart is exactly as wide as the track."""
     fill = measure_fill(M(value_measure), colour) if colour.startswith("#") else fx_fill(M(value_measure), colour)
-    v = chart("clusteredBarChart", {"Y": [P(M(value_measure), "v")]}, "",
-              {"dataPoint": [fill], "legend": legend(show=False),
-               "categoryAxis": [{"properties": {"show": b(False)}}],
-               "valueAxis": [{"properties": {"show": b(False), "start": n(lo), "end": n(hi)}}]})
+    v = chart("barChart", {"Y": [P(M(value_measure), "v"), P(M(rest_measure), "rest")]}, "",
+              {"dataPoint": [fill, measure_fill(M(rest_measure), BAR_REST)], "legend": legend(show=False),
+               "labels": [{"properties": {"show": b(False)}}],
+               "categoryAxis": [{"properties": {"show": b(False), "innerPadding": n(BAR_PAD)}}],
+               "valueAxis": [{"properties": {"show": b(False), "start": n(lo), "end": n(hi),
+                                             "gridlineShow": b(False)}}]})
     vco = v["visualContainerObjects"]
     vco["title"] = [{"properties": {"show": b(False)}}]
     vco["background"] = [{"properties": {"show": b(False)}}]
     vco["border"] = [{"properties": {"show": b(False)}}]
-    # the chart's plot area is inset ~15px on both sides, so the chart is 30px wider than the track
-    pg.add(x - 15, round(y + h / 2 - CHART_H / 2, 2), w + 30, CHART_H, v, key=key)
+    vco["padding"] = [{"properties": {"top": n(0), "bottom": n(0), "left": n(0), "right": n(0)}}]
+    pg.add(x, round(y + h / 2 - CHART_H / 2 - BAR_DY, 2), w, CHART_H, v, key=key)
 
 
 def dark_slicer(field, label):
@@ -369,9 +387,6 @@ def build_top(pg):
     build_brand(pg)
     pg.add(GREET_X, 8, 500, 40, text_line(hm("Greeting"), size=16, bg=CANVAS), key="greet")
     pg.add(GREET_X, 50, 500, 32, text_line(hm("Refreshed"), size=11, colour=LABEL, bg=CANVAS), key="refreshed")
-    logo = image("OnePlan_logo_-_dark_background9901469509814106.png", "OnePlan logo")
-    logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")  # 211x92 source, 110x48 box
-    pg.add(1050, 18, 110, 48, logo, key="oneplan_logo")
     pg.add(1180, 14, 180, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
     pg.add(1370, 14, 180, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
@@ -388,31 +403,32 @@ SUBJECTS_LAYOUT = [
      "spark", hm("On Track % (reports)"), hm("Colour Schedule"), "schedule",
      [("Schedule", "schedule"), ("Gantt", "gantt"), ("Baseline", "baseline")]),
     ("res", "Resources", "resources", "Story | Utilisation %", "utilisation",
-     "bar", (0, 1), hm("Colour Util"), "resources",
+     "bar", (0, 1, hm("Util Rest")), hm("Colour Util"), "resources",
      [("People", "resources"), ("Time", "timesheets"), ("TS", "tsstatus"), ("Person", "resource")]),
     ("risk", "Risk", "risk", "Story | Critical High Risks", "critical risks",
      None, None, hm("Colour Risk"), "risk", [("Risk", "risk")]),
     ("port", "Portfolio", "portfolio", "Story | Aligned Budget %", "budget aligned",
-     "bar", (0, 1), hm("Colour Portfolio"), "portfolio",
+     "bar", (0, 1, hm("Aligned Rest")), hm("Colour Portfolio"), "portfolio",
      [("Gates", "lifecycle"), ("Scenarios", "scenarios"), ("Project", "onepager")]),
     ("ben", "Benefits", "benefits", "Story | Benefit Cost Ratio", "benefit / cost",
      None, None, hm("Colour Benefits"), "benefits", [("Benefits", "benefits")]),
     ("sr", "Status reports", "exec", "Story | Status · Not Reporting", f"not reporting {STALE_DAYS}+ days",
      None, None, hm("Colour Status"), "status", [("Trend", "status")]),
     ("gov", "Governance", "governance", "PMO | Governance Score", "data trust score",
-     "bar", (0, 100), hm("Colour Trust"), "governance", [("Governance", "governance")]),
+     "bar", (0, 100, hm("Trust Rest")), hm("Colour Trust"), "governance", [("Governance", "governance")]),
 ]
 _PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk": "Risk", "port": "Portfolio",
               "ben": "Benefits", "sr": "Status", "gov": "Governance"}
 
-# Row offsets inside a card (y relative to the card top). Every cell is ~16 px taller than its text needs.
-R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 40, 96, 122, 150, 100, 198, 250, 104
+# Row offsets inside a card (y relative to the card top). Every cell is >= 28 px taller than its text: the Service
+# renders text taller than Desktop and shows a scroll thumb when it does not fit. R_BAR is the bar's centre line.
+R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 40, 120, 120, 146, 98, 195, 226, 126
 R_RULE, R_FOOT, CHIP_H = ROW_H - 50, ROW_H - 42, 30
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
 ACT_H = 368                # Act-now table: header + 8 rows
 
 
-CHIP_GAP, CHIP_PAD, CHAR_PX = 10, 22, 8.0     # Desktop pads a button ~16 px beyond its text; bold Segoe UI is ~8 px per character at 11 pt
+CHIP_GAP, CHIP_PAD, CHAR_PX = 8, 24, 8.0     # Desktop pads a button ~16 px beyond its text; bold Segoe UI is ~8 px per character at 11 pt
 
 
 def chip_text_w(label, size=11):
@@ -458,11 +474,13 @@ def subject_card(pg, x, y, spec):
            key=f"{p}_pill")
     pg.add(x + CELL_X, y + R_NUM, COL_W - CELL_X - 14, NUM_H, value_cell(num, colour_measure=colour, size=34), key=f"{p}_num")
     pg.add(x + 16, y + R_LBL, COL_W - 32, 26, textbox([[(label, st("Segoe UI", 12, LABEL))]]), key=f"{p}_lbl")
+    # cells are taller than the room they show text in (the table header row + Service text height need the extra),
+    # so the sentence cell is added BEFORE the spark / bar and those sit on top of its empty upper part
+    pg.add(x + CELL_X, y + R_SENT, COL_W - CELL_X - 14, SENT_H, text_cell(hm(f"Insight {_PILL_NAME[key]}"), size=13), key=f"{p}_sent")
     if kind == "spark":
         pg.add(x + 8, y + R_ROW3, COL_W - 16, ROW3_H, sparkline(arg, colour), key=f"{p}_spark")
     elif kind == "bar":
-        progress(pg, x + 16, y + R_BAR, COL_W - 32, 12, num, arg[0], arg[1], colour, f"{p}_bar")
-    pg.add(x + CELL_X, y + R_SENT, COL_W - CELL_X - 14, SENT_H, text_cell(hm(f"Insight {_PILL_NAME[key]}"), size=13), key=f"{p}_sent")
+        progress(pg, x + 16, y + R_BAR - 6, COL_W - 32, 12, num, arg[2], arg[0], arg[1], colour, f"{p}_bar")
     pg.add(x + 16, y + R_RULE, COL_W - 32, 1, shape("#26314F"), key=f"{p}_rule")
     # whole-card link first, footer links on top of it
     pg.add(x, y, COL_W, R_RULE - 4, ghost_link(link, name), key=f"{p}_go")
@@ -530,7 +548,7 @@ def build_right_pmo(pg, grp):
                   "", mobj, sort=[(due, "Ascending")])
     for o in ("title", "background", "border"):
         miles["visualContainerObjects"][o] = [{"properties": {"show": b(False)}}]
-    pg.add(x + 8, y + 44 + ACT_H + 92, RIGHT_W - 16, RIGHT_H - (44 + ACT_H + 92) - 12, miles, key="next_tbl", parent=grp,
+    pg.add(x + 8, y + 44 + ACT_H + 92, RIGHT_W - 16, LOGO[1] - 8 - (y + 44 + ACT_H + 92), miles, key="next_tbl", parent=grp,
            filters=[pbir.f_in("DimTask", "Milestone", [True]), pbir.f_cmp("DimTask", "PercentDone", 3, 100),
                     pages.PROJECT_TASKS])
 
@@ -550,6 +568,16 @@ def build_right_exec(pg, grp):
         chip = dict(pages.PAGES)[target].split("·", 1)[-1].strip() + " ›"
         pg.add(RIGHT_X + 16, round(y + h - 44, 2), round(chip_text_w(chip) + CHIP_PAD, 2), CHIP_H,
                link_chip(chip, target), key=f"dec_go{k}", parent=grp)
+
+
+LOGO = (1646, 924, 110, 48)    # bottom-right corner of the right-column panel (the user's choice)
+
+
+def build_logo(pg):
+    """OnePlan logo, added after the groups so it sits above the right column and is not inside a group."""
+    logo = image("OnePlan_logo_-_dark_background9901469509814106.png", "OnePlan logo")
+    logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")  # 211x92 source, 110x48 box
+    pg.add(*LOGO, logo, key="oneplan_logo")
 
 
 def build_switch(pg, bm_pmo, bm_exec):
@@ -578,4 +606,5 @@ def build():
     bm_pmo = pbir.bookmark("Home · PMO view", "home_pmo", pg.id, {g_pmo: False, g_exec: True})
     bm_exec = pbir.bookmark("Home · Executive view", "home_exec", pg.id, {g_pmo: True, g_exec: False})
     build_switch(pg, bm_pmo, bm_exec)
+    build_logo(pg)
     return [pg]

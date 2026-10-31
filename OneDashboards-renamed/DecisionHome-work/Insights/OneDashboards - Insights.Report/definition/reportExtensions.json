@@ -7540,6 +7540,56 @@
           "displayFolder": "Story\\Home"
         },
         {
+          "name": "Story | Home · Util Rest",
+          "dataType": "Double",
+          "expression": "VAR _u = [Story | Utilisation %]\nRETURN MAX ( 0, 1 - COALESCE ( _u, 0 ) )",
+          "displayFolder": "Story\\Home",
+          "formatString": "0%",
+          "description": "Remainder of the utilisation progress bar (1 minus utilisation, never below 0; full track when blank).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Utilisation %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Aligned Rest",
+          "dataType": "Double",
+          "expression": "VAR _p = [Story | Aligned Budget %]\nRETURN MAX ( 0, 1 - COALESCE ( _p, 0 ) )",
+          "displayFolder": "Story\\Home",
+          "formatString": "0%",
+          "description": "Remainder of the budget-aligned progress bar (1 minus aligned share, never below 0; full track when blank).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Trust Rest",
+          "dataType": "Double",
+          "expression": "VAR _g = [PMO | Governance Score]\nRETURN MAX ( 0, 100 - COALESCE ( _g, 0 ) )",
+          "displayFolder": "Story\\Home",
+          "formatString": "0.0",
+          "description": "Remainder of the data-trust progress bar (100 minus the score, never below 0; full track when blank).",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
           "name": "Story | Home · Colour EAC",
           "dataType": "Text",
           "expression": "VAR _p = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#FF8A80\", IF ( _p > 0, \"#F2C46B\", \"#5DCAA5\" ) ) )",

@@ -48,11 +48,17 @@ visuals, row-level security and a mobile layout.
   status). Pill fills: `#3A1E22` / `#3A2F18` / `#173A33` / `#26314F`.
 - Fonts: Segoe UI (Semibold for numbers and titles), sentence case.
 - Sizes (rev 2.1, enlarged for readability): card title 14 pt Semibold, card icon 28 px, status
-  pill 11 pt (box 72 x 28), card number 34 pt, number label 12 pt, sentence 13 pt (up to three
-  lines), footer link chips 11 pt (30 high; each chip is sized to its text, 8 px per character + 22 px,
+  pill 11 pt (box 72 x 28), card number 34 pt, number label 12 pt, sentence 13 pt (up to four
+  lines in the Service), footer link chips 11 pt (30 high; each chip is sized to its text, 8 px per character + 22 px,
   laid out left to right with a 10 px gap; the arrow is dropped, then the font goes to 10 pt, when a card's chips do not fit). Right column: "Act now" / "Next 30 days" titles 15 pt,
   table header and body 11 pt, hint 10 pt, decision labels and decision text 13 pt. Briefing
   strip: sentence 16 pt, reasons 13 pt, strip 70 high (y 82-152).
+- Cell headroom: the Service renders text taller than Desktop and shows a scroll thumb when a one-cell table
+  is too short, and the table header row (about 22 px) counts. Every number / sentence cell is therefore at least
+  28 px taller than header + text. Card rows (y relative to the card top): head 12, number cell 40 (120 high, its
+  empty lower part sits under the label), label 120, row 3 (spark / bar) 146-244, sentence cell 226 (126 high,
+  drawn before the spark / bar so they sit on top of its empty upper part), rule 356, chips 364 (30 high, chip
+  padding 24 px, gap 8 px).
 
 ## Layout (1800 × 1000)
 
@@ -85,8 +91,9 @@ x 16─88 │ 104 ────────────────────�
   It replaces the old "Command center" title.
 - **Greeting** (`Story | Home · Greeting`) and the refresh line (`Story | Home · Refreshed`) start at
   x 520, to the right of the brand block.
-- **OnePlan logo** (dark-background version) about 110 x 48 at x 1050, y 18, between the greeting and
-  the Portfolio slicer (x 1180).
+- **OnePlan logo** (dark-background version), 110 x 48 at x 1646, y 924 (scaling Fit): the bottom-right corner
+  of the right-column panel, the user's choice. It is not in the top bar and not in a view group; it is added
+  after the groups so it sits above the right column in z-order. The "Next 30 days" table stops above it (y 916).
 - Portfolio and Program dropdown slicers, **synced report-wide**.
 - PMO / Executive switch: bookmark buttons, with an orange pill marking the active view.
 - The rail carries a small "bfusion.eu" text (Segoe UI 9, label colour, centred) at y 944, below the nine icons.
@@ -110,7 +117,11 @@ Every card has the same five rows, top to bottom, all left-aligned:
    text and colour come from the subject's Home colour measure.
 2. **Number**: one big KPI (34 pt) in the status colour, with its label under it (12 pt, grey).
 3. **Trend or bar**: a 6-month sparkline where history exists. Otherwise a progress bar where the
-   KPI is a share. Otherwise this row is left empty, so the rows still line up across cards.
+   KPI is a share. The bar is ONE stacked `barChart` with two measures, the value (status colour) and its
+   remainder to the axis max (`#3A4768`: `Home · Util Rest`, `Aligned Rest`, `Trust Rest`), value axis fixed to
+   0..max, axes/legend/labels/title/background hidden, category inner padding 60 (about 14 px bar). Fill and
+   track are the same bars, so they cannot misalign. The chart is 110 px tall (Desktop shows a placeholder below
+   ~100 px) and as wide as the track. Otherwise this row is left empty, so the rows still line up across cards.
 4. **Sentence**: one 13 pt sentence (`Story | Home · Insight <Subject>`), at most three lines,
    saying why the number is what it is.
 5. **Footer**: text links to the chapter and its follow-on pages. The whole card also has a
