@@ -827,7 +827,7 @@ def build_governance():
 
 def build_all():
     import extensions  # extension pages register in extensions.BUILDERS
-    built = {"home": build_home(), "exec": build_exec(), "portfolio": build_portfolio(), "finance": build_finance(),
+    built = {"exec": build_exec(), "portfolio": build_portfolio(), "finance": build_finance(),
              "finance2": build_finance2(), "resources": build_resources(), "schedule": build_schedule(),
              "risk": build_risk(), "benefits": build_benefits(), "governance": build_governance()}
     for builder in extensions.BUILDERS:
