@@ -254,4 +254,3 @@ def test_value_and_text_cells():
         roles = vis["query"]["queryState"]
         projs = [p for r in roles.values() for p in r["projections"]]
         assert len(projs) == 1  # exactly one measure, nothing else
-
