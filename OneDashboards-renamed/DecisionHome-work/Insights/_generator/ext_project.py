@@ -127,17 +127,17 @@ add(pm("Burn %"), D, "[Story | Burn %]", "0%", FOLDER, "Lifetime actual cost as 
 
 # --- risk / schedule. These summarise the whole project: REMOVEFILTERS ( DimTask ) so a hovered or drilled
 # task / risk row cannot shrink them to that one row.
-add(pm("Active Risks"), I, "CALCULATE ( [Project | Active Risks], REMOVEFILTERS ( DimTask ) ) + 0", "#,##0", FOLDER)
-add(pm("Active Issues"), I, "CALCULATE ( [Project | Active Issues], REMOVEFILTERS ( DimTask ) ) + 0", "#,##0", FOLDER)
+add(pm("Active Risks"), I, "CALCULATE ( [Project | Active Risks], REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ) ) + 0", "#,##0", FOLDER)
+add(pm("Active Issues"), I, "CALCULATE ( [Project | Active Issues], REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ) ) + 0", "#,##0", FOLDER)
 add(pm("Risk Exposure"), D,
-    'CALCULATE ( SUM ( DimTask[Exposure] ), REMOVEFILTERS ( DimTask ), DimTask[WorkType] = "Risks", DimTask[State] = "Active" )',
+    'CALCULATE ( SUM ( DimTask[Exposure] ), REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ), DimTask[WorkType] = "Risks", DimTask[State] = "Active" )',
     "#,##0", FOLDER)
 add(pm("Risks And Issues"), T, f"""
 VAR _r = [{pm("Active Risks")}]
 VAR _i = [{pm("Active Issues")}]
 RETURN FORMAT ( _r, "0" ) & IF ( _r = 1, " risk", " risks" ) & "  ·  " & FORMAT ( _i, "0" ) & IF ( _i = 1, " issue", " issues" )""",
     folder=FOLDER)
-add(pm("Overdue Tasks"), I, "CALCULATE ( [Story | Overdue Tasks], REMOVEFILTERS ( DimTask ) ) + 0", "#,##0", FOLDER,
+add(pm("Overdue Tasks"), I, "CALCULATE ( [Story | Overdue Tasks], REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ) ) + 0", "#,##0", FOLDER,
     "Story | Overdue Tasks for the whole project: open leaf tasks (not Completed, under 100%) past their finish date.")
 add(pm("Overdue Colour"), T, f"""
 VAR _o = [{pm("Overdue Tasks")}]
@@ -145,7 +145,7 @@ RETURN IF ( _o = 0, "{TEAL}", IF ( _o <= 3, "{AMBER}", "{RED}" ) )""", folder=FO
 add(pm("Next Milestone"), T, """
 VAR _m =
     TOPN ( 1,
-        CALCULATETABLE ( DimTask, REMOVEFILTERS ( DimTask ), DimTask[Milestone] = TRUE (), DimTask[PercentDone] < 100,
+        CALCULATETABLE ( DimTask, REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ), DimTask[Milestone] = TRUE (), DimTask[PercentDone] < 100,
             NOT ISBLANK ( DimTask[EndDate] ) ),
         DimTask[EndDate], ASC )
 VAR _d = MINX ( _m, DimTask[EndDate] )
