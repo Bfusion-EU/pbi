@@ -11,7 +11,7 @@ NAMES = {m["name"] for m in MEASURES}
 SUBJECTS = ["Financials", "Schedule", "Resources", "Risk", "Portfolio", "Benefits", "Status", "Governance"]
 HOME = (["Greeting", "Refreshed", "Briefing", "Briefing Reasons", "Act Score", "Act Reason", "Act Colour", "Act Count",
          "EAC Var % (reports)", "On Track % (reports)", "EAC Change", "On Track Change", "Due",
-         "Colour EAC", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
+         "Colour Financials", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
          "Colour Benefits", "Colour Status"]
         + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS])
 
@@ -134,6 +134,15 @@ def test_eight_subject_cards_with_five_rows():
             assert _vc(pg, f"card_{c}_{part}", vtype) is not None, (c, part)
         for part in ("num", "sent"):
             assert _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL) is not None, (c, part)
+
+
+def test_financials_and_status_cards_use_their_own_measures():
+    spec = {s[0]: s for s in ext_home.SUBJECTS_LAYOUT}
+    assert spec["fin"][3] == "Story | Projects Over Budget"
+    assert spec["fin"][7] == ext_home.hm("Colour Financials")
+    assert ext_home.SUBJECT_COLOUR["Financials"] == ext_home.hm("Colour Financials")
+    assert spec["sr"][3] == "Story | Status · Not Reporting"
+    assert "not reporting" in spec["sr"][4]
 
 
 def test_cards_align_in_grid():

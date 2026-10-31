@@ -7639,14 +7639,36 @@
         {
           "name": "Story | Home · Colour Benefits",
           "dataType": "Text",
-          "expression": "IF ( [Story | Benefit Cost Ratio] >= 1, \"#5DCAA5\", \"#F2C46B\" )",
+          "expression": "VAR _r = [Story | Benefit Cost Ratio]\nRETURN IF ( ISBLANK ( _r ), \"#9AA3AF\", IF ( _r >= 1, \"#5DCAA5\", \"#F2C46B\" ) )",
           "displayFolder": "Story\\Home\\Colours",
+          "description": "Grey when there is no benefit/cost ratio; teal at 1.0 or more; else amber.",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | Benefit Cost Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Financials",
+          "dataType": "Text",
+          "expression": "VAR _red = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | EAC Variance %] > 0.05 ) )\nRETURN IF ( _red > 0, \"#FF8A80\", IF ( [Story | Projects Over Budget] + 0 > 0, \"#F2C46B\", \"#5DCAA5\" ) )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Red: any project more than 5% over EAC; amber: any project over budget; else teal. Matches the card number.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects Over Budget"
               }
             ]
           }
@@ -7775,7 +7797,7 @@
         {
           "name": "Story | Home · Insight Benefits",
           "dataType": "Text",
-          "expression": "VAR _b = [Story | Benefits At Completion]\nVAR _e = [Story | Finance EAC]\nRETURN IF ( ISBLANK ( _b ), \"No benefits plan in view.\",\n    IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" planned benefits against \" & IF ( ISBLANK ( _e ), \"–\", IF ( ABS ( _e ) >= 1000000, \"€\" & FORMAT ( _e / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _e ) >= 1000, \"€\" & FORMAT ( _e / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _e, \"#,0\" ) ) ) ) & \" EAC.\" )",
+          "expression": "VAR _b = [Story | Benefits At Completion]\nVAR _e = [Story | Finance EAC]\nRETURN IF ( ISBLANK ( _b ), \"No benefits plan in view.\",\n    IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" planned benefits\" & IF ( ISBLANK ( _e ), \".\", \" against \" & IF ( ISBLANK ( _e ), \"–\", IF ( ABS ( _e ) >= 1000000, \"€\" & FORMAT ( _e / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _e ) >= 1000, \"€\" & FORMAT ( _e / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _e, \"#,0\" ) ) ) ) & \" EAC.\" ) )",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
@@ -7795,14 +7817,14 @@
         {
           "name": "Story | Home · Insight Status",
           "dataType": "Text",
-          "expression": "VAR _n = [Story | Status · Not Reporting] + 0\nRETURN IF ( _n = 0, \"Every project reported recently.\",\n    FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" project has\", \" projects have\" ) & \" not reported for more than 30 days.\" )",
+          "expression": "VAR _w = [Story | Status · Overall Worsened] + 0\nRETURN IF ( _w = 0, \"No project got worse since its last report.\",\n    FORMAT ( _w, \"0\" ) & IF ( _w = 1, \" project is\", \" projects are\" ) & \" worse since their last report.\" )",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Status · Not Reporting"
+                "name": "Story | Status · Overall Worsened"
               }
             ]
           }
@@ -7828,7 +7850,7 @@
         {
           "name": "Story | Home · Pill Financials",
           "dataType": "Text",
-          "expression": "VAR _c = [Story | Home · Colour EAC]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
+          "expression": "VAR _c = [Story | Home · Colour Financials]\nRETURN SWITCH ( _c, \"#FF8A80\", \"Act\", \"#F2C46B\", \"Watch\", \"#5DCAA5\", \"OK\", \"#8C98B3\", \"Low\", \"–\" )",
           "displayFolder": "Story\\Home",
           "description": "Status word of the Financials card, from its colour measure.",
           "references": {
@@ -7836,7 +7858,7 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Home · Colour EAC"
+                "name": "Story | Home · Colour Financials"
               }
             ]
           }
@@ -7844,7 +7866,7 @@
         {
           "name": "Story | Home · Pill Fill Financials",
           "dataType": "Text",
-          "expression": "VAR _c = [Story | Home · Colour EAC]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
+          "expression": "VAR _c = [Story | Home · Colour Financials]\nRETURN SWITCH ( _c, \"#FF8A80\", \"#3A1E22\", \"#F2C46B\", \"#3A2F18\", \"#5DCAA5\", \"#173A33\", \"#26314F\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Pill background of the Financials card.",
           "references": {
@@ -7852,7 +7874,7 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Home · Colour EAC"
+                "name": "Story | Home · Colour Financials"
               }
             ]
           }

@@ -105,18 +105,24 @@ Every card has the same five rows, top to bottom, all left-aligned:
 
 | Card | Number (measure) | Label | Row 3 | Sentence (new `Insight …` measure, built from) | Colour / pill | Footer links |
 |---|---|---|---|---|---|---|
-| Financials | `Story | Projects Over Budget` | projects over EAC | sparkline `Home · EAC Var % (reports)` | `Story | EAC Variance %` + worst over-budget project | `Home · Colour EAC` | Spend · Pareto |
+| Financials | `Story | Projects Over Budget` | projects over EAC | sparkline `Home · EAC Var % (reports)` | `Story | EAC Variance %` + worst over-budget project | new `Home · Colour Financials` (red: any project > 5% over EAC; amber: any project over budget; else teal) | Spend · Pareto |
 | Schedule | `Story | Baseline · Late Projects` | slipping vs baseline | sparkline `Home · On Track % (reports)` | `Story | On Track %` + `On Track Change` + worst slip | `Home · Colour Schedule` | Schedule · Gantt · Baseline |
-| Resources | `Story | Utilisation %` | utilisation | progress bar (0..1) | `Story | Over-allocated People` (in view) + `Story | TS Status · Missing Timesheets` | `Home · Colour Util` | People · Time · Person |
+| Resources | `Story | Utilisation %` | utilisation | progress bar (0..1) | `Story | Over-allocated People` (in view) + `Story | TS Status · Missing Timesheets` | `Home · Colour Util` | People · Time · Sheets · Person |
 | Risk | `Story | Critical High Risks` | critical risks | — | `Story | Active Risk Count` + `Story | Unmitigated Risk %` | `Home · Colour Risk` | Risk |
 | Portfolio | `Story | Aligned Budget %` | budget aligned | progress bar (0..1) | `Story | Active Projects` + `Story | Proposed Projects` | `Home · Colour Portfolio` | Gates · Scenarios · Project |
-| Benefits | `Story | Benefit Cost Ratio` (format `0.0×`) | benefit / cost | — | `Story | Benefits At Completion` vs `Story | Finance EAC` | `Home · Colour Benefits` | Benefits |
-| Status reports | `Story | Status · Overall Worsened` | worse since last report | — | `Story | Status · Not Reporting` | new `Home · Colour Status` (red ≥ 3, amber ≥ 1, else teal) | Trend |
+| Benefits | `Story | Benefit Cost Ratio` (format `0.00`, the model's) | benefit / cost | — | `Story | Benefits At Completion` vs `Story | Finance EAC` | `Home · Colour Benefits` (grey when no ratio) | Benefits |
+| Status reports | `Story | Status · Not Reporting` | not reporting 30+ days | — | `Story | Status · Overall Worsened` (projects worse since their last report) | new `Home · Colour Status` (worsened ≥ 3 or not reporting ≥ 5 → red; ≥ 1 of either → amber; else teal) | Trend |
 | Governance | `PMO | Governance Score` | data trust score | progress bar (0..100) | `PMO | Plans Failing` (plans failing Plan Insights rules) | `Home · Colour Trust` | Governance |
 
 - The pill is a new `Story | Home · Pill <Subject>` text measure that maps the colour measure:
   red → "Act", amber → "Watch", teal → "OK", anything else → "–". It is shown in a small card
   whose background is the matching pill fill (colour measure).
+  Implementation note: grey (the Resources "under 50%" colour) maps to "Low".
+  Implementation note: `Home · Colour Status` is red when worsened ≥ 3 or not reporting ≥ 5, amber when at least one of either is ≥ 1, else teal.
+  Implementation note: the Financials card has its own count-based `Home · Colour Financials` (red if any project > 5% over EAC, amber if any project is over budget, else teal), so the number, pill and sparkline agree. `Colour EAC` stays for the Executive Money decision.
+  Implementation note: the Status reports card number is "not reporting" (30+ days); the Insight sentence describes the worsened count.
+  Implementation note: the Resources footer has a "Sheets" chip to the Timesheet Status page, which keeps that page reachable from Home.
+  Implementation note: Benefits shows the model's 0.00 ratio format, and `Colour Benefits` is grey (pill "–") when the ratio is blank; the Insight sentence omits the EAC clause when EAC is blank.
 - Timesheets no longer has its own card. It moves into the Resources sentence and links (Time,
   and TS status through the rail tooltip of chapter 4).
 - **Left alignment** requires the newer native "Card (new)" visual (`cardVisual`), because the

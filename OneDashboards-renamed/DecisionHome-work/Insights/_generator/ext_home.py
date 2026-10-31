@@ -14,6 +14,7 @@ from ext_status import STALE_DAYS  # same threshold as Story | Status · Not Rep
 PX = "Story | Home · "
 FOLDER = "Story\\Home"
 C_RED, C_AMBER, C_TEAL = "#FF8A80", "#F2C46B", "#5DCAA5"
+C_GREY = "#8C98B3"
 PROJECTS = "FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) )"
 
 
@@ -131,7 +132,7 @@ RETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, "{C_RED}", IF ( _p > 0, "{
      desc="Same thresholds as Story | Variance Colour, light-on-dark colours.", folder=_COL)
 _add("Colour Util", T, f"""
 VAR _u = [Story | Utilisation %]
-RETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, "{C_RED}", IF ( _u >= 0.8, "{C_TEAL}", IF ( _u >= 0.5, "{C_AMBER}", "#8C98B3" ) ) ) )""",
+RETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, "{C_RED}", IF ( _u >= 0.8, "{C_TEAL}", IF ( _u >= 0.5, "{C_AMBER}", "{C_GREY}" ) ) ) )""",
      desc="Same thresholds as Story | Util Colour, light-on-dark colours.", folder=_COL)
 _add("Colour Trust", T, f"""
 VAR _g = [PMO | Governance Score]
@@ -146,7 +147,14 @@ VAR _late10 = COUNTROWS ( FILTER ( {PROJECTS}, [Story | Baseline · Finish Slip 
 RETURN IF ( _late10 > 0, "{C_RED}", IF ( [Story | Baseline · Late Projects] > 0, "{C_AMBER}", "{C_TEAL}" ) )""",
      folder=FOLDER + "\\Colours")
 _add("Colour Risk", T, f'IF ( [Story | Critical High Risks] > 0, "{C_RED}", "{C_TEAL}" )', folder=FOLDER + "\\Colours")
-_add("Colour Benefits", T, f'IF ( [Story | Benefit Cost Ratio] >= 1, "{C_TEAL}", "{C_AMBER}" )', folder=FOLDER + "\\Colours")
+_add("Colour Benefits", T, f"""
+VAR _r = [Story | Benefit Cost Ratio]
+RETURN IF ( ISBLANK ( _r ), "{GREY}", IF ( _r >= 1, "{C_TEAL}", "{C_AMBER}" ) )""", folder=FOLDER + "\\Colours",
+     desc="Grey when there is no benefit/cost ratio; teal at 1.0 or more; else amber.")
+_add("Colour Financials", T, f"""
+VAR _red = COUNTROWS ( FILTER ( {PROJECTS}, [Story | EAC Variance %] > 0.05 ) )
+RETURN IF ( _red > 0, "{C_RED}", IF ( [Story | Projects Over Budget] + 0 > 0, "{C_AMBER}", "{C_TEAL}" ) )""",
+     folder=_COL, desc="Red: any project more than 5% over EAC; amber: any project over budget; else teal. Matches the card number.")
 
 _add("Colour Status", T, f"""
 VAR _w = [Story | Status · Overall Worsened] + 0
@@ -192,11 +200,11 @@ _add("Insight Benefits", T, f"""
 VAR _b = [Story | Benefits At Completion]
 VAR _e = [Story | Finance EAC]
 RETURN IF ( ISBLANK ( _b ), "No benefits plan in view.",
-    {money("_b")} & " planned benefits against " & {money("_e")} & " EAC." )""")
+    {money("_b")} & " planned benefits" & IF ( ISBLANK ( _e ), ".", " against " & {money("_e")} & " EAC." ) )""")
 _add("Insight Status", T, f"""
-VAR _n = [Story | Status · Not Reporting] + 0
-RETURN IF ( _n = 0, "Every project reported recently.",
-    FORMAT ( _n, "0" ) & IF ( _n = 1, " project has", " projects have" ) & " not reported for more than {STALE_DAYS} days." )""")
+VAR _w = [Story | Status · Overall Worsened] + 0
+RETURN IF ( _w = 0, "No project got worse since its last report.",
+    FORMAT ( _w, "0" ) & IF ( _w = 1, " project is", " projects are" ) & " worse since their last report." )""")
 _add("Insight Governance", T, """
 VAR _f = [PMO | Plans Failing] + 0
 VAR _g = [PMO | Governance Score]
@@ -205,13 +213,13 @@ RETURN IF ( _f = 0,
     _lead & IF ( ISBLANK ( _g ), "All plans pass", "all plans pass" ) & " the Plan Insights rules.",
     _lead & FORMAT ( _f, "0" ) & IF ( _f = 1, " plan fails", " plans fail" ) & " Plan Insights rules." )""")
 
-SUBJECT_COLOUR = {"Financials": hm("Colour EAC"), "Schedule": hm("Colour Schedule"), "Resources": hm("Colour Util"),
+SUBJECT_COLOUR = {"Financials": hm("Colour Financials"), "Schedule": hm("Colour Schedule"), "Resources": hm("Colour Util"),
                   "Risk": hm("Colour Risk"), "Portfolio": hm("Colour Portfolio"), "Benefits": hm("Colour Benefits"),
                   "Status": hm("Colour Status"), "Governance": hm("Colour Trust")}
 for _s, _cm in SUBJECT_COLOUR.items():
     _add(f"Pill {_s}", T, f"""
 VAR _c = [{_cm}]
-RETURN SWITCH ( _c, "{C_RED}", "Act", "{C_AMBER}", "Watch", "{C_TEAL}", "OK", "#8C98B3", "Low", "–" )""",
+RETURN SWITCH ( _c, "{C_RED}", "Act", "{C_AMBER}", "Watch", "{C_TEAL}", "OK", "{C_GREY}", "Low", "–" )""",
          desc=f"Status word of the {_s} card, from its colour measure.")
     _add(f"Pill Fill {_s}", T, f"""
 VAR _c = [{_cm}]
@@ -358,7 +366,7 @@ RIGHT_X, RIGHT_W, RIGHT_Y, RIGHT_H = 1356, 428, 160, 828
 #  footer [(text, page)])
 SUBJECTS_LAYOUT = [
     ("fin", "Financials", "finance", "Story | Projects Over Budget", "projects over EAC",
-     "spark", hm("EAC Var % (reports)"), hm("Colour EAC"), "finance", [("Spend", "finance"), ("Pareto", "finance2")]),
+     "spark", hm("EAC Var % (reports)"), hm("Colour Financials"), "finance", [("Spend", "finance"), ("Pareto", "finance2")]),
     ("sch", "Schedule", "schedule", "Story | Baseline · Late Projects", "slipping vs baseline",
      "spark", hm("On Track % (reports)"), hm("Colour Schedule"), "schedule",
      [("Schedule", "schedule"), ("Gantt", "gantt"), ("Baseline", "baseline")]),
@@ -372,7 +380,7 @@ SUBJECTS_LAYOUT = [
      [("Gates", "lifecycle"), ("Scenarios", "scenarios"), ("Project", "onepager")]),
     ("ben", "Benefits", "benefits", "Story | Benefit Cost Ratio", "benefit / cost",
      None, None, hm("Colour Benefits"), "benefits", [("Benefits", "benefits")]),
-    ("sr", "Status reports", "exec", "Story | Status · Overall Worsened", "worse since last report",
+    ("sr", "Status reports", "exec", "Story | Status · Not Reporting", f"not reporting {STALE_DAYS}+ days",
      None, None, hm("Colour Status"), "status", [("Trend", "status")]),
     ("gov", "Governance", "governance", "PMO | Governance Score", "data trust score",
      "bar", (0, 100), hm("Colour Trust"), "governance", [("Governance", "governance")]),
