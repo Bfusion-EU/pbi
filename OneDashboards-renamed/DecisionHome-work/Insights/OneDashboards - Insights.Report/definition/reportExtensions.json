@@ -2022,7 +2022,7 @@
         {
           "name": "Story | Project · Active Risks",
           "dataType": "Integer",
-          "expression": "CALCULATE ( [Project | Active Risks], REMOVEFILTERS ( DimTask ) ) + 0",
+          "expression": "CALCULATE ( [Project | Active Risks], REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ) ) + 0",
           "displayFolder": "Story\\Project",
           "formatString": "#,##0",
           "references": {
@@ -2037,7 +2037,7 @@
         {
           "name": "Story | Project · Active Issues",
           "dataType": "Integer",
-          "expression": "CALCULATE ( [Project | Active Issues], REMOVEFILTERS ( DimTask ) ) + 0",
+          "expression": "CALCULATE ( [Project | Active Issues], REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ) ) + 0",
           "displayFolder": "Story\\Project",
           "formatString": "#,##0",
           "references": {
@@ -2052,7 +2052,7 @@
         {
           "name": "Story | Project · Risk Exposure",
           "dataType": "Double",
-          "expression": "CALCULATE ( SUM ( DimTask[Exposure] ), REMOVEFILTERS ( DimTask ), DimTask[WorkType] = \"Risks\", DimTask[State] = \"Active\" )",
+          "expression": "CALCULATE ( SUM ( DimTask[Exposure] ), REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ), DimTask[WorkType] = \"Risks\", DimTask[State] = \"Active\" )",
           "displayFolder": "Story\\Project",
           "formatString": "#,##0"
         },
@@ -2079,7 +2079,7 @@
         {
           "name": "Story | Project · Overdue Tasks",
           "dataType": "Integer",
-          "expression": "CALCULATE ( [Story | Overdue Tasks], REMOVEFILTERS ( DimTask ) ) + 0",
+          "expression": "CALCULATE ( [Story | Overdue Tasks], REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ) ) + 0",
           "displayFolder": "Story\\Project",
           "formatString": "#,##0",
           "description": "Story | Overdue Tasks for the whole project: open leaf tasks (not Completed, under 100%) past their finish date.",
@@ -2111,7 +2111,7 @@
         {
           "name": "Story | Project · Next Milestone",
           "dataType": "Text",
-          "expression": "VAR _m =\n    TOPN ( 1,\n        CALCULATETABLE ( DimTask, REMOVEFILTERS ( DimTask ), DimTask[Milestone] = TRUE (), DimTask[PercentDone] < 100,\n            NOT ISBLANK ( DimTask[EndDate] ) ),\n        DimTask[EndDate], ASC )\nVAR _d = MINX ( _m, DimTask[EndDate] )\nVAR _nm = MINX ( _m, DimTask[Name] )\nRETURN\n    IF ( ISBLANK ( _d ), \"No open milestones\",\n        _nm & \"  ·  \" & FORMAT ( _d, \"dd mmm yyyy\" ) & IF ( _d < TODAY (), \"  (overdue)\", \"\" ) )",
+          "expression": "VAR _m =\n    TOPN ( 1,\n        CALCULATETABLE ( DimTask, REMOVEFILTERS ( DimTask ), VALUES ( DimProject[Id] ), DimTask[Milestone] = TRUE (), DimTask[PercentDone] < 100,\n            NOT ISBLANK ( DimTask[EndDate] ) ),\n        DimTask[EndDate], ASC )\nVAR _d = MINX ( _m, DimTask[EndDate] )\nVAR _nm = MINX ( _m, DimTask[Name] )\nRETURN\n    IF ( ISBLANK ( _d ), \"No open milestones\",\n        _nm & \"  ·  \" & FORMAT ( _d, \"dd mmm yyyy\" ) & IF ( _d < TODAY (), \"  (overdue)\", \"\" ) )",
           "displayFolder": "Story\\Project",
           "description": "Earliest open milestone (under 100%) and its due date."
         },
@@ -7328,6 +7328,523 @@
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | Baseline · Versions"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Greeting",
+          "dataType": "Text",
+          "expression": "VAR _h = HOUR ( NOW () )\nRETURN IF ( _h < 12, \"Good morning\", IF ( _h < 18, \"Good afternoon\", \"Good evening\" ) )",
+          "displayFolder": "Story\\Home"
+        },
+        {
+          "name": "Story | Home · Act Score",
+          "dataType": "Integer",
+          "expression": "VAR _one = HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) )\n    && SELECTEDVALUE ( DimProject[State_Value] ) = \"Active\"\nVAR _h = SELECTEDVALUE ( DimProject[OverallHealth_Value] )\nRETURN\n    IF ( _one,\n        SWITCH ( TRUE (),\n            LEFT ( _h, 3 ) = \"(3)\", 100,\n            [Story | EAC Variance %] > 0.05, 90,\n            [Story | Baseline · Finish Slip (days)] > 10, 80,\n            [Story | Project · Overdue Tasks] > 10, 60,\n            [Story | Status · Days Since Report] > 30, 50,\n            [Story | Project · Failing Rules] > 0, 40 ) )",
+          "displayFolder": "Story\\Home",
+          "formatString": "0",
+          "description": "Impact rank of the worst reason an active project needs attention (blank = no reason).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Finish Slip (days)"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Overdue Tasks"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Days Since Report"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Failing Rules"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Act Reason",
+          "dataType": "Text",
+          "expression": "VAR _s = [Story | Home · Act Score]\nRETURN\n    SWITCH ( _s,\n        100, \"Reported off track\",\n        90, \"EAC \" & FORMAT ( [Story | EAC Variance %], \"+0%\" ) & \" over budget\",\n        80, FORMAT ( [Story | Baseline · Finish Slip (days)], \"+0\" ) & \" days vs baseline\",\n        60, FORMAT ( [Story | Project · Overdue Tasks], \"0\" ) & \" overdue tasks\",\n        50, \"No status report for \" & FORMAT ( [Story | Status · Days Since Report], \"0\" ) & \" days\",\n        40, FORMAT ( [Story | Project · Failing Rules], \"0\" ) & \" Plan Insights rule(s) failing\" )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Finish Slip (days)"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Overdue Tasks"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Days Since Report"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Failing Rules"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Act Colour",
+          "dataType": "Text",
+          "expression": "VAR _s = [Story | Home · Act Score]\nRETURN IF ( ISBLANK ( _s ), BLANK (), IF ( _s >= 80, \"#FF8A80\", \"#F2C46B\" ) )",
+          "displayFolder": "Story\\Home\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Act Count",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Act Score] ) ) ) + 0",
+          "displayFolder": "Story\\Home",
+          "formatString": "0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Briefing",
+          "dataType": "Text",
+          "expression": "VAR _n = [Story | Home · Act Count]\nVAR _a = [Story | Active Projects]\nVAR _ob = [Story | Projects Over Budget] + 0\nVAR _sl = [Story | Baseline · Late Projects] + 0\nVAR _nm = EOMONTH ( TODAY (), 0 ) + 1\nVAR _op = CALCULATE ( [Story | Over-allocated People], DimDate[MonthStart] = _nm, REMOVEFILTERS ( DimDate ) ) + 0\nRETURN\n    IF ( _n = 0, \"No active project needs a decision this week. Keep the data fresh.\",\n        FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _a, \"0\" ) & \" active projects need a decision — \"\n            & FORMAT ( _ob, \"0\" ) & \" over budget, \" & FORMAT ( _sl, \"0\" ) & \" slipping, \"\n            & FORMAT ( _op, \"0\" ) & \" people above 100% in \" & FORMAT ( _nm, \"mmmm\" ) & \".\" )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Count"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects Over Budget"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Late Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Over-allocated People"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · EAC Var % (reports)",
+          "dataType": "Double",
+          "expression": "VAR _b = SUMX ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )\n            RETURN CALCULATE ( MAX ( FactStatusReport[Budget] ), FactStatusReport[Report_ReportEnd] = _e ) ) )\nVAR _f = SUMX ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )\n            RETURN CALCULATE ( MAX ( FactStatusReport[Forecast] ), FactStatusReport[Report_ReportEnd] = _e ) ) )\nRETURN IF ( MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY (), DIVIDE ( _f - _b, _b ) )",
+          "displayFolder": "Story\\Home",
+          "formatString": "+0.0%;-0.0%;0.0%",
+          "description": "Forecast vs budget as reported in the status reports of the month (latest report per project)."
+        },
+        {
+          "name": "Story | Home · On Track % (reports)",
+          "dataType": "Double",
+          "expression": "VAR _t = ADDCOLUMNS ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), \"@h\", ( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )\n            RETURN CALCULATE ( MAX ( FactStatusReport[OverallHealth] ), FactStatusReport[Report_ReportEnd] = _e ) ) )\nVAR _n = COUNTROWS ( FILTER ( _t, NOT ISBLANK ( [@h] ) ) )\nVAR _ok = COUNTROWS ( FILTER ( _t, LEFT ( [@h], 3 ) = \"(1)\" ) )\nRETURN IF ( MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY () && _n > 0, DIVIDE ( _ok, _n ) )",
+          "displayFolder": "Story\\Home",
+          "formatString": "0%",
+          "description": "Share of reporting projects whose latest report in the month says On Track."
+        },
+        {
+          "name": "Story | Home · EAC Change",
+          "dataType": "Text",
+          "expression": "VAR _m = CALCULATETABLE ( VALUES ( DimDate[MonthStart] ), FactStatusReport, REMOVEFILTERS ( DimDate ) )\nVAR _last = MAXX ( _m, DimDate[MonthStart] )\nVAR _prev = MAXX ( FILTER ( _m, DimDate[MonthStart] < _last ), DimDate[MonthStart] )\nVAR _a = CALCULATE ( [Story | Home · EAC Var % (reports)], DimDate[MonthStart] = _last, REMOVEFILTERS ( DimDate ) )\nVAR _b = CALCULATE ( [Story | Home · EAC Var % (reports)], DimDate[MonthStart] = _prev, REMOVEFILTERS ( DimDate ) )\nVAR _d = ROUND ( ( _a - _b ) * 100, 1 )\nRETURN\n    IF ( NOT ISBLANK ( _a ) && NOT ISBLANK ( _b ),\n        IF ( _d > 0, \"▲ \", IF ( _d < 0, \"▼ \", \"= \" ) ) & FORMAT ( _d, \"+0.0;-0.0;0.0\" ) & \" pt vs last month\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Change vs previous report month, points.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · EAC Var % (reports)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · On Track Change",
+          "dataType": "Text",
+          "expression": "VAR _m = CALCULATETABLE ( VALUES ( DimDate[MonthStart] ), FactStatusReport, REMOVEFILTERS ( DimDate ) )\nVAR _last = MAXX ( _m, DimDate[MonthStart] )\nVAR _prev = MAXX ( FILTER ( _m, DimDate[MonthStart] < _last ), DimDate[MonthStart] )\nVAR _a = CALCULATE ( [Story | Home · On Track % (reports)], DimDate[MonthStart] = _last, REMOVEFILTERS ( DimDate ) )\nVAR _b = CALCULATE ( [Story | Home · On Track % (reports)], DimDate[MonthStart] = _prev, REMOVEFILTERS ( DimDate ) )\nVAR _d = ROUND ( ( _a - _b ) * 100, 1 )\nRETURN\n    IF ( NOT ISBLANK ( _a ) && NOT ISBLANK ( _b ),\n        IF ( _d > 0, \"▲ \", IF ( _d < 0, \"▼ \", \"= \" ) ) & FORMAT ( _d, \"+0.0;-0.0;0.0\" ) & \" pt vs last month\" )",
+          "displayFolder": "Story\\Home",
+          "description": "Change vs previous report month, points.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · On Track % (reports)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Due",
+          "dataType": "DateTime",
+          "expression": "VAR _d = MIN ( DimTask[EndDate] ) RETURN IF ( _d >= TODAY () && _d <= TODAY () + 30, _d )",
+          "displayFolder": "Story\\Home",
+          "formatString": "dd mmm yyyy",
+          "description": "Due date of a task due in the next 30 days (blank otherwise); the Next 30 days table on Home lists only rows where it is not blank."
+        },
+        {
+          "name": "Story | Home · Refreshed",
+          "dataType": "Text",
+          "expression": "VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )\nRETURN IF ( ISBLANK ( _t ), \"Powered by OnePlan\", \"Powered by OnePlan  ·  refreshed \" & FORMAT ( _t, \"dd mmm yyyy hh:nn\" ) & \" CET\" )",
+          "displayFolder": "Story\\Home"
+        },
+        {
+          "name": "Story | Home · Colour EAC",
+          "dataType": "Text",
+          "expression": "VAR _p = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#FF8A80\", IF ( _p > 0, \"#F2C46B\", \"#5DCAA5\" ) ) )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Same thresholds as Story | Variance Colour, light-on-dark colours.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Util",
+          "dataType": "Text",
+          "expression": "VAR _u = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, \"#FF8A80\", IF ( _u >= 0.8, \"#5DCAA5\", IF ( _u >= 0.5, \"#F2C46B\", \"#8C98B3\" ) ) ) )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Same thresholds as Story | Util Colour, light-on-dark colours.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Utilisation %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Trust",
+          "dataType": "Text",
+          "expression": "VAR _g = [PMO | Governance Score]\nRETURN IF ( ISBLANK ( _g ), BLANK (), IF ( _g >= 90, \"#5DCAA5\", IF ( _g >= 75, \"#F2C46B\", \"#FF8A80\" ) ) )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Same thresholds as PMO | Governance RAG Colour (90 / 75), light-on-dark colours.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Portfolio",
+          "dataType": "Text",
+          "expression": "IF ( NOT ISBLANK ( [Story | Aligned Budget %] ), FORMAT ( [Story | Aligned Budget %], \"0%\" ) & \" budget aligned\" )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Financials",
+          "dataType": "Text",
+          "expression": "FORMAT ( [Story | Projects Over Budget] + 0, \"0\" ) & \" over EAC\"",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects Over Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Resources",
+          "dataType": "Text",
+          "expression": "FORMAT ( [Story | Over-allocated People] + 0, \"0\" ) & \" over 100%\"",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Over-allocated People"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Schedule",
+          "dataType": "Text",
+          "expression": "FORMAT ( [Story | Baseline · Late Projects] + 0, \"0\" ) & \" slipping\"",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Late Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Risk",
+          "dataType": "Text",
+          "expression": "FORMAT ( [Story | Critical High Risks] + 0, \"0\" ) & \" critical\"",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Critical High Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Benefits",
+          "dataType": "Text",
+          "expression": "IF ( ISBLANK ( [Story | Benefit Cost Ratio] ), \"no benefits plan\", \"Benefit/cost \" & FORMAT ( [Story | Benefit Cost Ratio], \"0.0\" ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefit Cost Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Timesheets",
+          "dataType": "Text",
+          "expression": "FORMAT ( [Story | TS Status · Missing Timesheets] + 0, \"0\" ) & \" missing\"",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | TS Status · Missing Timesheets"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Line Governance",
+          "dataType": "Text",
+          "expression": "IF ( NOT ISBLANK ( [PMO | Governance Score] ), \"Score \" & FORMAT ( [PMO | Governance Score], \"0\" ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Portfolio",
+          "dataType": "Text",
+          "expression": "VAR _p = [Story | Aligned Budget %]\nRETURN IF ( ISBLANK ( _p ), \"#9AA3AF\", IF ( _p >= 0.8, \"#5DCAA5\", IF ( _p >= 0.6, \"#F2C46B\", \"#FF8A80\" ) ) )",
+          "displayFolder": "Story\\Home\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Schedule",
+          "dataType": "Text",
+          "expression": "VAR _late10 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Baseline · Finish Slip (days)] > 10 ) )\nRETURN IF ( _late10 > 0, \"#FF8A80\", IF ( [Story | Baseline · Late Projects] > 0, \"#F2C46B\", \"#5DCAA5\" ) )",
+          "displayFolder": "Story\\Home\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Finish Slip (days)"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Late Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Risk",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Critical High Risks] > 0, \"#FF8A80\", \"#5DCAA5\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Critical High Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Benefits",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Benefit Cost Ratio] >= 1, \"#5DCAA5\", \"#F2C46B\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefit Cost Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Colour Timesheets",
+          "dataType": "Text",
+          "expression": "IF ( [Story | TS Status · Missing Timesheets] > 0, \"#F2C46B\", \"#5DCAA5\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | TS Status · Missing Timesheets"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Answer Finance",
+          "dataType": "Text",
+          "expression": "VAR _h = [Story | Finance Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance Headline"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Answer Schedule",
+          "dataType": "Text",
+          "expression": "VAR _h = [Story | Schedule Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Schedule Headline"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Answer Resources",
+          "dataType": "Text",
+          "expression": "VAR _h = [Story | Resource Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Resource Headline"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Answer Benefits",
+          "dataType": "Text",
+          "expression": "VAR _h = [Story | Benefits Headline] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND ( \". \", _h & \". \" ) ) )",
+          "displayFolder": "Story\\Home",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefits Headline"
               }
             ]
           }

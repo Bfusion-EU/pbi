@@ -23,7 +23,7 @@ Every chapter answers **one question** and reads from top to bottom:
 
 | # | Page | Question | Audience |
 |---|---|---|---|
-| – | Home: Story Navigator | Pick the question you came to answer | everyone |
+| – | Home: Command center | What needs attention, then go there | everyone |
 | 1 | Executive Summary | Are we on course? | Executive board, monthly |
 | 2 | Portfolio | Are we investing in the right things? | Portfolio board, quarterly |
 | 2b | Pipeline, Gates & Dependencies | Where is the pipeline stuck, and who waits on whom? | PMO, portfolio board |
@@ -50,6 +50,21 @@ The page design takes ideas from OnePlan's own personas and questions ("Are we f
 "What is our investment delivering?", "Can we execute what we've planned?") and from its modules:
 Strategic/Portfolio planning, Financial plans, Resource plans, Work plans, Plan Insights, Lifecycle.
 `my.oneplan.ai` requires a sign-in, so the tenant UI itself was not analysed.
+
+## Home — command center
+
+The Home page is a command center for two audiences, switched by the PMO / Executive buttons (bookmarks,
+display only — slicers stay):
+
+- **Icon rail** (left, always visible): one icon per chapter; hover for the chapter and its follow-on pages.
+- **Pulse**: weekly briefing sentence, EAC vs budget and On track with 6-month sparklines and a change chip
+  (vs the previous status-report month), active projects, utilisation, critical risks, data trust.
+- **PMO view**: *Act now* (active projects ranked by their worst reason: off track > EAC +5% > 10 d late vs
+  baseline > 10 overdue tasks > no report 30 d > failing rules; open the One-Pager from a selected row),
+  *Next 30 days* milestones, and eight *area health* tiles with links to every follow-on page.
+- **Executive view**: the three decisions (money, people, risk) and the board's four questions answered.
+- Portfolio and Program slicers on Home are synced with every chapter.
+- Measures: report-level, folder `Story\Home` (`ext_home.py`).
 
 ## Storytelling measures
 
