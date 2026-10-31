@@ -72,8 +72,8 @@ RETURN
 
 # ---------------------------------------------------------------- history from status-report snapshots
 # Per report month: each project's latest report in that month. Months older than 6 return blank (sparkline window).
-LATEST = """CALCULATE ( MAX ( FactStatusReport[{col}] ),
-            TOPN ( 1, FactStatusReport, FactStatusReport[Report_ReportEnd], DESC ) )"""
+LATEST = """( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )
+            RETURN CALCULATE ( MAX ( FactStatusReport[{col}] ), FactStatusReport[Report_ReportEnd] = _e ) )"""
 WINDOW = "MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY ()"
 _add("EAC Var % (reports)", D, f"""
 VAR _b = SUMX ( {PROJECTS}, {LATEST.format(col="Budget")} )
@@ -93,7 +93,7 @@ VAR _last = MAXX ( _m, DimDate[MonthStart] )
 VAR _prev = MAXX ( FILTER ( _m, DimDate[MonthStart] < _last ), DimDate[MonthStart] )
 VAR _a = CALCULATE ( [{src}], DimDate[MonthStart] = _last, REMOVEFILTERS ( DimDate ) )
 VAR _b = CALCULATE ( [{src}], DimDate[MonthStart] = _prev, REMOVEFILTERS ( DimDate ) )
-VAR _d = ( _a - _b ) * 100
+VAR _d = ROUND ( ( _a - _b ) * 100, 1 )
 RETURN
     IF ( NOT ISBLANK ( _a ) && NOT ISBLANK ( _b ),
         IF ( _d > 0, "▲ ", IF ( _d < 0, "▼ ", "= " ) ) & FORMAT ( _d, "+0.0;-0.0;0.0" ) & " pt vs last month" )"""
@@ -105,18 +105,18 @@ _add("Due In 30d", I, 'VAR _d = MAX ( DimTask[EndDate] ) RETURN IF ( _d >= TODAY
      "1 for a task due in the next 30 days; drives the Next 30 days table on Home.")
 
 # ---------------------------------------------------------------- progress-bar remainders
-_add("Util Remainder", D, "VAR _u = [Story | Utilisation %] RETURN IF ( _u < 1, 1 - _u )", "0%")
+_add("Util Remainder", D, "VAR _u = [Story | Utilisation %] RETURN IF ( NOT ISBLANK ( _u ) && _u < 1, 1 - _u )", "0%")
 _add("Trust Remainder", D, "VAR _g = [PMO | Governance Score] RETURN IF ( NOT ISBLANK ( _g ), 100 - _g )", "0")
 
 # ---------------------------------------------------------------- area tiles
-_add("Line Portfolio", T, 'FORMAT ( [Story | Aligned Budget %], "0%" ) & " budget aligned"')
+_add("Line Portfolio", T, 'IF ( NOT ISBLANK ( [Story | Aligned Budget %] ), FORMAT ( [Story | Aligned Budget %], "0%" ) & " budget aligned" )')
 _add("Line Financials", T, 'FORMAT ( [Story | Projects Over Budget] + 0, "0" ) & " over EAC"')
 _add("Line Resources", T, 'FORMAT ( [Story | Over-allocated People] + 0, "0" ) & " over 100%"')
 _add("Line Schedule", T, 'FORMAT ( [Story | Baseline · Late Projects] + 0, "0" ) & " slipping"')
 _add("Line Risk", T, 'FORMAT ( [Story | Critical High Risks] + 0, "0" ) & " critical"')
 _add("Line Benefits", T, 'IF ( ISBLANK ( [Story | Benefit Cost Ratio] ), "no benefits plan", "Benefit/cost " & FORMAT ( [Story | Benefit Cost Ratio], "0.0" ) )')
 _add("Line Timesheets", T, 'FORMAT ( [Story | TS Status · Missing Timesheets] + 0, "0" ) & " missing"')
-_add("Line Governance", T, '"Score " & FORMAT ( [PMO | Governance Score], "0" )')
+_add("Line Governance", T, 'IF ( NOT ISBLANK ( [PMO | Governance Score] ), "Score " & FORMAT ( [PMO | Governance Score], "0" ) )')
 _add("Colour Portfolio", T, f"""
 VAR _p = [Story | Aligned Budget %]
 RETURN IF ( ISBLANK ( _p ), "{GREY}", IF ( _p >= 0.8, "{C_TEAL}", IF ( _p >= 0.6, "{C_AMBER}", "{C_RED}" ) ) )""",
