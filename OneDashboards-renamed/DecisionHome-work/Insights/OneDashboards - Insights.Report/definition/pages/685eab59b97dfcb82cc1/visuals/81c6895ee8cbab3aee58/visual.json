@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Project | Active Issues"
+                  "Property": "Story | Open Issues"
                 }
               },
-              "queryRef": "_Measures.Project | Active Issues",
-              "nativeQueryRef": "Project | Active Issues"
+              "queryRef": "_Measures.Story | Open Issues",
+              "nativeQueryRef": "Story | Open Issues"
             }
           ]
         }

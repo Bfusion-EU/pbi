@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c9c7ece2f72d662ac0c9",
   "position": {
-    "x": 1032.0,
+    "x": 905.0,
     "y": 188,
-    "z": 2400,
-    "width": 244.0,
+    "z": 2300,
+    "width": 212.25,
     "height": 90,
-    "tabOrder": 2400
+    "tabOrder": 2300
   },
   "visual": {
     "visualType": "card",
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Over-Allocated Resource Count"
+                  "Property": "Story | Over-allocated People"
                 }
               },
-              "queryRef": "_Measures.Capacity | Over-Allocated Resource Count",
-              "nativeQueryRef": "Capacity | Over-Allocated Resource Count"
+              "queryRef": "_Measures.Story | Over-allocated People",
+              "nativeQueryRef": "Story | Over-allocated People"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Over-allocated people'"
+                  "Value": "'Over 100% in a month'"
                 }
               }
             },

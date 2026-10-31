@@ -43,10 +43,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Revenue"
+                  "Property": "Story | Revenue At Completion"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Revenue",
+              "queryRef": "_Measures.Story | Revenue At Completion",
               "nativeQueryRef": "Revenue",
               "displayName": "Revenue"
             },
@@ -55,13 +55,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Planned Benefits"
+                  "Property": "Story | Benefits At Completion"
                 }
               },
-              "queryRef": "_Measures.Benefits | Planned Benefits",
+              "queryRef": "_Measures.Story | Benefits At Completion",
               "nativeQueryRef": "Benefits",
               "displayName": "Benefits"
             },
@@ -74,12 +75,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Forecast"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Forecast",
-              "nativeQueryRef": "Forecast cost",
-              "displayName": "Forecast cost"
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "EAC",
+              "displayName": "EAC"
             }
           ]
         }
@@ -95,7 +96,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Story | Plan Forecast"
+                "Property": "Story | Finance EAC"
               }
             },
             "direction": "Descending"
@@ -118,7 +119,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenue and benefits versus forecast cost by portfolio'"
+                  "Value": "'Revenue and benefits versus EAC by portfolio'"
                 }
               }
             },
@@ -231,7 +232,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Story | Plan Revenue"
+            "metadata": "_Measures.Story | Revenue At Completion"
           }
         },
         {
@@ -249,7 +250,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Benefits | Planned Benefits"
+            "metadata": "_Measures.Story | Benefits At Completion"
           }
         },
         {
@@ -267,7 +268,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Story | Plan Forecast"
+            "metadata": "_Measures.Story | Finance EAC"
           }
         }
       ],
@@ -326,5 +327,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "97900a01a5b2ee7e7d39",
   "position": {
-    "x": 1540.0,
+    "x": 1349.5,
     "y": 188,
     "z": 2600,
-    "width": 244.0,
+    "width": 212.25,
     "height": 90,
     "tabOrder": 2600
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Projects Over Budget"
+                  "Property": "Story | To-Date Variance %"
                 }
               },
-              "queryRef": "_Measures.Story | Projects Over Budget",
-              "nativeQueryRef": "Story | Projects Over Budget"
+              "queryRef": "_Measures.Story | To-Date Variance %",
+              "nativeQueryRef": "Story | To-Date Variance %"
             }
           ]
         }
@@ -62,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#C0392B'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | To-Date Colour"
                     }
                   }
                 }
@@ -94,7 +100,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Projects over budget'"
+                  "Value": "'Actual vs budget to date'"
                 }
               }
             },

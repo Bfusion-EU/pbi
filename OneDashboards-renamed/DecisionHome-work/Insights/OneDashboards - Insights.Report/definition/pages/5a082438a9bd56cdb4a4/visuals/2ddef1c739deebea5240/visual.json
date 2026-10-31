@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "2ddef1c739deebea5240",
   "position": {
-    "x": 778.0,
+    "x": 682.75,
     "y": 188,
     "z": 2300,
-    "width": 244.0,
+    "width": 212.25,
     "height": 90,
     "tabOrder": 2300
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Forecast Variance"
+                  "Property": "Story | EAC Variance %"
                 }
               },
-              "queryRef": "_Measures.Story | Forecast Variance",
-              "nativeQueryRef": "Story | Forecast Variance"
+              "queryRef": "_Measures.Story | EAC Variance %",
+              "nativeQueryRef": "Story | EAC Variance %"
             }
           ]
         }
@@ -100,7 +100,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Forecast − budget'"
+                  "Value": "'EAC variance %'"
                 }
               }
             },

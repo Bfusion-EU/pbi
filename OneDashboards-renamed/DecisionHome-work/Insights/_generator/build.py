@@ -8,6 +8,7 @@ theme, report filters and background images, and the semantic model .bim for
 reference validation.
 """
 import json
+import os
 import re
 import shutil
 import sys
@@ -19,17 +20,21 @@ ROOT = HERE.parent
 REF = ROOT.parent / "OneDashboards - Bfusion.Report"
 BIM = Path(r"C:\Users\HassanBezzizi\repos\BFusion-Apps\SemanticModel\ModeL360Star.bim")
 NAME = "OneDashboards - Insights"
-OUT = ROOT / f"{NAME}.Report"
+# INSIGHTS_OUT lets parallel workers build into their own folder (validation only)
+OUT = Path(os.environ["INSIGHTS_OUT"]) / f"{NAME}.Report" if os.environ.get("INSIGHTS_OUT") else ROOT / f"{NAME}.Report"
 
 sys.path.insert(0, str(HERE))
 import pbir  # noqa: E402
 from story_measures import MEASURES  # noqa: E402
+import pages  # noqa: E402
+import extensions  # noqa: E402,F401  (registers extension measures)
 
 pbir.EXTENSION_MEASURES.update(m["name"] for m in MEASURES)
-import pages  # noqa: E402
 
 RESOURCES = ["bfv5_footer_band_1800x1800.png", "bfv5_footer_band_1800x1000.png",
              "OnePlan_logo_-_dark_background9901469509814106.png"]
+ICON_DIR = HERE / "assets" / "icons"
+ICONS = sorted(p.name for p in ICON_DIR.glob("rail-*.png"))
 
 
 def dump(path: Path, obj):
@@ -86,7 +91,7 @@ def report_json():
         keep.append(f)
     rp = [p for p in ref["resourcePackages"] if p["type"] == "SharedResources"]
     rp.append({"name": "RegisteredResources", "type": "RegisteredResources",
-               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES]})
+               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES + ICONS]})
     return {"$schema": ref["$schema"], "themeCollection": ref["themeCollection"],
             "filterConfig": {"filters": keep}, "objects": ref.get("objects", {}),
             "resourcePackages": rp, "settings": ref["settings"],
@@ -94,10 +99,12 @@ def report_json():
 
 
 def build():
+    assert len(ICONS) == 18, (f"expected 18 rail icons (9 icons x white/grey) in {ICON_DIR}, found {len(ICONS)}: "
+                              "an icon is missing or an extra one was added")
     if OUT.exists():
         shutil.rmtree(OUT)
     # pbip + item metadata
-    dump(ROOT / f"{NAME}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
+    dump(OUT.parent / f"{NAME}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
                                  "version": "1.0", "artifacts": [{"report": {"path": f"{NAME}.Report"}}],
                                  "settings": {"enableAutoRecovery": True}})
     plat = json.loads((REF / ".platform").read_text(encoding="utf-8"))
@@ -111,6 +118,9 @@ def build():
         dst = OUT / "StaticResources" / "RegisteredResources" / r
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(REF / "StaticResources" / "RegisteredResources" / r, dst)
+    for r in ICONS:
+        dst = OUT / "StaticResources" / "RegisteredResources" / r
+        shutil.copy(ICON_DIR / r, dst)
     _, model_measures = load_model()
     dump(OUT / "definition" / "report.json", report_json())
     dump(OUT / "definition" / "reportExtensions.json", extension_json(model_measures))
@@ -123,11 +133,36 @@ def build():
     dump(OUT / "definition" / "pages" / "pages.json",
          {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
           "pageOrder": [pg.id for pg in built], "activePageName": built[0].id})
+    if pbir.BOOKMARKS:
+        bdir = OUT / "definition" / "bookmarks"
+        for bm in pbir.BOOKMARKS:
+            dump(bdir / f"{bm['name']}.bookmark.json", bm)
+        dump(bdir / "bookmarks.json",
+             {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+              "items": [{"name": bm["name"]} for bm in pbir.BOOKMARKS]})
     print(f"built {len(built)} pages, {sum(len(p.visuals) for p in built)} visuals, {len(MEASURES)} story measures -> {OUT}")
     return built
 
 
 # ------------------------------------------------------------------ checks
+def layout_errors(pages_):
+    """Visuals must sit inside the page and above the footer band. Child positions are stored relative to their
+    parent group, so they are resolved to page coordinates first."""
+    out = []
+    for pg in pages_:
+        limit = pg.height * 0.928 if pg.height == 1800 else pg.height
+        groups = {v["name"]: v["position"] for v in pg.visuals}
+        for vc in pg.visuals:
+            p = dict(vc["position"])
+            if vc.get("parentGroupName"):
+                gp = groups[vc["parentGroupName"]]
+                p["x"] += gp["x"]
+                p["y"] += gp["y"]
+            if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
+                out.append(f"LAYOUT {pg.display}: {vc.get('visual', {}).get('visualType', 'group')} at {p} outside page/footer")
+    return out
+
+
 def check(built):
     import jsonschema
     from referencing import Registry, Resource
@@ -195,7 +230,9 @@ def check(built):
     for f in OUT.rglob("visual.json"):
         d = json.loads(f.read_text(encoding="utf-8"))
         for flt in d.get("filterConfig", {}).get("filters", []):
-            c = flt["field"]["Column"]
+            c = flt["field"].get("Column")
+            if c is None:  # measure filter: the generic walk() above already checks the measure
+                continue
             if (c["Expression"]["SourceRef"]["Entity"], c["Property"]) not in cols:
                 missing.add(("filter column", c["Property"]))
     # DAX references in story measures
@@ -214,14 +251,9 @@ def check(built):
     for kind, nm in sorted(missing):
         errors += 1
         print(f"REF {kind}: {nm}")
-    # layout: visuals inside page, above footer band
-    for pg in built:
-        limit = pg.height * 0.928 if pg.height == 1800 else pg.height
-        for vc in pg.visuals:
-            p = vc["position"]
-            if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
-                errors += 1
-                print(f"LAYOUT {pg.display}: {vc['visual']['visualType']} at {p} outside page/footer")
+    for msg in layout_errors(built):
+        errors += 1
+        print(msg)
     print("OK" if errors == 0 else f"{errors} problem(s)")
     return errors
 

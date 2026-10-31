@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "cf02385e5bebb800f7f4",
   "position": {
-    "x": 1032.0,
+    "x": 905.0,
     "y": 188,
     "z": 2400,
-    "width": 244.0,
+    "width": 212.25,
     "height": 90,
     "tabOrder": 2400
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Forecast Variance %"
+                  "Property": "Story | Budget To Date"
                 }
               },
-              "queryRef": "_Measures.Story | Forecast Variance %",
-              "nativeQueryRef": "Story | Forecast Variance %"
+              "queryRef": "_Measures.Story | Budget To Date",
+              "nativeQueryRef": "Story | Budget To Date"
             }
           ]
         }
@@ -62,14 +62,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Variance Colour"
+                    "Literal": {
+                      "Value": "'#1F2A44'"
                     }
                   }
                 }
@@ -100,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Variance %'"
+                  "Value": "'Budget to date'"
                 }
               }
             },

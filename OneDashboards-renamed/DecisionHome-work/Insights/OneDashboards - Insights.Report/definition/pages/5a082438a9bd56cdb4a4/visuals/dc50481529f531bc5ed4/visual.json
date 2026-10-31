@@ -4,10 +4,10 @@
   "position": {
     "x": 1192,
     "y": 334,
-    "z": 2900,
+    "z": 3000,
     "width": 592,
     "height": 340,
-    "tabOrder": 2900
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "clusteredColumnChart",
@@ -23,10 +23,10 @@
                       "Entity": "DimDate"
                     }
                   },
-                  "Property": "Quarter Name"
+                  "Property": "QuarterStart"
                 }
               },
-              "queryRef": "DimDate.Quarter Name",
+              "queryRef": "DimDate.QuarterStart",
               "nativeQueryRef": "Quarter",
               "displayName": "Quarter"
             }
@@ -39,13 +39,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Budget Cost"
+                  "Property": "Story | Budget In Period"
                 }
               },
-              "queryRef": "_Measures.Finance | Budget Cost",
+              "queryRef": "_Measures.Story | Budget In Period",
               "nativeQueryRef": "Budget",
               "displayName": "Budget"
             },
@@ -54,13 +55,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Actual Cost"
+                  "Property": "Story | Actual Cost"
                 }
               },
-              "queryRef": "_Measures.Finance | Actual Cost",
+              "queryRef": "_Measures.Story | Actual Cost",
               "nativeQueryRef": "Actual",
               "displayName": "Actual"
             },
@@ -69,15 +71,16 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Forecast Cost"
+                  "Property": "Story | EAC In Period"
                 }
               },
-              "queryRef": "_Measures.Finance | Forecast Cost",
-              "nativeQueryRef": "Forecast",
-              "displayName": "Forecast"
+              "queryRef": "_Measures.Story | EAC In Period",
+              "nativeQueryRef": "EAC (phased)",
+              "displayName": "EAC (phased)"
             }
           ]
         }
@@ -92,7 +95,7 @@
                     "Entity": "DimDate"
                   }
                 },
-                "Property": "Quarter Name"
+                "Property": "QuarterStart"
               }
             },
             "direction": "Ascending"
@@ -115,7 +118,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Per quarter — budget, actual, forecast'"
+                  "Value": "'Per quarter — budget, actual, phased EAC'"
                 }
               }
             },
@@ -228,7 +231,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Finance | Budget Cost"
+            "metadata": "_Measures.Story | Budget In Period"
           }
         },
         {
@@ -246,7 +249,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Finance | Actual Cost"
+            "metadata": "_Measures.Story | Actual Cost"
           }
         },
         {
@@ -264,7 +267,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Finance | Forecast Cost"
+            "metadata": "_Measures.Story | EAC In Period"
           }
         }
       ],

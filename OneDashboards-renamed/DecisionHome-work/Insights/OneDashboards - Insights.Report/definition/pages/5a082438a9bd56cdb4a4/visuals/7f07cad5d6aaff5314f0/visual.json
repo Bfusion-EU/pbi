@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "7f07cad5d6aaff5314f0",
   "position": {
-    "x": 524.0,
+    "x": 460.5,
     "y": 188,
     "z": 2200,
-    "width": 244.0,
+    "width": 212.25,
     "height": 90,
     "tabOrder": 2200
   },
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Forecast Cost"
+                  "Property": "Story | EAC Variance"
                 }
               },
-              "queryRef": "_Measures.Finance | Forecast Cost",
-              "nativeQueryRef": "Finance | Forecast Cost"
+              "queryRef": "_Measures.Story | EAC Variance",
+              "nativeQueryRef": "Story | EAC Variance"
             }
           ]
         }
@@ -61,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#1F2A44'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Variance Colour"
                     }
                   }
                 }
@@ -93,7 +100,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Forecast'"
+                  "Value": "'EAC − budget'"
                 }
               }
             },

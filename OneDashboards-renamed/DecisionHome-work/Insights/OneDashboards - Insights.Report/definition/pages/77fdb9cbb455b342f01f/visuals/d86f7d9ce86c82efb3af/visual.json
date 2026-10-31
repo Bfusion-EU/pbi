@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "d86f7d9ce86c82efb3af",
   "position": {
-    "x": 1540.0,
+    "x": 1349.5,
     "y": 188,
-    "z": 2600,
-    "width": 244.0,
+    "z": 2500,
+    "width": 212.25,
     "height": 90,
-    "tabOrder": 2600
+    "tabOrder": 2500
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Soft Demand %"
+                  "Property": "Story | Committed Gap (h)"
                 }
               },
-              "queryRef": "_Measures.Story | Soft Demand %",
-              "nativeQueryRef": "Story | Soft Demand %"
+              "queryRef": "_Measures.Story | Committed Gap (h)",
+              "nativeQueryRef": "Story | Committed Gap (h)"
             }
           ]
         }
@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Demand still forecast'"
+                  "Value": "'Committed vs scheduled gap (h)'"
                 }
               }
             },

@@ -69,10 +69,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Budget"
+                  "Property": "Story | Budget At Completion"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Budget",
+              "queryRef": "_Measures.Story | Budget At Completion",
               "nativeQueryRef": "Budget",
               "displayName": "Budget"
             },
@@ -85,12 +85,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Forecast"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Forecast",
-              "nativeQueryRef": "Forecast",
-              "displayName": "Forecast"
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "EAC",
+              "displayName": "EAC"
             },
             {
               "field": {
@@ -101,10 +101,26 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Variance %"
+                  "Property": "Story | EAC Variance"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Variance %",
+              "queryRef": "_Measures.Story | EAC Variance",
+              "nativeQueryRef": "EAC − budget",
+              "displayName": "EAC − budget"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | EAC Variance %"
+                }
+              },
+              "queryRef": "_Measures.Story | EAC Variance %",
               "nativeQueryRef": "Variance %",
               "displayName": "Variance %"
             },
@@ -113,13 +129,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Project | Active Risks"
+                  "Property": "Story | Active Risk Count"
                 }
               },
-              "queryRef": "_Measures.Project | Active Risks",
+              "queryRef": "_Measures.Story | Active Risk Count",
               "nativeQueryRef": "Active risks",
               "displayName": "Active risks"
             },
@@ -128,13 +145,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Task | Overdue Tasks"
+                  "Property": "Story | Overdue Tasks"
                 }
               },
-              "queryRef": "_Measures.Task | Overdue Tasks",
+              "queryRef": "_Measures.Story | Overdue Tasks",
               "nativeQueryRef": "Overdue tasks",
               "displayName": "Overdue tasks"
             }
@@ -152,7 +170,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Story | Plan Variance %"
+                "Property": "Story | EAC Variance"
               }
             },
             "direction": "Descending"
@@ -175,7 +193,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Attention list — biggest forecast overruns first'"
+                  "Value": "'Attention list — biggest € overrun at completion first'"
                 }
               }
             },
@@ -263,6 +281,33 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
                 }
               }
             }
@@ -390,7 +435,7 @@
                           "Entity": "_Measures"
                         }
                       },
-                      "Property": "Story | Plan Variance Colour"
+                      "Property": "Story | Variance Colour"
                     }
                   }
                 }
@@ -405,7 +450,38 @@
                 }
               }
             ],
-            "metadata": "_Measures.Story | Plan Variance %"
+            "metadata": "_Measures.Story | EAC Variance"
+          }
+        },
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Variance Colour"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "_Measures.Story | EAC Variance %"
           }
         },
         {
@@ -472,5 +548,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

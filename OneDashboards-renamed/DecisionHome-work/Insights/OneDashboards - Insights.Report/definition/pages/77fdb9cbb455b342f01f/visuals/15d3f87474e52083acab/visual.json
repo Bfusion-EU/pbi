@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "15d3f87474e52083acab",
   "position": {
-    "x": 778.0,
+    "x": 682.75,
     "y": 188,
-    "z": 2300,
-    "width": 244.0,
+    "z": 2200,
+    "width": 212.25,
     "height": 90,
-    "tabOrder": 2300
+    "tabOrder": 2200
   },
   "visual": {
     "visualType": "card",
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Utilization%"
+                  "Property": "Story | Utilisation %"
                 }
               },
-              "queryRef": "_Measures.Capacity | Resource Utilization%",
-              "nativeQueryRef": "Capacity | Resource Utilization%"
+              "queryRef": "_Measures.Story | Utilisation %",
+              "nativeQueryRef": "Story | Utilisation %"
             }
           ]
         }

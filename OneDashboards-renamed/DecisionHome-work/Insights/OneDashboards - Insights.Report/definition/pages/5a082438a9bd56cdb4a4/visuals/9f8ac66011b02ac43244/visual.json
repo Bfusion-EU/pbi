@@ -4,10 +4,10 @@
   "position": {
     "x": 16,
     "y": 334,
-    "z": 2800,
+    "z": 2900,
     "width": 1160,
     "height": 340,
-    "tabOrder": 2800
+    "tabOrder": 2900
   },
   "visual": {
     "visualType": "lineChart",
@@ -39,13 +39,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Cumulative Budget Cost"
+                  "Property": "Story | Cum Budget"
                 }
               },
-              "queryRef": "_Measures.Finance | Cumulative Budget Cost",
+              "queryRef": "_Measures.Story | Cum Budget",
               "nativeQueryRef": "Budget (cum.)",
               "displayName": "Budget (cum.)"
             },
@@ -54,13 +55,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Cumulative Actual Cost"
+                  "Property": "Story | Cum Actual"
                 }
               },
-              "queryRef": "_Measures.Finance | Cumulative Actual Cost",
+              "queryRef": "_Measures.Story | Cum Actual",
               "nativeQueryRef": "Actual (cum.)",
               "displayName": "Actual (cum.)"
             },
@@ -69,15 +71,16 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Cumulative Forecast Cost"
+                  "Property": "Story | Cum EAC"
                 }
               },
-              "queryRef": "_Measures.Finance | Cumulative Forecast Cost",
-              "nativeQueryRef": "Forecast (cum.)",
-              "displayName": "Forecast (cum.)"
+              "queryRef": "_Measures.Story | Cum EAC",
+              "nativeQueryRef": "EAC (cum.)",
+              "displayName": "EAC (cum.)"
             }
           ]
         }
@@ -115,7 +118,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'S-curve — cumulative budget, actuals and forecast'"
+                  "Value": "'S-curve — lifetime cumulative budget, actual and EAC'"
                 }
               }
             },
@@ -228,7 +231,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Finance | Cumulative Budget Cost"
+            "metadata": "_Measures.Story | Cum Budget"
           }
         },
         {
@@ -246,7 +249,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Finance | Cumulative Actual Cost"
+            "metadata": "_Measures.Story | Cum Actual"
           }
         },
         {
@@ -264,7 +267,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Finance | Cumulative Forecast Cost"
+            "metadata": "_Measures.Story | Cum EAC"
           }
         }
       ],

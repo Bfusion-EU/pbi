@@ -5,7 +5,7 @@
     "x": 16.0,
     "y": 188,
     "z": 2000,
-    "width": 244.0,
+    "width": 212.25,
     "height": 90,
     "tabOrder": 2000
   },
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Budget Cost"
+                  "Property": "Story | Budget At Completion"
                 }
               },
-              "queryRef": "_Measures.Finance | Budget Cost",
-              "nativeQueryRef": "Finance | Budget Cost"
+              "queryRef": "_Measures.Story | Budget At Completion",
+              "nativeQueryRef": "Story | Budget At Completion"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Budget'"
+                  "Value": "'Budget at completion'"
                 }
               }
             },

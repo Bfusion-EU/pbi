@@ -76,13 +76,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Utilization%"
+                  "Property": "Story | Utilisation %"
                 }
               },
-              "queryRef": "_Measures.Capacity | Resource Utilization%",
+              "queryRef": "_Measures.Story | Utilisation %",
               "nativeQueryRef": "Util.",
               "displayName": "Util."
             }
@@ -192,6 +193,33 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'3f6b59622399c595d05c'"
                 }
               }
             }
@@ -334,7 +362,7 @@
                 }
               }
             ],
-            "metadata": "_Measures.Capacity | Resource Utilization%"
+            "metadata": "_Measures.Story | Utilisation %"
           }
         }
       ],
@@ -370,5 +398,82 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "cd51e103826ccb54e19c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimDate"
+              }
+            },
+            "Property": "RelativeMonth"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimDate",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "And": {
+                  "Left": {
+                    "Comparison": {
+                      "ComparisonKind": 2,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "RelativeMonth"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "-3L"
+                        }
+                      }
+                    }
+                  },
+                  "Right": {
+                    "Comparison": {
+                      "ComparisonKind": 4,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "RelativeMonth"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "8L"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Realization Rate (%)"
+                  "Property": "Story | Benefits Realised KPI"
                 }
               },
-              "queryRef": "_Measures.Benefits | Realization Rate (%)",
-              "nativeQueryRef": "Benefits | Realization Rate (%)"
+              "queryRef": "_Measures.Story | Benefits Realised KPI",
+              "nativeQueryRef": "Story | Benefits Realised KPI"
             }
           ]
         }
@@ -53,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "24D"
+                  "Value": "18D"
                 }
               }
             },
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Benefits realised'"
+                  "Value": "'Benefits realised vs due'"
                 }
               }
             },

@@ -20,15 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimDate"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Year"
+                  "Property": "State_Value"
                 }
               },
-              "queryRef": "DimDate.Year",
-              "nativeQueryRef": "Year",
-              "displayName": "Year",
+              "queryRef": "DimProject.State_Value",
+              "nativeQueryRef": "State",
+              "displayName": "State",
               "active": true
             }
           ]
@@ -151,7 +151,7 @@
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "Year",
+      "groupName": "DimProject.State_Value",
       "fieldChanges": true,
       "filterChanges": true
     }

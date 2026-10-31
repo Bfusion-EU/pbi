@@ -39,13 +39,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Utilization%"
+                  "Property": "Story | Utilisation %"
                 }
               },
-              "queryRef": "_Measures.Capacity | Resource Utilization%",
+              "queryRef": "_Measures.Story | Utilisation %",
               "nativeQueryRef": "Utilisation",
               "displayName": "Utilisation"
             }
@@ -59,10 +60,11 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
+                    "Schema": "extension",
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Capacity | Resource Utilization%"
+                "Property": "Story | Utilisation %"
               }
             },
             "direction": "Descending"

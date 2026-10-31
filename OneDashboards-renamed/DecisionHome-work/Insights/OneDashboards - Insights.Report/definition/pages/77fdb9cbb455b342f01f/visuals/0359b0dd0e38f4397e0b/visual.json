@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "0359b0dd0e38f4397e0b",
   "position": {
-    "x": 524.0,
+    "x": 460.5,
     "y": 188,
-    "z": 2200,
-    "width": 244.0,
+    "z": 2100,
+    "width": 212.25,
     "height": 90,
-    "tabOrder": 2200
+    "tabOrder": 2100
   },
   "visual": {
     "visualType": "card",
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Project | Scheduled FTE"
+                  "Property": "Story | Scheduled FTE"
                 }
               },
-              "queryRef": "_Measures.Project | Scheduled FTE",
-              "nativeQueryRef": "Project | Scheduled FTE"
+              "queryRef": "_Measures.Story | Scheduled FTE",
+              "nativeQueryRef": "Story | Scheduled FTE"
             }
           ]
         }

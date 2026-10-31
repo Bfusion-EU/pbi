@@ -76,10 +76,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Revenue"
+                  "Property": "Story | Revenue At Completion"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Revenue",
+              "queryRef": "_Measures.Story | Revenue At Completion",
               "nativeQueryRef": "Revenue",
               "displayName": "Revenue"
             },
@@ -88,13 +88,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Planned Benefits"
+                  "Property": "Story | Benefits At Completion"
                 }
               },
-              "queryRef": "_Measures.Benefits | Planned Benefits",
+              "queryRef": "_Measures.Story | Benefits At Completion",
               "nativeQueryRef": "Benefits",
               "displayName": "Benefits"
             },
@@ -123,10 +124,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Budget"
+                  "Property": "Story | Budget At Completion"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Budget",
+              "queryRef": "_Measures.Story | Budget At Completion",
               "nativeQueryRef": "Budget",
               "displayName": "Budget"
             },
@@ -139,12 +140,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Forecast"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Forecast",
-              "nativeQueryRef": "Forecast cost",
-              "displayName": "Forecast cost"
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "EAC",
+              "displayName": "EAC"
             },
             {
               "field": {
@@ -207,8 +208,8 @@
                 }
               },
               "queryRef": "_Measures.Story | Spend Share",
-              "nativeQueryRef": "Share of spend",
-              "displayName": "Share of spend"
+              "nativeQueryRef": "Share of EAC",
+              "displayName": "Share of EAC"
             },
             {
               "field": {
@@ -263,7 +264,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Portfolio P&L statement'"
+                  "Value": "'Portfolio P&L statement (at completion)'"
                 }
               }
             },
@@ -351,6 +352,33 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
                 }
               }
             }
@@ -591,5 +619,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

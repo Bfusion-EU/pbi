@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Forecast Cost"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Finance | Forecast Cost",
-              "nativeQueryRef": "Finance | Forecast Cost"
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "Story | Finance EAC"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Forecast cost'"
+                  "Value": "'EAC'"
                 }
               }
             },

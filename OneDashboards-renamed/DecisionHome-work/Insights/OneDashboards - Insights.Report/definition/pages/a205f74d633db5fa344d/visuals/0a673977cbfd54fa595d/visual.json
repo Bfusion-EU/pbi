@@ -5,7 +5,7 @@
     "x": 16.0,
     "y": 188,
     "z": 2000,
-    "width": 286.33,
+    "width": 244.0,
     "height": 90,
     "tabOrder": 2000
   },
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Planned Benefits"
+                  "Property": "Story | Benefits At Completion"
                 }
               },
-              "queryRef": "_Measures.Benefits | Planned Benefits",
-              "nativeQueryRef": "Benefits | Planned Benefits"
+              "queryRef": "_Measures.Story | Benefits At Completion",
+              "nativeQueryRef": "Story | Benefits At Completion"
             }
           ]
         }

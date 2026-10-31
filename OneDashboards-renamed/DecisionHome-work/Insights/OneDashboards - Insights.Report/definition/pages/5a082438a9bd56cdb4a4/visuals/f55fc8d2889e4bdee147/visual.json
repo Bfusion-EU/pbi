@@ -4,10 +4,10 @@
   "position": {
     "x": 906,
     "y": 730,
-    "z": 3200,
+    "z": 3300,
     "width": 878,
     "height": 400,
-    "tabOrder": 3200
+    "tabOrder": 3300
   },
   "visual": {
     "visualType": "clusteredBarChart",
@@ -43,12 +43,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Forecast Variance"
+                  "Property": "Story | EAC Variance"
                 }
               },
-              "queryRef": "_Measures.Story | Forecast Variance",
-              "nativeQueryRef": "Forecast − budget",
-              "displayName": "Forecast − budget"
+              "queryRef": "_Measures.Story | EAC Variance",
+              "nativeQueryRef": "EAC − budget",
+              "displayName": "EAC − budget"
             }
           ]
         }
@@ -64,7 +64,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Story | Forecast Variance"
+                "Property": "Story | EAC Variance"
               }
             },
             "direction": "Descending"
@@ -87,7 +87,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Projects ranked by forecast overrun'"
+                  "Value": "'Projects ranked by overrun at completion'"
                 }
               }
             },
@@ -180,6 +180,33 @@
             }
           }
         }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
@@ -244,5 +271,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

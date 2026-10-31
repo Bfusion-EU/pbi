@@ -3,11 +3,11 @@
   "name": "7b0c424e97267c5592b8",
   "position": {
     "x": 16,
-    "y": 1266,
-    "z": 4600,
+    "y": 1322,
+    "z": 5500,
     "width": 1768,
-    "height": 300,
-    "tabOrder": 4600
+    "height": 264,
+    "tabOrder": 5500
   },
   "visual": {
     "visualType": "pivotTable",
@@ -56,13 +56,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Portfolio 360 | Active Projects"
+                  "Property": "Story | Active Projects"
                 }
               },
-              "queryRef": "_Measures.Portfolio 360 | Active Projects",
+              "queryRef": "_Measures.Story | Active Projects",
               "nativeQueryRef": "Active projects",
               "displayName": "Active projects"
             },
@@ -87,30 +88,16 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Budget Cost"
+                  "Property": "Story | Budget At Completion"
                 }
               },
-              "queryRef": "_Measures.Finance | Budget Cost",
+              "queryRef": "_Measures.Story | Budget At Completion",
               "nativeQueryRef": "Budget",
               "displayName": "Budget"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Finance | Forecast Cost"
-                }
-              },
-              "queryRef": "_Measures.Finance | Forecast Cost",
-              "nativeQueryRef": "Forecast",
-              "displayName": "Forecast"
             },
             {
               "field": {
@@ -121,10 +108,26 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Forecast Variance %"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Story | Forecast Variance %",
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "EAC",
+              "displayName": "EAC"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | EAC Variance %"
+                }
+              },
+              "queryRef": "_Measures.Story | EAC Variance %",
               "nativeQueryRef": "Variance %",
               "displayName": "Variance %"
             },
@@ -133,28 +136,30 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Total Hours Scheduled"
+                  "Property": "Story | Project Scheduled Hours"
                 }
               },
-              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
-              "nativeQueryRef": "Scheduled h",
-              "displayName": "Scheduled h"
+              "queryRef": "_Measures.Story | Project Scheduled Hours",
+              "nativeQueryRef": "Scheduled h (demand)",
+              "displayName": "Scheduled h (demand)"
             },
             {
               "field": {
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Project | Active Risks"
+                  "Property": "Story | Active Risk Count"
                 }
               },
-              "queryRef": "_Measures.Project | Active Risks",
+              "queryRef": "_Measures.Story | Active Risk Count",
               "nativeQueryRef": "Active risks",
               "displayName": "Active risks"
             },
@@ -163,13 +168,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Planned Benefits"
+                  "Property": "Story | Benefits At Completion"
                 }
               },
-              "queryRef": "_Measures.Benefits | Planned Benefits",
+              "queryRef": "_Measures.Story | Benefits At Completion",
               "nativeQueryRef": "Planned benefits",
               "displayName": "Planned benefits"
             }
@@ -421,7 +427,7 @@
                 }
               }
             ],
-            "metadata": "_Measures.Story | Forecast Variance %"
+            "metadata": "_Measures.Story | EAC Variance %"
           }
         }
       ],
@@ -457,5 +463,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

@@ -80,13 +80,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Total Hours Scheduled"
+                  "Property": "Story | Scheduled Hours"
                 }
               },
-              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "queryRef": "_Measures.Story | Scheduled Hours",
               "nativeQueryRef": "Scheduled h",
               "displayName": "Scheduled h"
             },
@@ -95,13 +96,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Utilization%"
+                  "Property": "Story | Utilisation %"
                 }
               },
-              "queryRef": "_Measures.Capacity | Resource Utilization%",
+              "queryRef": "_Measures.Story | Utilisation %",
               "nativeQueryRef": "Utilisation",
               "displayName": "Utilisation"
             },
@@ -110,13 +112,30 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Available Capacity"
+                  "Property": "Story | Months Over 100%"
                 }
               },
-              "queryRef": "_Measures.Capacity | Available Capacity",
+              "queryRef": "_Measures.Story | Months Over 100%",
+              "nativeQueryRef": "Months > 100%",
+              "displayName": "Months > 100%"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Free Capacity (h)"
+                }
+              },
+              "queryRef": "_Measures.Story | Free Capacity (h)",
               "nativeQueryRef": "Free h",
               "displayName": "Free h"
             }
@@ -130,10 +149,11 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
+                    "Schema": "extension",
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Capacity | Resource Utilization%"
+                "Property": "Story | Utilisation %"
               }
             },
             "direction": "Ascending"
@@ -244,6 +264,33 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'3f6b59622399c595d05c'"
                 }
               }
             }
@@ -386,7 +433,7 @@
                 }
               }
             ],
-            "metadata": "_Measures.Capacity | Resource Utilization%"
+            "metadata": "_Measures.Story | Utilisation %"
           }
         }
       ],
@@ -426,7 +473,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "fdfbcdce633ac7de8b7d",
+        "name": "15c603713e4c1f74a606",
         "field": {
           "Column": {
             "Expression": {
@@ -434,7 +481,7 @@
                 "Entity": "DimResource"
               }
             },
-            "Property": "Generic"
+            "Property": "Inactive"
           }
         },
         "type": "Advanced",
@@ -459,7 +506,7 @@
                           "Source": "t"
                         }
                       },
-                      "Property": "Generic"
+                      "Property": "Inactive"
                     }
                   },
                   "Right": {

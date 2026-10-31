@@ -58,13 +58,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Total Hours Scheduled"
+                  "Property": "Story | Scheduled Hours"
                 }
               },
-              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "queryRef": "_Measures.Story | Scheduled Hours",
               "nativeQueryRef": "Scheduled (h)",
               "displayName": "Scheduled (h)"
             },
@@ -73,15 +74,16 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Total Hours Forecast"
+                  "Property": "Story | Committed Hours"
                 }
               },
-              "queryRef": "_Measures.Capacity | Total Hours Forecast",
-              "nativeQueryRef": "Forecast (h)",
-              "displayName": "Forecast (h)"
+              "queryRef": "_Measures.Story | Committed Hours",
+              "nativeQueryRef": "Committed (h)",
+              "displayName": "Committed (h)"
             }
           ]
         }
@@ -119,7 +121,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Capacity versus demand per month'"
+                  "Value": "'Capacity vs scheduled and committed hours per month'"
                 }
               }
             },
@@ -250,7 +252,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Capacity | Total Hours Scheduled"
+            "metadata": "_Measures.Story | Scheduled Hours"
           }
         },
         {
@@ -260,7 +262,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E8612A'"
+                      "Value": "'#1E6D6E'"
                     }
                   }
                 }
@@ -268,7 +270,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Capacity | Total Hours Forecast"
+            "metadata": "_Measures.Story | Committed Hours"
           }
         }
       ],
@@ -293,6 +295,19 @@
               "expr": {
                 "Literal": {
                   "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "secShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

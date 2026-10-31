@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Portfolio 360 | At-Risk Count"
+                  "Property": "Story | Schedule At Risk"
                 }
               },
-              "queryRef": "_Measures.Portfolio 360 | At-Risk Count",
-              "nativeQueryRef": "Portfolio 360 | At-Risk Count"
+              "queryRef": "_Measures.Story | Schedule At Risk",
+              "nativeQueryRef": "Story | Schedule At Risk"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Projects at risk'"
+                  "Value": "'Schedule at risk'"
                 }
               }
             },
