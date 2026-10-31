@@ -8,12 +8,12 @@ import extensions  # noqa: E402,F401
 from story_measures import MEASURES  # noqa: E402
 
 NAMES = {m["name"] for m in MEASURES}
-HOME = ["Greeting", "Briefing", "Act Score", "Act Reason", "Act Colour", "Act Count", "EAC Var % (reports)",
-        "On Track % (reports)", "EAC Change", "On Track Change", "Refreshed", "Colour EAC", "Colour Util", "Colour Trust",
-        "Line Portfolio", "Line Financials", "Line Resources", "Line Schedule", "Line Risk", "Line Benefits",
-        "Line Timesheets", "Line Governance", "Colour Portfolio", "Colour Schedule", "Colour Risk",
-        "Colour Benefits", "Colour Timesheets", "Answer Finance", "Answer Schedule", "Answer Resources",
-        "Answer Benefits", "Due"]
+SUBJECTS = ["Financials", "Schedule", "Resources", "Risk", "Portfolio", "Benefits", "Status", "Governance"]
+HOME = (["Greeting", "Refreshed", "Briefing", "Briefing Reasons", "Act Score", "Act Reason", "Act Colour", "Act Count",
+         "EAC Var % (reports)", "On Track % (reports)", "EAC Change", "On Track Change", "Due",
+         "Colour EAC", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
+         "Colour Benefits", "Colour Status"]
+        + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS])
 
 
 def test_home_measures_registered():
@@ -221,7 +221,7 @@ def test_stripes_inset_from_rounded_corners():
 
 
 def test_briefing_breaks_down_act_count():
-    expr = next(m["expression"] for m in MEASURES if m["name"] == "Story | Home · Briefing")
+    expr = next(m["expression"] for m in MEASURES if m["name"] == "Story | Home · Briefing Reasons")
     for k in (100, 90, 80, 60, 50, 40):
         assert f"[Story | Home · Act Score] = {k}" in expr
 

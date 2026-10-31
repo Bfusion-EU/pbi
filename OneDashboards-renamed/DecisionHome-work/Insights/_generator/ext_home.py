@@ -8,7 +8,7 @@ import pages
 import pbir
 from pbir import (ORANGE, GREY, Page, card, headline, chart, textbox, st, shape, image, slicer, nav_button,
                   P, M, C, s, b, n, col_solid, measure_colour, measure_fill, legend)
-from story_measures import add, T, D, I
+from story_measures import add, T, D, I, money
 
 PX = "Story | Home · "
 FOLDER = "Story\\Home"
@@ -60,19 +60,21 @@ RETURN IF ( ISBLANK ( _s ), BLANK (), IF ( _s >= 80, "{C_RED}", "{C_AMBER}" ) )"
 _add("Act Count", I, f"COUNTROWS ( FILTER ( {PROJECTS}, NOT ISBLANK ( [{hm('Act Score')}] ) ) ) + 0", "0")
 
 # Reasons are counted from the same Act Score buckets as the Act-now table, so the parts add up to Act Count.
-_BUCKETS = [(100, "off track"), (90, "over budget"), (80, "late vs baseline"), (60, "with overdue work"),
-            (50, "with no recent report"), (40, "with failing rules")]
+_BUCKETS = [(100, "off track"), (90, "over budget"), (80, "late"), (60, "overdue work"),
+            (50, "not reporting"), (40, "failing rules")]
 _bvars = "\n".join(f"VAR _b{k} = COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {k} ) )" for k, _ in _BUCKETS)
-_bparts = "\n        & ".join(f'IF ( _b{k} > 0, ", " & FORMAT ( _b{k}, "0" ) & " {lbl}" )' for k, lbl in _BUCKETS)
 _add("Briefing", T, f"""
 VAR _n = [{hm("Act Count")}]
 VAR _a = [Story | Active Projects]
+RETURN IF ( _n = 0, "No active project needs a decision this week",
+    FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & " active projects need a decision" )""",
+     desc="How many active projects need a decision (Act-now count).")
+_rparts = "\n        & ".join(f'IF ( _b{k} > 0, "  ·  " & FORMAT ( _b{k}, "0" ) & " {lbl}" )' for k, lbl in _BUCKETS)
+_add("Briefing Reasons", T, f"""
 {_bvars}
-VAR _p = {_bparts}
-RETURN
-    IF ( _n = 0, "No active project needs a decision this week. Keep the data fresh.",
-        FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & " active projects need a decision — " & MID ( _p, 3, LEN ( _p ) ) & "." )""",
-     desc="Act-now count with its breakdown by reason; the parts add up to Act Count.")
+VAR _p = {_rparts}
+RETURN IF ( LEN ( _p ) > 0, MID ( _p, 6, LEN ( _p ) ) )""",
+     desc="Act-now projects per reason (same Act Score buckets, so the parts add up to Act Count).")
 
 # ---------------------------------------------------------------- history from status-report snapshots
 # Per month: every ACTIVE project's latest report as of month end (carried forward, not only projects that reported
@@ -160,6 +162,69 @@ FIRST = 'VAR _h = [{src}] RETURN IF ( ISBLANK ( _h ), BLANK (), LEFT ( _h, FIND 
 for _a, _src in [("Finance", "Story | Finance Headline"), ("Schedule", "Story | Schedule Headline"),
                  ("Resources", "Story | Resource Headline"), ("Benefits", "Story | Benefits Headline")]:
     _add(f"Answer {_a}", T, FIRST.format(src=_src))
+
+
+_add("Colour Status", T, f"""
+VAR _w = [Story | Status · Overall Worsened] + 0
+RETURN IF ( _w >= 3, "{C_RED}", IF ( _w >= 1, "{C_AMBER}", "{C_TEAL}" ) )""", folder=_COL)
+
+# ---------------------------------------------------------------- subject cards: sentence, pill word, pill fill
+WORST = """
+VAR _w = TOPN ( 1, FILTER ( ADDCOLUMNS ( {projects}, "@v", {expr} ), NOT ISBLANK ( [@v] ) ), [@v], DESC, DimProject[Id], ASC )
+VAR _wn = CALCULATE ( SELECTEDVALUE ( DimProject[Name] ), TREATAS ( SELECTCOLUMNS ( _w, "@id", DimProject[Id] ), DimProject[Id] ) )
+VAR _wv = MAXX ( _w, [@v] )"""
+_add("Insight Financials", T, f"""
+VAR _v = [Story | EAC Variance %]
+{WORST.format(projects=PROJECTS, expr="[Story | EAC Variance %]")}
+RETURN IF ( ISBLANK ( _v ), "No EAC in the financial plans yet.",
+    "EAC " & FORMAT ( _v, "+0.0%;-0.0%;0.0%" ) & " vs budget"
+        & IF ( _wv > 0, "; worst " & _wn & " " & FORMAT ( _wv, "+0%" ) & ".", "." ) )""")
+_add("Insight Schedule", T, f"""
+VAR _o = [Story | On Track %]
+VAR _c = [{hm("On Track Change")}]
+{WORST.format(projects=PROJECTS, expr="[Story | Baseline · Finish Slip (days)]")}
+RETURN FORMAT ( _o, "0%" ) & " on track" & IF ( ISBLANK ( _c ), "", " (" & _c & ")" )
+    & IF ( _wv > 0, "; " & _wn & " +" & FORMAT ( _wv, "0" ) & " d vs baseline.", "." )""")
+_add("Insight Resources", T, """
+VAR _o = [Story | Over-allocated People] + 0
+VAR _m = [Story | TS Status · Missing Timesheets] + 0
+RETURN FORMAT ( _o, "0" ) & IF ( _o = 1, " person", " people" ) & " over 100% in view; "
+    & FORMAT ( _m, "0" ) & IF ( _m = 1, " timesheet", " timesheets" ) & " missing." """)
+_add("Insight Risk", T, """
+VAR _a = [Story | Active Risk Count] + 0
+VAR _u = [Story | Unmitigated Risk %]
+RETURN FORMAT ( _a, "0" ) & " active risks"
+    & IF ( ISBLANK ( _u ), ".", "; " & FORMAT ( _u, "0%" ) & " without mitigation." )""")
+_add("Insight Portfolio", T, """
+VAR _a = [Story | Active Projects] + 0
+VAR _p = [Story | Proposed Projects] + 0
+RETURN FORMAT ( _a, "0" ) & " active, " & FORMAT ( _p, "0" ) & " proposed in the pipeline." """)
+_add("Insight Benefits", T, f"""
+VAR _b = [Story | Benefits At Completion]
+VAR _e = [Story | Finance EAC]
+RETURN IF ( ISBLANK ( _b ), "No benefits plan in view.",
+    {money("_b")} & " planned benefits against " & {money("_e")} & " EAC." )""")
+_add("Insight Status", T, """
+VAR _n = [Story | Status · Not Reporting] + 0
+RETURN IF ( _n = 0, "Every project reported recently.",
+    FORMAT ( _n, "0" ) & IF ( _n = 1, " project has", " projects have" ) & " not reported for 30+ days." )""")
+_add("Insight Governance", T, """
+VAR _f = [PMO | Plans Failing] + 0
+RETURN IF ( _f = 0, "All plans pass the Plan Insights rules.",
+    FORMAT ( _f, "0" ) & IF ( _f = 1, " plan fails", " plans fail" ) & " Plan Insights rules." )""")
+
+SUBJECT_COLOUR = {"Financials": hm("Colour EAC"), "Schedule": hm("Colour Schedule"), "Resources": hm("Colour Util"),
+                  "Risk": hm("Colour Risk"), "Portfolio": hm("Colour Portfolio"), "Benefits": hm("Colour Benefits"),
+                  "Status": hm("Colour Status"), "Governance": hm("Colour Trust")}
+for _s, _cm in SUBJECT_COLOUR.items():
+    _add(f"Pill {_s}", T, f"""
+VAR _c = [{_cm}]
+RETURN SWITCH ( _c, "{C_RED}", "Act", "{C_AMBER}", "Watch", "{C_TEAL}", "OK", "–" )""",
+         desc=f"Status word of the {_s} card, from its colour measure.")
+    _add(f"Pill Fill {_s}", T, f"""
+VAR _c = [{_cm}]
+RETURN SWITCH ( _c, "{C_RED}", "#3A1E22", "{C_AMBER}", "#3A2F18", "{C_TEAL}", "#173A33", "#26314F" )""",
+         folder=_COL, desc=f"Pill background of the {_s} card.")
 
 
 # ====================================================================== layout
