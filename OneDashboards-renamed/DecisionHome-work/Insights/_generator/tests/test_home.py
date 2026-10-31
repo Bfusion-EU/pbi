@@ -12,7 +12,7 @@ HOME = ["Greeting", "Briefing", "Act Score", "Act Reason", "Act Colour", "Act Co
         "Line Portfolio", "Line Financials", "Line Resources", "Line Schedule", "Line Risk", "Line Benefits",
         "Line Timesheets", "Line Governance", "Colour Portfolio", "Colour Schedule", "Colour Risk",
         "Colour Benefits", "Colour Timesheets", "Answer Finance", "Answer Schedule", "Answer Resources",
-        "Answer Benefits", "Due In 30d", "Due"]
+        "Answer Benefits", "Due"]
 
 
 def test_home_measures_registered():

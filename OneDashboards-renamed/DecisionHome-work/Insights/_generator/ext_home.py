@@ -106,8 +106,6 @@ _add("On Track Change", T, CHANGE.format(src=hm("On Track % (reports)")), desc="
 _add("Due", "DateTime", 'VAR _d = MIN ( DimTask[EndDate] ) RETURN IF ( _d >= TODAY () && _d <= TODAY () + 30, _d )',
      "dd mmm yyyy", "Due date of a task due in the next 30 days (blank otherwise); the Next 30 days table on Home lists "
      "only rows where it is not blank.")
-_add("Due In 30d", I, 'VAR _d = MAX ( DimTask[EndDate] ) RETURN IF ( _d >= TODAY () && _d <= TODAY () + 30, 1 )', "0",
-     "1 for a task due in the next 30 days; drives the Next 30 days table on Home.")
 
 # ---------------------------------------------------------------- top bar: refresh line (sentence case) + dark status colours
 _add("Refreshed", T, """
