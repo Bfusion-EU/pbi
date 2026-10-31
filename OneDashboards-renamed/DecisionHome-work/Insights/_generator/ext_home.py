@@ -460,7 +460,7 @@ def build_right_pmo(pg, grp):
     fields = [pages.DP("Name"), M(hm("Act Reason")), M(hm("Act Score"))]
     # fixed column widths: auto-sizing pushes the Impact column off to a horizontal scrollbar
     obj["columnWidth"] = [{"properties": {"value": n(w)}, "selector": {"metadata": pbir.qref(f)}}
-                          for f, w in zip(fields, (146, 146, 58))]
+                          for f, w in zip(fields, (146, 138, 66))]
     tbl = chart("tableEx", {"Values": [P(pages.DP("Name"), "Project"), P(M(hm("Act Reason")), "Why"),
                                        P(M(hm("Act Score")), "Impact")]},
                 "", obj, sort=[(M(hm("Act Score")), "Descending")])

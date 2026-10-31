@@ -16,8 +16,9 @@ HOME = (["Greeting", "Refreshed", "Briefing", "Briefing Reasons", "Act Score", "
         + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS])
 
 
-REMOVED = [f"Line {s}" for s in ["Portfolio", "Financials", "Resources", "Schedule", "Risk", "Benefits", "Timesheets",
-                                  "Governance"]] + [f"Answer {a}" for a in ["Finance", "Schedule", "Resources", "Benefits"]]           + ["Colour Timesheets"]
+REMOVED = ([f"Line {s}" for s in ["Portfolio", "Financials", "Resources", "Schedule", "Risk", "Benefits", "Timesheets",
+                                  "Governance"]] + [f"Answer {a}" for a in ["Finance", "Schedule", "Resources", "Benefits"]]
+           + ["Colour Timesheets"])
 
 
 def test_removed_measures_gone():
@@ -116,17 +117,6 @@ def test_two_view_groups_and_bookmarks():
     assert len(children) > 15
 
 
-VTYPES = ("shape", "textbox", "tableEx", "actionButton", "card", "lineChart", "clusteredBarChart", "image", "slicer")
-
-
-def _parent(pg, key):
-    """parentGroupName of the visual added with `key` (None = top level); fails if no such visual."""
-    by = {vc["name"]: vc for vc in pg.visuals}
-    hits = [by[pbir.uid(pg.id, key, t)] for t in VTYPES if pbir.uid(pg.id, key, t) in by]
-    assert len(hits) == 1, key
-    return hits[0].get("parentGroupName")
-
-
 CARD_KEYS = ["fin", "sch", "res", "risk", "port", "ben", "sr", "gov"]
 # visual names are uid(page, key, visualType) hashes; _name() (already in this file) rebuilds them
 PART_TYPE = {"bg": "shape", "icon": "image", "title": "textbox", "pill": "card", "lbl": "textbox",
@@ -178,7 +168,8 @@ def test_children_belong_to_the_right_group():
     gid = {vc["visualGroup"]["displayName"]: vc["name"] for vc in pg.visuals if "visualGroup" in vc}
     pmo = [("act_bg", "shape"), ("act_title", "textbox"), ("act_tbl", "tableEx"), ("act_drill", "actionButton"),
            ("next_title", "textbox"), ("next_tbl", "tableEx"), ("view_pill_pmo", "shape")]
-    exe = [(f"dec_bg{k}", "shape") for k in range(3)] + [(f"dec_go{k}", "actionButton") for k in range(3)]           + [("view_pill_exec", "shape")]
+    exe = ([(f"dec_bg{k}", "shape") for k in range(3)] + [(f"dec_go{k}", "actionButton") for k in range(3)]
+           + [("view_pill_exec", "shape")])
     for key, vt in pmo:
         assert _vc(pg, key, vt).get("parentGroupName") == gid["PMO view"], key
     for key, vt in exe:
@@ -263,3 +254,4 @@ def test_value_and_text_cells():
         roles = vis["query"]["queryState"]
         projs = [p for r in roles.values() for p in r["projections"]]
         assert len(projs) == 1  # exactly one measure, nothing else
+
