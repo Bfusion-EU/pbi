@@ -26,11 +26,6 @@ def _add(name, dtype, expr, fmt=None, desc=None, folder=FOLDER):
     add(hm(name), dtype, expr, fmt, folder, desc)
 
 
-# ---------------------------------------------------------------- top bar
-_add("Greeting", T, """
-VAR _h = HOUR ( NOW () )
-RETURN IF ( _h < 12, "Good morning", IF ( _h < 18, "Good afternoon", "Good evening" ) )""")
-
 # ---------------------------------------------------------------- act now (per project)
 _add("Act Score", I, f"""
 VAR _one = HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) )
@@ -64,20 +59,21 @@ _add("Act Count", I, f"COUNTROWS ( FILTER ( {PROJECTS}, NOT ISBLANK ( [{hm('Act 
 # Reasons are counted from the same Act Score buckets as the Act-now table, so the parts add up to Act Count.
 _BUCKETS = [(100, "off track"), (90, "over budget"), (80, "late"), (60, "overdue work"),
             (50, "not reporting"), (40, "failing rules")]
-_bvars = "\n".join(f"VAR _b{k} = COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {k} ) )" for k, _ in _BUCKETS)
-_add("Briefing", T, f"""
+_add("Briefing Pill", T, f"""
 VAR _n = [{hm("Act Count")}]
 VAR _a = [Story | Active Projects] + 0
-RETURN IF ( _n = 0, "No active project needs a decision this week",
-    FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & IF ( _n = 1, " active projects needs", " active projects need" )
-        & " a decision" )""",
-     desc="How many active projects need a decision (Act-now count).")
-_rparts = "\n        & ".join(f'IF ( _b{k} > 0, "  ·  " & FORMAT ( _b{k}, "0" ) & " {lbl}" )' for k, lbl in _BUCKETS)
-_add("Briefing Reasons", T, f"""
-{_bvars}
-VAR _p = {_rparts}
-RETURN IF ( LEN ( _p ) > 0, MID ( _p, 6, LEN ( _p ) ) )""",
-     desc="Act-now projects per reason (same Act Score buckets, so the parts add up to Act Count).")
+RETURN IF ( _n = 0, "No project needs a decision",
+    FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & IF ( _n = 1, " needs", " need" ) & " a decision" )""",
+     desc="How many active projects need a decision (Act-now count), short form for the header pill.")
+# One chip per Act-score bucket (same buckets as the Act-now table, so the six counts add up to Act Count).
+CHIPS = [(k, lbl, lbl.title(), C_RED if k >= 80 else C_AMBER) for k, lbl in _BUCKETS]    # (score, label, name, dot colour)
+CHIP_ON, CHIP_OFF = "#E8ECF4", "#5A6680"
+for _k, _lbl, _nm, _dot in CHIPS:
+    _cnt = f"COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {_k} ) ) + 0"
+    _add(f"Chip {_nm}", T, f'''FORMAT ( {_cnt}, "0" ) & " {_lbl}"''',
+         desc=f"Active projects whose Act score is {_k} ({_lbl}); 0 when none. The six chips add up to Act Count.")
+    _add(f"Chip Colour {_nm}", T, f'''IF ( {_cnt} > 0, "{CHIP_ON}", "{CHIP_OFF}" )''',
+         desc=f"Chip text colour: light when the count is above 0, dim when 0.", folder=FOLDER + "\\Colours")
 
 # ---------------------------------------------------------------- history from status-report snapshots
 # Per month: every ACTIVE project's latest report as of month end (carried forward, not only projects that reported
@@ -121,10 +117,7 @@ _add("Due", "DateTime", 'VAR _d = MIN ( DimTask[EndDate] ) RETURN IF ( _d >= TOD
      "dd mmm yyyy", "Due date of a task due in the next 30 days (blank otherwise); the Next 30 days table on Home lists "
      "only rows where it is not blank.")
 
-# ---------------------------------------------------------------- top bar: refresh line (sentence case) + dark status colours
-_add("Refreshed", T, """
-VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )
-RETURN IF ( ISBLANK ( _t ), "Powered by OnePlan", "Powered by OnePlan  ·  refreshed " & FORMAT ( _t, "dd mmm yyyy hh:nn" ) & " CET" )""")
+# ---------------------------------------------------------------- dark status colours
 _COL = FOLDER + "\\Colours"
 # remainder to the axis max for the stacked progress bars (fill + remainder = one visual, so they always line up)
 _add("Util Rest", D, """VAR _u = [Story | Utilisation %]
@@ -371,28 +364,82 @@ def build_rail(pg):
     pg.add(16, 944, 72, 24, textbox([[("bfusion.eu", st("Segoe UI", 9, LABEL))]], align="center"), key="rail_site")
 
 
-GREET_X = 520
+BAND = (X0, 8, X1 - X0, 76)    # the one header band: x, y, w, h  (y 8-84)
 BAR_H = (10, 17, 13, 20, 9)   # the BFusion "equaliser" mark
+BX = X0 + 16                   # brand left edge inside the band
 
 
 def build_brand(pg):
-    """BFusion brand mark (5 orange bars), wordmark and product subtitle, top-left."""
+    """BFusion brand mark (5 orange bars), wordmark and product subtitle, left end of the header band."""
     for k, h in enumerate(BAR_H):
-        pg.add(X0 + 8 * k, round(28 - h / 2, 2), 5, h, shape(ORANGE), key=f"brand_bar{k}")
-    pg.add(146, 12, 200, 34, textbox([[("BFUSION", st("DIN", 18, "#FFFFFF", True))]]), key="brand_word")
-    pg.add(X0, 46, 400, 28, textbox([[("PPM Insights 360°  ·  Command center", st("DIN", 14, PEACH))]]), key="brand_sub")
+        pg.add(BX + 8 * k, round(32 - h / 2, 2), 5, h, shape(ORANGE), key=f"brand_bar{k}")
+    pg.add(BX + 42, 14, 200, 34, textbox([[("BFUSION", st("DIN", 18, "#FFFFFF", True))]]), key="brand_word")
+    pg.add(BX, 46, 300, 28, textbox([[("PPM Insights 360°  ·  Command center", st("DIN", 14, PEACH))]]), key="brand_sub")
 
 
-def build_top(pg):
+# ---- middle of the band: decision pill + six reason chips (2 rows of 3)
+# The pill and chip texts are card visuals, not one-cell tables: a table's header row (~26 px) leaves no room for text in
+# a 28 px chip and its bleed-over would paint outside the band. A card has no header and a transparent background.
+PILL_X, PILL_W, PILL_Y, PILL_H = 436, 270, 20, 52
+CH_FONT, CH_CHAR_PX = 12, 7.5          # chip text: 12 pt, ~7.5 px per character
+CH_H, CH_GAP = 28, 8
+CH_DOT, CH_DOT_X, CH_PAD_R = 8, 12, 12   # dot size / offset from the chip's left edge, right padding
+CH_ROWS_Y = (14, 50)                   # chip tops: rows at y 14-42 and 50-78 inside the band 8-84
+
+
+def chip_w(label):
+    """Chip width for the widest label this chip can show (two-digit count)."""
+    return round(CH_DOT_X + CH_DOT + 6 + len("00 " + label) * CH_CHAR_PX + CH_PAD_R, 2)
+
+
+def chip_geometry():
+    """-> [(index, x, y, w)] for the six chips, 3 per row, left to right from the pill."""
+    out, x0 = [], PILL_X + PILL_W + 14
+    for row in range(2):
+        x = x0
+        for j in range(3):
+            k = row * 3 + j
+            w = chip_w(CHIPS[k][1])
+            out.append((k, round(x, 2), CH_ROWS_Y[row], w))
+            x += w + CH_GAP
+    return out
+
+
+def chip_outline(line="#3A4768"):
+    v = shape(PANEL, radius=14, line=line)
+    v["objects"]["fill"][0]["properties"]["transparency"] = n(100)
+    return v
+
+
+def band_text(measure, size, colour=INK2, colour_measure=None):
+    """Single-line card on a transparent ground (no header row, no scroll), text centred."""
+    v = text_line(measure, size=size, colour=colour)
+    v["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
+    v["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
+    if colour_measure:
+        v["objects"]["labels"][0]["properties"]["color"] = measure_colour(colour_measure)
+    return v
+
+
+def build_band(pg):
+    pg.add(*BAND, shape(PANEL, radius=12), key="band_bg")
     build_brand(pg)
-    pg.add(GREET_X, 8, 500, 40, text_line(hm("Greeting"), size=16, bg=CANVAS), key="greet")
-    pg.add(GREET_X, 50, 500, 32, text_line(hm("Refreshed"), size=11, colour=LABEL, bg=CANVAS), key="refreshed")
-    pg.add(1180, 14, 180, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
-    pg.add(1370, 14, 180, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
+    # decision pill: orange shape, white text on top
+    pg.add(PILL_X, PILL_Y, PILL_W, PILL_H, shape(ORANGE, radius=10), key="pill_bg")
+    pg.add(PILL_X + 8, PILL_Y + 4, PILL_W - 16, PILL_H - 8, band_text(hm("Briefing Pill"), 15, "#FFFFFF"), key="pill")
+    for k, x, y, w in chip_geometry():
+        nm = CHIPS[k][2]
+        pg.add(x, y, w, CH_H, chip_outline(), key=f"chip_bg{k}")
+        pg.add(x + CH_DOT_X, y + (CH_H - CH_DOT) / 2, CH_DOT, CH_DOT, shape(CHIPS[k][3], radius=50), key=f"chip_dot{k}")
+        tx = x + CH_DOT_X + CH_DOT + 4
+        pg.add(tx, y + 2, x + w - 6 - tx, CH_H - 4,
+               band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")), key=f"chip{k}")
+    pg.add(1220, 15, 160, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
+    pg.add(1390, 15, 160, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
 
-GRID_X0, GRID_Y, COL_W, ROW_H, GAP = 104, (160, 582), 297, 406, 16
-RIGHT_X, RIGHT_W, RIGHT_Y, RIGHT_H = 1356, 428, 160, 828
+GRID_X0, GRID_Y, COL_W, ROW_H, GAP = 104, (100, 552), 297, 436, 16
+RIGHT_X, RIGHT_W, RIGHT_Y, RIGHT_H = 1356, 428, 100, 888
 
 # (key, subject, icon, number measure, label, row-3 kind, row-3 arg, colour measure, card link page,
 #  footer [(text, page)])
@@ -422,10 +469,10 @@ _PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk"
 
 # Row offsets inside a card (y relative to the card top). Every cell is >= 28 px taller than its text: the Service
 # renders text taller than Desktop and shows a scroll thumb when it does not fit. R_BAR is the bar's centre line.
-R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 40, 120, 120, 146, 98, 195, 226, 126
+R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 40, 120, 120, 160, 96, 212, 256, 126
 R_RULE, R_FOOT, CHIP_H = ROW_H - 50, ROW_H - 42, 30
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
-ACT_H = 368                # Act-now table: header + 8 rows
+ACT_H = 398                # Act-now table: header + 8 rows
 
 
 CHIP_GAP, CHIP_PAD, CHAR_PX = 8, 24, 8.0     # Desktop pads a button ~16 px beyond its text; bold Segoe UI is ~8 px per character at 11 pt
@@ -489,13 +536,6 @@ def subject_card(pg, x, y, spec):
     for j, ((txt, target), label, w) in enumerate(zip(footer, labels, widths)):
         pg.add(round(cx, 2), y + R_FOOT, w, CHIP_H, link_chip(label, target, size), key=f"{p}_ft{j}")
         cx += w + CHIP_GAP
-
-
-def build_brief(pg):
-    panel(pg, GRID_X0, 82, X1 - GRID_X0, 70, "brief_bg", fill=ORANGE)
-    pg.add(GRID_X0 + 16, 84, 700, 66, text_cell(hm("Briefing"), size=16, colour="#FFFFFF", bg=ORANGE), key="brief")
-    pg.add(GRID_X0 + 740, 84, X1 - GRID_X0 - 756, 66,
-           text_cell(hm("Briefing Reasons"), size=13, colour="#FFFFFF", bg=ORANGE), key="brief_reasons")
 
 
 def build_cards(pg):
@@ -594,10 +634,9 @@ def build():
     pg = Page(pages.PID["home"], dict(pages.PAGES)["home"], pages.W, 1000, background_colour=CANVAS,
               display_option="FitToPage")
     build_rail(pg)
-    build_top(pg)
-    build_brief(pg)
+    build_band(pg)
     build_cards(pg)
-    panel(pg, 1580, 24, 196, 44, "switch_bg")
+    pg.add(1580, 24, 196, 44, shape("#26314F", radius=14), key="switch_bg")
     # groups hold only the right column and their view pill (pill sits at y 30, so the group starts at y 24)
     g_pmo = pg.add_group(RIGHT_X, 24, 1784 - RIGHT_X, 988 - 24, "PMO view", key="grp_pmo")
     g_exec = pg.add_group(RIGHT_X, 24, 1784 - RIGHT_X, 988 - 24, "Executive view", key="grp_exec", hidden=True)

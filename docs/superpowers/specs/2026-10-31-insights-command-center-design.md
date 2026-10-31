@@ -23,7 +23,7 @@ visuals, row-level security and a mobile layout.
 ## Design rules
 
 1. **One subject, one place.** A number lives on its subject card only. There is no separate KPI
-   row, and the briefing strip only counts reasons.
+   row, and the header chips only count reasons.
 2. **One card anatomy**, identical for every subject (see section 4).
 3. **Left-aligned reading line.** Titles, numbers and sentences are left-aligned. Nothing floats.
 4. **The views differ in one column only.** The subject grid is the same in both views; only the
@@ -42,8 +42,8 @@ visuals, row-level security and a mobile layout.
 
 - Page 1800 × 1000, `FitToPage`, canvas `#141C2F`.
 - Cards: fill `#1B2540`, radius 14, no border; text `#E8ECF4`, labels `#8C98B3`. **All cards use
-  this single style**, except the orange briefing strip.
-- Accent `#E8612A`: selected rail icon, briefing strip, view switch "on" state.
+  this single style**. The header band uses the same panel colour.
+- Accent `#E8612A`: selected rail icon, the decision pill, view switch "on" state.
 - Status colours on dark: red `#FF8A80`, amber `#F2C46B`, teal `#5DCAA5`, grey `#8C98B3` (no
   status). Pill fills: `#3A1E22` / `#3A2F18` / `#173A33` / `#26314F`.
 - Fonts: Segoe UI (Semibold for numbers and titles), sentence case.
@@ -51,29 +51,31 @@ visuals, row-level security and a mobile layout.
   pill 11 pt (box 72 x 28), card number 34 pt, number label 12 pt, sentence 13 pt (up to four
   lines in the Service), footer link chips 11 pt (30 high; each chip is sized to its text, 8 px per character + 22 px,
   laid out left to right with a 10 px gap; the arrow is dropped, then the font goes to 10 pt, when a card's chips do not fit). Right column: "Act now" / "Next 30 days" titles 15 pt,
-  table header and body 11 pt, hint 10 pt, decision labels and decision text 13 pt. Briefing
-  strip: sentence 16 pt, reasons 13 pt, strip 70 high (y 82-152).
+  table header and body 11 pt, hint 10 pt, decision labels and decision text 13 pt. Header
+  band: decision pill 15 pt, reason chips 12 pt, band 76 high (y 8-84).
 - Cell headroom: the Service renders text taller than Desktop and shows a scroll thumb when a one-cell table
   is too short, and the table header row (about 22 px) counts. Every number / sentence cell is therefore at least
   28 px taller than header + text. Card rows (y relative to the card top): head 12, number cell 40 (120 high, its
-  empty lower part sits under the label), label 120, row 3 (spark / bar) 146-244, sentence cell 226 (126 high,
-  drawn before the spark / bar so they sit on top of its empty upper part), rule 356, chips 364 (30 high, chip
-  padding 24 px, gap 8 px).
+  empty lower part sits under the label), label 120, row 3 (spark / bar) 160-256, sentence cell 256 (126 high,
+  drawn before the spark / bar so they sit on top of its empty upper part), rule 386 (row height 436 minus 50),
+  chips 394 (30 high, chip padding 24 px, gap 8 px).
 
 ## Layout (1800 × 1000)
 
 ```
 x 16─88 │ 104 ──────────────────────────────────────────── 1340 │ 1356 ───────── 1784
-┌──────┐│ Command center · greeting · refresh   [Portfolio▾][Program▾]  [PMO|Executive]   y 8–80
-│ rail ││ ┌ briefing strip (orange): sentence ............ reason counts ┐                y 92–148
-│ 9    ││ ┌ Fin ┐ ┌ Sched ┐ ┌ Res ┐ ┌ Risk ┐  │ ┌ PMO: Act now (top 8)     ┐            y 160–566
-│ icons││ └─────┘ └───────┘ └─────┘ └──────┘  │ │      Open One-Pager ›    │
-│      ││ ┌ Port┐ ┌ Benef ┐ ┌ SR  ┐ ┌ Gov  ┐  │ │      Next 30 days        │            y 582–988
+┌──────┐│ ┌ HEADER BAND #1B2540 (x 104–1784, y 8–84) ─────────────────────────────────┐
+│ rail ││ │ ▮▮▮ BFUSION │ (11 of 15 need a decision) ○ off track ○ over budget ○ late │ [Portfolio▾][Program▾][PMO|Exec] │
+│ 9    ││ │ PPM Insights│                            ○ overdue ○ not reporting ○ rules │
+│ icons││ └───────────────────────────────────────────────────────────────────────────┘
+│      ││ ┌ Fin ┐ ┌ Sched ┐ ┌ Res ┐ ┌ Risk ┐  │ ┌ PMO: Act now (top 8)     ┐            y 100–988
+│      ││ └─────┘ └───────┘ └─────┘ └──────┘  │ │      Open One-Pager ›    │
+│      ││ ┌ Port┐ ┌ Benef ┐ ┌ SR  ┐ ┌ Gov  ┐  │ │      Next 30 days        │            row 2: y 552–988
 └──────┘│ └─────┘ └───────┘ └─────┘ └──────┘  │ └ Exec: 3 decisions ───────┘
 ```
 
-- Subject grid: x 104–1340, 4 columns × 2 rows, gap 16. Column width 297, row height 406.
-- Right column: x 1356–1784 (w 428), y 160–988. This is the only part that is toggled by the views.
+- Subject grid: x 104–1340, 4 columns × 2 rows, gap 16. Column width 297, row height 436 (`GRID_Y` = 100 / 552, `ROW_H` = 436; the grid starts 16 px under the band).
+- Right column: x 1356–1784 (w 428), y 100–988. This is the only part that is toggled by the views.
 
 ### 1 · Navigation rail (both views, unchanged from rev 1)
 
@@ -82,30 +84,38 @@ x 16─88 │ 104 ────────────────────�
 - Each icon is an image visual with a transparent page-navigation button over it. The tooltip names
   the chapter and its follow-on pages. The 18 rail PNGs are already in the generator assets.
 
-### 2 · Top bar (BFusion branding restored, rev 2.1)
+### 2 · Header band (one compact band, rev 2.2)
 
-- **Brand mark** at x 104 (bars y 18-38): five orange (`#E8612A`) bars, the "equaliser", at x offsets 0, 8, 16, 24,
-  32, each 5 wide and 10 / 17 / 13 / 20 / 9 high, vertically centred on y 28.
-- **Wordmark** "BFUSION" at x 146, y 12: DIN 18, white, bold.
-- **Subtitle** under the mark (x 104, y 46): "PPM Insights 360°  ·  Command center", DIN 14, peach `#FFB38A`.
-  It replaces the old "Command center" title.
-- **Greeting** (`Story | Home · Greeting`) and the refresh line (`Story | Home · Refreshed`) start at
-  x 520, to the right of the brand block.
+One panel `#1B2540`, radius 12, x 104–1784, y 8–84 (76 high). Nothing else sits between y 84 and the grid at y 100.
+The old greeting line, refresh line and the separate orange briefing strip are gone.
+
+- **Left** (x 120): brand mark (bars y centre 32, x offsets 0, 8, 16, 24, 32, each 5 wide and 10 / 17 / 13 / 20 / 9
+  high, `#E8612A`), wordmark "BFUSION" at x 162, y 14 (DIN 18, white, bold) and the subtitle "PPM Insights 360°  ·
+  Command center" at x 120, y 46 (DIN 14, peach `#FFB38A`, box 300 wide).
+- **Middle**: the decision pill, then the six reason chips (section 3).
+- **Right**: Portfolio slicer (x 1220, 160 wide) and Program slicer (x 1390, 160 wide), both y 15–77 and **synced
+  report-wide**, then the PMO / Executive switch (inset panel x 1580, y 24, 196 x 44, `#26314F`; the two buttons and
+  their orange view pills at x 1586 / 1680, y 30, 90 x 32). Everything is vertically centred on y 46.
 - **OnePlan logo** (dark-background version), 110 x 48 at x 1646, y 924 (scaling Fit): the bottom-right corner
-  of the right-column panel, the user's choice. It is not in the top bar and not in a view group; it is added
-  after the groups so it sits above the right column in z-order. The "Next 30 days" table stops above it (y 916).
-- Portfolio and Program dropdown slicers, **synced report-wide**.
-- PMO / Executive switch: bookmark buttons, with an orange pill marking the active view.
+  of the right-column panel, the user's choice. It is not in the band and not in a view group; it is added
+  after the groups so it sits above the right column in z-order. The "Next 30 days" table stops above it.
+- The view groups `grp_pmo` / `grp_exec` start at y 24 and include their view pill, so the boxes contain the pills.
 - The rail carries a small "bfusion.eu" text (Segoe UI 9, label colour, centred) at y 944, below the nine icons.
 
-### 3 · Briefing strip (both views)
+### 3 · Decision pill and reason chips (both views, inside the band)
 
-- One orange strip, full width (x 104–1784), 70 high (y 82–152).
-- Left: `Story | Home · Briefing` without its reason breakdown, as a short sentence: "11 of 15 active
-  projects need a decision".
-- Right: `Story | Home · Briefing Reasons`, one line listing the non-zero reason buckets:
-  "1 over budget · 2 late · 5 overdue work · 3 failing rules". The buckets come from the same
-  `Act Score` as the Act-now list, so they always sum to N.
+- **Pill**: orange `#E8612A` rounded shape (radius 10) at x 436, y 20, 270 x 52, with `Story | Home · Briefing Pill`
+  centred in white, 15 pt: "11 of 15 need a decision", or "No project needs a decision" when N = 0.
+- **Six fixed chips** after the pill (x 720 on), in two rows of three (y 14 and y 50, 28 high, gap 8), one per
+  Act-score bucket in this order: off track (100), over budget (90), late (80), overdue work (60), not reporting (50),
+  failing rules (40). Each chip is a rounded outline shape (`#3A4768` line, transparent fill), a small dot (8 px: red
+  `#FF8A80` for off track, over budget and late; amber `#F2C46B` for the other three) and a single-line text,
+  12 pt, `Story | Home · Chip <Bucket>` ("1 over budget", "0 over budget" when zero). The text colour is
+  `Chip Colour <Bucket>`: `#E8ECF4` when the count is above 0, otherwise dim `#5A6680`. Chip width = dot zone + 7.5 px
+  per character of the widest label ("00 " + label) + padding: 128, 143, 90.5 / 150.5, 158, 158. The chips come from
+  the same `Act Score` buckets as the Act-now list, so the six counts always add up to the pill's N (`Act Count`).
+- Pill and chip texts are card visuals (transparent background, no header, no scroll), not one-cell tables: the
+  table header row (about 26 px) leaves no room in a 28 px chip, and its background would paint outside the band.
 - No link: the Act-now list is always visible in the PMO view.
 
 ### 4 · Subject cards (both views): the one card anatomy
@@ -181,7 +191,7 @@ Every card has the same five rows, top to bottom, all left-aligned:
 ### 7 · View switch (bookmarks)
 
 - Only the right column is grouped: `grp_pmo` (Act now and next 30 days, plus the PMO pill) and
-  `grp_exec` (three decisions, plus the Executive pill). The subject grid and briefing are not
+  `grp_exec` (three decisions, plus the Executive pill). The subject grid and the header band are not
   grouped and never change.
 - Two display-only bookmarks (`suppressData`): `Home · PMO view` and `Home · Executive view`.
   The default is PMO.
@@ -197,19 +207,17 @@ Every card has the same five rows, top to bottom, all left-aligned:
 
 ## Measures
 
-- **New** (`Story | Home · …`): `Briefing Reasons`, `Insight Financials / Schedule / Resources /
+- **New** (`Story | Home · …`): `Briefing Pill`, `Chip <Bucket>` (6) and `Chip Colour <Bucket>` (6), `Insight Financials / Schedule / Resources /
   Risk / Portfolio / Benefits / Status / Governance`, `Pill <Subject>` (8), `Colour Status`,
   and `Pill Fill <Subject>` if the pill background needs its own colour measure.
-- **Changed**: `Briefing` drops its reason breakdown (that moves to `Briefing Reasons`).
-- **Removed** once nothing uses them: `Line …` (8), `Answer …` (4), and the rev-1 KPI-row
-  arrangement in `build_pulse`. Measures and helpers no longer used by Home are deleted.
-- **Reused**: everything named in the card table, the Act-now and history measures, `Due`,
-  `Greeting` and `Refreshed`.
+- **Removed** once nothing uses them: `Line …` (8), `Answer …` (4), the rev-1 KPI-row
+  arrangement in `build_pulse`, and (rev 2.2) `Greeting`, `Refreshed`, `Briefing` and `Briefing Reasons`. Measures and helpers no longer used by Home are deleted.
+- **Reused**: everything named in the card table, the Act-now and history measures and `Due`.
 
 ## Testing / acceptance
 
 - `build.py --check` OK (schema including bookmarks, references, layout within 1800 × 1000).
-- `dax_check.py` 0 errors. Spot checks: the briefing reason counts sum to N; Market Research is
+- `dax_check.py` 0 errors. Spot checks: the six chip counts sum to N (the pill); Market Research is
   in Act now; each pill shows the word that matches its colour.
 - Tests: 8 subject cards, each with the five rows present in order and left-aligned; each card's
   footer and whole-card link target the right pages; every story page is reachable from Home;

@@ -8,17 +8,19 @@ import extensions  # noqa: E402,F401
 from story_measures import MEASURES  # noqa: E402
 
 NAMES = {m["name"] for m in MEASURES}
+CHIPN = ["Off Track", "Over Budget", "Late", "Overdue Work", "Not Reporting", "Failing Rules"]
 SUBJECTS = ["Financials", "Schedule", "Resources", "Risk", "Portfolio", "Benefits", "Status", "Governance"]
-HOME = (["Greeting", "Refreshed", "Briefing", "Briefing Reasons", "Act Score", "Act Reason", "Act Colour", "Act Count",
+HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
          "EAC Var % (reports)", "On Track % (reports)", "EAC Change", "On Track Change", "Due",
          "Colour Financials", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
          "Colour Benefits", "Colour Status"]
+        + [f"Chip {c}" for c in CHIPN] + [f"Chip Colour {c}" for c in CHIPN]
         + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS])
 
 
 REMOVED = ([f"Line {s}" for s in ["Portfolio", "Financials", "Resources", "Schedule", "Risk", "Benefits", "Timesheets",
                                   "Governance"]] + [f"Answer {a}" for a in ["Finance", "Schedule", "Resources", "Benefits"]]
-           + ["Colour Timesheets"])
+           + ["Colour Timesheets", "Greeting", "Refreshed", "Briefing", "Briefing Reasons"])
 
 
 def test_removed_measures_gone():
@@ -149,8 +151,8 @@ def test_cards_align_in_grid():
     pg = _home()
     pos = [_vc(pg, f"card_{c}_bg", "shape")["position"] for c in CARD_KEYS]
     assert {round(p["x"]) for p in pos} == {104, 417, 730, 1043}
-    assert {round(p["y"]) for p in pos} == {160, 582}
-    assert {(round(p["width"]), round(p["height"])) for p in pos} == {(297, 406)}
+    assert {round(p["y"]) for p in pos} == {100, 552}
+    assert {(round(p["width"]), round(p["height"])) for p in pos} == {(297, 436)}
 
 
 def test_only_right_column_is_grouped():
@@ -248,15 +250,15 @@ def test_z_order_background_groups_buttons():
     assert max(groups) < min(buttons)
 
 
-def test_briefing_breaks_down_act_count():
-    expr = next(m["expression"] for m in MEASURES if m["name"] == "Story | Home · Briefing Reasons")
-    for k in (100, 90, 80, 60, 50, 40):
+def test_chips_break_down_act_count():
+    exprs = [next(m["expression"] for m in MEASURES if m["name"] == f"Story | Home · Chip {c}") for c in CHIPN]
+    for k, expr in zip((100, 90, 80, 60, 50, 40), exprs):
         assert f"[Story | Home · Act Score] = {k}" in expr
 
 
 def test_value_and_text_cells():
     v = ext_home.value_cell("Story | Active Projects", size=28)
-    t = ext_home.text_cell("Story | Home · Greeting", size=11)
+    t = ext_home.text_cell("Story | Home · Briefing Pill", size=11)
     assert v["visualType"] == ext_home.VALUE_VISUAL
     assert t["visualType"] == ext_home.VALUE_VISUAL
     for vis in (v, t):
@@ -282,8 +284,12 @@ def test_branding_present():
     assert pos["z"] > max(vc["position"]["z"] for vc in pg.visuals if vc.get("parentGroupName"))
     assert logo["visual"]["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"]["expr"]["Literal"][
         "Value"] == "'Fit'"
-    greet = _vc(pg, "greet", "card")["position"]
-    assert greet["x"] >= 500
+    # brand sits inside the one header band
+    band = _vc(pg, "band_bg", "shape")["position"]
+    for key, vt in [("brand_word", "textbox"), ("brand_sub", "textbox")] + [(f"brand_bar{k}", "shape") for k in range(5)]:
+        p = _vc(pg, key, vt)["position"]
+        assert band["x"] <= p["x"] and p["x"] + p["width"] <= band["x"] + band["width"], key
+        assert band["y"] <= p["y"] and p["y"] + p["height"] <= band["y"] + band["height"], key
 
 
 def test_footer_chips_wide_enough_for_their_text():
@@ -328,3 +334,50 @@ def test_cells_have_service_headroom():
     # rows stay inside the card
     r = ext_home
     assert r.R_SENT + r.SENT_H <= r.R_RULE
+
+
+def test_header_single_band():
+    pg = _home()
+    band = _vc(pg, "band_bg", "shape")["position"]
+    assert (band["x"], band["y"], band["width"], band["height"]) == (104, 8, 1680, 76)
+    top, bottom = band["y"], band["y"] + band["height"]
+    # nothing sits in the 16 px between the band and the grid, nothing pokes out of the band
+    for vc in pg.visuals:
+        p = vc["position"]
+        if "visualGroup" in vc or vc.get("parentGroupName") or p["y"] >= bottom:
+            continue
+        if vc["name"] in {_name(pg, k, "shape") for k in ("rail_bg",)} or p["x"] < 100:
+            continue                                                  # the rail, left of the band
+        assert p["y"] + p["height"] <= bottom + 0.01 and p["y"] >= 0, vc["name"]
+        assert not (bottom < p["y"] + p["height"] and p["y"] < ext_home.GRID_Y[0]), vc["name"]
+    # pill + six chip cells; each chip has an outline and a dot; greeting / refresh / strip are gone
+    assert "Briefing Pill" in repr(_vc(pg, "pill", "card")["visual"]["query"])
+    for k in range(6):
+        assert "Chip" in repr(_vc(pg, f"chip{k}", "card")["visual"]["query"]), k
+        assert _vc(pg, f"chip_bg{k}", "shape") is not None and _vc(pg, f"chip_dot{k}", "shape") is not None, k
+    assert [k for k in ("greet", "refreshed", "brief", "brief_reasons") for vt in ("card", "tableEx", "textbox")
+            if _vc(pg, k, vt) is not None] == []
+    assert _vc(pg, "brief_bg", "shape") is None
+    # chips: fit between the pill and the slicers, no overlap, wide enough for their text
+    geo = ext_home.chip_geometry()
+    slicer_x = min(vc["position"]["x"] for vc in pg.visuals if vc.get("visual", {}).get("visualType") == "slicer")
+    for k, x, y, w in geo:
+        assert w >= len("00 " + ext_home.CHIPS[k][1]) * ext_home.CH_CHAR_PX + ext_home.CH_DOT_X + ext_home.CH_DOT
+        assert x >= ext_home.PILL_X + ext_home.PILL_W and x + w <= slicer_x - 8, k
+    for row in (geo[:3], geo[3:]):
+        assert all(b[1] - (a[1] + a[3]) >= ext_home.CH_GAP - 0.01 for a, b in zip(row, row[1:]))
+    # slicers and view switch live inside the band, vertically centred on it
+    for vc in pg.visuals:
+        if vc.get("visual", {}).get("visualType") == "slicer" or vc["name"] in (_name(pg, "switch0", "actionButton"),):
+            p = vc["position"]
+            assert top <= p["y"] and p["y"] + p["height"] <= bottom
+            assert abs(p["y"] + p["height"] / 2 - (top + bottom) / 2) <= 2
+
+
+def test_view_groups_contain_their_pills():
+    pg = _home()
+    for gkey, pkey in (("grp_pmo", "view_pill_pmo"), ("grp_exec", "view_pill_exec")):
+        g, p = _vc(pg, gkey, "group")["position"], _vc(pg, pkey, "shape")["position"]
+        px, py = g["x"] + p["x"], g["y"] + p["y"]      # group children are stored relative to the group
+        assert g["x"] <= px and px + p["width"] <= g["x"] + g["width"]
+        assert g["y"] <= py and py + p["height"] <= g["y"] + g["height"]

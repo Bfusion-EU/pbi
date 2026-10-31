@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "fe70fec2d685b79331c2",
+  "name": "3d162bff0325c433b088",
   "position": {
-    "x": 520,
-    "y": 50,
-    "z": 3900,
-    "width": 500,
-    "height": 32,
-    "tabOrder": 3900
+    "x": 444,
+    "y": 24,
+    "z": 4000,
+    "width": 254,
+    "height": 44,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Home · Refreshed"
+                  "Property": "Story | Home · Briefing Pill"
                 }
               },
-              "queryRef": "_Measures.Story | Home · Refreshed",
-              "nativeQueryRef": "Story | Home · Refreshed"
+              "queryRef": "_Measures.Story | Home · Briefing Pill",
+              "nativeQueryRef": "Story | Home · Briefing Pill"
             }
           ]
         }
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "11D"
+                  "Value": "15D"
                 }
               }
             },
@@ -63,7 +63,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8C98B3'"
+                      "Value": "'#FFFFFF'"
                     }
                   }
                 }
@@ -113,18 +113,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#141C2F'"
-                    }
-                  }
+                  "Value": "false"
                 }
               }
             }
@@ -137,25 +126,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#141C2F'"
-                    }
-                  }
-                }
-              }
-            },
-            "radius": {
-              "expr": {
-                "Literal": {
-                  "Value": "6D"
+                  "Value": "false"
                 }
               }
             }

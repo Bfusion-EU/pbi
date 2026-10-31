@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "c878a2ba1595e1219d8a",
+  "name": "83e022e75382043121c2",
   "position": {
-    "x": 520,
-    "y": 8,
-    "z": 3800,
-    "width": 500,
-    "height": 40,
-    "tabOrder": 3800
+    "x": 902.5,
+    "y": 52,
+    "z": 5500,
+    "width": 128.0,
+    "height": 24,
+    "tabOrder": 5500
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Home · Greeting"
+                  "Property": "Story | Home · Chip Not Reporting"
                 }
               },
-              "queryRef": "_Measures.Story | Home · Greeting",
-              "nativeQueryRef": "Story | Home · Greeting"
+              "queryRef": "_Measures.Story | Home · Chip Not Reporting",
+              "nativeQueryRef": "Story | Home · Chip Not Reporting"
             }
           ]
         }
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "16D"
+                  "Value": "12D"
                 }
               }
             },
@@ -62,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#E8ECF4'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Home · Chip Colour Not Reporting"
                     }
                   }
                 }
@@ -113,18 +119,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#141C2F'"
-                    }
-                  }
+                  "Value": "false"
                 }
               }
             }
@@ -137,25 +132,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#141C2F'"
-                    }
-                  }
-                }
-              }
-            },
-            "radius": {
-              "expr": {
-                "Literal": {
-                  "Value": "6D"
+                  "Value": "false"
                 }
               }
             }

@@ -7327,12 +7327,6 @@
           }
         },
         {
-          "name": "Story | Home · Greeting",
-          "dataType": "Text",
-          "expression": "VAR _h = HOUR ( NOW () )\nRETURN IF ( _h < 12, \"Good morning\", IF ( _h < 18, \"Good afternoon\", \"Good evening\" ) )",
-          "displayFolder": "Story\\Home"
-        },
-        {
           "name": "Story | Home · Act Score",
           "dataType": "Integer",
           "expression": "VAR _one = HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) )\n    && SELECTEDVALUE ( DimProject[State_Value] ) = \"Active\"\nVAR _h = SELECTEDVALUE ( DimProject[OverallHealth_Value] )\nRETURN\n    IF ( _one,\n        SWITCH ( TRUE (),\n            LEFT ( _h, 3 ) = \"(3)\", 100,\n            [Story | EAC Variance %] > 0.05, 90,\n            [Story | Baseline · Finish Slip (days)] > 10, 80,\n            [Story | Project · Overdue Tasks] > 10, 60,\n            [Story | Status · Days Since Report] > 30, 50,\n            [Story | Project · Failing Rules] > 0, 40 ) )",
@@ -7441,11 +7435,11 @@
           }
         },
         {
-          "name": "Story | Home · Briefing",
+          "name": "Story | Home · Briefing Pill",
           "dataType": "Text",
-          "expression": "VAR _n = [Story | Home · Act Count]\nVAR _a = [Story | Active Projects] + 0\nRETURN IF ( _n = 0, \"No active project needs a decision this week\",\n    FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _a, \"0\" ) & IF ( _n = 1, \" active projects needs\", \" active projects need\" )\n        & \" a decision\" )",
+          "expression": "VAR _n = [Story | Home · Act Count]\nVAR _a = [Story | Active Projects] + 0\nRETURN IF ( _n = 0, \"No project needs a decision\",\n    FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _a, \"0\" ) & IF ( _n = 1, \" needs\", \" need\" ) & \" a decision\" )",
           "displayFolder": "Story\\Home",
-          "description": "How many active projects need a decision (Act-now count).",
+          "description": "How many active projects need a decision (Act-now count), short form for the header pill.",
           "references": {
             "measures": [
               {
@@ -7462,11 +7456,187 @@
           }
         },
         {
-          "name": "Story | Home · Briefing Reasons",
+          "name": "Story | Home · Chip Off Track",
           "dataType": "Text",
-          "expression": "VAR _b100 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) )\nVAR _b90 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) )\nVAR _b80 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) )\nVAR _b60 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) )\nVAR _b50 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) )\nVAR _b40 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) )\nVAR _p = IF ( _b100 > 0, \"  ·  \" & FORMAT ( _b100, \"0\" ) & \" off track\" )\n        & IF ( _b90 > 0, \"  ·  \" & FORMAT ( _b90, \"0\" ) & \" over budget\" )\n        & IF ( _b80 > 0, \"  ·  \" & FORMAT ( _b80, \"0\" ) & \" late\" )\n        & IF ( _b60 > 0, \"  ·  \" & FORMAT ( _b60, \"0\" ) & \" overdue work\" )\n        & IF ( _b50 > 0, \"  ·  \" & FORMAT ( _b50, \"0\" ) & \" not reporting\" )\n        & IF ( _b40 > 0, \"  ·  \" & FORMAT ( _b40, \"0\" ) & \" failing rules\" )\nRETURN IF ( LEN ( _p ) > 0, MID ( _p, 6, LEN ( _p ) ) )",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0, \"0\" ) & \" off track\"",
           "displayFolder": "Story\\Home",
-          "description": "Act-now projects per reason (same Act Score buckets, so the parts add up to Act Count).",
+          "description": "Active projects whose Act score is 100 (off track); 0 when none. The six chips add up to Act Count.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Colour Off Track",
+          "dataType": "Text",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Chip text colour: light when the count is above 0, dim when 0.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Over Budget",
+          "dataType": "Text",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0, \"0\" ) & \" over budget\"",
+          "displayFolder": "Story\\Home",
+          "description": "Active projects whose Act score is 90 (over budget); 0 when none. The six chips add up to Act Count.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Colour Over Budget",
+          "dataType": "Text",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Chip text colour: light when the count is above 0, dim when 0.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Late",
+          "dataType": "Text",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0, \"0\" ) & \" late\"",
+          "displayFolder": "Story\\Home",
+          "description": "Active projects whose Act score is 80 (late); 0 when none. The six chips add up to Act Count.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Colour Late",
+          "dataType": "Text",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Chip text colour: light when the count is above 0, dim when 0.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Overdue Work",
+          "dataType": "Text",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0, \"0\" ) & \" overdue work\"",
+          "displayFolder": "Story\\Home",
+          "description": "Active projects whose Act score is 60 (overdue work); 0 when none. The six chips add up to Act Count.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Colour Overdue Work",
+          "dataType": "Text",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Chip text colour: light when the count is above 0, dim when 0.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Not Reporting",
+          "dataType": "Text",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0, \"0\" ) & \" not reporting\"",
+          "displayFolder": "Story\\Home",
+          "description": "Active projects whose Act score is 50 (not reporting); 0 when none. The six chips add up to Act Count.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Colour Not Reporting",
+          "dataType": "Text",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Chip text colour: light when the count is above 0, dim when 0.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Failing Rules",
+          "dataType": "Text",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0, \"0\" ) & \" failing rules\"",
+          "displayFolder": "Story\\Home",
+          "description": "Active projects whose Act score is 40 (failing rules); 0 when none. The six chips add up to Act Count.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Chip Colour Failing Rules",
+          "dataType": "Text",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "displayFolder": "Story\\Home\\Colours",
+          "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {
             "measures": [
               {
@@ -7532,12 +7702,6 @@
           "displayFolder": "Story\\Home",
           "formatString": "dd mmm yyyy",
           "description": "Due date of a task due in the next 30 days (blank otherwise); the Next 30 days table on Home lists only rows where it is not blank."
-        },
-        {
-          "name": "Story | Home · Refreshed",
-          "dataType": "Text",
-          "expression": "VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )\nRETURN IF ( ISBLANK ( _t ), \"Powered by OnePlan\", \"Powered by OnePlan  ·  refreshed \" & FORMAT ( _t, \"dd mmm yyyy hh:nn\" ) & \" CET\" )",
-          "displayFolder": "Story\\Home"
         },
         {
           "name": "Story | Home · Util Rest",
