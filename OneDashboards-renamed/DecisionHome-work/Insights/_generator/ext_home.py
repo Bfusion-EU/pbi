@@ -9,6 +9,7 @@ import pbir
 from pbir import (ORANGE, GREY, Page, card, headline, chart, textbox, st, shape, image, slicer, nav_button,
                   P, M, C, s, b, n, col_solid, measure_colour, measure_fill, legend)
 from story_measures import add, T, D, I, money
+from ext_status import STALE_DAYS  # same threshold as Story | Status · Not Reporting
 
 PX = "Story | Home · "
 FOLDER = "Story\\Home"
@@ -65,9 +66,10 @@ _BUCKETS = [(100, "off track"), (90, "over budget"), (80, "late"), (60, "overdue
 _bvars = "\n".join(f"VAR _b{k} = COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {k} ) )" for k, _ in _BUCKETS)
 _add("Briefing", T, f"""
 VAR _n = [{hm("Act Count")}]
-VAR _a = [Story | Active Projects]
+VAR _a = [Story | Active Projects] + 0
 RETURN IF ( _n = 0, "No active project needs a decision this week",
-    FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & " active projects need a decision" )""",
+    FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & IF ( _n = 1, " active projects needs", " active projects need" )
+        & " a decision" )""",
      desc="How many active projects need a decision (Act-now count).")
 _rparts = "\n        & ".join(f'IF ( _b{k} > 0, "  ·  " & FORMAT ( _b{k}, "0" ) & " {lbl}" )' for k, lbl in _BUCKETS)
 _add("Briefing Reasons", T, f"""
@@ -180,15 +182,16 @@ VAR _v = [Story | EAC Variance %]
 {WORST.format(projects=PROJECTS, expr="[Story | EAC Variance %]")}
 RETURN IF ( ISBLANK ( _v ), "No EAC in the financial plans yet.",
     "EAC " & FORMAT ( _v, "+0.0%;-0.0%;0.0%" ) & " vs budget"
-        & IF ( _wv > 0, "; worst " & _wn & " " & FORMAT ( _wv, "+0%" ) & ".", "." ) )""")
+        & IF ( _wv > 0, "; worst " & _wn & " " & FORMAT ( _wv, "+0.0%" ) & ".", "." ) )""")
 _add("Insight Schedule", T, f"""
 VAR _o = [Story | On Track %]
 VAR _c0 = [{hm("On Track Change")}]
 VAR _c = SUBSTITUTE ( _c0 & "", " vs last month", "" )
 VAR _cd = IF ( _c = "" || _c = "= 0.0 pt", "", " (" & _c & ")" )
 {WORST.format(projects=PROJECTS, expr="[Story | Baseline · Finish Slip (days)]")}
-RETURN FORMAT ( _o, "0%" ) & " on track" & _cd
-    & IF ( _wv > 0, "; " & _wn & " +" & FORMAT ( _wv, "0" ) & " d vs baseline.", "." )""")
+RETURN IF ( ISBLANK ( _o ), "No status reports yet.",
+    FORMAT ( _o, "0%" ) & " on track" & _cd
+    & IF ( _wv > 0, "; " & _wn & " +" & FORMAT ( _wv, "0" ) & " d vs baseline.", "." ) )""")
 _add("Insight Resources", T, """
 VAR _o = [Story | Over-allocated People] + 0
 VAR _m = [Story | TS Status · Missing Timesheets] + 0
@@ -197,7 +200,7 @@ RETURN FORMAT ( _o, "0" ) & IF ( _o = 1, " person", " people" ) & " over 100% in
 _add("Insight Risk", T, """
 VAR _a = [Story | Active Risk Count] + 0
 VAR _u = [Story | Unmitigated Risk %]
-RETURN FORMAT ( _a, "0" ) & " active risks"
+RETURN IF ( _a = 1, "1 active risk", FORMAT ( _a, "0" ) & " active risks" )
     & IF ( ISBLANK ( _u ), ".", "; " & FORMAT ( _u, "0%" ) & " without mitigation." )""")
 _add("Insight Portfolio", T, """
 VAR _a = [Story | Active Projects] + 0
@@ -208,14 +211,17 @@ VAR _b = [Story | Benefits At Completion]
 VAR _e = [Story | Finance EAC]
 RETURN IF ( ISBLANK ( _b ), "No benefits plan in view.",
     {money("_b")} & " planned benefits against " & {money("_e")} & " EAC." )""")
-_add("Insight Status", T, """
+_add("Insight Status", T, f"""
 VAR _n = [Story | Status · Not Reporting] + 0
 RETURN IF ( _n = 0, "Every project reported recently.",
-    FORMAT ( _n, "0" ) & IF ( _n = 1, " project has", " projects have" ) & " not reported for 30+ days." )""")
+    FORMAT ( _n, "0" ) & IF ( _n = 1, " project has", " projects have" ) & " not reported for more than {STALE_DAYS} days." )""")
 _add("Insight Governance", T, """
 VAR _f = [PMO | Plans Failing] + 0
-RETURN IF ( _f = 0, "All plans pass the Plan Insights rules.",
-    FORMAT ( _f, "0" ) & IF ( _f = 1, " plan fails", " plans fail" ) & " Plan Insights rules." )""")
+VAR _g = [PMO | Governance Score]
+VAR _lead = IF ( ISBLANK ( _g ), "", "Data trust " & FORMAT ( _g, "0" ) & "; " )
+RETURN IF ( _f = 0,
+    _lead & IF ( ISBLANK ( _g ), "All plans pass", "all plans pass" ) & " the Plan Insights rules.",
+    _lead & FORMAT ( _f, "0" ) & IF ( _f = 1, " plan fails", " plans fail" ) & " Plan Insights rules." )""")
 
 SUBJECT_COLOUR = {"Financials": hm("Colour EAC"), "Schedule": hm("Colour Schedule"), "Resources": hm("Colour Util"),
                   "Risk": hm("Colour Risk"), "Portfolio": hm("Colour Portfolio"), "Benefits": hm("Colour Benefits"),
@@ -223,7 +229,7 @@ SUBJECT_COLOUR = {"Financials": hm("Colour EAC"), "Schedule": hm("Colour Schedul
 for _s, _cm in SUBJECT_COLOUR.items():
     _add(f"Pill {_s}", T, f"""
 VAR _c = [{_cm}]
-RETURN SWITCH ( _c, "{C_RED}", "Act", "{C_AMBER}", "Watch", "{C_TEAL}", "OK", "–" )""",
+RETURN SWITCH ( _c, "{C_RED}", "Act", "{C_AMBER}", "Watch", "{C_TEAL}", "OK", "#8C98B3", "Low", "–" )""",
          desc=f"Status word of the {_s} card, from its colour measure.")
     _add(f"Pill Fill {_s}", T, f"""
 VAR _c = [{_cm}]
