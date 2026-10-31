@@ -6,9 +6,9 @@ Layout: see build() (Task 4/5). Spec: docs/superpowers/specs/2026-10-31-insights
 """
 import pages
 import pbir
-from pbir import (NAVY, ORANGE, TEAL, AMBER, RED, GREY, MUTED, Page, card, headline, chart, textbox, st, shape,
-                  image, slicer, nav_button, P, M, C, s, b, n, col_solid, measure_colour, measure_fill, legend)
-from story_measures import add, money, T, D, I
+from pbir import (ORANGE, GREY, Page, card, headline, chart, textbox, st, shape, image, slicer, nav_button,
+                  P, M, C, s, b, n, col_solid, measure_colour, measure_fill, legend)
+from story_measures import add, T, D, I
 
 PX = "Story | Home · "
 FOLDER = "Story\\Home"
@@ -59,35 +59,44 @@ VAR _s = [{hm("Act Score")}]
 RETURN IF ( ISBLANK ( _s ), BLANK (), IF ( _s >= 80, "{C_RED}", "{C_AMBER}" ) )""", folder=FOLDER + "\\Colours")
 _add("Act Count", I, f"COUNTROWS ( FILTER ( {PROJECTS}, NOT ISBLANK ( [{hm('Act Score')}] ) ) ) + 0", "0")
 
+# Reasons are counted from the same Act Score buckets as the Act-now table, so the parts add up to Act Count.
+_BUCKETS = [(100, "off track"), (90, "over budget"), (80, "late vs baseline"), (60, "with overdue work"),
+            (50, "with no recent report"), (40, "with failing rules")]
+_bvars = "\n".join(f"VAR _b{k} = COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {k} ) )" for k, _ in _BUCKETS)
+_bparts = "\n        & ".join(f'IF ( _b{k} > 0, ", " & FORMAT ( _b{k}, "0" ) & " {lbl}" )' for k, lbl in _BUCKETS)
 _add("Briefing", T, f"""
 VAR _n = [{hm("Act Count")}]
 VAR _a = [Story | Active Projects]
-VAR _ob = [Story | Projects Over Budget] + 0
-VAR _sl = [Story | Baseline · Late Projects] + 0
-VAR _nm = EOMONTH ( TODAY (), 0 ) + 1
-VAR _op = CALCULATE ( [Story | Over-allocated People], DimDate[MonthStart] = _nm, REMOVEFILTERS ( DimDate ) ) + 0
+{_bvars}
+VAR _p = {_bparts}
 RETURN
     IF ( _n = 0, "No active project needs a decision this week. Keep the data fresh.",
-        FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & " active projects need a decision — "
-            & FORMAT ( _ob, "0" ) & " over budget, " & FORMAT ( _sl, "0" ) & " slipping, "
-            & FORMAT ( _op, "0" ) & " people above 100% in " & FORMAT ( _nm, "mmmm" ) & "." )""")
+        FORMAT ( _n, "0" ) & " of " & FORMAT ( _a, "0" ) & " active projects need a decision — " & MID ( _p, 3, LEN ( _p ) ) & "." )""",
+     desc="Act-now count with its breakdown by reason; the parts add up to Act Count.")
 
 # ---------------------------------------------------------------- history from status-report snapshots
-# Per report month: each project's latest report in that month. Months older than 6 return blank (sparkline window).
-LATEST = """( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ) )
-            RETURN CALCULATE ( MAX ( FactStatusReport[{col}] ), FactStatusReport[Report_ReportEnd] = _e ) )"""
+# Per month: every ACTIVE project's latest report as of month end (carried forward, not only projects that reported
+# in the month). Months older than 6 return blank (sparkline window).
+ACTIVE_PROJECTS = f'CALCULATETABLE ( {PROJECTS}, DimProject[State_Value] = "Active" )'
+LATEST = """( VAR _e = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ),
+                              FactStatusReport[Report_ReportEnd] < _me + 1 )
+            RETURN CALCULATE ( MAX ( FactStatusReport[{col}] ), REMOVEFILTERS ( DimDate ),
+                               FactStatusReport[Report_ReportEnd] = _e ) )"""
 WINDOW = "MAX ( DimDate[MonthStart] ) >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ) && MIN ( DimDate[MonthStart] ) <= TODAY ()"
 _add("EAC Var % (reports)", D, f"""
-VAR _b = SUMX ( {PROJECTS}, {LATEST.format(col="Budget")} )
-VAR _f = SUMX ( {PROJECTS}, {LATEST.format(col="Forecast")} )
+VAR _me = EOMONTH ( MAX ( DimDate[MonthStart] ), 0 )
+VAR _act = {ACTIVE_PROJECTS}
+VAR _b = SUMX ( _act, {LATEST.format(col="Budget")} )
+VAR _f = SUMX ( _act, {LATEST.format(col="Forecast")} )
 RETURN IF ( {WINDOW}, DIVIDE ( _f - _b, _b ) )""", "+0.0%;-0.0%;0.0%",
-     "Forecast vs budget as reported in the status reports of the month (latest report per project).")
+     "Forecast vs budget of active projects, each on its latest status report as of the month end (carried forward).")
 _add("On Track % (reports)", D, f"""
-VAR _t = ADDCOLUMNS ( {PROJECTS}, "@h", {LATEST.format(col="OverallHealth")} )
+VAR _me = EOMONTH ( MAX ( DimDate[MonthStart] ), 0 )
+VAR _t = ADDCOLUMNS ( {ACTIVE_PROJECTS}, "@h", {LATEST.format(col="OverallHealth")} )
 VAR _n = COUNTROWS ( FILTER ( _t, NOT ISBLANK ( [@h] ) ) )
 VAR _ok = COUNTROWS ( FILTER ( _t, LEFT ( [@h], 3 ) = "(1)" ) )
 RETURN IF ( {WINDOW} && _n > 0, DIVIDE ( _ok, _n ) )""", "0%",
-     "Share of reporting projects whose latest report in the month says On Track.")
+     "Share of active projects whose latest report as of the month end says On Track (carried forward).")
 
 CHANGE = """
 VAR _m = CALCULATETABLE ( VALUES ( DimDate[MonthStart] ), FactStatusReport, REMOVEFILTERS ( DimDate ) )
@@ -127,7 +136,7 @@ RETURN IF ( ISBLANK ( _g ), BLANK (), IF ( _g >= 90, "{C_TEAL}", IF ( _g >= 75, 
 # ---------------------------------------------------------------- area tiles
 _add("Line Portfolio", T, 'IF ( NOT ISBLANK ( [Story | Aligned Budget %] ), FORMAT ( [Story | Aligned Budget %], "0%" ) & " budget aligned" )')
 _add("Line Financials", T, 'FORMAT ( [Story | Projects Over Budget] + 0, "0" ) & " over EAC"')
-_add("Line Resources", T, 'FORMAT ( [Story | Over-allocated People] + 0, "0" ) & " over 100%"')
+_add("Line Resources", T, 'FORMAT ( [Story | Over-allocated People] + 0, "0" ) & " over 100% (in view)"')
 _add("Line Schedule", T, 'FORMAT ( [Story | Baseline · Late Projects] + 0, "0" ) & " slipping"')
 _add("Line Risk", T, 'FORMAT ( [Story | Critical High Risks] + 0, "0" ) & " critical"')
 _add("Line Benefits", T, 'IF ( ISBLANK ( [Story | Benefit Cost Ratio] ), "no benefits plan", "Benefit/cost " & FORMAT ( [Story | Benefit Cost Ratio], "0.0" ) )')
@@ -174,7 +183,8 @@ def panel(pg, x, y, w, h, key, parent=None, fill=PANEL):
 
 
 def ghost_link(target_key, tooltip):
-    """Transparent page-navigation button laid over a card / icon."""
+    """Transparent page-navigation button laid over a card / icon. The ghost links deliberately also cover the
+    sparkline and change-chip tooltips: hovering them shows the link tooltip instead (accepted; the whole card is a link)."""
     v = nav_button("", pages.PID[target_key], tooltip, fill=CANVAS, hover=CANVAS, press=CANVAS)
     v["objects"]["fill"] = [{"properties": {"show": b(True)}},
                             {"properties": {"fillColor": col_solid(CANVAS), "transparency": n(100)}, "selector": {"id": "default"}},
@@ -198,9 +208,16 @@ def text_line(measure, size=11, colour=INK2, bg=PANEL):
     return v
 
 
+def fx_fill(measure_field, colour_measure):
+    """Series fill driven by a colour measure (fx field value), as the stripes do."""
+    return {"properties": {"fill": measure_colour(colour_measure)}, "selector": {"metadata": pbir.qref(measure_field)}}
+
+
 def sparkline(measure, colour):
+    """colour: a hex string (static) or the name of a colour measure (fx field value)."""
+    fill = measure_fill(M(measure), colour) if colour.startswith("#") else fx_fill(M(measure), colour)
     v = chart("lineChart", {"Category": [P(C("DimDate", "MonthStart"), "Month")], "Y": [P(M(measure), " ")]}, "",
-              {"dataPoint": [measure_fill(M(measure), colour)], "legend": legend(show=False),
+              {"dataPoint": [fill], "legend": legend(show=False),
                "categoryAxis": [{"properties": {"show": b(False)}}], "valueAxis": [{"properties": {"show": b(False)}}],
                "lineStyles": [{"properties": {"strokeWidth": n(2), "showMarker": b(False)}}]},
               sort=[(C("DimDate", "MonthStart"), "Ascending")])
@@ -216,8 +233,9 @@ def progress(pg, x, y, w, h, value_measure, lo, hi, colour, key):
     Desktop shows only a placeholder icon for a bar chart shorter than ~100px, so the chart is CHART_H tall and
     centred on the track (its bar is a thin line in the middle). It is transparent and sits below the Task 5 body."""
     pg.add(x, y, w, h, shape("#3A4768", radius=4), key=f"{key}_track")
+    fill = measure_fill(M(value_measure), colour) if colour.startswith("#") else fx_fill(M(value_measure), colour)
     v = chart("clusteredBarChart", {"Y": [P(M(value_measure), "v")]}, "",
-              {"dataPoint": [measure_fill(M(value_measure), colour)], "legend": legend(show=False),
+              {"dataPoint": [fill], "legend": legend(show=False),
                "categoryAxis": [{"properties": {"show": b(False)}}],
                "valueAxis": [{"properties": {"show": b(False), "start": n(lo), "end": n(hi)}}]})
     vco = v["visualContainerObjects"]
@@ -262,7 +280,7 @@ def build_pulse(pg):
     pg.add(X0 + 16, 118, 608, 98, text_line(hm("Briefing"), size=13, colour="#FFFFFF", bg=ORANGE), key="brief")
     for k, (m, label, cm, series, chg, col) in enumerate([
             ("Story | EAC Variance %", "EAC vs budget", hm("Colour EAC"), hm("EAC Var % (reports)"),
-             hm("EAC Change"), C_RED),
+             hm("EAC Change"), hm("Colour EAC")),
             ("Story | On Track %", "On track", None, hm("On Track % (reports)"), hm("On Track Change"), C_TEAL)]):
         x = X0 + 656 + k * 520
         panel(pg, x, 92, 504, 150, f"lead_bg{k}")
@@ -272,9 +290,9 @@ def build_pulse(pg):
         pg.add(x, 92, 504, 150, ghost_link("finance" if k == 0 else "exec", label), key=f"lead_go{k}")
     # four small KPIs
     small = [("Story | Active Projects", "Active projects", None, None, "portfolio"),
-             ("Story | Utilisation %", "Utilisation", hm("Colour Util"), (0, 1, C_AMBER), "resources"),
+             ("Story | Utilisation %", "Utilisation", hm("Colour Util"), (0, 1, hm("Colour Util")), "resources"),
              ("Story | Critical High Risks", "Critical risks", None, None, "risk"),
-             ("PMO | Governance Score", "Data trust", hm("Colour Trust"), (0, 100, C_TEAL), "governance")]
+             ("PMO | Governance Score", "Data trust", hm("Colour Trust"), (0, 100, hm("Colour Trust")), "governance")]
     w = (X1 - X0 - 3 * 16) / 4
     for k, (m, label, cm, bar, target) in enumerate(small):
         x = round(X0 + k * (w + 16), 2)
@@ -306,7 +324,8 @@ def link_chip(text, target):
 
 
 def stripe(measure):
-    """Thin status stripe: a rectangle whose fill is the colour measure (fx field value)."""
+    """Thin status stripe: a rectangle whose fill is the colour measure (fx field value). Callers inset it by the
+    14 px panel radius on both sides so it does not poke past the rounded corners."""
     v = shape(PANEL)
     v["objects"]["fill"] = [{"properties": {"show": b(True), "fillColor": measure_colour(measure), "transparency": n(0)},
                              "selector": {"id": "default"}}]
@@ -368,7 +387,7 @@ def build_pmo(pg, grp):
         x = round(ax + (k % 2) * (tw + 16), 2)
         y = round(BODY_Y + (k // 2) * (th + 12), 2)
         panel(pg, x, y, round(tw, 2), round(th, 2), f"area_bg{k}", parent=grp)
-        pg.add(x, y, round(tw, 2), 4, stripe(colour), key=f"area_stripe{k}", parent=grp)
+        pg.add(x + 14, y, round(tw - 28, 2), 4, stripe(colour), key=f"area_stripe{k}", parent=grp)
         pg.add(x + 14, y + 10, 300, 22, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"area_lbl{k}", parent=grp)
         pg.add(x + 8, y + 32, round(tw - 16, 2), 38, text_line(hm(line), size=14), key=f"area_line{k}", parent=grp)
         cw = min(110, (tw - 28 - 6 * (len(links) - 1)) / len(links))
@@ -386,7 +405,7 @@ def build_exec(pg, grp):
     for k, (label, m, colour, target) in enumerate(decisions):
         x = round(X0 + k * (dw + 16), 2)
         panel(pg, x, BODY_Y, round(dw, 2), 280, f"dec_bg{k}", parent=grp)
-        pg.add(x, BODY_Y, round(dw, 2), 4, stripe(colour), key=f"dec_stripe{k}", parent=grp)
+        pg.add(x + 14, BODY_Y, round(dw - 28, 2), 4, stripe(colour), key=f"dec_stripe{k}", parent=grp)
         pg.add(x + 16, BODY_Y + 12, 300, 24, textbox([[(label, st("Segoe UI", 10, LABEL))]]), key=f"dec_lbl{k}", parent=grp)
         pg.add(x + 8, BODY_Y + 40, round(dw - 16, 2), 190, text_line(m, size=16), key=f"dec{k}", parent=grp)
         pg.add(x + 16, BODY_Y + 238, 160, 30, link_chip(dict(pages.PAGES)[target].split("·", 1)[-1].strip(), target),
@@ -400,7 +419,7 @@ def build_exec(pg, grp):
         x = round(X0 + k * (aw + 16), 2)
         y = BODY_Y + 296
         panel(pg, x, y, round(aw, 2), 292, f"ans_bg{k}", parent=grp)
-        pg.add(x, y, round(aw, 2), 4, stripe(colour), key=f"ans_stripe{k}", parent=grp)
+        pg.add(x + 14, y, round(aw - 28, 2), 4, stripe(colour), key=f"ans_stripe{k}", parent=grp)
         pg.add(x + 16, y + 12, round(aw - 32, 2), 26, textbox([[(q, st("Segoe UI Semibold", 11, INK2, True))]]),
                key=f"ans_q{k}", parent=grp)
         pg.add(x + 8, y + 44, round(aw - 16, 2), 196, text_line(hm(m), size=13), key=f"ans{k}", parent=grp)
