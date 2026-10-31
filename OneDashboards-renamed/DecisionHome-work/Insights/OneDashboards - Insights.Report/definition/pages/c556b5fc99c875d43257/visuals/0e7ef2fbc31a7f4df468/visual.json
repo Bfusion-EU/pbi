@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Over-Allocated Resource Count"
+                  "Property": "Story | Over-allocated People"
                 }
               },
-              "queryRef": "_Measures.Capacity | Over-Allocated Resource Count",
-              "nativeQueryRef": "Capacity | Over-Allocated Resource Count"
+              "queryRef": "_Measures.Story | Over-allocated People",
+              "nativeQueryRef": "Story | Over-allocated People"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Over-allocated people'"
+                  "Value": "'Over 100% (org-wide)'"
                 }
               }
             },

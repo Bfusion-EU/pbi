@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "9ec1ef225508fef1e112",
   "position": {
-    "x": 608.67,
+    "x": 524.0,
     "y": 188,
     "z": 2200,
-    "width": 286.33,
+    "width": 244.0,
     "height": 90,
     "tabOrder": 2200
   },
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Realization Rate (%)"
+                  "Property": "Story | Benefits Actual Label"
                 }
               },
-              "queryRef": "_Measures.Benefits | Realization Rate (%)",
-              "nativeQueryRef": "Benefits | Realization Rate (%)"
+              "queryRef": "_Measures.Story | Benefits Actual Label",
+              "nativeQueryRef": "Story | Benefits Actual Label"
             }
           ]
         }
@@ -53,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "24D"
+                  "Value": "20D"
                 }
               }
             },
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Realisation rate'"
+                  "Value": "'Actually realised'"
                 }
               }
             },

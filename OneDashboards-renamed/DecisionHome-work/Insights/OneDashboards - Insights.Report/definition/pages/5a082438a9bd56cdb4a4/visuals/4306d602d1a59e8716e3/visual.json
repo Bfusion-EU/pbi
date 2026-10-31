@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "4306d602d1a59e8716e3",
   "position": {
-    "x": 270.0,
+    "x": 238.25,
     "y": 188,
     "z": 2100,
-    "width": 244.0,
+    "width": 212.25,
     "height": 90,
     "tabOrder": 2100
   },
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Actual Cost"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Finance | Actual Cost",
-              "nativeQueryRef": "Finance | Actual Cost"
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "Story | Finance EAC"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Actual cost'"
+                  "Value": "'EAC'"
                 }
               }
             },

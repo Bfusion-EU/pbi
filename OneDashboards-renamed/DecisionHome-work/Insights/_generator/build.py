@@ -8,6 +8,7 @@ theme, report filters and background images, and the semantic model .bim for
 reference validation.
 """
 import json
+import os
 import re
 import shutil
 import sys
@@ -19,14 +20,16 @@ ROOT = HERE.parent
 REF = ROOT.parent / "OneDashboards - Bfusion.Report"
 BIM = Path(r"C:\Users\HassanBezzizi\repos\BFusion-Apps\SemanticModel\ModeL360Star.bim")
 NAME = "OneDashboards - Insights"
-OUT = ROOT / f"{NAME}.Report"
+# INSIGHTS_OUT lets parallel workers build into their own folder (validation only)
+OUT = Path(os.environ["INSIGHTS_OUT"]) / f"{NAME}.Report" if os.environ.get("INSIGHTS_OUT") else ROOT / f"{NAME}.Report"
 
 sys.path.insert(0, str(HERE))
 import pbir  # noqa: E402
 from story_measures import MEASURES  # noqa: E402
+import pages  # noqa: E402
+import extensions  # noqa: E402,F401  (registers extension measures)
 
 pbir.EXTENSION_MEASURES.update(m["name"] for m in MEASURES)
-import pages  # noqa: E402
 
 RESOURCES = ["bfv5_footer_band_1800x1800.png", "bfv5_footer_band_1800x1000.png",
              "OnePlan_logo_-_dark_background9901469509814106.png"]
@@ -97,7 +100,7 @@ def build():
     if OUT.exists():
         shutil.rmtree(OUT)
     # pbip + item metadata
-    dump(ROOT / f"{NAME}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
+    dump(OUT.parent / f"{NAME}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
                                  "version": "1.0", "artifacts": [{"report": {"path": f"{NAME}.Report"}}],
                                  "settings": {"enableAutoRecovery": True}})
     plat = json.loads((REF / ".platform").read_text(encoding="utf-8"))
@@ -195,7 +198,9 @@ def check(built):
     for f in OUT.rglob("visual.json"):
         d = json.loads(f.read_text(encoding="utf-8"))
         for flt in d.get("filterConfig", {}).get("filters", []):
-            c = flt["field"]["Column"]
+            c = flt["field"].get("Column")
+            if c is None:  # measure filter: the generic walk() above already checks the measure
+                continue
             if (c["Expression"]["SourceRef"]["Entity"], c["Property"]) not in cols:
                 missing.add(("filter column", c["Property"]))
     # DAX references in story measures

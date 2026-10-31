@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Task | Overdue Tasks"
+                  "Property": "Story | Overdue Tasks"
                 }
               },
-              "queryRef": "_Measures.Task | Overdue Tasks",
-              "nativeQueryRef": "Task | Overdue Tasks"
+              "queryRef": "_Measures.Story | Overdue Tasks",
+              "nativeQueryRef": "Story | Overdue Tasks"
             }
           ]
         }

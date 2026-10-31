@@ -95,8 +95,8 @@
                 }
               },
               "queryRef": "_Measures.Story | Plan Budget",
-              "nativeQueryRef": "Plan budget",
-              "displayName": "Plan budget"
+              "nativeQueryRef": "Plan-field budget",
+              "displayName": "Plan-field budget"
             },
             {
               "field": {
@@ -111,8 +111,8 @@
                 }
               },
               "queryRef": "_Measures.Story | Plan Forecast",
-              "nativeQueryRef": "Forecast",
-              "displayName": "Forecast"
+              "nativeQueryRef": "Plan-field forecast",
+              "displayName": "Plan-field forecast"
             },
             {
               "field": {
@@ -127,8 +127,8 @@
                 }
               },
               "queryRef": "_Measures.Story | Plan Variance %",
-              "nativeQueryRef": "Variance %",
-              "displayName": "Variance %"
+              "nativeQueryRef": "Plan variance %",
+              "displayName": "Plan variance %"
             },
             {
               "field": {
@@ -150,28 +150,30 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Modeler | Priority Score"
+                  "Property": "Story | Priority Score"
                 }
               },
-              "queryRef": "_Measures.Modeler | Priority Score",
-              "nativeQueryRef": "Priority",
-              "displayName": "Priority"
+              "queryRef": "_Measures.Story | Priority Score",
+              "nativeQueryRef": "Priority score",
+              "displayName": "Priority score"
             },
             {
               "field": {
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Project | Active Risks"
+                  "Property": "Story | Active Risk Count"
                 }
               },
-              "queryRef": "_Measures.Project | Active Risks",
+              "queryRef": "_Measures.Story | Active Risk Count",
               "nativeQueryRef": "Active risks",
               "displayName": "Active risks"
             },
@@ -187,8 +189,8 @@
                 }
               },
               "queryRef": "_Measures.Benefits | Planned Benefits",
-              "nativeQueryRef": "Benefits",
-              "displayName": "Benefits"
+              "nativeQueryRef": "Plan-field benefits",
+              "displayName": "Plan-field benefits"
             }
           ]
         }
@@ -208,7 +210,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Portfolio register'"
+                  "Value": "'Portfolio register (plan fields)'"
                 }
               }
             },
@@ -296,6 +298,33 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
                 }
               }
             }
@@ -474,5 +503,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

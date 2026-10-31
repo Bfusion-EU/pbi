@@ -58,15 +58,32 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Total Hours Scheduled"
+                  "Property": "Story | Scheduled Hours"
                 }
               },
-              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "queryRef": "_Measures.Story | Scheduled Hours",
               "nativeQueryRef": "Scheduled (h)",
               "displayName": "Scheduled (h)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Committed Hours"
+                }
+              },
+              "queryRef": "_Measures.Story | Committed Hours",
+              "nativeQueryRef": "Committed (h)",
+              "displayName": "Committed (h)"
             }
           ]
         }
@@ -104,7 +121,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'People: capacity versus scheduled hours per month'"
+                  "Value": "'People (org-wide): capacity vs scheduled hours'"
                 }
               }
             },
@@ -235,7 +252,25 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Capacity | Total Hours Scheduled"
+            "metadata": "_Measures.Story | Scheduled Hours"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1E6D6E'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | Committed Hours"
           }
         }
       ],
@@ -260,6 +295,19 @@
               "expr": {
                 "Literal": {
                   "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "secShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

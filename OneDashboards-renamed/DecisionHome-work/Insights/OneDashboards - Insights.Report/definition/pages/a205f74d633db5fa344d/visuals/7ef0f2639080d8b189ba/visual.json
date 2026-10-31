@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "7ef0f2639080d8b189ba",
   "position": {
-    "x": 1201.33,
+    "x": 1032.0,
     "y": 188,
     "z": 2400,
-    "width": 286.33,
+    "width": 244.0,
     "height": 90,
     "tabOrder": 2400
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Benefit Cost Ratio"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Story | Benefit Cost Ratio",
-              "nativeQueryRef": "Story | Benefit Cost Ratio"
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "Story | Finance EAC"
             }
           ]
         }
@@ -62,14 +62,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Ratio Colour"
+                    "Literal": {
+                      "Value": "'#1F2A44'"
                     }
                   }
                 }
@@ -100,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Benefit ÷ cost'"
+                  "Value": "'EAC'"
                 }
               }
             },

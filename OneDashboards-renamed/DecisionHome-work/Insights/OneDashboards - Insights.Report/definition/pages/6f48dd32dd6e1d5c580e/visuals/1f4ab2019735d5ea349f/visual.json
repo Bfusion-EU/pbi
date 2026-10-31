@@ -99,10 +99,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Task Slip (days)"
+                  "Property": "Story | Late Task Slip (days)"
                 }
               },
-              "queryRef": "_Measures.Story | Task Slip (days)",
+              "queryRef": "_Measures.Story | Late Task Slip (days)",
               "nativeQueryRef": "Slip (days)",
               "displayName": "Slip (days)"
             },
@@ -150,7 +150,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Story | Task Slip (days)"
+                "Property": "Story | Late Task Slip (days)"
               }
             },
             "direction": "Descending"
@@ -403,7 +403,7 @@
                 }
               }
             ],
-            "metadata": "_Measures.Story | Task Slip (days)"
+            "metadata": "_Measures.Story | Late Task Slip (days)"
           }
         },
         {
@@ -419,7 +419,7 @@
                           "Entity": "_Measures"
                         }
                       },
-                      "Property": "Story | Due Colour"
+                      "Property": "Story | Late Due Colour"
                     }
                   }
                 }
@@ -528,7 +528,7 @@
         "howCreated": "User"
       },
       {
-        "name": "0b6fc1e1611823f24a78",
+        "name": "5992a58ac4154ccbb1a5",
         "field": {
           "Column": {
             "Expression": {
@@ -536,7 +536,7 @@
                 "Entity": "DimTask"
               }
             },
-            "Property": "Status"
+            "Property": "Leaf"
           }
         },
         "type": "Categorical",
@@ -552,30 +552,75 @@
           "Where": [
             {
               "Condition": {
-                "Not": {
-                  "Expression": {
-                    "In": {
-                      "Expressions": [
-                        {
-                          "Column": {
-                            "Expression": {
-                              "SourceRef": {
-                                "Source": "t"
-                              }
-                            },
-                            "Property": "Status"
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "t"
                           }
+                        },
+                        "Property": "Leaf"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "true"
                         }
-                      ],
-                      "Values": [
-                        [
-                          {
-                            "Literal": {
-                              "Value": "'Completed'"
-                            }
-                          }
-                        ]
-                      ]
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "5b3ffe92352e2927746e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "PercentDone"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimTask",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 3,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "t"
+                        }
+                      },
+                      "Property": "PercentDone"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "100D"
                     }
                   }
                 }
@@ -622,6 +667,112 @@
                             }
                           },
                           "Property": "BaselineEndDate"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "ece1f775efc3d1e27299",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "ProjectKey"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimTask",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "ProjectKey"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
                         }
                       },
                       "Right": {

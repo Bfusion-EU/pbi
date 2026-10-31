@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "ede07de6757f98858369",
   "position": {
-    "x": 1497.67,
+    "x": 1286.0,
     "y": 188,
     "z": 2500,
-    "width": 286.33,
+    "width": 244.0,
     "height": 90,
     "tabOrder": 2500
   },
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Project | Total CostofDelay"
+                  "Property": "Story | Benefit Cost Ratio"
                 }
               },
-              "queryRef": "_Measures.Project | Total CostofDelay",
-              "nativeQueryRef": "Project | Total CostofDelay"
+              "queryRef": "_Measures.Story | Benefit Cost Ratio",
+              "nativeQueryRef": "Story | Benefit Cost Ratio"
             }
           ]
         }
@@ -61,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#C0392B'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Ratio Colour"
                     }
                   }
                 }
@@ -93,7 +100,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Cost of delay'"
+                  "Value": "'Benefit ÷ EAC'"
                 }
               }
             },

@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Portfolio 360 | On-Time Delivery %"
+                  "Property": "Story | On Schedule %"
                 }
               },
-              "queryRef": "_Measures.Portfolio 360 | On-Time Delivery %",
-              "nativeQueryRef": "Portfolio 360 | On-Time Delivery %"
+              "queryRef": "_Measures.Story | On Schedule %",
+              "nativeQueryRef": "Story | On Schedule %"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'On schedule'"
+                  "Value": "'On schedule (active)'"
                 }
               }
             },

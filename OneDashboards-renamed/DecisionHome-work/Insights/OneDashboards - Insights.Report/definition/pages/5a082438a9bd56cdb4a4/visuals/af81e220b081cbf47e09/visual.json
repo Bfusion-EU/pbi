@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "af81e220b081cbf47e09",
   "position": {
-    "x": 1286.0,
+    "x": 1127.25,
     "y": 188,
     "z": 2500,
-    "width": 244.0,
+    "width": 212.25,
     "height": 90,
     "tabOrder": 2500
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Burn %"
+                  "Property": "Story | Actual Cost"
                 }
               },
-              "queryRef": "_Measures.Story | Burn %",
-              "nativeQueryRef": "Story | Burn %"
+              "queryRef": "_Measures.Story | Actual Cost",
+              "nativeQueryRef": "Story | Actual Cost"
             }
           ]
         }
@@ -62,14 +62,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Burn Colour"
+                    "Literal": {
+                      "Value": "'#1F2A44'"
                     }
                   }
                 }
@@ -100,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Budget burned'"
+                  "Value": "'Actual cost'"
                 }
               }
             },

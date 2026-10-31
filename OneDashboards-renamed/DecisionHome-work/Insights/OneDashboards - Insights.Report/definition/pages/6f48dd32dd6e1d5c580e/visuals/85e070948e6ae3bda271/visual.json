@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Portfolio 360 | Slipping Count"
+                  "Property": "Story | Schedule Off Track"
                 }
               },
-              "queryRef": "_Measures.Portfolio 360 | Slipping Count",
-              "nativeQueryRef": "Portfolio 360 | Slipping Count"
+              "queryRef": "_Measures.Story | Schedule Off Track",
+              "nativeQueryRef": "Story | Schedule Off Track"
             }
           ]
         }
@@ -93,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Projects slipping'"
+                  "Value": "'Schedule off track'"
                 }
               }
             },
