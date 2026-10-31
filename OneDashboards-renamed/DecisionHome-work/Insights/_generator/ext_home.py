@@ -106,10 +106,23 @@ _add("On Track Change", T, CHANGE.format(src=hm("On Track % (reports)")), desc="
 _add("Due In 30d", I, 'VAR _d = MAX ( DimTask[EndDate] ) RETURN IF ( _d >= TODAY () && _d <= TODAY () + 30, 1 )', "0",
      "1 for a task due in the next 30 days; drives the Next 30 days table on Home.")
 
-# ---------------------------------------------------------------- progress-bar remainders
-_add("Util Remainder", D, "VAR _u = [Story | Utilisation %] RETURN IF ( NOT ISBLANK ( _u ) && _u < 1, 1 - _u )", "0%")
-_add("Trust Remainder", D, "VAR _g = [PMO | Governance Score] RETURN IF ( NOT ISBLANK ( _g ), 100 - _g )", "0")
-
+# ---------------------------------------------------------------- top bar: refresh line (sentence case) + dark status colours
+_add("Refreshed", T, """
+VAR _t = MAX ( RefreshTime[Last Refreshed (Belgium Time)] )
+RETURN IF ( ISBLANK ( _t ), "Powered by OnePlan", "Powered by OnePlan  ·  refreshed " & FORMAT ( _t, "dd mmm yyyy hh:nn" ) & " CET" )""")
+_COL = FOLDER + "\\Colours"
+_add("Colour EAC", T, f"""
+VAR _p = [Story | EAC Variance %]
+RETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, "{C_RED}", IF ( _p > 0, "{C_AMBER}", "{C_TEAL}" ) ) )""",
+     desc="Same thresholds as Story | Variance Colour, light-on-dark colours.", folder=_COL)
+_add("Colour Util", T, f"""
+VAR _u = [Story | Utilisation %]
+RETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, "{C_RED}", IF ( _u >= 0.8, "{C_TEAL}", IF ( _u >= 0.5, "{C_AMBER}", "#8C98B3" ) ) ) )""",
+     desc="Same thresholds as Story | Util Colour, light-on-dark colours.", folder=_COL)
+_add("Colour Trust", T, f"""
+VAR _g = [PMO | Governance Score]
+RETURN IF ( ISBLANK ( _g ), BLANK (), IF ( _g >= 90, "{C_TEAL}", IF ( _g >= 75, "{C_AMBER}", "{C_RED}" ) ) )""",
+     desc="Same thresholds as PMO | Governance RAG Colour (90 / 75), light-on-dark colours.", folder=_COL)
 # ---------------------------------------------------------------- area tiles
 _add("Line Portfolio", T, 'IF ( NOT ISBLANK ( [Story | Aligned Budget %] ), FORMAT ( [Story | Aligned Budget %], "0%" ) & " budget aligned" )')
 _add("Line Financials", T, 'FORMAT ( [Story | Projects Over Budget] + 0, "0" ) & " over EAC"')
@@ -142,7 +155,8 @@ for _a, _src in [("Finance", "Story | Finance Headline"), ("Schedule", "Story | 
 # ====================================================================== layout
 CANVAS, PANEL, INK2, LABEL = "#141C2F", "#1B2540", "#E8ECF4", "#8C98B3"
 X0, X1 = 104, 1784          # body left / right edge
-BODY_Y = 396                # top of the view bodies
+CHART_H = 110              # progress-bar chart height (Desktop min ~100px)
+BODY_Y = 400                # top of the view bodies
 RAIL = [("cc", "home", "Command center"),
         ("exec", "exec", "1 Executive summary"),
         ("portfolio", "portfolio", "2 Portfolio — Gates · Scenarios · Project One-Pager"),
@@ -177,7 +191,10 @@ def dark_card(measure, label, colour_measure=None, colour=INK2, size=26):
 
 
 def text_line(measure, size=11, colour=INK2, bg=PANEL):
-    return headline(measure, bg=bg, border=bg, size=size, colour=colour)
+    v = headline(measure, bg=bg, border=bg, size=size, colour=colour)
+    # card chrome padding eats the text box; zero it so short single-line cards do not clip
+    v["visualContainerObjects"]["padding"] = [{"properties": {"top": n(0), "bottom": n(0), "left": n(0), "right": n(0)}}]
+    return v
 
 
 def sparkline(measure, colour):
@@ -193,16 +210,21 @@ def sparkline(measure, colour):
     return v
 
 
-def progress(value_measure, rest_measure, colour):
-    v = chart("hundredPercentStackedBarChart", {"Y": [P(M(value_measure), "v"), P(M(rest_measure), "rest")]}, "",
-              {"dataPoint": [measure_fill(M(value_measure), colour), measure_fill(M(rest_measure), "#26314F")],
-               "legend": legend(show=False), "categoryAxis": [{"properties": {"show": b(False)}}],
-               "valueAxis": [{"properties": {"show": b(False)}}]})
+def progress(pg, x, y, w, h, value_measure, lo, hi, colour, key):
+    """Track (grey rounded shape, x/y/w/h) with a single-measure bar chart on top; value axis fixed to lo..hi.
+    Desktop shows only a placeholder icon for a bar chart shorter than ~100px, so the chart is CHART_H tall and
+    centred on the track (its bar is a thin line in the middle). It is transparent and sits below the Task 5 body."""
+    pg.add(x, y, w, h, shape("#3A4768", radius=4), key=f"{key}_track")
+    v = chart("clusteredBarChart", {"Y": [P(M(value_measure), "v")]}, "",
+              {"dataPoint": [measure_fill(M(value_measure), colour)], "legend": legend(show=False),
+               "categoryAxis": [{"properties": {"show": b(False)}}],
+               "valueAxis": [{"properties": {"show": b(False), "start": n(lo), "end": n(hi)}}]})
     vco = v["visualContainerObjects"]
     vco["title"] = [{"properties": {"show": b(False)}}]
     vco["background"] = [{"properties": {"show": b(False)}}]
     vco["border"] = [{"properties": {"show": b(False)}}]
-    return v
+    # the chart's plot area is inset ~15px on both sides, so the chart is 30px wider than the track
+    pg.add(x - 15, round(y + h / 2 - CHART_H / 2, 2), w + 30, CHART_H, v, key=key)
 
 
 def dark_slicer(field, label):
@@ -225,8 +247,8 @@ def build_rail(pg):
 
 
 def build_top(pg):
-    pg.add(X0, 4, 700, 52, text_line(hm("Greeting"), size=16, bg=CANVAS), key="greet")
-    pg.add(X0, 54, 700, 38, text_line("Story | Refreshed", size=10, colour=LABEL, bg=CANVAS), key="refreshed")
+    pg.add(X0, 8, 700, 40, text_line(hm("Greeting"), size=16, bg=CANVAS), key="greet")
+    pg.add(X0, 50, 700, 32, text_line(hm("Refreshed"), size=11, colour=LABEL, bg=CANVAS), key="refreshed")
     pg.add(1180, 14, 180, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
     pg.add(1370, 14, 180, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
@@ -237,7 +259,7 @@ def build_pulse(pg):
     pg.add(X0 + 16, 100, 608, 24, textbox([[("This week's briefing", st("Segoe UI", 10, "#FFFFFF"))]]), key="brief_lbl")
     pg.add(X0 + 8, 124, 624, 108, headline(hm("Briefing"), bg=ORANGE, border=ORANGE, size=14, colour="#FFFFFF"), key="brief")
     for k, (m, label, cm, series, chg, col) in enumerate([
-            ("Story | EAC Variance %", "EAC vs budget", "Story | Variance Colour", hm("EAC Var % (reports)"),
+            ("Story | EAC Variance %", "EAC vs budget", hm("Colour EAC"), hm("EAC Var % (reports)"),
              hm("EAC Change"), C_RED),
             ("Story | On Track %", "On track", None, hm("On Track % (reports)"), hm("On Track Change"), C_TEAL)]):
         x = X0 + 656 + k * 520
@@ -248,16 +270,16 @@ def build_pulse(pg):
         pg.add(x, 92, 504, 150, ghost_link("finance" if k == 0 else "exec", label), key=f"lead_go{k}")
     # four small KPIs
     small = [("Story | Active Projects", "Active projects", None, None, "portfolio"),
-             ("Story | Utilisation %", "Utilisation", "Story | Util Colour", (hm("Util Remainder"), C_AMBER), "resources"),
+             ("Story | Utilisation %", "Utilisation", hm("Colour Util"), (0, 1, C_AMBER), "resources"),
              ("Story | Critical High Risks", "Critical risks", None, None, "risk"),
-             ("PMO | Governance Score", "Data trust", "PMO | Governance RAG Colour", (hm("Trust Remainder"), C_TEAL), "governance")]
+             ("PMO | Governance Score", "Data trust", hm("Colour Trust"), (0, 100, C_TEAL), "governance")]
     w = (X1 - X0 - 3 * 16) / 4
     for k, (m, label, cm, bar, target) in enumerate(small):
         x = round(X0 + k * (w + 16), 2)
         panel(pg, x, 254, round(w, 2), 134, f"kpi_bg{k}")
         pg.add(x + 8, 258, round(w - 16, 2), 92, dark_card(m, label, colour_measure=cm), key=f"kpi{k}")
         if bar:
-            pg.add(x + 8, 350, round(w - 16, 2), 36, progress(m, bar[0], bar[1]), key=f"kpi_bar{k}")
+            progress(pg, x + 16, 356, round(w - 32, 2), 16, m, bar[0], bar[1], bar[2], f"kpi_bar{k}")
         pg.add(x, 254, round(w, 2), 134, ghost_link(target, label), key=f"kpi_go{k}")
 
 
