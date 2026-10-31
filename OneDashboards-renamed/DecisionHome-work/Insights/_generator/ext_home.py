@@ -250,6 +250,7 @@ def dark_slicer(field, label):
     v = slicer(field, label, dark=True)
     v["objects"]["items"] = [{"properties": {"fontFamily": s("Segoe UI"), "textSize": n(10),
                                              "fontColor": col_solid(INK2), "background": col_solid(PANEL)}}]
+    # Desktop ignores items.background / dropdown styling for the closed state (still white box); left as is.
     return v
 
 
@@ -359,12 +360,12 @@ def build_pmo(pg, grp):
     tbl["visualContainerObjects"]["title"] = [{"properties": {"show": b(False)}}]
     tbl["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
     tbl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
-    pg.add(X0 + 8, BODY_Y + 42, lw - 16, 300, tbl, key="act_tbl", parent=grp, filters=[pages.REAL_PROJECTS])
-    pg.add(X0 + 16, BODY_Y + 348, 260, 34, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
+    pg.add(X0 + 8, BODY_Y + 42, lw - 16, 318, tbl, key="act_tbl", parent=grp, filters=[pages.REAL_PROJECTS])
+    pg.add(X0 + 16, BODY_Y + 364, 260, 34, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
            "Select a project row first", fill=ORANGE, size=10), key="act_drill", parent=grp)
-    pg.add(X0 + 290, BODY_Y + 352, 500, 26, textbox([[("Select a row, then open — or right-click › Drill through",
+    pg.add(X0 + 290, BODY_Y + 368, 500, 26, textbox([[("Select a row, then open — or right-click › Drill through",
                                                       st("Segoe UI", 9, LABEL))]]), key="act_hint", parent=grp)
-    pg.add(X0 + 16, BODY_Y + 392, 400, 28, textbox([[("Next 30 days", st("Segoe UI Semibold", 13, INK2, True))]]),
+    pg.add(X0 + 16, BODY_Y + 400, 400, 28, textbox([[("Next 30 days", st("Segoe UI Semibold", 13, INK2, True))]]),
            key="next_title", parent=grp)
     mobj = pbir.table_style(10, header_bg=PANEL)
     mobj["values"] = obj["values"][:1]
@@ -377,7 +378,7 @@ def build_pmo(pg, grp):
     miles["visualContainerObjects"]["title"] = [{"properties": {"show": b(False)}}]
     miles["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
     miles["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
-    pg.add(X0 + 8, BODY_Y + 422, lw - 16, 158, miles, key="next_tbl", parent=grp,
+    pg.add(X0 + 8, BODY_Y + 430, lw - 16, 150, miles, key="next_tbl", parent=grp,
            filters=[pbir.f_in("DimTask", "Milestone", [True]), pbir.f_cmp("DimTask", "PercentDone", 3, 100),
                     pages.PROJECT_TASKS])
     # right: area health 2 x 4
