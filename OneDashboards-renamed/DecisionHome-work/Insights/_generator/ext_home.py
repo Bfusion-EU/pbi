@@ -208,6 +208,37 @@ def text_line(measure, size=11, colour=INK2, bg=PANEL):
     return v
 
 
+VALUE_VISUAL = "tableEx"
+
+
+def _cell(measure, size, colour_measure=None, colour=INK2):
+    """One-cell table: left-aligned, wrapping text; header blended into the card (panel colour, 1pt)."""
+    fc = measure_colour(colour_measure) if colour_measure else col_solid(colour)
+    obj = {"columnHeaders": [{"properties": {"backColor": col_solid(PANEL), "fontColor": col_solid(PANEL),
+                                             "fontSize": n(1), "outline": s("None")}}],
+           "values": [{"properties": {"fontSize": n(size), "fontColorPrimary": fc, "backColorPrimary": col_solid(PANEL),
+                                      "fontColorSecondary": fc, "backColorSecondary": col_solid(PANEL),
+                                      "wordWrap": b(True), "outline": s("None")}}],
+           "grid": [{"properties": {"gridHorizontal": b(False), "gridVertical": b(False), "rowPadding": n(0),
+                                    "outlineColor": col_solid(PANEL)}}],
+           "total": [{"properties": {"totals": b(False)}}]}
+    if colour_measure:
+        obj["values"].append(pbir.cf_font(M(measure), colour_measure))
+    v = chart("tableEx", {"Values": [P(M(measure), " ")]}, "", obj)
+    vco = v["visualContainerObjects"]
+    vco["title"] = [{"properties": {"show": b(False)}}]
+    vco["background"] = [{"properties": {"show": b(False)}}]
+    vco["border"] = [{"properties": {"show": b(False)}}]
+    return v
+
+
+def value_cell(measure, colour_measure=None, size=28):
+    return _cell(measure, size, colour_measure)
+
+
+def text_cell(measure, size=11, colour=INK2, colour_measure=None):
+    return _cell(measure, size, colour_measure, colour)
+
 def fx_fill(measure_field, colour_measure):
     """Series fill driven by a colour measure (fx field value), as the stripes do."""
     return {"properties": {"fill": measure_colour(colour_measure)}, "selector": {"metadata": pbir.qref(measure_field)}}

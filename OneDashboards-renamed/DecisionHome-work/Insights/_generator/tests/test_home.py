@@ -224,3 +224,14 @@ def test_briefing_breaks_down_act_count():
     expr = next(m["expression"] for m in MEASURES if m["name"] == "Story | Home · Briefing")
     for k in (100, 90, 80, 60, 50, 40):
         assert f"[Story | Home · Act Score] = {k}" in expr
+
+
+def test_value_and_text_cells():
+    v = ext_home.value_cell("Story | Active Projects", size=28)
+    t = ext_home.text_cell("Story | Home · Greeting", size=11)
+    assert v["visualType"] == ext_home.VALUE_VISUAL
+    assert t["visualType"] == ext_home.VALUE_VISUAL
+    for vis in (v, t):
+        roles = vis["query"]["queryState"]
+        projs = [p for r in roles.values() for p in r["projections"]]
+        assert len(projs) == 1  # exactly one measure, nothing else
