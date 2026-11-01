@@ -18,7 +18,10 @@ HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
         + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS]
         + [f"Tip {c}" for c in CHIPN]
         + [f"Tip {t}" for t in ("Financials", "Schedule", "Resources", "Risk", "Portfolio", "Portfolio Budget",
-                                "Benefits", "Status", "Status Days", "Governance")])
+                                "Benefits", "Status", "Status Days", "Governance")]
+        + [f"Tip {t} Key" for t in ("Portfolio", "Benefits", "Status", "Governance")]
+        + [f"Tip {t} {x}" for t in ("Portfolio", "Benefits", "Status", "Governance") for x in ("Sub", "More")]
+        + ["Gov Failing Projects"])
 
 
 REMOVED = ([f"Line {s}" for s in ["Portfolio", "Financials", "Resources", "Schedule", "Risk", "Benefits", "Timesheets",
@@ -355,7 +358,10 @@ def test_cells_have_service_headroom():
     for c in CARD_KEYS:
         for part, size in pts.items():
             vc = _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL)
-            assert vc["position"]["height"] >= size * 1.33 + 22 + 28, (c, part)
+            # the number cell must stop above the label row (it would block the card click there), so it only keeps
+            # ~10 px of headroom: 34 pt = ~45 px of text + the 1 pt header row ~ 64 px, the cell is 78
+            need = size * 1.33 + 22 + (10 if part == "num" else 28)
+            assert vc["position"]["height"] >= need, (c, part)
     # header row ~22 px; the sentence cell may sit under the spark / bar (they are drawn on top of it)
     # rows stay inside the card
     r = ext_home
@@ -428,7 +434,7 @@ def _tip_measures(tip):
 
 def _is_tooltip_page(pg):
     return (pg.page.get("type") == "Tooltip" and pg.page.get("visibility") == "HiddenInViewMode"
-            and (pg.width, pg.height) == (360, 260) and pg.page["pageBinding"]["type"] == "Tooltip")
+            and (pg.width, pg.height) in {(360, 260), (360, ext_home.TIP_H_LONG)} and pg.page["pageBinding"]["type"] == "Tooltip")
 
 
 def test_tooltip_pages_registered_hidden():
@@ -455,6 +461,8 @@ def test_pill_chips_and_numbers_point_to_their_tooltip_page():
         assert _tip_section(_vc(pg, f"card_{c}_num", ext_home.VALUE_VISUAL)) == pages.PID[f"tip_home_{c}"], c
     for sec in [pages.PID["tip_home_act"]] + [pages.PID[f"tip_home_{x}"] for x in SLUGS + CARD_KEYS]:
         assert _is_tooltip_page(built[sec])
+        want = ext_home.TIP_H_LONG if sec in {pages.PID[f"tip_home_{x}"] for x in ext_home.LONG_TIPS} else 260
+        assert built[sec].height == want, sec
 
 
 def test_each_tooltip_table_uses_its_own_blank_unless_measure():
@@ -479,13 +487,22 @@ def test_each_tooltip_table_uses_its_own_blank_unless_measure():
         assert f"[Story | Home · Act Score] = {k}" in expr and expr.strip().startswith("IF"), nm
 
 
+def _overlap(a, b):
+    return (a["x"] < b["x"] + b["width"] and b["x"] < a["x"] + a["width"]
+            and a["y"] < b["y"] + b["height"] and b["y"] < a["y"] + a["height"])
+
+
 def test_tooltip_visuals_sit_above_ghost_links():
     pg = _home()
     for c in CARD_KEYS:
         num, go = _vc(pg, f"card_{c}_num", ext_home.VALUE_VISUAL), _vc(pg, f"card_{c}_go", "actionButton")
         assert num["position"]["z"] > go["position"]["z"], c
-        # the number does not cover the whole row, so the rest of the card still clicks through
+        # the number does not cover the whole row, so the rest of the card still clicks through ...
         assert num["position"]["width"] < go["position"]["width"] - 80, c
+        # ... and it ends above the label row, which must keep the whole-card click
+        lbl = _vc(pg, f"card_{c}_lbl", "textbox")
+        assert num["position"]["y"] + num["position"]["height"] <= lbl["position"]["y"], c
+        assert not _overlap(num["position"], lbl["position"]), c
 
 
 def test_each_chip_has_a_bookmark_button_to_its_bucket():
@@ -520,3 +537,72 @@ def test_bucket_views_show_only_their_bucket():
         assert _bookmark_target(_vc(pg, f"act_all_{slug}", "actionButton")) == _bm("Home · PMO view")["name"]
         p = tbl["position"]
         assert (p["x"], p["y"], p["width"], p["height"]) == (full["x"], full["y"], full["width"], full["height"]), b
+
+
+# ---------------------------------------------------------------- review fixes (rev 2, round 2)
+def _expr(name):
+    return next(m["expression"] for m in MEASURES if m["name"] == f"Story | Home · {name}")
+
+
+def test_long_lists_are_capped_with_blank_unless_rank():
+    for stem in ("Portfolio", "Benefits", "Status", "Governance"):
+        e = _expr(f"Tip {stem}")
+        assert "RANKX" in e and "ALLSELECTED ( DimProject[Name] )" in e and "<= 12" in e, stem
+        assert "TOPN" not in e.upper(), stem                  # blank-unless pattern, no TopN
+        more, sub = _expr(f"Tip {stem} More"), _expr(f"Tip {stem} Sub")
+        assert "_n > 12" in more and "more · open the" in more, stem
+        assert "12" in sub, stem
+    assert "ASC" in _expr("Tip Benefits")                      # weakest first
+    assert "9999" in _expr("Tip Status Key")
+    assert "Proposed" not in _expr("Tip Portfolio Key")         # proposed-with-no-budget rows are gone
+    assert "_b > 0" in _expr("Tip Portfolio Key")
+
+
+def test_long_tooltip_pages_are_tall_with_footer_and_total():
+    built = _all_home_pages()
+    for c in ext_home.LONG_TIPS:
+        pg = built[pages.PID[f"tip_home_{c}"]]
+        assert pg.height == ext_home.TIP_H_LONG, c
+        more = _vc(pg, "tip_more", "card")
+        assert more is not None and "More" in repr(more["visual"]["query"] if "visual" in more else more), c
+        sub = _vc(pg, "tip_sub", ext_home.VALUE_VISUAL)
+        assert "Sub" in repr(sub), c
+        tbl = _vc(pg, "tip_tbl", "tableEx")["position"]
+        assert tbl["y"] + tbl["height"] <= more["position"]["y"], c        # footer sits under the table
+        assert more["position"]["y"] + more["position"]["height"] <= ext_home.TIP_H_LONG, c
+
+
+def test_tooltip_titles_say_what_they_explain():
+    for key, (title, *_rest) in ext_home.card_tips().items():
+        assert title.startswith("Behind "), key
+
+
+def test_governance_sentence_counts_listable_plans():
+    assert "COUNTROWS" in _expr("Gov Failing Projects") and "Failing Rules" in _expr("Gov Failing Projects")
+    e = _expr("Insight Governance")
+    assert "Gov Failing Projects" in e and "project plans fail" in e and "other plan" in e
+    assert "MAX ( 0, _f - _n )" in e                                   # the " (+M other plans)" tail only when M > 0
+
+
+def test_click_zones():
+    assert ext_home.PILL_HIT_W >= 115 and ext_home.PILL_HIT_W < ext_home.PILL_W / 2
+    pg = _home()
+    btn = _vc(pg, "chip_go0", "actionButton")
+    fill = btn["visual"]["objects"]["fill"]
+    rest = next(f for f in fill if f.get("selector", {}).get("id") == "default")["properties"]["transparency"]
+    assert rest["expr"]["Literal"]["Value"].rstrip("D") != "100"      # visible at rest
+
+def test_status_movement_charts_two_rows_inside_the_standard_section():
+    import ext_status
+    pg = next(p for p in ext_status.build() if p.id == pages.PID["status"])
+    vcs = {d: next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, f"v_move_{d}", "barChart"))["position"]
+           for d, _ in ext_status.DIMS}
+    assert {p["height"] for p in vcs.values()} == {150}              # a bar chart needs ~150 px to draw its bars
+    assert {vcs[d]["y"] for d in ("Overall", "Schedule")} == {pages.Y2V}
+    assert {vcs[d]["y"] for d in ("Financial", "Effort", "Issue")} == {pages.Y2V + 155}
+    assert max(p["y"] + p["height"] for p in vcs.values()) <= pages.Y2V + pages.H2
+    assert [round(vcs[d]["width"]) for d in ("Overall", "Schedule")] == [278, 278]
+    assert [round(vcs[d]["width"]) for d in ("Financial", "Effort", "Issue")] == [183, 183, 183]
+    sec = {n: next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, f"sec{n}", "textbox"))["position"]["y"]
+           for n in (3, 4)}
+    assert (sec[3], sec[4]) == (pages.Y3, pages.Y4)                    # sections 3 and 4 are back in place

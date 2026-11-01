@@ -224,9 +224,23 @@ filters (real projects, risk work type / state) are fine.
 
 The tooltip is set on the visual with `visualTooltip` `{show, type "Canvas", section <page id>}`. A button cannot show
 a report-page tooltip, so every visual that carries one sits ABOVE the whole-card ghost link: the card number cell is
-added after the ghost link and is only 180 px wide (`NUM_W`), so the rest of its row still clicks through to the
-chapter. A tooltip cannot scroll: a list longer than about eight rows shows its top rows (each list is sorted by its
-figure, worst first).
+added after the ghost link, 180 px wide (`NUM_W`) and only 92 px tall (y+36..y+128, ending above the label row at
+y+130): **the number shows the hover list, while the rest of the card (label row, sentence, spark / bar) opens the
+chapter.** The titles say what the list explains ("Behind budget aligned: alignment by project", ...).
+
+**Long lists (rev 2.4).** A tooltip cannot scroll, so Portfolio, Benefits, Status and Governance (more than 7 rows) use a
+taller page (360 x 430) and are cut to 12 rows by the blank-unless pattern: the row's `Tip <X>` measure is BLANK when
+`RANKX ( ALLSELECTED ( DimProject[Name] ), <Tip X Key>, , order )` (ties broken by name) is above 12. No TopN, no visual
+measure filter. Sort keys: Portfolio = plan budget, largest first (proposed projects with no budget are no longer
+listed); Benefits = benefit/cost, weakest first; Status = `Tip Status Key` (9999 = nothing submitted, otherwise days),
+longest silence first; Governance = failing rule count. The subtitle is a measure (`Tip <X> Sub`: "16 project plans · top
+12 by failing rules") and a footer card (`Tip <X> More`: "+4 more · open the Governance page") is a single space when
+nothing is cut (a blank card would print "(Blank)").
+
+**Governance sentence vs list.** `Plans Failing` (23) also counts non-project plans, which have no row to list; the
+hover list shows project plans only (16). `Home · Gov Failing Projects` counts those 16, and `Insight Governance` reads
+"Data trust 93; 16 project plans fail Plan Insights rules (+7 other plans)", the tail appearing only when the
+difference is above 0, so the sentence and the list agree.
 
 **Click: the Act-now column filtered by reason.** Seven versions of the Act-now list sit in the same place, each in
 its own top-level group: `grp_act_all` (Project, Why = `Act Reason`, Impact; the rev 2 table) and `grp_act_<bucket>`
@@ -241,7 +255,7 @@ its own top-level group: `grp_act_all` (Project, Why = `Act Reason`, Impact; the
 
 **Hover and click on the same chip.** A data visual on top is needed for the hover list, a button on top for the
 click, and Power BI passes neither through the other. Each chip is therefore split: the LEFT zone (dot and count,
-47 px, `CHIP_HIT_W`) is a transparent bookmark button above the text with a faint white tint on hover, so it reads
+43 px, `CHIP_HIT_W`, a faint capsule at rest and a clear tint on hover; the count is padded to two digits so the label starts at the same x) is a transparent bookmark button above the text with a faint white tint on hover, so it reads
 as clickable; the rest of the chip (the label words) is the text card, which shows the list on hover. The pill works
 the same way: its left 100 px (the "11 of 15" part of the centred text) is a button back to the PMO view (all
 projects), the rest hovers. The PMO switch also returns to the PMO view, and each bucket view has "Show all ›".
@@ -263,7 +277,7 @@ Alternatives rejected: a button over the whole chip (no hover list at all), the 
   and `Pill Fill <Subject>` if the pill background needs its own colour measure.
 - **New in rev 2.3** (folder `Story\Home\Tooltips`): `Tip <Bucket>` (6), `Tip Financials`, `Tip Schedule`,
   `Tip Resources`, `Tip Risk`, `Tip Portfolio`, `Tip Portfolio Budget`, `Tip Benefits`, `Tip Status`, `Tip Status Days`,
-  `Tip Governance`: each blank unless the row qualifies (section 8).
+  `Tip Governance`, the `Tip <X> Key / Sub / More` measures of the four long lists and `Gov Failing Projects`: each blank unless the row qualifies (section 8).
 - **Removed** once nothing uses them: `Line …` (8), `Answer …` (4), the rev-1 KPI-row
   arrangement in `build_pulse`, and (rev 2.2) `Greeting`, `Refreshed`, `Briefing` and `Briefing Reasons`. Measures and helpers no longer used by Home are deleted.
 - **Reused**: everything named in the card table, the Act-now and history measures and `Due`.

@@ -345,25 +345,25 @@ def build():
     ])
 
     # ② movement
-    Y2, Y2V = pages.Y2, pages.Y2V
+    Y2, Y2V, H2 = pages.Y2, pages.Y2V, pages.H2
     gap, bh = 5, 150
-    H2 = 3 * bh + 2 * gap          # three rows of movement charts; the shared section height is too short
-    grow = H2 - pages.H2           # push section 3 down by the same amount (page is 1800 high)
     pages.section(pg, Y2, 2, "Who got better or worse since the last report?",
                   "Per health dimension, then project by project — worst moves first.")
     pages.legend_note(pg, 1084, Y2 + 4, 700, [("Improved", TEAL), ("Unchanged", "#8A93A0"), ("Worsened", RED)],
                       "move_legend")
     # A bar chart needs ~100 px of rendered height (title + plot) and more when the canvas is scaled down:
     # at 64 px Desktop draws the title and no bars, at 110 px a placeholder icon, at 150 px the bars.
-    # Overall spans the left column, the four dimensions sit 2 x 2 below it.
-    half = (560 - gap) // 2
+    # So the five charts sit in TWO rows of 150 px inside the standard section height (2 x 150 + gap <= H2):
+    # Overall and Schedule on top (2 columns), Financial, Effort and Issue below (3 columns).
+    assert 2 * bh + gap <= H2
+    colw = 560
     for k, (dim, _) in enumerate(DIMS):
-        if k == 0:
-            x, y, w = 16, Y2V, 560
-        else:
-            x, y, w = 16 + ((k - 1) % 2) * (half + gap), Y2V + (1 + (k - 1) // 2) * (bh + gap), half
+        per_row = 2 if k < 2 else 3
+        w = round((colw - gap * (per_row - 1)) / per_row, 2)
+        i = k if k < 2 else k - 2
+        x, y = round(16 + i * (w + gap), 2), Y2V + (0 if k < 2 else bh + gap)
         pg.add(x, y, w, bh, _movement_bar(dim, f"{dim} health"), key=f"v_move_{dim}")
-    cols = [P(DP("Name"), "Project"), P(M(m("Previous Report End")), "Previous report"),
+    cols =[P(DP("Name"), "Project"), P(M(m("Previous Report End")), "Previous report"),
             P(M(m("Latest Report End")), "Latest report"), P(M(m("Overall Change")), "Overall: before → now"),
             P(M(m("Overall Move")), "Overall Δ")]
     obj = table_style(9)
@@ -378,7 +378,7 @@ def build():
                                      obj, sort=[(M(m("Overall Move")), "Descending")]), key="v_move_table")
 
     # ③ heat strip + drift
-    Y3, Y3V, H3 = pages.Y3 + grow, pages.Y3V + grow, pages.H3
+    Y3, Y3V, H3 = pages.Y3, pages.Y3V, pages.H3
     pages.section(pg, Y3, 3, "How has health evolved, and what drifted?",
                   "Latest overall health per report month; budget, forecast and risks on the latest versus previous report.")
     pages.legend_note(pg, 1084, Y3 + 4, 700, [("On Track", TEAL), ("At Risk", AMBER), ("Off Track", RED)],

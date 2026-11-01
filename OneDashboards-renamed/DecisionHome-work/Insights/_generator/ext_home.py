@@ -70,7 +70,10 @@ CHIPS = [(k, lbl, lbl.title(), C_RED if k >= 80 else C_AMBER) for k, lbl in _BUC
 CHIP_ON, CHIP_OFF = "#E8ECF4", "#5A6680"
 for _k, _lbl, _nm, _dot in CHIPS:
     _cnt = f"COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {_k} ) ) + 0"
-    _add(f"Chip {_nm}", T, f'''FORMAT ( {_cnt}, "0" ) & " {_lbl}"''',
+    # The count is padded to two digit-widths (figure space, U+2007) so the label starts at the same x for every count:
+    # the chip's click zone (dot + count) then ends right before the label.
+    _add(f"Chip {_nm}", T, f'''VAR _c = {_cnt}
+RETURN FORMAT ( _c, "0" ) & IF ( _c < 10, UNICHAR ( 8199 ), "" ) & " {_lbl}"''',
          desc=f"Active projects whose Act score is {_k} ({_lbl}); 0 when none. The six chips add up to Act Count.")
     _add(f"Chip Colour {_nm}", T, f'''IF ( {_cnt} > 0, "{CHIP_ON}", "{CHIP_OFF}" )''',
          desc=f"Chip text colour: light when the count is above 0, dim when 0.", folder=FOLDER + "\\Colours")
@@ -118,33 +121,93 @@ VAR _t =
 RETURN IF ( HASONEVALUE ( DimTask[Name] ) && NOT ISEMPTY ( _t ), SUMX ( _t, DimTask[Exposure] ) + 0 )""", "#,##0",
      f"Exposure score of an active project risk scoring {HIGH_HEAT}+ on the 4×4 grid (same rule as Story | Critical "
      "High Risks); blank otherwise.", folder=_TIPS)
-_add("Tip Portfolio", T, f"""
+
+# ---- long lists: at most TIP_ROWS rows. A tooltip cannot scroll, so the list is cut by the same blank-unless pattern:
+# the row's Tip measure is BLANK when its rank among the qualifying projects (RANKX over ALLSELECTED of the row column,
+# ties broken by name so the cut is exact) is beyond TIP_ROWS. No TopN, no visual measure filter.
+TIP_ROWS = 12
+
+
+def _capped(key, order, then):
+    """DAX of a Tip measure: `then` (an expression over _v = the key) when the row is within the top TIP_ROWS."""
+    k = f"[{hm(key)}]"
+    return f"""
+VAR _v = {k}
+VAR _nm = SELECTEDVALUE ( DimProject[Name] )
+VAR _q = FILTER ( ALLSELECTED ( DimProject[Name] ), NOT ISBLANK ( {k} ) )
+VAR _rank = RANKX ( _q, {k}, _v, {order} ) + COUNTROWS ( FILTER ( _q, {k} = _v && DimProject[Name] < _nm ) )
+RETURN IF ( NOT ISBLANK ( _v ) && _rank <= {TIP_ROWS}, {then} )"""
+
+
+def _tip_count(key):
+    return f"COUNTROWS ( FILTER ( {PROJECTS}, NOT ISBLANK ( [{hm(key)}] ) ) ) + 0"
+
+
+def _list_footer(stem, key, noun, order_note, chapter):
+    """Subtitle ('16 projects · top 12 by x') and footer ('+4 more · open the X page') cards of a long-list tooltip."""
+    _add(f"Tip {stem} Sub", T, f"""
+VAR _n = {_tip_count(key)}
+RETURN IF ( _n = 0, "None right now",
+    FORMAT ( _n, "0" ) & IF ( _n = 1, " {noun[0]}", " {noun[1]}" )
+        & IF ( _n > {TIP_ROWS}, " · {order_note[1]}", " · {order_note[0]}" ) )""",
+         desc=f"Subtitle of the {stem} hover list: how many rows qualify, and the cut to {TIP_ROWS}.", folder=_TIPS)
+    _add(f"Tip {stem} More", T, f"""
+VAR _n = {_tip_count(key)}
+RETURN IF ( _n > {TIP_ROWS}, "+" & FORMAT ( _n - {TIP_ROWS}, "0" ) & " more · open the {chapter} page", " " )""",
+         desc=f"Footer of the {stem} hover list. When every row fits in the {TIP_ROWS} it is a single space: it shows "
+              "nothing, where a blank card would print '(Blank)'.", folder=_TIPS)
+
+
+_add("Tip Portfolio Key", D, f"""
 VAR _b = SUM ( DimProject[Budget] )
-VAR _st = SELECTEDVALUE ( DimProject[State_Value] )
-VAR _al = SELECTEDVALUE ( DimProject[StrategicAlignment_Value] )
-RETURN
-    IF ( {ONE_PROJECT} && ( _b > 0 || _st = "Proposed" ),
-        IF ( _al IN {{ "Strong", "Extreme" }}, "Aligned", "Not aligned" ) & IF ( _st = "Proposed", " · proposed", "" ) )""",
-     desc="Aligned (Strong / Extreme strategic alignment) or Not aligned, for a project with plan budget or proposed in "
-          "the pipeline; blank otherwise.", folder=_TIPS)
+RETURN IF ( {ONE_PROJECT} && _b > 0, _b )""", "#,##0",
+     "Sort key of the Portfolio hover list: plan-field budget of a project that has one (uncapped); blank otherwise.",
+     folder=_TIPS)
+_add("Tip Portfolio", T, _capped("Tip Portfolio Key", "DESC", """
+IF ( SELECTEDVALUE ( DimProject[StrategicAlignment_Value] ) IN { "Strong", "Extreme" }, "Aligned", "Not aligned" )
+        & IF ( SELECTEDVALUE ( DimProject[State_Value] ) = "Proposed", " · proposed", "" )"""),
+     desc=f"Aligned (Strong / Extreme strategic alignment) or Not aligned, for the {TIP_ROWS} projects with the largest "
+          "plan budget; blank otherwise.", folder=_TIPS)
 _add("Tip Portfolio Budget", D, f'IF ( NOT ISBLANK ( [{hm("Tip Portfolio")}] ), SUM ( DimProject[Budget] ) )', "#,##0",
      "Plan-field budget of a project listed by Tip Portfolio; blank otherwise.", folder=_TIPS)
-_add("Tip Benefits", D, f"""
+_list_footer("Portfolio", "Tip Portfolio Key", ("project", "projects"), ("largest budget first", "top 12 by budget"), "Portfolio")
+_add("Tip Benefits Key", D, f"""
 VAR _r = [Story | Benefit Cost Ratio]
 RETURN IF ( {ONE_PROJECT} && _r > 0, _r )""", "0.00",
-     "Benefit / cost ratio of a project that has one; blank otherwise.", folder=_TIPS)
-_add("Tip Status", T, """
-SWITCH ( [Story | Status · Reporting Gap], 1, "Overdue", 2, "Nothing submitted" )""",
-     desc="Overdue / Nothing submitted for a project that counts as not reporting (same rule as Story | Status · Not "
-          "Reporting); blank otherwise.", folder=_TIPS)
-_add("Tip Status Days", I, """
-IF ( [Story | Status · Reporting Gap] >= 1, [Story | Status · Days Since Report] )""", "0",
-     "Days since the last submitted report of a project that counts as not reporting; blank otherwise (and blank "
-     "when it never reported).", folder=_TIPS)
-_add("Tip Governance", I, f"""
+     "Sort key of the Benefits hover list: benefit / cost ratio of a project that has one (uncapped); blank otherwise.",
+     folder=_TIPS)
+_add("Tip Benefits", D, _capped("Tip Benefits Key", "ASC", "_v"), "0.00",
+     f"Benefit / cost ratio of the {TIP_ROWS} weakest projects (lowest ratio first); blank otherwise.", folder=_TIPS)
+_list_footer("Benefits", "Tip Benefits Key", ("project", "projects"), ("weakest first", "12 weakest first"), "Benefits")
+_add("Tip Status Key", I, """
+VAR _g = [Story | Status · Reporting Gap]
+RETURN IF ( _g >= 1, IF ( _g = 2, 9999, [Story | Status · Days Since Report] ) )""", "0",
+     "Sort key of the Status hover list: 9999 for a project that never submitted a report, otherwise the days since "
+     "its last one; blank for a project that counts as reporting.", folder=_TIPS)
+_add("Tip Status", T, _capped("Tip Status Key", "DESC", """
+SWITCH ( [Story | Status · Reporting Gap], 1, "Overdue", 2, "Nothing submitted" )"""),
+     desc=f"Overdue / Nothing submitted for the {TIP_ROWS} longest-silent projects that count as not reporting (same "
+          "rule as Story | Status · Not Reporting); blank otherwise.", folder=_TIPS)
+_add("Tip Status Days", I, f"""
+VAR _k = [{hm("Tip Status Key")}]
+RETURN IF ( NOT ISBLANK ( [{hm("Tip Status")}] ) && _k < 9999, _k )""", "0",
+     "Days since the last submitted report of a listed project; blank when it never submitted one (its sort key is 9999).",
+     folder=_TIPS)
+_list_footer("Status", "Tip Status Key", ("project not reporting", "projects not reporting"),
+             ("longest silence first", "top 12 · longest silence first"), "Status-Report Trend")
+_add("Tip Governance Key", I, f"""
 VAR _f = [Story | Project · Failing Rules]
 RETURN IF ( {ONE_PROJECT} && _f > 0, _f )""", "0",
-     "Number of Plan Insights rules failing for a plan that fails at least one; blank otherwise.", folder=_TIPS)
+     "Sort key of the Governance hover list: Plan Insights rules failing for a project plan that fails at least one "
+     "(uncapped); blank otherwise.", folder=_TIPS)
+_add("Tip Governance", I, _capped("Tip Governance Key", "DESC", "_v"), "0",
+     f"Number of Plan Insights rules failing for the {TIP_ROWS} project plans that fail the most; blank otherwise.",
+     folder=_TIPS)
+_list_footer("Governance", "Tip Governance Key", ("project plan", "project plans"),
+             ("most failing rules first", "top 12 by failing rules"), "Governance")
+_add("Gov Failing Projects", I, f"COUNTROWS ( FILTER ( {PROJECTS}, [Story | Project · Failing Rules] > 0 ) ) + 0", "0",
+     "Project plans that fail at least one Plan Insights rule (the rows the Governance hover list can show). "
+     "[PMO | Plans Failing] also counts non-project plans, which have no row to list.")
 
 # ---------------------------------------------------------------- history from status-report snapshots
 # Per month: every ACTIVE project's latest report as of month end (carried forward, not only projects that reported
@@ -279,13 +342,17 @@ _add("Insight Status", T, f"""
 VAR _w = [Story | Status · Overall Worsened] + 0
 RETURN IF ( _w = 0, "No project got worse since its last report.",
     FORMAT ( _w, "0" ) & IF ( _w = 1, " project is", " projects are" ) & " worse since their last report." )""")
-_add("Insight Governance", T, """
+_add("Insight Governance", T, f"""
 VAR _f = [PMO | Plans Failing] + 0
+VAR _n = [{hm("Gov Failing Projects")}] + 0
+VAR _o = MAX ( 0, _f - _n )
 VAR _g = [PMO | Governance Score]
 VAR _lead = IF ( ISBLANK ( _g ), "", "Data trust " & FORMAT ( _g, "0" ) & "; " )
+VAR _other = IF ( _o > 0, " (+" & FORMAT ( _o, "0" ) & IF ( _o = 1, " other plan)", " other plans)" ), "" )
 RETURN IF ( _f = 0,
     _lead & IF ( ISBLANK ( _g ), "All plans pass", "all plans pass" ) & " the Plan Insights rules.",
-    _lead & FORMAT ( _f, "0" ) & IF ( _f = 1, " plan fails", " plans fail" ) & " Plan Insights rules." )""")
+    _lead & IF ( _n = 0, "no project plan fails", FORMAT ( _n, "0" ) & IF ( _n = 1, " project plan fails", " project plans fail" ) )
+        & " Plan Insights rules" & _other & "." )""")
 
 SUBJECT_COLOUR = {"Financials": hm("Colour Financials"), "Schedule": hm("Colour Schedule"), "Resources": hm("Colour Util"),
                   "Risk": hm("Colour Risk"), "Portfolio": hm("Colour Portfolio"), "Benefits": hm("Colour Benefits"),
@@ -493,13 +560,15 @@ def with_tip(v, tip_key):
     return v
 
 
-def ghost_bookmark(bm, tooltip):
-    """Transparent bookmark button (click zone); a faint white tint on hover shows it is clickable."""
-    v = pbir.bookmark_button("", bm, tooltip, fill=CANVAS, hover=CANVAS, press=CANVAS)
+def ghost_bookmark(bm, tooltip, rest=100, radius=6):
+    """Bookmark button (click zone) over a text card. `rest` = its transparency at rest (100 = invisible, 92 = a faint
+    capsule that shows where to click); a clear white tint on hover."""
+    v = pbir.bookmark_button("", bm, tooltip, fill=CANVAS, hover=CANVAS, press=CANVAS, radius=radius)
     v["objects"]["fill"] = [{"properties": {"show": b(True)}},
-                            {"properties": {"fillColor": col_solid(CANVAS), "transparency": n(100)}, "selector": {"id": "default"}},
-                            {"properties": {"fillColor": col_solid("#FFFFFF"), "transparency": n(85)}, "selector": {"id": "hover"}},
-                            {"properties": {"fillColor": col_solid("#FFFFFF"), "transparency": n(75)}, "selector": {"id": "press"}}]
+                            {"properties": {"fillColor": col_solid("#FFFFFF" if rest < 100 else CANVAS),
+                                            "transparency": n(rest)}, "selector": {"id": "default"}},
+                            {"properties": {"fillColor": col_solid("#FFFFFF"), "transparency": n(65)}, "selector": {"id": "hover"}},
+                            {"properties": {"fillColor": col_solid("#FFFFFF"), "transparency": n(50)}, "selector": {"id": "press"}}]
     return v
 
 
@@ -507,16 +576,21 @@ def ghost_bookmark(bm, tooltip):
 # needs a button on top. So each chip is split: the LEFT click zone (dot + count, CHIP_HIT_W) is a transparent bookmark
 # button above the text; the rest of the chip (the label words) is the text card, which shows the hover list.
 # The pill works the same way: its left zone ("11 of 15") clicks back to the full list, the rest hovers.
-CHIP_HIT_W = CH_DOT_X + CH_DOT + 4 + 2 * CH_CHAR_PX + 8     # 47 px: dot, gap and a two-digit count
-PILL_HIT_W = 100                                             # the "11 of 15" part of the centred pill text
+CHIP_HIT_W = CH_DOT_X + CH_DOT + 4 + 2 * CH_CHAR_PX + 4     # 43 px: dot, gap and the two-digit count (label starts after)
+# The pill text is centred ("11 of 15 need a decision" at 15 pt); its "11 of 15" part ends ~101 px from the pill's left
+# edge, so the click zone is 120 px and stays well under half the pill (270).
+PILL_HIT_W = 120
 
 
 def build_band_links(pg, bm_all, bm_bucket):
-    """Click zones over the pill and the chips; added after the band texts so they sit above them in z-order."""
-    pg.add(PILL_X, PILL_Y, PILL_HIT_W, PILL_H, ghost_bookmark(bm_all, "Show every Act-now project"), key="pill_go")
+    """Click zones over the pill and the chips; added after the band texts so they sit above them in z-order.
+    Each chip's zone is a faint capsule (a visible segment of the chip) that lights up on hover."""
+    pg.add(PILL_X, PILL_Y, PILL_HIT_W, PILL_H, ghost_bookmark(bm_all, "Show every Act-now project", radius=10),
+           key="pill_go")
     for k, x, y, w in chip_geometry():
         pg.add(x, y, CHIP_HIT_W, CH_H, ghost_bookmark(bm_bucket[CHIP_SLUG[k]], f"Show only the {CHIPS[k][1]} projects "
-                                                                               "in Act now"), key=f"chip_go{k}")
+                                                                               "in Act now", rest=93, radius=14),
+               key=f"chip_go{k}")
 
 
 def band_text(measure, size, colour=INK2, colour_measure=None):
@@ -579,7 +653,9 @@ _PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk"
 
 # Row offsets inside a card (y relative to the card top). Every cell is >= 28 px taller than its text: the Service
 # renders text taller than Desktop and shows a scroll thumb when it does not fit. R_BAR is the bar's centre line.
-R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 40, 120, 120, 160, 96, 212, 256, 126
+R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 36, 92, 130, 160, 96, 212, 256, 126
+# The number cell (y+36..y+128) ends above the label row (y+130), so the label row and the rest of the card keep their
+# whole-card click. A 34 pt number = ~45 px of text + the 1 pt header row; 78 px was too short (Desktop showed a scroll thumb).
 R_RULE, R_FOOT, CHIP_H = ROW_H - 50, ROW_H - 42, 30
 NUM_W = 180                # number cell width: a 34 pt KPI ("100%", "93.4") plus the cell padding
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
@@ -777,23 +853,32 @@ def build_switch(pg, bm_pmo, bm_exec):
 
 # ====================================================================== hover lists: report-page tooltips
 TIP_W, TIP_H = 360, 260
+TIP_H_LONG = 430           # long lists (capped at TIP_ROWS rows): 12 rows of 9 pt (~21 px each) + header + footer fit
 TIP_COLS = 290             # total column width of a tooltip table (see tip_page)
 
 
-def tip_page(key, title, subtitle, columns, sort, filters=()):
+def tip_page(key, title, subtitle, columns, sort, filters=(), long_list=None):
     """Hidden Tooltip page: title, one-line subtitle, orange rule and ONE light table.
-    columns: [(field, display name, width)]. The table's measures are blank unless the row qualifies."""
-    pg = Page(pages.PID[key], dict(pages.HIDDEN_PAGES)[key], TIP_W, TIP_H, background_colour="#FFFFFF",
+    columns: [(field, display name, width)]. The table's measures are blank unless the row qualifies.
+    long_list = (subtitle measure, footer measure) for a capped list: a taller page (TIP_H_LONG), the subtitle becomes a
+    measure ("16 projects · top 12 ...") and a footer card says "+N more · open the X page" (blank when nothing is cut)."""
+    h = TIP_H_LONG if long_list else TIP_H
+    pg = Page(pages.PID[key], dict(pages.HIDDEN_PAGES)[key], TIP_W, h, background_colour="#FFFFFF",
               display_option="ActualSize")
     pg.page["type"] = "Tooltip"
     pg.page["pageBinding"] = {"name": pbir.uid("bind", key), "type": "Tooltip", "parameters": []}
     pg.page["visibility"] = "HiddenInViewMode"
     pg.add(10, 4, 340, 28, textbox([[(title, st("Segoe UI Semibold", 12, pbir.NAVY, True))]]), key="tip_title")
-    pg.add(10, 30, 340, 22, textbox([[(subtitle, st("Segoe UI", 9, pbir.MUTED))]]), key="tip_sub")
-    pg.add(14, 54, 332, 2, shape(ORANGE), key="tip_rule")
-    # 9 pt, one line per row and tight padding: a tooltip cannot scroll, so fit as many rows as possible (~9).
-    # Desktop draws columns wider than their set width (padding), so the widths are capped at TIP_COLS in total
-    # or the last column spills into a horizontal scrollbar (seen in Desktop at 10 pt / 325 px).
+    if long_list:
+        # a one-cell table (left aligned, unlike a card): its 1 pt header row eats ~20 px, so the cell is taller than its text
+        pg.add(CELL_X + 4, 24, 340, 44, text_cell(long_list[0], size=9, colour=pbir.MUTED, bg="#FFFFFF"), key="tip_sub")
+    else:
+        pg.add(10, 30, 340, 22, textbox([[(subtitle, st("Segoe UI", 9, pbir.MUTED))]]), key="tip_sub")
+    top = 72 if long_list else 60                               # table top; the orange rule sits 6 px above it
+    pg.add(14, top - 6, 332, 2, shape(ORANGE), key="tip_rule")
+    # 9 pt, one line per row and tight padding: a tooltip cannot scroll, so fit as many rows as possible (~7 in the
+    # 260 px pages, ~14 in the 400 px ones). Desktop draws columns wider than their set width (padding), so the widths
+    # are capped at TIP_COLS in total or the last column spills into a horizontal scrollbar (seen at 10 pt / 325 px).
     obj = pbir.table_style(9)
     obj["columnHeaders"][0]["properties"]["wordWrap"] = b(False)
     obj["values"][0]["properties"]["wordWrap"] = b(False)
@@ -805,7 +890,11 @@ def tip_page(key, title, subtitle, columns, sort, filters=()):
     tbl = chart("tableEx", {"Values": [P(f, d) for f, d, _w in columns]}, "", obj, sort=sort)
     for o in ("title", "background", "border"):
         tbl["visualContainerObjects"][o] = [{"properties": {"show": b(False)}}]
-    pg.add(6, 60, TIP_W - 12, TIP_H - 66, tbl, key="tip_tbl", filters=list(filters))
+    foot = 34 if long_list else 0
+    pg.add(6, top, TIP_W - 12, h - top - 6 - foot, tbl, key="tip_tbl", filters=list(filters))
+    if long_list:
+        more = band_text(long_list[1], 9, colour=pbir.MUTED)       # centred, transparent card; blank = nothing shown
+        pg.add(10, h - 32, TIP_W - 20, 26, more, key="tip_more")
     return pg
 
 
@@ -815,31 +904,37 @@ def _desc(m):
 
 DPN = pages.DP("Name")
 def card_tips():
-    """card key -> (title, subtitle, columns, sort, extra filters); each list uses the same rule as the card's number.
+    """card key -> (title, subtitle, columns, sort, extra filters, long-list measures or None); each list uses the same
+    rule as the card's number. The titles say what the list explains ("Behind <the number>: ...").
     A function, not a constant: M() must run after build.py has registered the extension measures."""
     return {
-        "fin": ("Financials · projects over EAC", "EAC above the budget at completion",
-                [(DPN, "Project", 210), (M(hm("Tip Financials")), "EAC vs budget", 110)], _desc(hm("Tip Financials")), ()),
-        "sch": ("Schedule · slipping vs baseline", "Finish later than the baseline, in days",
-                [(DPN, "Project", 210), (M(hm("Tip Schedule")), "Finish slip (d)", 110)], _desc(hm("Tip Schedule")), ()),
-        "res": ("Resources · people over 100%", "Peak monthly utilisation in view (active people)",
-                [(pages.DR("Name"), "Person", 210), (M(hm("Tip Resources")), "Peak util.", 110)], _desc(hm("Tip Resources")), ()),
-        "risk": ("Risk · critical and high risks", f"Active project risks scoring {HIGH_HEAT}+ on the 4×4 grid",
+        "fin": ("Behind projects over EAC: EAC vs budget", "EAC above the budget at completion",
+                [(DPN, "Project", 210), (M(hm("Tip Financials")), "EAC vs budget", 110)], _desc(hm("Tip Financials")), (), None),
+        "sch": ("Behind slipping projects: finish slip", "Finish later than the baseline, in days",
+                [(DPN, "Project", 210), (M(hm("Tip Schedule")), "Finish slip (d)", 110)], _desc(hm("Tip Schedule")), (), None),
+        "res": ("Behind utilisation: people over 100%", "Peak monthly utilisation in view (active people)",
+                [(pages.DR("Name"), "Person", 210), (M(hm("Tip Resources")), "Peak util.", 110)], _desc(hm("Tip Resources")), (),
+                None),
+        "risk": ("Behind critical risks: scoring 9+", f"Active project risks scoring {HIGH_HEAT}+ on the 4×4 grid",
                  [(pages.DT("Name"), "Risk", 150), (DPN, "Project", 110), (M(hm("Tip Risk")), "Exposure", 70)],
                  _desc(hm("Tip Risk")), (pages.PROJECT_TASKS, pbir.f_in("DimTask", "WorkType", ["Risks"]),
-                                         pbir.f_in("DimTask", "State", ["Active"]))),
-        "port": ("Portfolio · strategic alignment", "Aligned = Strong / Extreme; plan-field budget",
+                                         pbir.f_in("DimTask", "State", ["Active"])), None),
+        "port": ("Behind budget aligned: alignment by project", "Aligned = Strong / Extreme; plan-field budget",
                  [(DPN, "Project", 150), (M(hm("Tip Portfolio")), "Alignment", 100),
-                  (M(hm("Tip Portfolio Budget")), "Budget", 80)], _desc(hm("Tip Portfolio Budget")), ()),
-        "ben": ("Benefits · benefit / cost per project", "Planned benefits at completion ÷ EAC",
-                [(DPN, "Project", 220), (M(hm("Tip Benefits")), "Benefit / cost", 100)], _desc(hm("Tip Benefits")), ()),
-        "sr": (f"Status reports · not reporting {STALE_DAYS}+ days", "Days since the last submitted report",
-               [(DPN, "Project", 170), (M(hm("Tip Status")), "Reporting", 100), (M(hm("Tip Status Days")), "Days", 60)],
-               _desc(hm("Tip Status Days")), ()),
-        "gov": ("Governance · plans failing rules", "Plan Insights rules failing per plan",
-                [(DPN, "Project", 220), (M(hm("Tip Governance")), "Failing rules", 100)], _desc(hm("Tip Governance")), ()),
+                  (M(hm("Tip Portfolio Budget")), "Budget", 80)], _desc(hm("Tip Portfolio Budget")), (),
+                 (hm("Tip Portfolio Sub"), hm("Tip Portfolio More"))),
+        "ben": ("Behind benefit / cost: ratio by project", "Planned benefits at completion ÷ EAC",
+                [(DPN, "Project", 220), (M(hm("Tip Benefits")), "Benefit / cost", 100)],
+                [(M(hm("Tip Benefits")), "Ascending")], (), (hm("Tip Benefits Sub"), hm("Tip Benefits More"))),
+        "sr": (f"Behind not reporting: no report in {STALE_DAYS}+ days", "Days since the last submitted report",
+               [(DPN, "Project", 130), (M(hm("Tip Status")), "Reporting", 115), (M(hm("Tip Status Days")), "Days", 45)],
+               [(M(hm("Tip Status")), "Ascending"), (M(hm("Tip Status Days")), "Descending")], (), (hm("Tip Status Sub"), hm("Tip Status More"))),
+        "gov": ("Behind data trust: project plans failing rules", "Plan Insights rules failing per plan",
+                [(DPN, "Project", 220), (M(hm("Tip Governance")), "Failing rules", 100)], _desc(hm("Tip Governance")), (),
+                (hm("Tip Governance Sub"), hm("Tip Governance More"))),
     }
 assert [k for k, _ in pages.HOME_TIP_CARDS] == [s_[0] for s_ in SUBJECTS_LAYOUT]
+LONG_TIPS = ("port", "ben", "sr", "gov")
 
 
 def build_tips():
@@ -852,9 +947,10 @@ def build_tips():
                             (pages.REAL_PROJECTS,)))
     tips = card_tips()
     assert list(tips) == [k for k, _ in pages.HOME_TIP_CARDS]
-    for key, (title, sub, cols, sort, flt) in tips.items():
+    for key, (title, sub, cols, sort, flt, long_list) in tips.items():
+        assert (long_list is not None) == (key in LONG_TIPS), key
         real = (pages.REAL_PROJECTS,) if any(f is DPN for f, _d, _w in cols) else ()
-        out.append(tip_page(f"tip_home_{key}", title, sub, cols, sort, real + tuple(flt)))
+        out.append(tip_page(f"tip_home_{key}", title, sub, cols, sort, real + tuple(flt), long_list))
     return out
 
 

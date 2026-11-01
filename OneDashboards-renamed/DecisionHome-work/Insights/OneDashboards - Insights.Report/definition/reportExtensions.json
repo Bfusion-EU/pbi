@@ -7458,7 +7458,7 @@
         {
           "name": "Story | Home · Chip Off Track",
           "dataType": "Text",
-          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0, \"0\" ) & \" off track\"",
+          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" off track\"",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 100 (off track); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7490,7 +7490,7 @@
         {
           "name": "Story | Home · Chip Over Budget",
           "dataType": "Text",
-          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0, \"0\" ) & \" over budget\"",
+          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" over budget\"",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 90 (over budget); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7522,7 +7522,7 @@
         {
           "name": "Story | Home · Chip Late",
           "dataType": "Text",
-          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0, \"0\" ) & \" late\"",
+          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" late\"",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 80 (late); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7554,7 +7554,7 @@
         {
           "name": "Story | Home · Chip Overdue Work",
           "dataType": "Text",
-          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0, \"0\" ) & \" overdue work\"",
+          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" overdue work\"",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 60 (overdue work); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7586,7 +7586,7 @@
         {
           "name": "Story | Home · Chip Not Reporting",
           "dataType": "Text",
-          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0, \"0\" ) & \" not reporting\"",
+          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" not reporting\"",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 50 (not reporting); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7618,7 +7618,7 @@
         {
           "name": "Story | Home · Chip Failing Rules",
           "dataType": "Text",
-          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0, \"0\" ) & \" failing rules\"",
+          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" failing rules\"",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 40 (failing rules); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7643,6 +7643,520 @@
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | Home · Act Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Off Track",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Home · Act Score] = 100, [Story | Home · Act Reason] )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Act-now reason of a project whose Act score is 100 (off track); blank for every other project, so the chip's hover list and the 'off track' Act-now view show only that bucket.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Reason"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Over Budget",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Home · Act Score] = 90, [Story | Home · Act Reason] )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Act-now reason of a project whose Act score is 90 (over budget); blank for every other project, so the chip's hover list and the 'over budget' Act-now view show only that bucket.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Reason"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Late",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Home · Act Score] = 80, [Story | Home · Act Reason] )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Act-now reason of a project whose Act score is 80 (late); blank for every other project, so the chip's hover list and the 'late' Act-now view show only that bucket.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Reason"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Overdue Work",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Home · Act Score] = 60, [Story | Home · Act Reason] )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Act-now reason of a project whose Act score is 60 (overdue work); blank for every other project, so the chip's hover list and the 'overdue work' Act-now view show only that bucket.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Reason"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Not Reporting",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Home · Act Score] = 50, [Story | Home · Act Reason] )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Act-now reason of a project whose Act score is 50 (not reporting); blank for every other project, so the chip's hover list and the 'not reporting' Act-now view show only that bucket.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Reason"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Failing Rules",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Home · Act Score] = 40, [Story | Home · Act Reason] )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Act-now reason of a project whose Act score is 40 (failing rules); blank for every other project, so the chip's hover list and the 'failing rules' Act-now view show only that bucket.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Score"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Act Reason"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Financials",
+          "dataType": "Double",
+          "expression": "VAR _b = [Story | Budget At Completion]\nVAR _e = [Story | Finance EAC]\nRETURN IF ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) && _b > 0 && _e > _b, [Story | EAC Variance %] )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "+0.0%;-0.0%;0.0%",
+          "description": "EAC variance % of a project whose EAC is above its budget (same rule as Story | Projects Over Budget); blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Budget At Completion"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance EAC"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Schedule",
+          "dataType": "Double",
+          "expression": "VAR _s = [Story | Baseline · Finish Slip (days)]\nRETURN IF ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) && _s > 0, _s )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "+0",
+          "description": "Finish slip in days of a project finishing later than its baseline (same rule as Story | Baseline · Late Projects); blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Finish Slip (days)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Resources",
+          "dataType": "Double",
+          "expression": "VAR _pk =\n    MAXX (\n        CALCULATETABLE (\n            ADDCOLUMNS ( SUMMARIZE ( FactCapacity, DimDate[MonthStart] ), \"@u\", [Story | Utilisation %] ),\n            KEEPFILTERS ( DimResource[Inactive] = FALSE () )\n        ),\n        [@u]\n    )\nRETURN IF ( HASONEVALUE ( DimResource[Name] ) && _pk > 1, _pk )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "0%",
+          "description": "Peak monthly utilisation of an active person above 100% in at least one month in view (same rule as Story | Over-allocated People); blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Utilisation %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Risk",
+          "dataType": "Double",
+          "expression": "VAR _t =\n    FILTER (\n        CALCULATETABLE ( DimTask, KEEPFILTERS ( DimTask[WorkType] = \"Risks\" ), KEEPFILTERS ( DimTask[State] = \"Active\" ), KEEPFILTERS ( NOT ISBLANK ( DimTask[ProjectKey] ) ) ),\n        VAR _i = SWITCH ( LEFT ( DimTask[Impact], 3 ), \"(1)\", 4, \"(2)\", 3, \"(3)\", 2, \"(4)\", 1, 0 )\n        VAR _p = SWITCH ( LEFT ( DimTask[Probability Category], 3 ), \"(1)\", 4, \"(2)\", 3, \"(3)\", 2, \"(4)\", 1, 0 )\n        RETURN _i * _p >= 9\n    )\nRETURN IF ( HASONEVALUE ( DimTask[Name] ) && NOT ISEMPTY ( _t ), SUMX ( _t, DimTask[Exposure] ) + 0 )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "#,##0",
+          "description": "Exposure score of an active project risk scoring 9+ on the 4×4 grid (same rule as Story | Critical High Risks); blank otherwise."
+        },
+        {
+          "name": "Story | Home · Tip Portfolio Key",
+          "dataType": "Double",
+          "expression": "VAR _b = SUM ( DimProject[Budget] )\nRETURN IF ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) && _b > 0, _b )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "#,##0",
+          "description": "Sort key of the Portfolio hover list: plan-field budget of a project that has one (uncapped); blank otherwise."
+        },
+        {
+          "name": "Story | Home · Tip Portfolio",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Home · Tip Portfolio Key]\nVAR _nm = SELECTEDVALUE ( DimProject[Name] )\nVAR _q = FILTER ( ALLSELECTED ( DimProject[Name] ), NOT ISBLANK ( [Story | Home · Tip Portfolio Key] ) )\nVAR _rank = RANKX ( _q, [Story | Home · Tip Portfolio Key], _v, DESC ) + COUNTROWS ( FILTER ( _q, [Story | Home · Tip Portfolio Key] = _v && DimProject[Name] < _nm ) )\nRETURN IF ( NOT ISBLANK ( _v ) && _rank <= 12, \nIF ( SELECTEDVALUE ( DimProject[StrategicAlignment_Value] ) IN { \"Strong\", \"Extreme\" }, \"Aligned\", \"Not aligned\" )\n        & IF ( SELECTEDVALUE ( DimProject[State_Value] ) = \"Proposed\", \" · proposed\", \"\" ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Aligned (Strong / Extreme strategic alignment) or Not aligned, for the 12 projects with the largest plan budget; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Portfolio Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Portfolio Budget",
+          "dataType": "Double",
+          "expression": "IF ( NOT ISBLANK ( [Story | Home · Tip Portfolio] ), SUM ( DimProject[Budget] ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "#,##0",
+          "description": "Plan-field budget of a project listed by Tip Portfolio; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Portfolio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Portfolio Sub",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Portfolio Key] ) ) ) + 0\nRETURN IF ( _n = 0, \"None right now\",\n    FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" project\", \" projects\" )\n        & IF ( _n > 12, \" · top 12 by budget\", \" · largest budget first\" ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Subtitle of the Portfolio hover list: how many rows qualify, and the cut to 12.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Portfolio Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Portfolio More",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Portfolio Key] ) ) ) + 0\nRETURN IF ( _n > 12, \"+\" & FORMAT ( _n - 12, \"0\" ) & \" more · open the Portfolio page\", \" \" )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Footer of the Portfolio hover list. When every row fits in the 12 it is a single space: it shows nothing, where a blank card would print '(Blank)'.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Portfolio Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Benefits Key",
+          "dataType": "Double",
+          "expression": "VAR _r = [Story | Benefit Cost Ratio]\nRETURN IF ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) && _r > 0, _r )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "0.00",
+          "description": "Sort key of the Benefits hover list: benefit / cost ratio of a project that has one (uncapped); blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefit Cost Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Benefits",
+          "dataType": "Double",
+          "expression": "VAR _v = [Story | Home · Tip Benefits Key]\nVAR _nm = SELECTEDVALUE ( DimProject[Name] )\nVAR _q = FILTER ( ALLSELECTED ( DimProject[Name] ), NOT ISBLANK ( [Story | Home · Tip Benefits Key] ) )\nVAR _rank = RANKX ( _q, [Story | Home · Tip Benefits Key], _v, ASC ) + COUNTROWS ( FILTER ( _q, [Story | Home · Tip Benefits Key] = _v && DimProject[Name] < _nm ) )\nRETURN IF ( NOT ISBLANK ( _v ) && _rank <= 12, _v )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "0.00",
+          "description": "Benefit / cost ratio of the 12 weakest projects (lowest ratio first); blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Benefits Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Benefits Sub",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Benefits Key] ) ) ) + 0\nRETURN IF ( _n = 0, \"None right now\",\n    FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" project\", \" projects\" )\n        & IF ( _n > 12, \" · 12 weakest first\", \" · weakest first\" ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Subtitle of the Benefits hover list: how many rows qualify, and the cut to 12.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Benefits Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Benefits More",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Benefits Key] ) ) ) + 0\nRETURN IF ( _n > 12, \"+\" & FORMAT ( _n - 12, \"0\" ) & \" more · open the Benefits page\", \" \" )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Footer of the Benefits hover list. When every row fits in the 12 it is a single space: it shows nothing, where a blank card would print '(Blank)'.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Benefits Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Status Key",
+          "dataType": "Integer",
+          "expression": "VAR _g = [Story | Status · Reporting Gap]\nRETURN IF ( _g >= 1, IF ( _g = 2, 9999, [Story | Status · Days Since Report] ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "0",
+          "description": "Sort key of the Status hover list: 9999 for a project that never submitted a report, otherwise the days since its last one; blank for a project that counts as reporting.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Reporting Gap"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Days Since Report"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Status",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Home · Tip Status Key]\nVAR _nm = SELECTEDVALUE ( DimProject[Name] )\nVAR _q = FILTER ( ALLSELECTED ( DimProject[Name] ), NOT ISBLANK ( [Story | Home · Tip Status Key] ) )\nVAR _rank = RANKX ( _q, [Story | Home · Tip Status Key], _v, DESC ) + COUNTROWS ( FILTER ( _q, [Story | Home · Tip Status Key] = _v && DimProject[Name] < _nm ) )\nRETURN IF ( NOT ISBLANK ( _v ) && _rank <= 12, \nSWITCH ( [Story | Status · Reporting Gap], 1, \"Overdue\", 2, \"Nothing submitted\" ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Overdue / Nothing submitted for the 12 longest-silent projects that count as not reporting (same rule as Story | Status · Not Reporting); blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Status Key"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Reporting Gap"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Status Days",
+          "dataType": "Integer",
+          "expression": "VAR _k = [Story | Home · Tip Status Key]\nRETURN IF ( NOT ISBLANK ( [Story | Home · Tip Status] ) && _k < 9999, _k )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "0",
+          "description": "Days since the last submitted report of a listed project; blank when it never submitted one (its sort key is 9999).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Status Key"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Status"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Status Sub",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Status Key] ) ) ) + 0\nRETURN IF ( _n = 0, \"None right now\",\n    FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" project not reporting\", \" projects not reporting\" )\n        & IF ( _n > 12, \" · top 12 · longest silence first\", \" · longest silence first\" ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Subtitle of the Status hover list: how many rows qualify, and the cut to 12.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Status Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Status More",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Status Key] ) ) ) + 0\nRETURN IF ( _n > 12, \"+\" & FORMAT ( _n - 12, \"0\" ) & \" more · open the Status-Report Trend page\", \" \" )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Footer of the Status hover list. When every row fits in the 12 it is a single space: it shows nothing, where a blank card would print '(Blank)'.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Status Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Governance Key",
+          "dataType": "Integer",
+          "expression": "VAR _f = [Story | Project · Failing Rules]\nRETURN IF ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) && _f > 0, _f )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "0",
+          "description": "Sort key of the Governance hover list: Plan Insights rules failing for a project plan that fails at least one (uncapped); blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Failing Rules"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Governance",
+          "dataType": "Integer",
+          "expression": "VAR _v = [Story | Home · Tip Governance Key]\nVAR _nm = SELECTEDVALUE ( DimProject[Name] )\nVAR _q = FILTER ( ALLSELECTED ( DimProject[Name] ), NOT ISBLANK ( [Story | Home · Tip Governance Key] ) )\nVAR _rank = RANKX ( _q, [Story | Home · Tip Governance Key], _v, DESC ) + COUNTROWS ( FILTER ( _q, [Story | Home · Tip Governance Key] = _v && DimProject[Name] < _nm ) )\nRETURN IF ( NOT ISBLANK ( _v ) && _rank <= 12, _v )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "formatString": "0",
+          "description": "Number of Plan Insights rules failing for the 12 project plans that fail the most; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Governance Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Governance Sub",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Governance Key] ) ) ) + 0\nRETURN IF ( _n = 0, \"None right now\",\n    FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" project plan\", \" project plans\" )\n        & IF ( _n > 12, \" · top 12 by failing rules\", \" · most failing rules first\" ) )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Subtitle of the Governance hover list: how many rows qualify, and the cut to 12.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Governance Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Tip Governance More",
+          "dataType": "Text",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Governance Key] ) ) ) + 0\nRETURN IF ( _n > 12, \"+\" & FORMAT ( _n - 12, \"0\" ) & \" more · open the Governance page\", \" \" )",
+          "displayFolder": "Story\\Home\\Tooltips",
+          "description": "Footer of the Governance hover list. When every row fits in the 12 it is a single space: it shows nothing, where a blank card would print '(Blank)'.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Tip Governance Key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Home · Gov Failing Projects",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Project · Failing Rules] > 0 ) ) + 0",
+          "displayFolder": "Story\\Home",
+          "formatString": "0",
+          "description": "Project plans that fail at least one Plan Insights rule (the rows the Governance hover list can show). [PMO | Plans Failing] also counts non-project plans, which have no row to list.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Failing Rules"
               }
             ]
           }
@@ -8046,13 +8560,18 @@
         {
           "name": "Story | Home · Insight Governance",
           "dataType": "Text",
-          "expression": "VAR _f = [PMO | Plans Failing] + 0\nVAR _g = [PMO | Governance Score]\nVAR _lead = IF ( ISBLANK ( _g ), \"\", \"Data trust \" & FORMAT ( _g, \"0\" ) & \"; \" )\nRETURN IF ( _f = 0,\n    _lead & IF ( ISBLANK ( _g ), \"All plans pass\", \"all plans pass\" ) & \" the Plan Insights rules.\",\n    _lead & FORMAT ( _f, \"0\" ) & IF ( _f = 1, \" plan fails\", \" plans fail\" ) & \" Plan Insights rules.\" )",
+          "expression": "VAR _f = [PMO | Plans Failing] + 0\nVAR _n = [Story | Home · Gov Failing Projects] + 0\nVAR _o = MAX ( 0, _f - _n )\nVAR _g = [PMO | Governance Score]\nVAR _lead = IF ( ISBLANK ( _g ), \"\", \"Data trust \" & FORMAT ( _g, \"0\" ) & \"; \" )\nVAR _other = IF ( _o > 0, \" (+\" & FORMAT ( _o, \"0\" ) & IF ( _o = 1, \" other plan)\", \" other plans)\" ), \"\" )\nRETURN IF ( _f = 0,\n    _lead & IF ( ISBLANK ( _g ), \"All plans pass\", \"all plans pass\" ) & \" the Plan Insights rules.\",\n    _lead & IF ( _n = 0, \"no project plan fails\", FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" project plan fails\", \" project plans fail\" ) )\n        & \" Plan Insights rules\" & _other & \".\" )",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
               {
                 "entity": "_Measures",
                 "name": "PMO | Plans Failing"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Home · Gov Failing Projects"
               },
               {
                 "entity": "_Measures",
