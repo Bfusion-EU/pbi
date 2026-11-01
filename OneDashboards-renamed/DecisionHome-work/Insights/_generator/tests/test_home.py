@@ -14,7 +14,7 @@ HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
          "EAC Var % (reports)", "On Track % (reports)", "EAC Change", "On Track Change", "Due",
          "Colour Financials", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
          "Colour Benefits", "Colour Status"]
-        + [f"Chip {c}" for c in CHIPN] + [f"Chip Colour {c}" for c in CHIPN]
+        + [f"Chip {c}" for c in CHIPN] + [f"Chip Label {c}" for c in CHIPN] + [f"Chip Colour {c}" for c in CHIPN]
         + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS]
         + [f"Tip {c}" for c in CHIPN]
         + [f"Tip {t}" for t in ("Financials", "Schedule", "Resources", "Risk", "Portfolio", "Portfolio Budget",
@@ -390,14 +390,11 @@ def test_header_single_band():
     assert [k for k in ("greet", "refreshed", "brief", "brief_reasons") for vt in ("card", "tableEx", "textbox")
             if _vc(pg, k, vt) is not None] == []
     assert _vc(pg, "brief_bg", "shape") is None
-    # chips: fit between the pill and the slicers, no overlap, wide enough for their text
+    # chips: fit between the pill and the slicers (grid details: test_chips_form_an_aligned_grid)
     geo = ext_home.chip_geometry()
     slicer_x = min(vc["position"]["x"] for vc in pg.visuals if vc.get("visual", {}).get("visualType") == "slicer")
     for k, x, y, w in geo:
-        assert w >= len("00 " + ext_home.CHIPS[k][1]) * ext_home.CH_CHAR_PX + ext_home.CH_DOT_X + ext_home.CH_DOT
         assert x >= ext_home.PILL_X + ext_home.PILL_W and x + w <= slicer_x - 8, k
-    for row in (geo[:3], geo[3:]):
-        assert all(b[1] - (a[1] + a[3]) >= ext_home.CH_GAP - 0.01 for a, b in zip(row, row[1:]))
     # slicers and view switch live inside the band, vertically centred on it
     for vc in pg.visuals:
         if vc.get("visual", {}).get("visualType") == "slicer" or vc["name"] in (_name(pg, "switch0", "actionButton"),):
@@ -514,9 +511,9 @@ def test_each_chip_has_a_bookmark_button_to_its_bucket():
         assert _bookmark_target(btn) == _bm(f"Home · Act now — {b}")["name"], b
         assert "parentGroupName" not in btn
         bp, tp, cp = btn["position"], txt["position"], bg["position"]
-        # click zone: the left part of the chip (dot + count), above the text; hover zone: the rest of the text
-        assert bp["z"] > tp["z"] and bp["x"] == cp["x"] and bp["height"] == cp["height"], b
-        assert tp["x"] < bp["x"] + bp["width"] < tp["x"] + tp["width"] - 30, b
+        # click zone: the capsule over dot + count, above the text and fully inside the chip; the label card is the hover zone
+        assert bp["z"] > tp["z"] > 0 and bp["z"] > _vc(pg, f"chip_n{k}", "card")["position"]["z"], b
+        assert bp["x"] + bp["width"] <= tp["x"] + 2, b
     pill_go = _vc(pg, "pill_go", "actionButton")
     assert _bookmark_target(pill_go) == _bm("Home · PMO view")["name"]
     assert pill_go["position"]["z"] > _vc(pg, "pill", "card")["position"]["z"]
@@ -606,3 +603,58 @@ def test_status_movement_charts_two_rows_inside_the_standard_section():
     sec = {n: next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, f"sec{n}", "textbox"))["position"]["y"]
            for n in (3, 4)}
     assert (sec[3], sec[4]) == (pages.Y3, pages.Y4)                    # sections 3 and 4 are back in place
+
+def _inside(inner, outer):
+    return (outer["x"] <= inner["x"] + 0.01 and inner["x"] + inner["width"] <= outer["x"] + outer["width"] + 0.01
+            and outer["y"] <= inner["y"] + 0.01 and inner["y"] + inner["height"] <= outer["y"] + outer["height"] + 0.01)
+
+
+def test_chips_form_an_aligned_grid():
+    pg = _home()
+    parts = ("chip_bg", "chip_dot", "chip_n", "chip", "chip_go")
+    vt = {"chip_bg": "shape", "chip_dot": "shape", "chip_n": "card", "chip": "card", "chip_go": "actionButton"}
+    pos = {k: {p: _vc(pg, f"{p}{k}", vt[p])["position"] for p in parts} for k in range(6)}
+    bgs = [pos[k]["chip_bg"] for k in range(6)]
+    # same size; 3 distinct columns and 2 distinct rows; row 1 = off track, over budget, late
+    assert len({(round(p["width"], 2), round(p["height"], 2)) for p in bgs}) == 1
+    assert sorted({round(p["x"], 2) for p in bgs}) == [round(bgs[k]["x"], 2) for k in range(3)] and len({p["x"] for p in bgs}) == 3
+    assert len({p["y"] for p in bgs}) == 2 and bgs[0]["y"] == bgs[1]["y"] == bgs[2]["y"] < bgs[3]["y"] == bgs[4]["y"] == bgs[5]["y"]
+    assert [bgs[k]["x"] for k in (3, 4, 5)] == [bgs[k]["x"] for k in (0, 1, 2)]
+    assert len({round(bgs[k + 1]["x"] - bgs[k]["x"] - bgs[k]["width"], 2) for k in (0, 1, 3, 4)}) == 1   # fixed column gap
+    # every part sits at the same offset (and has the same size) inside its chip, for all six chips
+    rel = {k: {p: tuple(round(v, 2) for v in (q["x"] - pos[k]["chip_bg"]["x"], q["y"] - pos[k]["chip_bg"]["y"],
+                                               q["height"]))
+               for p, q in pos[k].items() if p != "chip"} for k in range(6)}
+    assert all(rel[k] == rel[0] for k in range(6))
+    assert len({(pos[k]["chip_n"]["width"], pos[k]["chip_go"]["width"], pos[k]["chip_dot"]["width"]) for k in range(6)}) == 1
+    # label text starts at the same x in every chip (card = text + 2 pads, so its left edge + pad is the text edge)
+    assert len({round(pos[k]["chip"]["x"] - pos[k]["chip_bg"]["x"], 2) for k in range(6)}) == 1
+    assert len({(pos[k]["chip"]["y"] - pos[k]["chip_bg"]["y"], pos[k]["chip"]["height"]) for k in range(6)}) == 1
+    # capsule and button: inside the chip, vertically centred, covering dot + count and not the label text
+    for k in range(6):
+        c, go, dot, cnt, lbl = (pos[k][p] for p in ("chip_bg", "chip_go", "chip_dot", "chip_n", "chip"))
+        for part in (go, dot, cnt, lbl):
+            assert _inside(part, c), k
+        assert abs((go["y"] + go["height"] / 2) - (c["y"] + c["height"] / 2)) < 0.01, k
+        assert _inside(dot, go) and go["x"] <= cnt["x"] and cnt["x"] + cnt["width"] <= go["x"] + go["width"], k
+        assert go["x"] + go["width"] <= lbl["x"] + ext_home.CH_LBL_PAD + 0.01, k
+        assert dot["x"] + dot["width"] <= cnt["x"] and cnt["x"] + cnt["width"] <= lbl["x"] + 2, k
+    # the grid fits between the pill and the slicers, inside the band, rows evenly spaced
+    band = _vc(pg, "band_bg", "shape")["position"]
+    top = min(p["y"] for p in bgs)
+    bot = max(p["y"] + p["height"] for p in bgs)
+    assert abs((top - band["y"]) - (band["y"] + band["height"] - bot)) < 0.01
+    assert abs((bgs[3]["y"] - bgs[0]["y"] - bgs[0]["height"]) - (top - band["y"])) <= 2
+    left = ext_home.PILL_X + ext_home.PILL_W
+    assert min(p["x"] for p in bgs) >= left
+    for vc in pg.visuals:
+        if vc.get("visual", {}).get("visualType") == "slicer":
+            assert max(p["x"] + p["width"] for p in bgs) <= vc["position"]["x"]
+
+
+def test_chip_labels_fit_their_cards():
+    # the label card is the text width plus padding and the text (starting at CH_LBL_X) ends inside its chip
+    for k, x, y, w in ext_home.chip_geometry():
+        lbl = ext_home.CHIPS[k][1]
+        assert ext_home.CH_LBL_X + ext_home.CH_LABEL_PX[lbl] + 4 <= ext_home.CH_W, lbl
+        assert ext_home.chip_label_w(lbl) == ext_home.CH_LABEL_PX[lbl] + 2 * ext_home.CH_LBL_PAD

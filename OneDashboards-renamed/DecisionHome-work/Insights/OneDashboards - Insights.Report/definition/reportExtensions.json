@@ -7458,7 +7458,7 @@
         {
           "name": "Story | Home · Chip Off Track",
           "dataType": "Text",
-          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" off track\"",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0, \"0\" )",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 100 (off track); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7470,6 +7470,13 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Home · Chip Label Off Track",
+          "dataType": "Text",
+          "expression": "\"off track\"",
+          "displayFolder": "Story\\Home",
+          "description": "Label of the 'off track' chip (its own card, so the label starts at the same x on every chip)."
         },
         {
           "name": "Story | Home · Chip Colour Off Track",
@@ -7490,7 +7497,7 @@
         {
           "name": "Story | Home · Chip Over Budget",
           "dataType": "Text",
-          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" over budget\"",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0, \"0\" )",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 90 (over budget); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7502,6 +7509,13 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Home · Chip Label Over Budget",
+          "dataType": "Text",
+          "expression": "\"over budget\"",
+          "displayFolder": "Story\\Home",
+          "description": "Label of the 'over budget' chip (its own card, so the label starts at the same x on every chip)."
         },
         {
           "name": "Story | Home · Chip Colour Over Budget",
@@ -7522,7 +7536,7 @@
         {
           "name": "Story | Home · Chip Late",
           "dataType": "Text",
-          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" late\"",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0, \"0\" )",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 80 (late); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7534,6 +7548,13 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Home · Chip Label Late",
+          "dataType": "Text",
+          "expression": "\"late\"",
+          "displayFolder": "Story\\Home",
+          "description": "Label of the 'late' chip (its own card, so the label starts at the same x on every chip)."
         },
         {
           "name": "Story | Home · Chip Colour Late",
@@ -7554,7 +7575,7 @@
         {
           "name": "Story | Home · Chip Overdue Work",
           "dataType": "Text",
-          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" overdue work\"",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0, \"0\" )",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 60 (overdue work); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7566,6 +7587,13 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Home · Chip Label Overdue Work",
+          "dataType": "Text",
+          "expression": "\"overdue work\"",
+          "displayFolder": "Story\\Home",
+          "description": "Label of the 'overdue work' chip (its own card, so the label starts at the same x on every chip)."
         },
         {
           "name": "Story | Home · Chip Colour Overdue Work",
@@ -7586,7 +7614,7 @@
         {
           "name": "Story | Home · Chip Not Reporting",
           "dataType": "Text",
-          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" not reporting\"",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0, \"0\" )",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 50 (not reporting); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7598,6 +7626,13 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Home · Chip Label Not Reporting",
+          "dataType": "Text",
+          "expression": "\"not reporting\"",
+          "displayFolder": "Story\\Home",
+          "description": "Label of the 'not reporting' chip (its own card, so the label starts at the same x on every chip)."
         },
         {
           "name": "Story | Home · Chip Colour Not Reporting",
@@ -7618,7 +7653,7 @@
         {
           "name": "Story | Home · Chip Failing Rules",
           "dataType": "Text",
-          "expression": "VAR _c = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c < 10, UNICHAR ( 8199 ), \"\" ) & \" failing rules\"",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0, \"0\" )",
           "displayFolder": "Story\\Home",
           "description": "Active projects whose Act score is 40 (failing rules); 0 when none. The six chips add up to Act Count.",
           "references": {
@@ -7630,6 +7665,13 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Home · Chip Label Failing Rules",
+          "dataType": "Text",
+          "expression": "\"failing rules\"",
+          "displayFolder": "Story\\Home",
+          "description": "Label of the 'failing rules' chip (its own card, so the label starts at the same x on every chip)."
         },
         {
           "name": "Story | Home · Chip Colour Failing Rules",

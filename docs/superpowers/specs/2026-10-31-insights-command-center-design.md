@@ -106,14 +106,17 @@ The old greeting line, refresh line and the separate orange briefing strip are g
 
 - **Pill**: orange `#E8612A` rounded shape (radius 10) at x 436, y 20, 270 x 52, with `Story | Home · Briefing Pill`
   centred in white, 15 pt: "11 of 15 need a decision", or "No project needs a decision" when N = 0.
-- **Six fixed chips** after the pill (x 720 on), in two rows of three (y 14 and y 50, 28 high, gap 8), one per
-  Act-score bucket in this order: off track (100), over budget (90), late (80), overdue work (60), not reporting (50),
-  failing rules (40). Each chip is a rounded outline shape (`#3A4768` line, transparent fill), a small dot (8 px: red
-  `#FF8A80` for off track, over budget and late; amber `#F2C46B` for the other three) and a single-line text,
-  12 pt, `Story | Home · Chip <Bucket>` ("1 over budget", "0 over budget" when zero). The text colour is
-  `Chip Colour <Bucket>`: `#E8ECF4` when the count is above 0, otherwise dim `#5A6680`. Chip width = dot zone + 7.5 px
-  per character of the widest label ("00 " + label) + padding: 128, 143, 90.5 / 150.5, 158, 158. The chips come from
-  the same `Act Score` buckets as the Act-now list, so the six counts always add up to the pill's N (`Act Count`).
+- **Six fixed chips** after the pill (first column x 720), a fixed 3 x 2 grid (rows y 14 and y 50, columns 6 px apart), one
+  per Act-score bucket in this order: off track (100), over budget (90), late (80) / overdue work (60), not reporting
+  (50), failing rules (40). All six are 158 x 28 (`CH_W` x `CH_H`; one width sized for the longest label "not reporting"
+  at 12 pt), so the edges line up across both rows. Each chip is a rounded outline shape (`#3A4768` line, transparent
+  fill) holding, at the same offsets in every chip: a dot (8 px at x+10, vertically centred; red `#FF8A80` for off track,
+  over budget and late, amber `#F2C46B` for the other three), the count (own card `Story | Home · Chip <Bucket>`, 28 px
+  wide at x+20, text centred, so 1- and 2-digit counts share a centre) and the label (own card
+  `Story | Home · Chip Label <Bucket>`, text starting at x+54: each label card is as wide as its measured text plus 4 px
+  each side, because a card centres its text). Both 12 pt, y+2, 24 high. Their colour is `Chip Colour <Bucket>`:
+  `#E8ECF4` when the count is above 0, otherwise dim `#5A6680`. The click zone is a faint capsule at x+4, y+3, 46 x 22
+  (inside the chip, vertically centred, covering dot and count only). The six counts always add up to the pill's N.
 - Pill and chip texts are card visuals (transparent background, no header, no scroll), not one-cell tables: the
   table header row (about 26 px) leaves no room in a 28 px chip, and its background would paint outside the band.
 - Hover and click (rev 2.3): hovering the pill or a chip lists the projects behind it; clicking the count part of a
@@ -224,8 +227,8 @@ filters (real projects, risk work type / state) are fine.
 
 The tooltip is set on the visual with `visualTooltip` `{show, type "Canvas", section <page id>}`. A button cannot show
 a report-page tooltip, so every visual that carries one sits ABOVE the whole-card ghost link: the card number cell is
-added after the ghost link, 180 px wide (`NUM_W`) and only 92 px tall (y+36..y+128, ending above the label row at
-y+130): **the number shows the hover list, while the rest of the card (label row, sentence, spark / bar) opens the
+added after the ghost link, 180 px wide (`NUM_W`) and only 98 px tall (y+36..y+134, ending above the label row at
+y+136; 78 and 92 px still showed a scroll thumb in Desktop): **the number shows the hover list, while the rest of the card (label row, sentence, spark / bar) opens the
 chapter.** The titles say what the list explains ("Behind budget aligned: alignment by project", ...).
 
 **Long lists (rev 2.4).** A tooltip cannot scroll, so Portfolio, Benefits, Status and Governance (more than 7 rows) use a
@@ -255,7 +258,7 @@ its own top-level group: `grp_act_all` (Project, Why = `Act Reason`, Impact; the
 
 **Hover and click on the same chip.** A data visual on top is needed for the hover list, a button on top for the
 click, and Power BI passes neither through the other. Each chip is therefore split: the LEFT zone (dot and count,
-43 px, `CHIP_HIT_W`, a faint capsule at rest and a clear tint on hover; the count is padded to two digits so the label starts at the same x) is a transparent bookmark button above the text with a faint white tint on hover, so it reads
+the 46 x 22 capsule `CH_CAP`, a faint capsule at rest and a clear tint on hover; the label has its own card so it starts at the same x on every chip) is a transparent bookmark button above the text with a faint white tint on hover, so it reads
 as clickable; the rest of the chip (the label words) is the text card, which shows the list on hover. The pill works
 the same way: its left 100 px (the "11 of 15" part of the centred text) is a button back to the PMO view (all
 projects), the rest hovers. The PMO switch also returns to the PMO view, and each bucket view has "Show all ›".

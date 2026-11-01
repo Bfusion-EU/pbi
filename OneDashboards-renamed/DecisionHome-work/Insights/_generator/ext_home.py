@@ -70,11 +70,11 @@ CHIPS = [(k, lbl, lbl.title(), C_RED if k >= 80 else C_AMBER) for k, lbl in _BUC
 CHIP_ON, CHIP_OFF = "#E8ECF4", "#5A6680"
 for _k, _lbl, _nm, _dot in CHIPS:
     _cnt = f"COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {_k} ) ) + 0"
-    # The count is padded to two digit-widths (figure space, U+2007) so the label starts at the same x for every count:
-    # the chip's click zone (dot + count) then ends right before the label.
-    _add(f"Chip {_nm}", T, f'''VAR _c = {_cnt}
-RETURN FORMAT ( _c, "0" ) & IF ( _c < 10, UNICHAR ( 8199 ), "" ) & " {_lbl}"''',
+    # The count alone: its own card, centred in a fixed-width box so 1- and 2-digit counts line up on every chip.
+    _add(f"Chip {_nm}", T, f'''FORMAT ( {_cnt}, "0" )''',
          desc=f"Active projects whose Act score is {_k} ({_lbl}); 0 when none. The six chips add up to Act Count.")
+    _add(f"Chip Label {_nm}", T, f'"{_lbl}"',
+         desc=f"Label of the '{_lbl}' chip (its own card, so the label starts at the same x on every chip).")
     _add(f"Chip Colour {_nm}", T, f'''IF ( {_cnt} > 0, "{CHIP_ON}", "{CHIP_OFF}" )''',
          desc=f"Chip text colour: light when the count is above 0, dim when 0.", folder=FOLDER + "\\Colours")
 
@@ -519,28 +519,28 @@ def build_brand(pg):
 # The pill and chip texts are card visuals, not one-cell tables: a table's header row (~26 px) leaves no room for text in
 # a 28 px chip and its bleed-over would paint outside the band. A card has no header and a transparent background.
 PILL_X, PILL_W, PILL_Y, PILL_H = 436, 270, 20, 52
-CH_FONT, CH_CHAR_PX = 12, 7.5          # chip text: 12 pt, ~7.5 px per character
-CH_H, CH_GAP = 28, 8
-CH_DOT, CH_DOT_X, CH_PAD_R = 8, 12, 12   # dot size / offset from the chip's left edge, right padding
-CH_ROWS_Y = (14, 50)                   # chip tops: rows at y 14-42 and 50-78 inside the band 8-84
+CH_FONT = 12                           # chip text, pt (16 px)
+CH_H, CH_GAP, CH_W = 28, 6, 158        # every chip is CH_W x CH_H; columns CH_GAP apart (3 x 158 + 2 x 6 = 486)
+CH_ROWS_Y = (14, 50)                   # chip tops: rows at y 14-42 and 50-78 inside the band 8-84 (6 px above and below)
+CH_X0 = PILL_X + PILL_W + 14           # first column, 14 px right of the pill
+# Offsets inside a chip (x from the chip's left edge, y from its top); identical for all six chips.
+CH_CAP = (4, 3, 46, 22)                # click-zone capsule x, y, w, h: covers the dot and the count, 3 px inside the chip
+CH_DOT, CH_DOT_X = 8, 10               # dot size, x (y centred in the chip)
+CH_CNT_X, CH_CNT_W = 20, 28            # count card: fixed width, text centred, so 1- and 2-digit counts share a centre
+CH_LBL_X, CH_LBL_PAD = 54, 4           # label text starts here; its card begins CH_LBL_PAD earlier
+CH_TXT_Y, CH_TXT_H = 2, CH_H - 4       # both text cards: same y and height, so the baselines match
+# Segoe UI 12 pt widths in px (measured), used to size each label card: a card centres its text, so a card as wide as
+# the text plus 2 x CH_LBL_PAD puts the text's left edge at CH_LBL_X for every label.
+CH_LABEL_PX = {"off track": 57, "over budget": 84, "late": 25, "overdue work": 96, "not reporting": 92, "failing rules": 81}
 
 
-def chip_w(label):
-    """Chip width for the widest label this chip can show (two-digit count)."""
-    return round(CH_DOT_X + CH_DOT + 6 + len("00 " + label) * CH_CHAR_PX + CH_PAD_R, 2)
+def chip_label_w(label):
+    return CH_LABEL_PX[label] + 2 * CH_LBL_PAD
 
 
 def chip_geometry():
-    """-> [(index, x, y, w)] for the six chips, 3 per row, left to right from the pill."""
-    out, x0 = [], PILL_X + PILL_W + 14
-    for row in range(2):
-        x = x0
-        for j in range(3):
-            k = row * 3 + j
-            w = chip_w(CHIPS[k][1])
-            out.append((k, round(x, 2), CH_ROWS_Y[row], w))
-            x += w + CH_GAP
-    return out
+    """-> [(index, x, y, w)] for the six chips: a fixed grid of 3 columns x 2 rows, all CH_W wide."""
+    return [(k, CH_X0 + (k % 3) * (CH_W + CH_GAP), CH_ROWS_Y[k // 3], CH_W) for k in range(6)]
 
 
 def chip_outline(line="#3A4768"):
@@ -573,10 +573,9 @@ def ghost_bookmark(bm, tooltip, rest=100, radius=6):
 
 
 # Hover AND click on one chip: a report-page tooltip needs a data visual on top (buttons cannot show one), and a click
-# needs a button on top. So each chip is split: the LEFT click zone (dot + count, CHIP_HIT_W) is a transparent bookmark
+# needs a button on top. So each chip is split: the LEFT click zone (the capsule over dot + count, CH_CAP) is a transparent bookmark
 # button above the text; the rest of the chip (the label words) is the text card, which shows the hover list.
 # The pill works the same way: its left zone ("11 of 15") clicks back to the full list, the rest hovers.
-CHIP_HIT_W = CH_DOT_X + CH_DOT + 4 + 2 * CH_CHAR_PX + 4     # 43 px: dot, gap and the two-digit count (label starts after)
 # The pill text is centred ("11 of 15 need a decision" at 15 pt); its "11 of 15" part ends ~101 px from the pill's left
 # edge, so the click zone is 120 px and stays well under half the pill (270).
 PILL_HIT_W = 120
@@ -588,8 +587,9 @@ def build_band_links(pg, bm_all, bm_bucket):
     pg.add(PILL_X, PILL_Y, PILL_HIT_W, PILL_H, ghost_bookmark(bm_all, "Show every Act-now project", radius=10),
            key="pill_go")
     for k, x, y, w in chip_geometry():
-        pg.add(x, y, CHIP_HIT_W, CH_H, ghost_bookmark(bm_bucket[CHIP_SLUG[k]], f"Show only the {CHIPS[k][1]} projects "
-                                                                               "in Act now", rest=93, radius=14),
+        cx, cy, cw, ch = CH_CAP
+        pg.add(x + cx, y + cy, cw, ch, ghost_bookmark(bm_bucket[CHIP_SLUG[k]], f"Show only the {CHIPS[k][1]} projects "
+                                                                                "in Act now", rest=93, radius=ch // 2),
                key=f"chip_go{k}")
 
 
@@ -614,9 +614,10 @@ def build_band(pg):
         nm = CHIPS[k][2]
         pg.add(x, y, w, CH_H, chip_outline(), key=f"chip_bg{k}")
         pg.add(x + CH_DOT_X, y + (CH_H - CH_DOT) / 2, CH_DOT, CH_DOT, shape(CHIPS[k][3], radius=50), key=f"chip_dot{k}")
-        tx = x + CH_DOT_X + CH_DOT + 4
-        pg.add(tx, y + 2, x + w - 6 - tx, CH_H - 4,
-               with_tip(band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")),
+        pg.add(x + CH_CNT_X, y + CH_TXT_Y, CH_CNT_W, CH_TXT_H,
+               band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")), key=f"chip_n{k}")
+        pg.add(x + CH_LBL_X - CH_LBL_PAD, y + CH_TXT_Y, chip_label_w(CHIPS[k][1]), CH_TXT_H,
+               with_tip(band_text(hm(f"Chip Label {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")),
                         f"tip_home_{CHIP_SLUG[k]}"), key=f"chip{k}")
     pg.add(1220, 15, 160, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
     pg.add(1390, 15, 160, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
@@ -653,9 +654,9 @@ _PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk"
 
 # Row offsets inside a card (y relative to the card top). Every cell is >= 28 px taller than its text: the Service
 # renders text taller than Desktop and shows a scroll thumb when it does not fit. R_BAR is the bar's centre line.
-R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 36, 92, 130, 160, 96, 212, 256, 126
-# The number cell (y+36..y+128) ends above the label row (y+130), so the label row and the rest of the card keep their
-# whole-card click. A 34 pt number = ~45 px of text + the 1 pt header row; 78 px was too short (Desktop showed a scroll thumb).
+R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 36, 98, 136, 162, 94, 212, 256, 126
+# The number cell (y+36..y+134) ends above the label row (y+136), so the label row and the rest of the card keep their
+# whole-card click. A 34 pt number = ~45 px of text + the 1 pt header row; 78 and 92 px were too short (Desktop showed a scroll thumb), 98 px is clear.
 R_RULE, R_FOOT, CHIP_H = ROW_H - 50, ROW_H - 42, 30
 NUM_W = 180                # number cell width: a 34 pt KPI ("100%", "93.4") plus the cell padding
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
@@ -868,13 +869,13 @@ def tip_page(key, title, subtitle, columns, sort, filters=(), long_list=None):
     pg.page["type"] = "Tooltip"
     pg.page["pageBinding"] = {"name": pbir.uid("bind", key), "type": "Tooltip", "parameters": []}
     pg.page["visibility"] = "HiddenInViewMode"
-    pg.add(10, 4, 340, 28, textbox([[(title, st("Segoe UI Semibold", 12, pbir.NAVY, True))]]), key="tip_title")
+    pg.add(10, 2, 340, 28, textbox([[(title, st("Segoe UI Semibold", 12, pbir.NAVY, True))]]), key="tip_title")
     if long_list:
         # a one-cell table (left aligned, unlike a card): its 1 pt header row eats ~20 px, so the cell is taller than its text
-        pg.add(CELL_X + 4, 24, 340, 44, text_cell(long_list[0], size=9, colour=pbir.MUTED, bg="#FFFFFF"), key="tip_sub")
+        pg.add(CELL_X + 4, 22, 340, 52, text_cell(long_list[0], size=9, colour=pbir.MUTED, bg="#FFFFFF"), key="tip_sub")
     else:
         pg.add(10, 30, 340, 22, textbox([[(subtitle, st("Segoe UI", 9, pbir.MUTED))]]), key="tip_sub")
-    top = 72 if long_list else 60                               # table top; the orange rule sits 6 px above it
+    top = 76 if long_list else 60                               # table top; the orange rule sits 6 px above it
     pg.add(14, top - 6, 332, 2, shape(ORANGE), key="tip_rule")
     # 9 pt, one line per row and tight padding: a tooltip cannot scroll, so fit as many rows as possible (~7 in the
     # 260 px pages, ~14 in the 400 px ones). Desktop draws columns wider than their set width (padding), so the widths
