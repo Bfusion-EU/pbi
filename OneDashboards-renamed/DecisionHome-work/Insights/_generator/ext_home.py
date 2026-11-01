@@ -304,56 +304,6 @@ WORST = """
 VAR _w = TOPN ( 1, FILTER ( ADDCOLUMNS ( {projects}, "@v", {expr} ), NOT ISBLANK ( [@v] ) ), [@v], DESC, DimProject[Id], ASC )
 VAR _wn = CALCULATE ( SELECTEDVALUE ( DimProject[Name] ), TREATAS ( SELECTCOLUMNS ( _w, "@id", DimProject[Id] ), DimProject[Id] ) )
 VAR _wv = MAXX ( _w, [@v] )"""
-_add("Insight Financials", T, f"""
-VAR _v = [Story | EAC Variance %]
-{WORST.format(projects=PROJECTS, expr="[Story | EAC Variance %]")}
-RETURN IF ( ISBLANK ( _v ), "No EAC in the financial plans yet.",
-    "EAC " & FORMAT ( _v, "+0.0%;-0.0%;0.0%" ) & " vs budget"
-        & IF ( _wv > 0, "; worst " & _wn & " " & FORMAT ( _wv, "+0.0%" ) & ".", "." ) )""")
-_add("Insight Schedule", T, f"""
-VAR _o = [Story | On Track %]
-VAR _c0 = [{hm("On Track Change")}]
-VAR _c = SUBSTITUTE ( _c0 & "", " vs last month", "" )
-VAR _cd = IF ( _c = "" || _c = "= 0.0 pt", "", " (" & _c & ")" )
-{WORST.format(projects=PROJECTS, expr="[Story | Baseline · Finish Slip (days)]")}
-RETURN IF ( ISBLANK ( _o ), "No status reports yet.",
-    FORMAT ( _o, "0%" ) & " on track" & _cd
-    & IF ( _wv > 0, "; " & _wn & " +" & FORMAT ( _wv, "0" ) & " d vs baseline.", "." ) )""")
-_add("Insight Resources", T, """
-VAR _o = [Story | Over-allocated People] + 0
-VAR _m = [Story | TS Status · Missing Timesheets] + 0
-RETURN FORMAT ( _o, "0" ) & IF ( _o = 1, " person", " people" ) & " over 100% in view; "
-    & FORMAT ( _m, "0" ) & IF ( _m = 1, " timesheet", " timesheets" ) & " missing." """)
-_add("Insight Risk", T, """
-VAR _a = [Story | Active Risk Count] + 0
-VAR _u = [Story | Unmitigated Risk %]
-RETURN IF ( _a = 1, "1 active risk", FORMAT ( _a, "0" ) & " active risks" )
-    & IF ( ISBLANK ( _u ), ".", "; " & FORMAT ( _u, "0%" ) & " without mitigation." )""")
-_add("Insight Portfolio", T, """
-VAR _a = [Story | Active Projects] + 0
-VAR _p = [Story | Proposed Projects] + 0
-RETURN FORMAT ( _a, "0" ) & " active, " & FORMAT ( _p, "0" ) & " proposed in the pipeline." """)
-_add("Insight Benefits", T, f"""
-VAR _b = [Story | Benefits At Completion]
-VAR _e = [Story | Finance EAC]
-RETURN IF ( ISBLANK ( _b ), "No benefits plan in view.",
-    {money("_b")} & " planned benefits" & IF ( ISBLANK ( _e ), ".", " against " & {money("_e")} & " EAC." ) )""")
-_add("Insight Status", T, f"""
-VAR _w = [Story | Status · Overall Worsened] + 0
-RETURN IF ( _w = 0, "No project got worse since its last report.",
-    FORMAT ( _w, "0" ) & IF ( _w = 1, " project is", " projects are" ) & " worse since their last report." )""")
-_add("Insight Governance", T, f"""
-VAR _f = [PMO | Plans Failing] + 0
-VAR _n = [{hm("Gov Failing Projects")}] + 0
-VAR _o = MAX ( 0, _f - _n )
-VAR _g = [PMO | Governance Score]
-VAR _lead = IF ( ISBLANK ( _g ), "", "Data trust " & FORMAT ( _g, "0" ) & "; " )
-VAR _other = IF ( _o > 0, " (+" & FORMAT ( _o, "0" ) & IF ( _o = 1, " other plan)", " other plans)" ), "" )
-RETURN IF ( _f = 0,
-    _lead & IF ( ISBLANK ( _g ), "All plans pass", "all plans pass" ) & " the Plan Insights rules.",
-    _lead & IF ( _n = 0, "no project plan fails", FORMAT ( _n, "0" ) & IF ( _n = 1, " project plan fails", " project plans fail" ) )
-        & " Plan Insights rules" & _other & "." )""")
-
 SUBJECT_COLOUR = {"Financials": hm("Colour Financials"), "Schedule": hm("Colour Schedule"), "Resources": hm("Colour Util"),
                   "Risk": hm("Colour Risk"), "Portfolio": hm("Colour Portfolio"), "Benefits": hm("Colour Benefits"),
                   "Status": hm("Colour Status"), "Governance": hm("Colour Trust")}
@@ -365,7 +315,145 @@ RETURN SWITCH ( _c, "{C_RED}", "Act", "{C_AMBER}", "Watch", "{C_TEAL}", "OK", "{
     _add(f"Pill Fill {_s}", T, f"""
 VAR _c = [{_cm}]
 RETURN SWITCH ( _c, "{C_RED}", "#3A1E22", "{C_AMBER}", "#3A2F18", "{C_TEAL}", "#173A33", "#26314F" )""",
-         folder=_COL, desc=f"Pill background of the {_s} card.")
+         folder=_COL, desc=f"Pill background of the {_s} card (also the icon tile and the status capsule).")
+
+# ---------------------------------------------------------------- subject cards (design A): unit, chip, facts, captions
+_CARD = FOLDER + "\\Cards"
+INK = "#E8ECF4"                    # fact value default colour (same as INK2 of the layout)
+FIG = "UNICHAR ( 8199 )"           # figure space: 12 pt ~9 px; one extra 38 pt digit (~28 px) = 3 of them
+
+# Unit label right of the hero number. The number is left-aligned and its width depends on the data, so the unit is a
+# measure padded with figure spaces: 3 per character beyond the narrowest form of the number ("8", "8%", "0.00", "0.0").
+# (subject, number measure, format of the number, narrowest length, unit text)
+UNITS = [("Financials", "Story | Projects Over Budget", "#,##0", 1, "projects over EAC"),
+         ("Schedule", "Story | Baseline · Late Projects", "#,##0", 1, "slipping vs baseline"),
+         ("Resources", "Story | Utilisation %", "0%", 2, "utilisation"),
+         ("Risk", "Story | Critical High Risks", "#,##0", 1, "critical risks"),
+         ("Portfolio", "Story | Aligned Budget %", "0%", 2, "budget aligned"),
+         ("Benefits", "Story | Benefit Cost Ratio", "0.00", 4, "benefit / cost"),
+         ("Status", "Story | Status · Not Reporting", "#,##0", 1, f"not reporting {STALE_DAYS}+ days"),
+         ("Governance", "PMO | Governance Score", "0.0", 3, "data trust score")]
+for _s, _num, _fmt, _base, _unit in UNITS:
+    _add(f"Unit {_s}", T, f"""
+VAR _v = [{_num}]
+VAR _extra = IF ( ISBLANK ( _v ), 0, MAX ( 0, LEN ( FORMAT ( _v, "{_fmt}" ) ) - {_base} ) )
+RETURN REPT ( {FIG}, 3 * _extra ) & "{_unit}" """, folder=_CARD,
+         desc=f"Unit label of the {_s} card number ('{_unit}'), padded with figure spaces so it starts right after the "
+              "number however many digits it has.")
+
+# Delta / context chip right of the hero line. A change chip is blank (a single space, and the canvas fill so the
+# capsule vanishes) when there is no previous month.
+# (subject, change measure, colour when it goes down, colour when it goes up)
+MOVES = [("Financials", hm("EAC Change"), C_TEAL, C_RED), ("Schedule", hm("On Track Change"), C_RED, C_TEAL)]
+for _s, _src, _down, _up in MOVES:
+    _add(f"Delta {_s}", T, f"""
+VAR _c = [{_src}]
+RETURN IF ( ISBLANK ( _c ), " ",
+    SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( _c, " vs last month", "" ), "+", "" ), "-", "" ) )""", folder=_CARD,
+         desc=f"Short form of {_src.split('· ')[-1]} for the {_s} chip ('▲ 1.2 pt'); a single space when blank.")
+    _add(f"Delta Colour {_s}", T, f"""
+VAR _c = [{_src}]
+RETURN IF ( ISBLANK ( _c ), "{C_GREY}", SWITCH ( LEFT ( _c, 1 ), "▲", "{_up}", "▼", "{_down}", "{C_GREY}" ) )""",
+         folder=_COL, desc=f"{_s} chip text colour: teal when the change is good, red when it is bad, grey when flat.")
+    _add(f"Delta Fill {_s}", T, f"""
+VAR _c = [{_src}]
+VAR _k = IF ( ISBLANK ( _c ), "", LEFT ( _c, 1 ) )
+RETURN SWITCH ( TRUE (), _k = "", "#1B2540",
+    _k = "▲", "{'#3A1E22' if _up == C_RED else '#173A33'}", _k = "▼", "{'#3A1E22' if _down == C_RED else '#173A33'}",
+    "#26314F" )""", folder=_COL, desc=f"{_s} chip fill: tinted like its text; the card colour (invisible) when blank.")
+_add("Delta Risk", T, '"of " & FORMAT ( [Story | Active Risk Count] + 0, "0" ) & " active"', folder=_CARD,
+     desc="Context chip of the Risk card: how many active risks the critical ones are part of.")
+_add("Delta Status", T, f"""
+VAR _n = COUNTROWS ( FILTER ( {PROJECTS}, NOT ISBLANK ( [Story | Status · Reporting Gap] ) ) ) + 0
+RETURN "of " & FORMAT ( _n, "0" ) & IF ( _n = 1, " project", " projects" )""", folder=_CARD,
+     desc="Context chip of the Status reports card: projects in view that are expected to report (same scope as Not Reporting).")
+
+# Sparkline captions: first and last month in the 6-month window that has a value.
+SPARK_SRC = {"Financials": hm("EAC Var % (reports)"), "Schedule": hm("On Track % (reports)")}
+_WIN_MONTHS = """CALCULATETABLE ( VALUES ( DimDate[MonthStart] ), REMOVEFILTERS ( DimDate ),
+        DimDate[MonthStart] >= EDATE ( EOMONTH ( TODAY (), -1 ) + 1, -5 ), DimDate[MonthStart] <= TODAY () )"""
+for _s, _src in SPARK_SRC.items():
+    for _end, _fn in (("From", "MINX"), ("To", "MAXX")):
+        _add(f"Spark {_end} {_s}", T, f"""
+VAR _m = FILTER ( {_WIN_MONTHS},
+    VAR _ms = DimDate[MonthStart]
+    RETURN NOT ISBLANK ( CALCULATE ( [{_src}], REMOVEFILTERS ( DimDate ), DimDate[MonthStart] = _ms ) ) )
+VAR _d = {_fn} ( _m, DimDate[MonthStart] )
+RETURN IF ( ISBLANK ( _d ), " ", FORMAT ( _d, "mmm" ) )""", folder=_CARD,
+             desc=f"{'First' if _end == 'From' else 'Last'} month drawn in the {_s} sparkline (caption); a space when none.")
+
+_add("Unmitigated Rest", D, """VAR _p = [Story | Unmitigated Risk %]
+RETURN MAX ( 0, 1 - COALESCE ( _p, 0 ) )""", "0%",
+     "Remainder of the without-mitigation progress bar (1 minus the share, never below 0; full track when blank).")
+
+# Facts: two label / value rows per card. Labels are static text; values are text measures ("–" when blank) so a
+# blank never prints "(Blank)" or drops the row.
+def SHORT(k):
+    """Project name cut to k characters (with an ellipsis), so the fact value fits its row."""
+    return f'IF ( LEN ( _wn ) > {k}, LEFT ( _wn, {k - 1} ) & "…", _wn )'
+
+
+def _cnt(expr):
+    return f'FORMAT ( {expr} + 0, "0" )'
+
+
+def _pct(expr):
+    return f'VAR _v = {expr}\nRETURN IF ( ISBLANK ( _v ), "–", FORMAT ( _v, "0%" ) )'
+
+
+def _rag(var_expr, red, amber):
+    """Colour of a count-like fact: red at `red`+, amber at `amber`+, else the default ink."""
+    r = f'_v >= {red}, "{C_RED}", ' if red is not None else ""
+    return f'VAR _v = {var_expr}\nRETURN SWITCH ( TRUE (), {r}_v >= {amber}, "{C_AMBER}", "{INK}" )'
+
+
+_W_FIN = WORST.format(projects=PROJECTS, expr="[Story | EAC Variance %]")
+_W_SCH = WORST.format(projects=PROJECTS, expr="[Story | Baseline · Finish Slip (days)]")
+# subject -> [(label, value DAX, colour DAX or an existing colour measure name or None)] x 2
+FACTS = {
+    "Financials": [
+        ("EAC vs budget", 'VAR _v = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _v ), "–", FORMAT ( _v, "+0.0%;-0.0%;0.0%" ) )',
+         hm("Colour EAC")),
+        ("Worst project", f'{_W_FIN}\nRETURN IF ( _wv > 0, {SHORT(14)} & " " & FORMAT ( _wv, "+0%" ), "none over budget" )',
+         f'{_W_FIN}\nRETURN IF ( _wv > 0.05, "{C_RED}", IF ( _wv > 0, "{C_AMBER}", "{INK}" ) )')],
+    "Schedule": [
+        ("On track", _pct("[Story | On Track %]"), None),
+        ("Worst slip", f'{_W_SCH}\nRETURN IF ( _wv > 0, {SHORT(18)} & " +" & FORMAT ( _wv, "0" ) & " d", "none late" )',
+         f'{_W_SCH}\nRETURN IF ( _wv > 10, "{C_RED}", IF ( _wv > 0, "{C_AMBER}", "{INK}" ) )')],
+    "Resources": [
+        ("Over 100%", 'VAR _o = [Story | Over-allocated People] + 0\nRETURN FORMAT ( _o, "0" ) & IF ( _o = 1, " person", " people" )',
+         _rag("[Story | Over-allocated People] + 0", 1, 1)),
+        ("Timesheets missing", _cnt("[Story | TS Status · Missing Timesheets]"),
+         _rag("[Story | TS Status · Missing Timesheets] + 0", None, 1))],
+    "Risk": [
+        ("Active risks", _cnt("[Story | Active Risk Count]"), None),
+        ("Without mitigation", _pct("[Story | Unmitigated Risk %]"), _rag("[Story | Unmitigated Risk %] + 0", 0.5, 0.0001))],
+    "Portfolio": [
+        ("Active projects", _cnt("[Story | Active Projects]"), None),
+        ("Proposed", _cnt("[Story | Proposed Projects]"), None)],
+    "Benefits": [
+        ("Planned benefits", f'VAR _b = [Story | Benefits At Completion]\nRETURN {money("_b")}', None),
+        ("EAC", f'VAR _e = [Story | Finance EAC]\nRETURN {money("_e")}', None)],
+    "Status": [
+        ("Worse than last", _cnt("[Story | Status · Overall Worsened]"),
+         _rag("[Story | Status · Overall Worsened] + 0", 3, 1)),
+        ("Avg days since",
+         'VAR _d = [Story | Status · Avg Days Since Report]\nRETURN IF ( ISBLANK ( _d ), "–", FORMAT ( _d, "0" ) & " d" )', None)],
+    "Governance": [
+        ("Project plans failing", _cnt(f"[{hm('Gov Failing Projects')}]"), _rag(f"[{hm('Gov Failing Projects')}] + 0", None, 1)),
+        ("Other plans failing", f"""
+VAR _n = [{hm('Gov Failing Projects')}] + 0
+RETURN FORMAT ( MAX ( 0, [PMO | Plans Failing] + 0 - _n ), "0" )""", None)],
+}
+FACT_COLOUR = {}       # (subject, n) -> colour measure name or None
+for _s, _rows in FACTS.items():
+    for _n, (_lbl, _val, _col) in enumerate(_rows, 1):
+        _add(f"Fact {_s} {_n} Value", T, _val, folder=_CARD, desc=f"{_s} card, fact {_n} ('{_lbl}'): the value as text.")
+        if _col is None or _col.startswith(PX):
+            FACT_COLOUR[(_s, _n)] = _col
+        else:
+            _add(f"Fact {_s} {_n} Colour", T, _col, folder=_COL, desc=f"{_s} card, fact {_n} ('{_lbl}'): value colour.")
+            FACT_COLOUR[(_s, _n)] = hm(f"Fact {_s} {_n} Colour")
 
 
 # ====================================================================== layout
@@ -440,31 +528,16 @@ def fx_fill(measure_field, colour_measure):
     return {"properties": {"fill": measure_colour(colour_measure)}, "selector": {"metadata": pbir.qref(measure_field)}}
 
 
-def sparkline(measure, colour):
-    """colour: a hex string (static) or the name of a colour measure (fx field value)."""
-    fill = measure_fill(M(measure), colour) if colour.startswith("#") else fx_fill(M(measure), colour)
-    v = chart("lineChart", {"Category": [P(C("DimDate", "MonthStart"), "Month")], "Y": [P(M(measure), " ")]}, "",
-              {"dataPoint": [fill], "legend": legend(show=False),
-               "categoryAxis": [{"properties": {"show": b(False)}}], "valueAxis": [{"properties": {"show": b(False)}}],
-               "lineStyles": [{"properties": {"strokeWidth": n(2), "showMarker": b(False)}}]},
-              sort=[(C("DimDate", "MonthStart"), "Ascending")])
-    vco = v["visualContainerObjects"]
-    vco["title"] = [{"properties": {"show": b(False)}}]
-    vco["background"] = [{"properties": {"show": b(False)}}]
-    vco["border"] = [{"properties": {"show": b(False)}}]
-    return v
-
-
 BAR_REST = "#3A4768"
-BAR_PAD = 60               # category inner padding (%)
-BAR_DY = 14                # Desktop draws the single bar ~14 px below the chart centre (hidden axis space)
+BAR_PAD = 69               # category inner padding (%): ~11 px bar in the 110 px chart
+BAR_DY = 1                 # Desktop draws the single bar ~1 px below the chart centre at BAR_PAD 69 (~14 at 60)
 
 
 def progress(pg, x, y, w, h, value_measure, rest_measure, lo, hi, colour, key):
     """One stacked bar chart (barChart) with two measures: the value (status colour) and the remainder to the axis
     max (BAR_REST). Fill and track are the same bars, so they line up by construction. The value axis is fixed to
     lo..hi. Desktop shows only a placeholder for a chart shorter than ~100px, so the chart is CHART_H tall, centred
-    on y + h/2; the category inner padding (BAR_PAD %) sets the bar thickness (~14 px). With zero container padding the plot
+    on y + h/2; the category inner padding (BAR_PAD %) sets the bar thickness (~11 px). With zero container padding the plot
     area spans the whole chart width, so the chart is exactly as wide as the track."""
     fill = measure_fill(M(value_measure), colour) if colour.startswith("#") else fx_fill(M(value_measure), colour)
     v = chart("barChart", {"Y": [P(M(value_measure), "v"), P(M(rest_measure), "rest")]}, "",
@@ -626,65 +699,161 @@ def build_band(pg):
 GRID_X0, GRID_Y, COL_W, ROW_H, GAP = 104, (100, 552), 297, 436, 16
 RIGHT_X, RIGHT_W, RIGHT_Y, RIGHT_H = 1356, 428, 100, 888
 
-# (key, subject, icon, number measure, label, row-3 kind, row-3 arg, colour measure, card link page,
-#  footer [(text, page)])
+# One spec per subject card (design A). visual: ("area", measure, caption) / ("bar", (lo, hi, rest measure, target or
+# None, caption labels (left, at the marker or centre, right))) / None (an explicit empty slot). chip: a measure
+# (dynamic text, colour and fill measures by name) or a static text.
 SUBJECTS_LAYOUT = [
-    ("fin", "Financials", "finance", "Story | Projects Over Budget", "projects over EAC",
-     "spark", hm("EAC Var % (reports)"), hm("Colour Financials"), "finance", [("Spend", "finance"), ("Pareto", "finance2")]),
-    ("sch", "Schedule", "schedule", "Story | Baseline · Late Projects", "slipping vs baseline",
-     "spark", hm("On Track % (reports)"), hm("Colour Schedule"), "schedule",
-     [("Schedule", "schedule"), ("Gantt", "gantt"), ("Baseline", "baseline")]),
-    ("res", "Resources", "resources", "Story | Utilisation %", "utilisation",
-     "bar", (0, 1, hm("Util Rest")), hm("Colour Util"), "resources",
-     [("People", "resources"), ("Time", "timesheets"), ("TS", "tsstatus"), ("Person", "resource")]),
-    ("risk", "Risk", "risk", "Story | Critical High Risks", "critical risks",
-     None, None, hm("Colour Risk"), "risk", [("Risk", "risk")]),
-    ("port", "Portfolio", "portfolio", "Story | Aligned Budget %", "budget aligned",
-     "bar", (0, 1, hm("Aligned Rest")), hm("Colour Portfolio"), "portfolio",
-     [("Gates", "lifecycle"), ("Scenarios", "scenarios"), ("Project", "onepager")]),
-    ("ben", "Benefits", "benefits", "Story | Benefit Cost Ratio", "benefit / cost",
-     None, None, hm("Colour Benefits"), "benefits", [("Benefits", "benefits")]),
-    ("sr", "Status reports", "exec", "Story | Status · Not Reporting", f"not reporting {STALE_DAYS}+ days",
-     None, None, hm("Colour Status"), "status", [("Trend", "status")]),
-    ("gov", "Governance", "governance", "PMO | Governance Score", "data trust score",
-     "bar", (0, 100, hm("Trust Rest")), hm("Colour Trust"), "governance", [("Governance", "governance")]),
+    dict(key="fin", name="Financials", icon="finance", num="Story | Projects Over Budget", unit="projects over EAC",
+         chip=("measure", "Financials"), visual=("area", hm("EAC Var % (reports)"), "EAC vs budget · 6 months"),
+         colour=hm("Colour Financials"), link="finance", footer=[("Spend", "finance"), ("Pareto", "finance2")]),
+    dict(key="sch", name="Schedule", icon="schedule", num="Story | Baseline · Late Projects", unit="slipping vs baseline",
+         chip=("measure", "Schedule"), visual=("area", hm("On Track % (reports)"), "% on track · 6 months"),
+         colour=hm("Colour Schedule"), link="schedule",
+         footer=[("Schedule", "schedule"), ("Gantt", "gantt"), ("Baseline", "baseline")]),
+    dict(key="res", name="Resources", icon="resources", num="Story | Utilisation %", unit="utilisation",
+         chip=("text", "target 80%"), visual=("bar", (0, 1, hm("Util Rest"), 0.8, ("0%", "target 80%", "100%"))),
+         colour=hm("Colour Util"), link="resources",
+         footer=[("People", "resources"), ("Time", "timesheets"), ("TS", "tsstatus"), ("Person", "resource")]),
+    dict(key="risk", name="Risk", icon="risk", num="Story | Critical High Risks", unit="critical risks",
+         chip=("context", "Risk"), visual=("bar", (0, 1, hm("Unmitigated Rest"), None, ("0%", "without mitigation", "100%")),
+                                           "Story | Unmitigated Risk %"),
+         colour=hm("Colour Risk"), link="risk", footer=[("Risk", "risk")]),
+    dict(key="port", name="Portfolio", icon="portfolio", num="Story | Aligned Budget %", unit="budget aligned",
+         chip=("text", "target 80%"), visual=("bar", (0, 1, hm("Aligned Rest"), 0.8, ("0%", "target 80%", "100%"))),
+         colour=hm("Colour Portfolio"), link="portfolio",
+         footer=[("Gates", "lifecycle"), ("Scenarios", "scenarios"), ("Project", "onepager")]),
+    dict(key="ben", name="Benefits", icon="benefits", num="Story | Benefit Cost Ratio", unit="benefit / cost",
+         chip=("text", "target ≥ 1.0"), visual=None,
+         colour=hm("Colour Benefits"), link="benefits", footer=[("Benefits", "benefits")]),
+    dict(key="sr", name="Status reports", icon="exec", num="Story | Status · Not Reporting",
+         unit=f"not reporting {STALE_DAYS}+ days", chip=("context", "Status"), visual=None,
+         colour=hm("Colour Status"), link="status", footer=[("Trend", "status")]),
+    dict(key="gov", name="Governance", icon="governance", num="PMO | Governance Score", unit="data trust score",
+         chip=("text", "target 90"), visual=("bar", (0, 100, hm("Trust Rest"), 90, ("0", "target 90", "100"))),
+         colour=hm("Colour Trust"), link="governance", footer=[("Governance", "governance")]),
 ]
 _PILL_NAME = {"fin": "Financials", "sch": "Schedule", "res": "Resources", "risk": "Risk", "port": "Portfolio",
               "ben": "Benefits", "sr": "Status", "gov": "Governance"}
+assert [s_["key"] for s_ in SUBJECTS_LAYOUT] == list(_PILL_NAME)
+assert [u[0] for u in UNITS] == list(_PILL_NAME.values()) == list(FACTS)
 
-# Row offsets inside a card (y relative to the card top). Every cell is >= 28 px taller than its text: the Service
-# renders text taller than Desktop and shows a scroll thumb when it does not fit. R_BAR is the bar's centre line.
-R_HEAD, R_NUM, NUM_H, R_LBL, R_ROW3, ROW3_H, R_BAR, R_SENT, SENT_H = 12, 36, 98, 136, 162, 94, 212, 256, 126
-# The number cell (y+36..y+134) ends above the label row (y+136), so the label row and the rest of the card keep their
-# whole-card click. A 34 pt number = ~45 px of text + the 1 pt header row; 78 and 92 px were too short (Desktop showed a scroll thumb), 98 px is clear.
-R_RULE, R_FOOT, CHIP_H = ROW_H - 50, ROW_H - 42, 30
-NUM_W = 180                # number cell width: a 34 pt KPI ("100%", "93.4") plus the cell padding
+# ---- card geometry (design A). Offsets are relative to the card's top-left corner and identical for all eight cards,
+# so every element sits at the same y in each row of four.
+# Every one-cell table is >= 28 px taller than header row (~20 px) + text: the Service renders text taller than Desktop
+# and shows a scroll thumb otherwise. Cards (pill word, chip text, month captions) have no header row and no scroll.
+PAD = 16                                  # left / right text edge inside a card
+R_HEAD, TILE, TILE_R, TILE_IMG = 16, 32, 8, 20      # icon tile 32 x 32 (radius 8) with a 20 px icon on top
+TITLE_X = PAD + TILE + 10                 # title text left edge
+SP_W, SP_H, SP_R, SP_DOT = 74, 24, 12, 6  # status capsule (pill): fill, 6 px dot, coloured word
+R_NUM, NUM_H, NUM_PT = 50, 118, 38        # hero number cell (one-cell table above the ghost link: hover list)
+NUM_W = 160                               # number cell width (a 38 pt "100.0" plus the cell padding)
+NUM_BASE = 70                             # Desktop: the number's baseline sits ~70 px below the cell top
+TBL_PADL, NUM_PADL = 22, 24               # Desktop: a one-cell table's text starts ~22 px (38 pt: ~24 px) right of the cell
+UNIT_PT, UNIT_GAP = 12, 8                 # unit label: 12 pt grey, UNIT_GAP right of the narrowest form of the number
+UNIT_BASE = 34                            # the unit cell's baseline sits ~34 px below its top
+# narrowest form of each card's number in px at 38 pt Segoe UI Semibold ("8", "8%", "0.00", "0.0"; measured)
+NUM_MIN_PX = {"fin": 28, "sch": 28, "res": 71, "risk": 28, "port": 71, "ben": 96, "sr": 28, "gov": 68}
+CHIP_PT, CHIP_TH, CHIP_R, CHIP_PADX = 10, 18, 9, 8   # delta / context chip: 10 pt, 18 high, radius 9
+R_CHIP = R_NUM + 34                       # chip top: level with the top of the digits, above the unit line (right-aligned)
+R_VIS, VIS_H = 136, 100                   # visual row: area sparkline y+136..236
+R_CAP, CAP_H, CAP_PT = 238, 20, 9         # caption row under the sparkline / bar
+R_BAR = R_CAP - 14                        # progress bar centre line, just above its caption
+BAR_T, MARK_H = 11, 15                    # bar thickness (px), target marker height (a little taller than the bar)
+R_TGT, TGT_W = R_BAR - BAR_T / 2 - 4 - CAP_H, 90     # target label row above the bar, centred on the marker
+R_DIV = 270                               # hairline divider above the facts
+R_FACT, FACT_H, FACT_PT = (282, 316), 26, 11        # fact label rows (textbox tops)
+FACT_DY = 14                              # value cell sits FACT_DY above its label row (header row)
+FACT_CELL_H = 66                          # 11 pt text + header + 28 px headroom
+VAL_GAP = 10                              # gap between a fact label and the widest value its row can hold
+# fact labels in px (Segoe UI 11 pt, measured): the value column takes the rest of the row, right-aligned
+FACT_LABEL_PX = {"EAC vs budget": 96, "Worst project": 90, "On track": 55, "Worst slip": 66, "Over 100%": 71,
+                 "Timesheets missing": 128, "Active risks": 73, "Without mitigation": 126, "Active projects": 98,
+                 "Proposed": 63, "Planned benefits": 110, "EAC": 27, "Worse than last": 102,
+                 "Avg days since": 97, "Project plans failing": 131, "Other plans failing": 122}
+R_FOOT, FOOT_H, FOOT_R, FOOT_GAP = ROW_H - 44, 28, 14, 8     # action pills
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
 ACT_H = 398                # Act-now table: header + 8 rows
 
+# text widths in px (Segoe UI, measured): chip texts at 10 pt
+CHIP_TEXT_PX = {"target 80%": 64, "target ≥ 1.0": 69, "target 90": 53}
+CHIP_DYN_W = {"Financials": 76, "Schedule": 76, "Risk": 84, "Status": 100}   # dynamic chips: room for the longest text
+MUTED2, RULE2 = "#5A6680", "#26314F"
 
-CHIP_GAP, CHIP_PAD, CHAR_PX = 8, 24, 8.0     # Desktop pads a button ~16 px beyond its text; bold Segoe UI is ~8 px per character at 11 pt
+
+VAL_CELL_EXTRA = 60        # a table cell wider than its fixed column, so no horizontal scrollbar appears
+
+
+def fact_value_w(label):
+    """Width of a fact's value column: the row (card width minus padding) minus the label and VAL_GAP."""
+    return COL_W - 2 * PAD - FACT_LABEL_PX[label] - VAL_GAP
+
+
+def chip_w(spec):
+    kind, arg = spec["chip"]
+    return CHIP_TEXT_PX[arg] + 2 * CHIP_PADX if kind == "text" else CHIP_DYN_W[arg]
+
+
+CHIP_GAP, CHIP_PAD, CHAR_PX = 8, 24, 8.0     # (Executive view links) Desktop pads a button ~16 px beyond its text
+# action pills: bold Segoe UI 11 pt widths in px (measured); a pill is its text + FOOT_PAD (text margins FOOT_MARGIN each side)
+FOOT_TEXT_PX = {"Spend": 43, "Pareto": 45, "Schedule": 62, "Gantt": 37, "Baseline": 56, "People": 47, "Time": 33, "TS": 16,
+                "Person": 47, "Risk": 27, "Gates": 37, "Scenarios": 65, "Project": 48, "Benefits": 54, "Trend": 40,
+                "Governance": 82}           # Segoe UI Semibold 11 pt
+FOOT_PAD, FOOT_MARGIN, FOOT_FONT = 24, 0, "Segoe UI Semibold"
+CHIP_H = 30
 
 
 def chip_text_w(label, size=11):
     return len(label) * CHAR_PX * size / 11
 
 
+def foot_text_w(label, size=11):
+    return FOOT_TEXT_PX[label] * size / 11
+
+
 def chip_layout(footer):
-    """-> (labels, size, widths). Each chip is as wide as its text plus padding; chips sit left to right with a
-    CHIP_GAP gap. Preference: 11 pt with the arrow, then 11 pt without, then 10 pt without. Text is never cut."""
-    room = COL_W - 32
-    for arrow, size in ((True, 11), (False, 11), (False, 10)):
-        labels = [f"{t} ›" if arrow else t for t, _ in footer]
-        widths = [round(chip_text_w(l, size) + CHIP_PAD, 2) for l in labels]
-        if sum(widths) + CHIP_GAP * (len(widths) - 1) <= room:
+    """-> (labels, size, widths). Each action pill is as wide as its text plus padding; pills sit left to right with a
+    FOOT_GAP gap. 11 pt, or 10 pt when a card's pills do not fit at 11. Text is never cut."""
+    room = COL_W - 2 * PAD
+    for size in (11, 10):
+        labels = [t for t, _ in footer]
+        widths = [round(foot_text_w(l, size) + FOOT_PAD, 2) for l in labels]
+        if sum(widths) + FOOT_GAP * (len(widths) - 1) <= room:
             break
     return labels, size, widths
 
 
+# Neutral buttons (cards and Executive decisions): no orange or status colour on any button, orange is a KPI colour too.
+# Transparent fill, 1 px neutral border, Semibold label centred both ways, radius 14; hover: light grey fill, darker border.
+# The user's spec gives dark-grey text (#374151); on the dark #1B2540 card that is unreadable at rest, so the resting
+# label uses the light neutral BTN_TEXT and turns #374151 on the light hover fill.
+BTN_BORDER, BTN_BORDER_HOVER, BTN_HOVER_FILL = "#C9CED6", "#9CA3AF", "#F3F4F6"
+BTN_TEXT, BTN_TEXT_HOVER = "#D0D5DD", "#374151"
+
+
+def neutral_button(label, target, size=11, radius=FOOT_R):
+    v = nav_button(label, pages.PID[target], dict(pages.PAGES)[target], fill="#FFFFFF", hover=BTN_HOVER_FILL,
+                   press=BTN_HOVER_FILL, font=BTN_TEXT, size=size, radius=radius, margin=FOOT_MARGIN, outline=BTN_BORDER)
+    o = v["objects"]
+    o["fill"][1]["properties"]["transparency"] = n(100)                    # rest: transparent
+    o["outline"].append({"properties": {"lineColor": col_solid(BTN_BORDER_HOVER), "weight": pbir.i(1),
+                                        "transparency": n(0)}, "selector": {"id": "hover"}})
+    t = o["text"][1]["properties"]
+    t.update({"fontFamily": s(FOOT_FONT), "bold": b(False), "horizontalAlignment": s("center"),
+              "verticalAlignment": s("middle"), "leftMargin": n(FOOT_MARGIN), "rightMargin": n(FOOT_MARGIN),
+              "topMargin": n(0), "bottomMargin": n(0)})
+    for state in ("hover", "press"):
+        o["text"].append({"properties": {"fontColor": col_solid(BTN_TEXT_HOVER)}, "selector": {"id": state}})
+    return v
+
+
 def link_chip(label, target, size=11):
-    return nav_button(label, pages.PID[target], dict(pages.PAGES)[target], fill=PANEL,
-                      hover="#26314F", press=ORANGE, font="#F29A6B", size=size, align="left", margin=4)
+    """Executive-view decision link: the same neutral button."""
+    return neutral_button(label, target, size, radius=CHIP_H // 2)
+
+
+def action_pill(label, target, size):
+    """Footer action of a subject card: a neutral outline pill (all equal; no orange primary)."""
+    return neutral_button(label, target, size)
 
 
 def view_pill(pg, grp, k, key):
@@ -692,41 +861,137 @@ def view_pill(pg, grp, k, key):
     pg.add(1586 + k * 94, 30, 90, 32, shape(ORANGE, radius=16), key=key, parent=grp)
 
 
-def pill(measure_word, measure_fill_name):
-    v = text_line(measure_word, size=11, colour=INK2, bg="#26314F")
-    v["visualContainerObjects"]["background"] = [{"properties": {"show": b(True),
-                                                                 "color": measure_colour(measure_fill_name)}}]
+def fx_shape(colour_measure, radius):
+    """Rounded shape whose fill is a colour measure (fx)."""
+    v = shape(PANEL, radius=radius)
+    v["objects"]["fill"][0]["properties"]["fillColor"] = measure_colour(colour_measure)
     return v
 
 
+def card_text(measure, size, colour=INK2, colour_measure=None):
+    """Card on a transparent ground (no header row, no scroll); a card centres its text."""
+    return band_text(measure, size, colour=colour, colour_measure=colour_measure)
+
+
+def right_cell(measure, size, col_w, colour_measure=None, colour=INK2):
+    """One-cell table with a fixed column width and right-aligned text (fact values)."""
+    v = _cell(measure, size, colour_measure, colour)
+    v["objects"]["columnWidth"] = [{"properties": {"value": n(col_w)}, "selector": {"metadata": pbir.qref(M(measure))}}]
+    v["objects"]["columnFormatting"] = [{"properties": {"alignment": s("Right")}, "selector": {"metadata": pbir.qref(M(measure))}}]
+    return v
+
+
+AREA_TRANSPARENCY = 82     # soft area under the line
+
+
+def area_spark(measure, colour):
+    """Native area chart: status-colour line, soft fill (AREA_TRANSPARENCY %), no axes / gridlines / legend / markers.
+    The area fills to zero, so a series that crosses zero (EAC variance) shades above and below the zero line.
+    The shading transparency is dataPoint.transparency in Desktop (lineStyles has only areaShow / areaColor)."""
+    fill = fx_fill(M(measure), colour)
+    fill["properties"]["transparency"] = n(AREA_TRANSPARENCY)
+    v = chart("areaChart", {"Category": [P(C("DimDate", "MonthStart"), "Month")], "Y": [P(M(measure), " ")]}, "",
+              {"dataPoint": [fill], "legend": legend(show=False),
+               "categoryAxis": [{"properties": {"show": b(False), "gridlineShow": b(False)}}],
+               "valueAxis": [{"properties": {"show": b(False), "gridlineShow": b(False)}}],
+               "labels": [{"properties": {"show": b(False)}}],
+               "lineStyles": [{"properties": {"strokeWidth": n(2), "showMarker": b(False), "areaShow": b(True)}}],
+               "markers": [{"properties": {"show": b(False)}}]},
+              sort=[(C("DimDate", "MonthStart"), "Ascending")])
+    vco = v["visualContainerObjects"]
+    vco["title"] = [{"properties": {"show": b(False)}}]
+    vco["background"] = [{"properties": {"show": b(False)}}]
+    vco["border"] = [{"properties": {"show": b(False)}}]
+    vco["padding"] = [{"properties": {"top": n(0), "bottom": n(0), "left": n(0), "right": n(0)}}]
+    return v
+
+
+def caption(text, align):
+    return textbox([[(text, st("Segoe UI", CAP_PT, MUTED2))]], align=align)
+
+
 def subject_card(pg, x, y, spec):
-    key, name, icon, num, label, kind, arg, colour, link, footer = spec
+    key, name, num, colour = spec["key"], spec["name"], spec["num"], spec["colour"]
+    sub = _PILL_NAME[key]
     p = f"card_{key}"
-    panel(pg, x, y, COL_W, ROW_H, f"{p}_bg")
-    pg.add(x + 16, y + R_HEAD, 28, 28, image(f"rail-{icon}-grey.png", f"{name} icon"), key=f"{p}_icon")
-    pg.add(x + 52, y + R_HEAD - 2, 160, 32, textbox([[(name, st("Segoe UI Semibold", 14, INK2, True))]]), key=f"{p}_title")
-    pg.add(x + COL_W - 88, y + R_HEAD, 72, 28, pill(hm(f"Pill {_PILL_NAME[key]}"), hm(f"Pill Fill {_PILL_NAME[key]}")),
-           key=f"{p}_pill")
-    pg.add(x + 16, y + R_LBL, COL_W - 32, 26, textbox([[(label, st("Segoe UI", 12, LABEL))]]), key=f"{p}_lbl")
-    # cells are taller than the room they show text in (the table header row + Service text height need the extra),
-    # so the sentence cell is added BEFORE the spark / bar and those sit on top of its empty upper part
-    pg.add(x + CELL_X, y + R_SENT, COL_W - CELL_X - 14, SENT_H, text_cell(hm(f"Insight {_PILL_NAME[key]}"), size=13), key=f"{p}_sent")
-    if kind == "spark":
-        pg.add(x + 8, y + R_ROW3, COL_W - 16, ROW3_H, sparkline(arg, colour), key=f"{p}_spark")
-    elif kind == "bar":
-        progress(pg, x + 16, y + R_BAR - 6, COL_W - 32, 12, num, arg[2], arg[0], arg[1], colour, f"{p}_bar")
-    pg.add(x + 16, y + R_RULE, COL_W - 32, 1, shape("#26314F"), key=f"{p}_rule")
-    # whole-card link first, footer links on top of it
-    pg.add(x, y, COL_W, R_RULE - 4, ghost_link(link, name), key=f"{p}_go")
+    W = COL_W
+    panel(pg, x, y, W, ROW_H, f"{p}_bg")
+    # 1 header: icon tile (pill fill) + grey icon, title, status capsule (fill, dot, word)
+    pg.add(x + PAD, y + R_HEAD, TILE, TILE, fx_shape(hm(f"Pill Fill {sub}"), TILE_R), key=f"{p}_tile")
+    icon = image(f"rail-{spec['icon']}-grey.png", f"{name} icon")
+    icon["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")
+    off = (TILE - TILE_IMG) / 2
+    pg.add(x + PAD + off, y + R_HEAD + off, TILE_IMG, TILE_IMG, icon, key=f"{p}_icon")
+    pg.add(x + TITLE_X, y + R_HEAD, 170, TILE, textbox([[(name, st("Segoe UI Semibold", 14, INK2, True))]]),
+           key=f"{p}_title")
+    sx, sy = x + W - PAD - SP_W, y + R_HEAD + (TILE - SP_H) / 2
+    pg.add(sx, sy, SP_W, SP_H, fx_shape(hm(f"Pill Fill {sub}"), SP_R), key=f"{p}_pillbg")
+    pg.add(sx + 12, sy + (SP_H - SP_DOT) / 2, SP_DOT, SP_DOT, fx_shape(colour, 50), key=f"{p}_dot")
+    pg.add(sx + 20, sy, SP_W - 26, SP_H, card_text(hm(f"Pill {sub}"), 10, colour_measure=colour), key=f"{p}_pill")
+    # 2 hero line: unit (padded measure, right of the number), chip right-aligned at the top of the digits
+    unit_x = x + PAD + NUM_MIN_PX[key] + UNIT_GAP - TBL_PADL
+    pg.add(round(unit_x, 2), y + R_NUM + NUM_BASE - UNIT_BASE, W - (unit_x - x) - PAD, 66,
+           text_cell(hm(f"Unit {sub}"), size=UNIT_PT, colour=LABEL), key=f"{p}_unit")
+    cw = chip_w(spec)
+    cx = x + W - PAD - cw
+    kind, arg = spec["chip"]
+    if kind == "measure":
+        pg.add(cx, y + R_CHIP, cw, CHIP_TH, fx_shape(hm(f"Delta Fill {arg}"), CHIP_R), key=f"{p}_chipbg")
+        txt = card_text(hm(f"Delta {arg}"), CHIP_PT, colour_measure=hm(f"Delta Colour {arg}"))
+    elif kind == "context":
+        pg.add(cx, y + R_CHIP, cw, CHIP_TH, shape(RULE2, radius=CHIP_R), key=f"{p}_chipbg")
+        txt = card_text(hm(f"Delta {arg}"), CHIP_PT, colour=LABEL)
+    else:
+        pg.add(cx, y + R_CHIP, cw, CHIP_TH, shape(RULE2, radius=CHIP_R), key=f"{p}_chipbg")
+        txt = textbox([[(arg, st("Segoe UI", CHIP_PT, LABEL))]], align="center")
+    pg.add(cx, y + R_CHIP - 3, cw, CHIP_TH + 6, txt, key=f"{p}_chip")
+    # 3 visual row: area sparkline + month captions, progress bar + marker + captions, or an explicit empty slot
+    vis = spec["visual"]
+    tw = W - 2 * PAD
+    if vis and vis[0] == "area":
+        _k, measure, cap = vis
+        # captions first: the chart (transparent) is drawn on top of them
+        pg.add(x + PAD - 6, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark From {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap0")
+        pg.add(x + PAD + 40, y + R_CAP, tw - 80, CAP_H, caption(cap, "center"), key=f"{p}_cap1")
+        pg.add(x + W - PAD - 38, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark To {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap2")
+        pg.add(x + PAD - 4, y + R_VIS, tw + 8, VIS_H, area_spark(measure, colour), key=f"{p}_spark")
+    elif vis and vis[0] == "bar":
+        lo, hi, rest, target, labels = vis[1]
+        value = vis[2] if len(vis) > 2 else num
+        progress(pg, x + PAD, y + R_BAR - BAR_T / 2, tw, BAR_T, value, rest, lo, hi, colour, f"{p}_bar")
+        pg.add(x + PAD - 4, y + R_CAP, 60, CAP_H, caption(labels[0], "left"), key=f"{p}_cap0")
+        if target is None:
+            pg.add(x + PAD + 60, y + R_CAP, tw - 120, CAP_H, caption(labels[1], "center"), key=f"{p}_cap1")
+        else:
+            mx = x + PAD + tw * (target - lo) / (hi - lo)
+            pg.add(round(mx - 1, 2), y + R_BAR - MARK_H / 2, 2, MARK_H, shape(C_TEAL), key=f"{p}_mark")
+            # the target label sits ABOVE the bar, centred on the marker; 0 / 100 stay under the bar ends
+            pg.add(round(mx - TGT_W / 2, 2), y + R_TGT, TGT_W, CAP_H, caption(labels[1], "center"), key=f"{p}_cap1")
+        pg.add(x + W - PAD - 56, y + R_CAP, 60, CAP_H, caption(labels[2], "right"), key=f"{p}_cap2")
+    # 4 facts: hairline, then two label / value rows. Row 2's cell is added first: row 1's cell (on top) keeps its text
+    # clear of row 2's header row.
+    pg.add(x + PAD, y + R_DIV, tw, 1, shape(RULE2), key=f"{p}_rule")
+    for j in (2, 1):
+        lbl = FACTS[sub][j - 1][0]
+        ry = y + R_FACT[j - 1]
+        pg.add(x + PAD, ry, FACT_LABEL_PX[lbl] + 24, FACT_H, textbox([[(lbl, st("Segoe UI", FACT_PT, LABEL))]]), key=f"{p}_f{j}l")
+        vw = fact_value_w(lbl)
+        vx = x + W - PAD - vw - TBL_PADL
+        pg.add(round(vx, 2), ry - FACT_DY, vw + VAL_CELL_EXTRA, FACT_CELL_H,
+               right_cell(hm(f"Fact {sub} {j} Value"), FACT_PT, vw, colour_measure=FACT_COLOUR[(sub, j)]),
+               key=f"{p}_f{j}v")
+    # whole-card link: everything above the footer; the number and the footer pills sit on top of it
+    pg.add(x, y, W, R_FOOT - 4, ghost_link(spec["link"], name), key=f"{p}_go")
     # the number sits ABOVE the ghost link so hovering it shows its list (a button cannot show a report-page tooltip);
-    # it is only NUM_W wide, so the rest of its row still clicks through to the chapter
-    pg.add(x + CELL_X, y + R_NUM, NUM_W, NUM_H,
-           with_tip(value_cell(num, colour_measure=colour, size=34), f"tip_home_{key}"), key=f"{p}_num")
-    labels, size, widths = chip_layout(footer)
-    cx = x + 16
-    for j, ((txt, target), label, w) in enumerate(zip(footer, labels, widths)):
-        pg.add(round(cx, 2), y + R_FOOT, w, CHIP_H, link_chip(label, target, size), key=f"{p}_ft{j}")
-        cx += w + CHIP_GAP
+    # it is only NUM_W wide, so the rest of the hero line still clicks through to the chapter
+    pg.add(x + PAD - NUM_PADL, y + R_NUM, NUM_W, NUM_H,
+           with_tip(value_cell(num, colour_measure=colour, size=NUM_PT), f"tip_home_{key}"), key=f"{p}_num")
+    # 5 action pills
+    labels, size, widths = chip_layout(spec["footer"])
+    fx = x + PAD
+    for j, ((txt_, target), label, w) in enumerate(zip(spec["footer"], labels, widths)):
+        pg.add(round(fx, 2), y + R_FOOT, w, FOOT_H, action_pill(label, target, size), key=f"{p}_ft{j}")
+        fx += w + FOOT_GAP
 
 
 def build_cards(pg):
@@ -770,19 +1035,20 @@ def act_table(why, impact=True):
 
 
 ACT_GRP = (RIGHT_X, RIGHT_Y, RIGHT_W, 44 + ACT_H)   # one Act-now version: title row + table
+ACT_TX = 24                # title inset: clear of the panel's rounded corner (Desktop draws radius 14 wide at this size)
 
 
 def build_act(pg, g_all, g_bucket, bm_all):
     """Seven versions of the Act-now list, each its own top-level group: all reasons, and one per chip bucket."""
     x, y = RIGHT_X, RIGHT_Y
-    pg.add(x + 16, y + 10, 400, 32, textbox([[("Act now", st("Segoe UI Semibold", 15, INK2, True)),
+    pg.add(x + ACT_TX, y + 12, 392, 32, textbox([[("Act now", st("Segoe UI Semibold", 15, INK2, True)),
                                               ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
            key="act_title", parent=g_all)
     pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, act_table(hm("Act Reason")), key="act_tbl", parent=g_all,
            filters=[pages.REAL_PROJECTS])
     for k, (_s, lbl, nm, _d) in enumerate(CHIPS):
         slug, grp = CHIP_SLUG[k], g_bucket[CHIP_SLUG[k]]
-        pg.add(x + 16, y + 10, 300, 32, textbox([[(f"Act now — {lbl}", st("Segoe UI Semibold", 15, INK2, True))]]),
+        pg.add(x + ACT_TX, y + 12, 292, 32, textbox([[(f"Act now — {lbl}", st("Segoe UI Semibold", 15, INK2, True))]]),
                key=f"act_title_{slug}", parent=grp)
         pg.add(x + RIGHT_W - 16 - 96, y + 14, 96, 26,
                pbir.bookmark_button("Show all ›", bm_all, "Show every Act-now project", fill=PANEL, hover="#26314F",
@@ -934,7 +1200,7 @@ def card_tips():
                 [(DPN, "Project", 220), (M(hm("Tip Governance")), "Failing rules", 100)], _desc(hm("Tip Governance")), (),
                 (hm("Tip Governance Sub"), hm("Tip Governance More"))),
     }
-assert [k for k, _ in pages.HOME_TIP_CARDS] == [s_[0] for s_ in SUBJECTS_LAYOUT]
+assert [k for k, _ in pages.HOME_TIP_CARDS] == [s_["key"] for s_ in SUBJECTS_LAYOUT]
 LONG_TIPS = ("port", "ben", "sr", "gov")
 
 

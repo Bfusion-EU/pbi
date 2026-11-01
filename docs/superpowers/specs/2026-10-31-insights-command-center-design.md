@@ -47,18 +47,15 @@ visuals, row-level security and a mobile layout.
 - Status colours on dark: red `#FF8A80`, amber `#F2C46B`, teal `#5DCAA5`, grey `#8C98B3` (no
   status). Pill fills: `#3A1E22` / `#3A2F18` / `#173A33` / `#26314F`.
 - Fonts: Segoe UI (Semibold for numbers and titles), sentence case.
-- Sizes (rev 2.1, enlarged for readability): card title 14 pt Semibold, card icon 28 px, status
-  pill 11 pt (box 72 x 28), card number 34 pt, number label 12 pt, sentence 13 pt (up to four
-  lines in the Service), footer link chips 11 pt (30 high; each chip is sized to its text, 8 px per character + 22 px,
-  laid out left to right with a 10 px gap; the arrow is dropped, then the font goes to 10 pt, when a card's chips do not fit). Right column: "Act now" / "Next 30 days" titles 15 pt,
-  table header and body 11 pt, hint 10 pt, decision labels and decision text 13 pt. Header
-  band: decision pill 15 pt, reason chips 12 pt, band 76 high (y 8-84).
+- Sizes (rev 2.5, design A cards; details in section 4): card title 14 pt Semibold, icon tile 32 px, status capsule
+  10 pt (74 x 24), card number 38 pt, unit 12 pt, chip 10 pt, captions 9 pt, facts 11 pt, action pills Segoe UI Semibold
+  11 pt (28 high, text + 24 px, 8 px apart). Right column: "Act now" / "Next 30 days" titles 15 pt (the Act-now titles are
+  inset 24 px, clear of the panel's rounded corner), table header and body 11 pt, hint 10 pt, decision labels and
+  decision text 13 pt. Header band: decision pill 15 pt, reason chips 12 pt, band 76 high (y 8-84).
 - Cell headroom: the Service renders text taller than Desktop and shows a scroll thumb when a one-cell table
-  is too short, and the table header row (about 22 px) counts. Every number / sentence cell is therefore at least
-  28 px taller than header + text. Card rows (y relative to the card top): head 12, number cell 40 (120 high, its
-  empty lower part sits under the label), label 120, row 3 (spark / bar) 160-256, sentence cell 256 (126 high,
-  drawn before the spark / bar so they sit on top of its empty upper part), rule 386 (row height 436 minus 50),
-  chips 394 (30 high, chip padding 24 px, gap 8 px).
+  is too short, and the table header row (about 22 px) counts. Every one-cell table is therefore at least
+  28 px taller than header + text (number 118, unit and fact values 66), and wider than its fixed column (fact values:
+  column + 60 px), so no cell scrolls in either direction.
 
 ## Layout (1800 × 1000)
 
@@ -122,54 +119,61 @@ The old greeting line, refresh line and the separate orange briefing strip are g
 - Hover and click (rev 2.3): hovering the pill or a chip lists the projects behind it; clicking the count part of a
   chip filters the Act-now column to that reason, clicking the count part of the pill shows all again. See section 8.
 
-### 4 · Subject cards (both views): the one card anatomy
+### 4 · Subject cards (both views): the one card anatomy — design A (rev 2.5)
 
-Every card has the same five rows, top to bottom, all left-aligned:
+Rev 2.5 restyles the eight cards into the approved modern design "A". The grid (x 104 / 417 / 730 / 1043, y 100 / 552,
+297 x 436), the header band, the chips, the right column, bookmarks and groups are unchanged. Every element sits at the
+same offset inside every card (constants in `ext_home.py`; y from the card top), so the rows line up across a card row.
 
-1. **Header**: subject icon (small grey PNG, from the rail set), subject name, and a **status
-   pill** on the right showing "Act" (red), "Watch" (amber), "OK" (teal) or "–" (grey). The pill
-   text and colour come from the subject's Home colour measure.
-2. **Number**: one big KPI (34 pt) in the status colour, with its label under it (12 pt, grey).
-3. **Trend or bar**: a 6-month sparkline where history exists. Otherwise a progress bar where the
-   KPI is a share. The bar is ONE stacked `barChart` with two measures, the value (status colour) and its
-   remainder to the axis max (`#3A4768`: `Home · Util Rest`, `Aligned Rest`, `Trust Rest`), value axis fixed to
-   0..max, axes/legend/labels/title/background hidden, category inner padding 60 (about 14 px bar). Fill and
-   track are the same bars, so they cannot misalign. The chart is 110 px tall (Desktop shows a placeholder below
-   ~100 px) and as wide as the track. Otherwise this row is left empty, so the rows still line up across cards.
-4. **Sentence**: one 13 pt sentence (`Story | Home · Insight <Subject>`), at most three lines,
-   saying why the number is what it is.
-5. **Footer**: text links to the chapter and its follow-on pages. The whole card also has a
-   transparent link to the chapter.
+1. **Header** (y 16): icon tile 32 x 32, radius 8, filled with `Pill Fill <S>` (fx) with the 20 px grey rail icon on
+   top; title 14 pt Semibold at x+58; status capsule on the right (74 x 24, radius 12, fill `Pill Fill <S>`, a 6 px dot
+   and the word Act / Watch / OK / Low / – in the status colour, 10 pt).
+2. **Hero line**: the number (one-cell table, 38 pt, status colour, cell y 50, 118 high, starts 24 px left of the text
+   edge because of the cell padding; it sits above the ghost link and carries the hover list, section 8). The unit
+   (`Story | Home · Unit <S>`, 12 pt `#8C98B3`) is a one-cell table whose baseline matches the number's: it starts
+   8 px after the narrowest form of the number ("8", "8%", "0.00", "0.0") and the measure pads 3 figure spaces per extra
+   character, so it always starts right after the number (a number's width depends on the data; a text box cannot
+   move). The chip (10 pt, 18 high, radius 9) is right-aligned at the top of the digits (y+84), above the unit line, so it
+   never overlaps a long unit. Chips: Financials / Schedule `Delta <S>` ("▼ 14.4 pt", from EAC Change / On Track Change,
+   text and fill coloured by direction via `Delta Colour / Fill <S>`, a blank change is a space on an invisible fill);
+   Risk `Delta Risk` ("of N active"), Status `Delta Status` ("of N projects": projects expected to report); static
+   "target 80%" (Resources, Portfolio), "target ≥ 1.0" (Benefits), "target 90" (Governance) grey on `#26314F`.
+3. **Visual row** (y 136-258): an area sparkline (native `areaChart`, status-colour line, `dataPoint.transparency` 82,
+   no axes / gridlines / legend / markers; the area fills to zero, so EAC variance shades above and below the zero
+   line) with a 9 pt `#5A6680` caption row at y 238 (`Spark From / To <S>` = first / last month that has a value,
+   centre "EAC vs budget · 6 months" / "% on track · 6 months"); or the stacked progress bar (one barChart, value + rest,
+   fixed axis, 110 px chart, inner padding 69 = an 11 px bar centred on y 224) with a 2 px teal `#5DCAA5` marker
+   (15 high, centred on the bar) at the target, the target label ABOVE the bar centred on the marker and "0%" / "100%"
+   ("0" / "100") under the bar ends. Risk shows `Unmitigated Risk %` (rest `Unmitigated Rest`) with "without mitigation"
+   centred under it and no marker. Benefits and Status reports leave the row empty.
+4. **Facts**: hairline `#26314F` at y 270, then two rows (label text boxes at y 282 / 316, 11 pt `#8C98B3`; values are
+   right-aligned one-cell tables `Fact <S> <n> Value`, 66 px high, fixed column = row width minus label minus 10 px, so
+   all values end at the card's right text edge and no cell scrolls; colours `#E8ECF4` or `Fact <S> <n> Colour`).
+   Worst-project names are cut in DAX (14 chars on Financials, 18 on Schedule) with "…".
+5. **Action pills** (y 392, 28 high, radius 14, text + 24 px wide, 8 px apart): neutral buttons, no orange or status
+   colour (orange is a KPI colour too): transparent fill, 1 px `#C9CED6` border, Segoe UI Semibold 11 pt centred both
+   ways with zero margins; hover fill `#F3F4F6`, border `#9CA3AF`, text `#374151`. At rest the text is `#D0D5DD`,
+   because `#374151` on the dark card is unreadable. The Executive decision links use the same button.
 
-| Card | Number (measure) | Label | Row 3 | Sentence (new `Insight …` measure, built from) | Colour / pill | Footer links |
+The whole card stays a ghost link to the chapter (x, y, 297 x 388); only the number cell and the footer pills sit on it.
+
+| Card | Number + unit | Chip | Visual row | Fact 1 | Fact 2 | Footer |
 |---|---|---|---|---|---|---|
-| Financials | `Story | Projects Over Budget` | projects over EAC | sparkline `Home · EAC Var % (reports)` | `Story | EAC Variance %` + worst over-budget project | new `Home · Colour Financials` (red: any project > 5% over EAC; amber: any project over budget; else teal) | Spend · Pareto |
-| Schedule | `Story | Baseline · Late Projects` | slipping vs baseline | sparkline `Home · On Track % (reports)` | `Story | On Track %` + `On Track Change` + worst slip | `Home · Colour Schedule` | Schedule · Gantt · Baseline |
-| Resources | `Story | Utilisation %` | utilisation | progress bar (0..1) | `Story | Over-allocated People` (in view) + `Story | TS Status · Missing Timesheets` | `Home · Colour Util` | People · Time · TS · Person |
-| Risk | `Story | Critical High Risks` | critical risks | — | `Story | Active Risk Count` + `Story | Unmitigated Risk %` | `Home · Colour Risk` | Risk |
-| Portfolio | `Story | Aligned Budget %` | budget aligned | progress bar (0..1) | `Story | Active Projects` + `Story | Proposed Projects` | `Home · Colour Portfolio` | Gates · Scenarios · Project |
-| Benefits | `Story | Benefit Cost Ratio` (format `0.00`, the model's) | benefit / cost | — | `Story | Benefits At Completion` vs `Story | Finance EAC` | `Home · Colour Benefits` (grey when no ratio) | Benefits |
-| Status reports | `Story | Status · Not Reporting` | not reporting 30+ days | — | `Story | Status · Overall Worsened` (projects worse since their last report) | new `Home · Colour Status` (worsened ≥ 3 or not reporting ≥ 5 → red; ≥ 1 of either → amber; else teal) | Trend |
-| Governance | `PMO | Governance Score` | data trust score | progress bar (0..100) | `PMO | Plans Failing` (plans failing Plan Insights rules) | `Home · Colour Trust` | Governance |
+| Financials | Projects Over Budget · projects over EAC | `Delta Financials` | area `EAC Var % (reports)` | EAC vs budget → EAC Variance % | Worst project → name + % | Spend · Pareto |
+| Schedule | Baseline · Late Projects · slipping vs baseline | `Delta Schedule` | area `On Track % (reports)` | On track → On Track % | Worst slip → name + "+N d" | Schedule · Gantt · Baseline |
+| Resources | Utilisation % · utilisation | target 80% | bar 0..1, marker 80% | Over 100% → N people | Timesheets missing → N (amber > 0) | People · Time · TS · Person |
+| Risk | Critical High Risks · critical risks | of N active | bar Unmitigated Risk % | Active risks → N | Without mitigation → % | Risk |
+| Portfolio | Aligned Budget % · budget aligned | target 80% | bar 0..1, marker 80% | Active projects → N | Proposed → N | Gates · Scenarios · Project |
+| Benefits | Benefit Cost Ratio · benefit / cost | target ≥ 1.0 | empty | Planned benefits → € | EAC → € | Benefits |
+| Status reports | Status · Not Reporting · not reporting 30+ days | of N projects | empty | Worse than last → N | Avg days since → N d | Trend |
+| Governance | Governance Score · data trust score | target 90 | bar 0..100, marker 90 | Project plans failing → N | Other plans failing → Plans Failing − N | Governance |
 
-- The pill is a new `Story | Home · Pill <Subject>` text measure that maps the colour measure:
-  red → "Act", amber → "Watch", teal → "OK", anything else → "–". It is shown in a small card
-  whose background is the matching pill fill (colour measure).
-  Implementation note: grey (the Resources "under 50%" colour) maps to "Low".
-  Implementation note: `Home · Colour Status` is red when worsened ≥ 3 or not reporting ≥ 5, amber when at least one of either is ≥ 1, else teal.
-  Implementation note: the Financials card has its own count-based `Home · Colour Financials` (red if any project > 5% over EAC, amber if any project is over budget, else teal), so the number, pill and sparkline agree. `Colour EAC` stays for the Executive Money decision.
-  Implementation note: the Status reports card number is "not reporting" (30+ days); the Insight sentence describes the worsened count.
-  Implementation note: the Resources footer has a "TS" chip to the Timesheet Status page, which keeps that page reachable from Home.
-  Implementation note: Benefits shows the model's 0.00 ratio format, and `Colour Benefits` is grey (pill "–") when the ratio is blank; the Insight sentence omits the EAC clause when EAC is blank.
-- Timesheets no longer has its own card. It moves into the Resources sentence and links (Time,
-  and TS status through the rail tooltip of chapter 4).
-- **Left alignment** requires the newer native "Card (new)" visual (`cardVisual`), because the
-  legacy card always centres its text. Implementation starts with a Desktop spike to check that a
-  generated `cardVisual` renders, with left-aligned value and label. If it does not render, fall
-  back to the legacy card for the number and accept centred text there, and say so before going
-  on.
-
-- **Implementation note:** Card (new) did not wrap sentences, so values and sentences use the one-cell table route.
+- The pill word maps the colour measure: red → "Act", amber → "Watch", teal → "OK", grey → "Low", anything else → "–".
+  The colour measures are unchanged (`Colour Financials`, `Colour Schedule`, `Colour Util`, `Colour Risk`,
+  `Colour Portfolio`, `Colour Benefits`, `Colour Status`, `Colour Trust`).
+- The `Insight <S>` sentences of rev 2 are replaced by the facts and removed.
+- Values and units use the one-cell table route (left-aligned, or right-aligned by `columnFormatting.alignment`);
+  cards (centred, no header) are used for the pill word, chip text and month captions.
 
 ### 5 · Right column, PMO view: Act now
 
@@ -227,8 +231,8 @@ filters (real projects, risk work type / state) are fine.
 
 The tooltip is set on the visual with `visualTooltip` `{show, type "Canvas", section <page id>}`. A button cannot show
 a report-page tooltip, so every visual that carries one sits ABOVE the whole-card ghost link: the card number cell is
-added after the ghost link, 180 px wide (`NUM_W`) and only 98 px tall (y+36..y+134, ending above the label row at
-y+136; 78 and 92 px still showed a scroll thumb in Desktop): **the number shows the hover list, while the rest of the card (label row, sentence, spark / bar) opens the
+added after the ghost link, 160 px wide (`NUM_W`) and 118 px tall (rev 2.5: y+50..y+168, ending above the
+caption row; shorter cells showed a scroll thumb in Desktop): **the number shows the hover list, while the rest of the card (unit, chip, visual row, facts) opens the
 chapter.** The titles say what the list explains ("Behind budget aligned: alignment by project", ...).
 
 **Long lists (rev 2.4).** A tooltip cannot scroll, so Portfolio, Benefits, Status and Governance (more than 7 rows) use a
@@ -281,7 +285,10 @@ Alternatives rejected: a button over the whole chip (no hover list at all), the 
 - **New in rev 2.3** (folder `Story\Home\Tooltips`): `Tip <Bucket>` (6), `Tip Financials`, `Tip Schedule`,
   `Tip Resources`, `Tip Risk`, `Tip Portfolio`, `Tip Portfolio Budget`, `Tip Benefits`, `Tip Status`, `Tip Status Days`,
   `Tip Governance`, the `Tip <X> Key / Sub / More` measures of the four long lists and `Gov Failing Projects`: each blank unless the row qualifies (section 8).
-- **Removed** once nothing uses them: `Line …` (8), `Answer …` (4), the rev-1 KPI-row
+- **New in rev 2.5** (design A cards, folders `Story\\Home\\Cards` and `Colours`): `Unit <S>` (8), `Fact <S> <1|2> Value` (16) and the
+  `Fact <S> <n> Colour` measures where a value is status-coloured, `Delta Financials / Schedule / Risk / Status`, `Delta Colour /
+  Fill Financials / Schedule`, `Spark From / To Financials / Schedule`, `Unmitigated Rest`.
+- **Removed** once nothing uses them: (rev 2.5) `Insight <S>` (8); `Line …` (8), `Answer …` (4), the rev-1 KPI-row
   arrangement in `build_pulse`, and (rev 2.2) `Greeting`, `Refreshed`, `Briefing` and `Briefing Reasons`. Measures and helpers no longer used by Home are deleted.
 - **Reused**: everything named in the card table, the Act-now and history measures and `Due`.
 

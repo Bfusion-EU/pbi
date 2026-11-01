@@ -15,7 +15,11 @@ HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
          "Colour Financials", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
          "Colour Benefits", "Colour Status"]
         + [f"Chip {c}" for c in CHIPN] + [f"Chip Label {c}" for c in CHIPN] + [f"Chip Colour {c}" for c in CHIPN]
-        + [f"Insight {s}" for s in SUBJECTS] + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS]
+        + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS]
+        + [f"Unit {s}" for s in SUBJECTS] + [f"Fact {s} {k} Value" for s in SUBJECTS for k in (1, 2)]
+        + [f"Delta {s}" for s in ("Financials", "Schedule", "Risk", "Status")]
+        + [f"Delta {x} {s}" for x in ("Colour", "Fill") for s in ("Financials", "Schedule")]
+        + [f"Spark {e} {s}" for e in ("From", "To") for s in ("Financials", "Schedule")] + ["Unmitigated Rest"]
         + [f"Tip {c}" for c in CHIPN]
         + [f"Tip {t}" for t in ("Financials", "Schedule", "Resources", "Risk", "Portfolio", "Portfolio Budget",
                                 "Benefits", "Status", "Status Days", "Governance")]
@@ -26,7 +30,8 @@ HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
 
 REMOVED = ([f"Line {s}" for s in ["Portfolio", "Financials", "Resources", "Schedule", "Risk", "Benefits", "Timesheets",
                                   "Governance"]] + [f"Answer {a}" for a in ["Finance", "Schedule", "Resources", "Benefits"]]
-           + ["Colour Timesheets", "Greeting", "Refreshed", "Briefing", "Briefing Reasons"])
+           + ["Colour Timesheets", "Greeting", "Refreshed", "Briefing", "Briefing Reasons"]
+           + [f"Insight {s}" for s in SUBJECTS])          # design A: the card sentence is replaced by two facts
 
 
 def test_removed_measures_gone():
@@ -133,30 +138,118 @@ def test_view_groups_and_bookmarks():
 
 CARD_KEYS = ["fin", "sch", "res", "risk", "port", "ben", "sr", "gov"]
 # visual names are uid(page, key, visualType) hashes; _name() (already in this file) rebuilds them
-PART_TYPE = {"bg": "shape", "icon": "image", "title": "textbox", "pill": "card", "lbl": "textbox",
-             "go": "actionButton"}
+PART_TYPE = {"bg": "shape", "tile": "shape", "icon": "image", "title": "textbox", "pillbg": "shape", "dot": "shape",
+             "pill": "card", "chipbg": "shape", "rule": "shape", "f1l": "textbox", "f2l": "textbox", "go": "actionButton",
+             "ft0": "actionButton"}
 
 
 def _vc(pg, key, vtype):
     return next((vc for vc in pg.visuals if vc["name"] == _name(pg, key, vtype)), None)
 
 
-def test_eight_subject_cards_with_five_rows():
+def _chip_vc(pg, c):
+    return _vc(pg, f"card_{c}_chip", "card") or _vc(pg, f"card_{c}_chip", "textbox")
+
+
+def _visual_row(pg, c):
+    return [v for v in (_vc(pg, f"card_{c}_spark", "areaChart"), _vc(pg, f"card_{c}_bar", "barChart")) if v]
+
+
+def test_every_card_has_the_design_a_anatomy():
+    """icon tile, title, pill, number, unit, chip, visual row (or an explicit empty slot), 2 facts, >= 1 action pill."""
     pg = _home()
-    for c in CARD_KEYS:
+    for spec in ext_home.SUBJECTS_LAYOUT:
+        c = spec["key"]
         for part, vtype in PART_TYPE.items():
             assert _vc(pg, f"card_{c}_{part}", vtype) is not None, (c, part)
-        for part in ("num", "sent"):
+        for part in ("num", "unit", "f1v", "f2v"):
             assert _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL) is not None, (c, part)
+        assert _chip_vc(pg, c) is not None, c
+        assert _vc(pg, f"card_{c}_sent", ext_home.VALUE_VISUAL) is None, c          # the sentence is gone
+        vis = spec["visual"]
+        if vis is None:                                                            # explicit empty slot
+            assert _visual_row(pg, c) == [] and _vc(pg, f"card_{c}_cap0", "textbox") is None, c
+        else:
+            assert len(_visual_row(pg, c)) == 1, c
+            assert {"area": "areaChart", "bar": "barChart"}[vis[0]] == _visual_row(pg, c)[0]["visual"]["visualType"], c
+        assert "Unit " in repr(_vc(pg, f"card_{c}_unit", ext_home.VALUE_VISUAL)["visual"]["query"]), c
+        for j in (1, 2):
+            assert f"Fact {ext_home._PILL_NAME[c]} {j} Value" in repr(_vc(pg, f"card_{c}_f{j}v", ext_home.VALUE_VISUAL)["visual"]["query"])
+
+
+def test_card_elements_sit_at_the_same_offsets_in_each_row():
+    pg = _home()
+    for row in (CARD_KEYS[:4], CARD_KEYS[4:]):
+        rel = []
+        for c in row:
+            bg = _vc(pg, f"card_{c}_bg", "shape")["position"]
+            out = {}
+            for vc in pg.visuals:
+                for part in ("tile", "icon", "title", "pillbg", "dot", "pill", "num", "unit", "chipbg", "chip", "spark", "bar",
+                             "cap0", "cap1", "cap2", "mark", "rule", "f1l", "f1v", "f2l", "f2v", "ft0", "go"):
+                    if vc["name"] in {_name(pg, f"card_{c}_{part}", t) for t in ("shape", "image", "textbox", "card", "tableEx",
+                                                                                  "areaChart", "barChart", "actionButton")}:
+                        out[part] = round(vc["position"]["y"] - bg["y"], 2)
+            rel.append(out)
+        for part in {p for r in rel for p in r} - {"cap1"}:          # cap1 sits above the bar on target cards
+            ys = {r[part] for r in rel if part in r}
+            assert len(ys) == 1, (row, part, ys)
+
+
+def test_hero_number_unit_and_chip_do_not_overlap():
+    """Text extents (not the padded table boxes): the widest expected number, the unit text after it (its measure pads
+    3 figure spaces per extra character) and the right-aligned chip never overlap."""
+    widest = {"fin": "88", "sch": "88", "res": "100%", "risk": "88", "port": "100%", "ben": "10.00", "sr": "88", "gov": "100.0"}
+    narrow = {"fin": "8", "sch": "8", "res": "8%", "risk": "8", "port": "8%", "ben": "0.00", "sr": "8", "gov": "0.0"}
+    px = {"8": 28, "1": 21, "0": 28, "%": 43, ".": 12}
+    r = ext_home
+    unit_px = {"fin": 122, "sch": 135, "res": 68, "risk": 81, "port": 104, "ben": 90, "sr": 161, "gov": 107}
+    for spec in r.SUBJECTS_LAYOUT:
+        c = spec["key"]
+        for num in (narrow[c], widest[c]):
+            w = sum(px.get(ch, 28) for ch in num)
+            number = (r.PAD, r.R_NUM + r.NUM_BASE - 36, r.PAD + w, r.R_NUM + r.NUM_BASE)      # x0, y0, x1, y1
+            extra = len(num) - len(narrow[c])
+            ux = r.PAD + r.NUM_MIN_PX[c] + r.UNIT_GAP + 9 * 3 * extra
+            unit = (ux, r.R_NUM + r.NUM_BASE - 16, ux + unit_px[c], r.R_NUM + r.NUM_BASE + 4)
+            cw = r.chip_w(spec)
+            chip = (r.COL_W - r.PAD - cw, r.R_CHIP, r.COL_W - r.PAD, r.R_CHIP + r.CHIP_TH)
+            for a, b_ in ((number, unit), (number, chip), (unit, chip)):
+                assert not (a[0] < b_[2] and b_[0] < a[2] and a[1] < b_[3] and b_[1] < a[3]), (c, num, a, b_)
+            assert unit[2] <= r.COL_W - r.PAD and number[0] >= r.PAD, c
+    # the cells themselves: the number cell ends above the visual row's caption, the unit cell starts left of its text
+    pg = _home()
+    for c in CARD_KEYS:
+        bg = _vc(pg, f"card_{c}_bg", "shape")["position"]
+        num = _vc(pg, f"card_{c}_num", ext_home.VALUE_VISUAL)["position"]
+        assert num["y"] + num["height"] <= bg["y"] + r.R_CAP, c
+
+
+def test_fact_values_end_at_the_same_x_and_fit_beside_their_label():
+    pg = _home()
+    for spec in ext_home.SUBJECTS_LAYOUT:
+        c = spec["key"]
+        bg = _vc(pg, f"card_{c}_bg", "shape")["position"]
+        for j, (lbl, *_x) in enumerate(ext_home.FACTS[ext_home._PILL_NAME[c]], 1):
+            v = _vc(pg, f"card_{c}_f{j}v", ext_home.VALUE_VISUAL)
+            col = v["visual"]["objects"]["columnWidth"][0]["properties"]["value"]["expr"]["Literal"]["Value"]
+            colw = float(col.rstrip("D"))
+            # text column ends at card right - PAD, it starts after the label + gap, and the cell is wider than its column
+            assert abs(v["position"]["x"] + ext_home.TBL_PADL + colw - (bg["x"] + bg["width"] - ext_home.PAD)) < 0.01, (c, j)
+            assert bg["x"] + ext_home.PAD + ext_home.FACT_LABEL_PX[lbl] + ext_home.VAL_GAP <= v["position"]["x"] + ext_home.TBL_PADL + 0.01
+            assert v["position"]["width"] >= colw + 40, (c, j)                         # no horizontal scrollbar
+            assert "Right" in repr(v["visual"]["objects"]["columnFormatting"]), (c, j)
+            lb = _vc(pg, f"card_{c}_f{j}l", "textbox")["position"]
+            assert lb["width"] >= ext_home.FACT_LABEL_PX[lbl] + 16, (c, j)              # label never truncated
 
 
 def test_financials_and_status_cards_use_their_own_measures():
-    spec = {s[0]: s for s in ext_home.SUBJECTS_LAYOUT}
-    assert spec["fin"][3] == "Story | Projects Over Budget"
-    assert spec["fin"][7] == ext_home.hm("Colour Financials")
+    spec = {s["key"]: s for s in ext_home.SUBJECTS_LAYOUT}
+    assert spec["fin"]["num"] == "Story | Projects Over Budget"
+    assert spec["fin"]["colour"] == ext_home.hm("Colour Financials")
     assert ext_home.SUBJECT_COLOUR["Financials"] == ext_home.hm("Colour Financials")
-    assert spec["sr"][3] == "Story | Status · Not Reporting"
-    assert "not reporting" in spec["sr"][4]
+    assert spec["sr"]["num"] == "Story | Status · Not Reporting"
+    assert "not reporting" in spec["sr"]["unit"]
 
 
 def test_cards_align_in_grid():
@@ -324,13 +417,18 @@ def test_branding_present():
 def test_footer_chips_wide_enough_for_their_text():
     pg = _home()
     for spec in ext_home.SUBJECTS_LAYOUT:
-        c, footer = spec[0], spec[-1]
+        c, footer = spec["key"], spec["footer"]
         labels, size, widths = ext_home.chip_layout(footer)
+        assert size == 11, c                                                  # every card fits at 11 pt
+        if c == "res":
+            assert labels == ["People", "Time", "TS", "Person"]
         edge = None
         for j, (label, w) in enumerate(zip(labels, widths)):
             vc = _vc(pg, f"card_{c}_ft{j}", "actionButton")
             pos = vc["position"]
-            assert pos["width"] >= ext_home.chip_text_w(label, size) + 8, (c, label)
+            # sized to the text: measured Semibold width + 24 px, never less
+            assert abs(pos["width"] - (ext_home.FOOT_TEXT_PX[label] + ext_home.FOOT_PAD)) < 0.01, (c, label)
+            assert pos["height"] == 28, (c, label)
             if edge is not None:
                 assert pos["x"] - edge >= ext_home.CHIP_GAP - 0.01, (c, label)   # 10 px gap, no overlap
             edge = pos["x"] + pos["width"]
@@ -340,7 +438,7 @@ def test_footer_chips_wide_enough_for_their_text():
 
 def test_progress_bars_are_one_stacked_chart():
     pg = _home()
-    for c in ("res", "port", "gov"):
+    for c in ("res", "risk", "port", "gov"):
         bar = _vc(pg, f"card_{c}_bar", "barChart")
         assert bar is not None, c
         assert _vc(pg, f"card_{c}_bar_track", "shape") is None, c      # no separate track shape
@@ -348,24 +446,33 @@ def test_progress_bars_are_one_stacked_chart():
         assert len(proj) == 2 and "Rest" in repr(proj[1]), c           # value + remainder
         assert bar["position"]["height"] >= 100                        # Desktop placeholder below ~100 px
     names = {m["name"] for m in MEASURES}
-    assert {f"Story | Home · {n}" for n in ("Util Rest", "Aligned Rest", "Trust Rest")} <= names
+    assert {f"Story | Home · {n}" for n in ("Util Rest", "Aligned Rest", "Trust Rest", "Unmitigated Rest")} <= names
+    # target markers: at the target share of the track, centred on the bar, a little taller than it; label above the bar
+    r = ext_home
+    for c, t in (("res", 0.8), ("port", 0.8), ("gov", 0.9)):
+        bg = _vc(pg, f"card_{c}_bg", "shape")["position"]
+        mk = _vc(pg, f"card_{c}_mark", "shape")["position"]
+        assert abs(mk["x"] + 1 - (bg["x"] + r.PAD + (r.COL_W - 2 * r.PAD) * t)) < 0.01, c
+        assert abs(mk["y"] + mk["height"] / 2 - (bg["y"] + r.R_BAR)) < 0.01 and r.BAR_T < mk["height"] <= r.BAR_T + 6, c
+        lbl = _vc(pg, f"card_{c}_cap1", "textbox")["position"]
+        assert abs(lbl["x"] + lbl["width"] / 2 - (mk["x"] + 1)) < 0.01, c
+        assert lbl["y"] + lbl["height"] <= mk["y"], c                         # above the bar
+        for k in ("cap0", "cap2"):
+            assert _vc(pg, f"card_{c}_{k}", "textbox")["position"]["y"] >= bg["y"] + r.R_BAR + r.BAR_T / 2, (c, k)
+    assert _vc(pg, "card_risk_mark", "shape") is None                         # risk: no target
 
 
 def test_cells_have_service_headroom():
     """The Service renders text taller than Desktop; every value/text cell needs >= 28 px over its text height."""
     pg = _home()
-    pts = {"num": 34, "sent": 13 * 4}   # sentence: 4 lines in the Service
+    pts = {"num": ext_home.NUM_PT, "unit": ext_home.UNIT_PT, "f1v": ext_home.FACT_PT, "f2v": ext_home.FACT_PT}
     for c in CARD_KEYS:
         for part, size in pts.items():
             vc = _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL)
-            # the number cell must stop above the label row (it would block the card click there), so it only keeps
-            # ~10 px of headroom: 34 pt = ~45 px of text + the 1 pt header row ~ 64 px, the cell is 78
-            need = size * 1.33 + 22 + (10 if part == "num" else 28)
+            need = size * 1.33 + 22 + 28                       # text + header row + Service headroom
             assert vc["position"]["height"] >= need, (c, part)
-    # header row ~22 px; the sentence cell may sit under the spark / bar (they are drawn on top of it)
-    # rows stay inside the card
     r = ext_home
-    assert r.R_SENT + r.SENT_H <= r.R_RULE
+    assert r.R_FACT[1] + r.FACT_H <= r.R_FOOT and r.R_FOOT + r.FOOT_H <= r.ROW_H
 
 
 def test_header_single_band():
@@ -496,10 +603,12 @@ def test_tooltip_visuals_sit_above_ghost_links():
         assert num["position"]["z"] > go["position"]["z"], c
         # the number does not cover the whole row, so the rest of the card still clicks through ...
         assert num["position"]["width"] < go["position"]["width"] - 80, c
-        # ... and it ends above the label row, which must keep the whole-card click
-        lbl = _vc(pg, f"card_{c}_lbl", "textbox")
-        assert num["position"]["y"] + num["position"]["height"] <= lbl["position"]["y"], c
-        assert not _overlap(num["position"], lbl["position"]), c
+        # ... the facts, chip and footer are not under it
+        for part, vt in (("f1l", "textbox"), ("chipbg", "shape"), ("ft0", "actionButton")):
+            assert not _overlap(num["position"], _vc(pg, f"card_{c}_{part}", vt)["position"]), (c, part)
+        # every other data visual of the card sits under the ghost link (so the card still clicks through)
+        for part in ("unit", "f1v", "f2v"):
+            assert _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL)["position"]["z"] < go["position"]["z"], (c, part)
 
 
 def test_each_chip_has_a_bookmark_button_to_its_bucket():
@@ -576,9 +685,9 @@ def test_tooltip_titles_say_what_they_explain():
 
 def test_governance_sentence_counts_listable_plans():
     assert "COUNTROWS" in _expr("Gov Failing Projects") and "Failing Rules" in _expr("Gov Failing Projects")
-    e = _expr("Insight Governance")
-    assert "Gov Failing Projects" in e and "project plans fail" in e and "other plan" in e
-    assert "MAX ( 0, _f - _n )" in e                                   # the " (+M other plans)" tail only when M > 0
+    assert "Gov Failing Projects" in _expr("Fact Governance 1 Value")
+    e = _expr("Fact Governance 2 Value")
+    assert "Gov Failing Projects" in e and "PMO | Plans Failing" in e and "MAX ( 0," in e   # other plans = total - project
 
 
 def test_click_zones():
@@ -658,3 +767,53 @@ def test_chip_labels_fit_their_cards():
         lbl = ext_home.CHIPS[k][1]
         assert ext_home.CH_LBL_X + ext_home.CH_LABEL_PX[lbl] + 4 <= ext_home.CH_W, lbl
         assert ext_home.chip_label_w(lbl) == ext_home.CH_LABEL_PX[lbl] + 2 * ext_home.CH_LBL_PAD
+
+
+def test_card_buttons_are_neutral_and_centred():
+    """No orange or status colour on any button a card adds; transparent fill, neutral border, Semibold, centred."""
+    pg = _home()
+    banned = {pbir.ORANGE.upper(), pbir.ORANGE_DK.upper(), "#F29A6B", ext_home.C_RED, ext_home.C_AMBER, ext_home.C_TEAL}
+    names = {_name(pg, f"card_{c}_ft{j}", "actionButton") for c in CARD_KEYS for j in range(4)}
+    names |= {_name(pg, f"dec_go{k}", "actionButton") for k in range(3)}
+    btns = [vc for vc in pg.visuals if vc["name"] in names]
+    assert len(btns) == sum(len(s_["footer"]) for s_ in ext_home.SUBJECTS_LAYOUT) + 3
+    for vc in btns:
+        o = vc["visual"]["objects"]
+        assert not {c for c in banned if c in repr(o).upper()}, vc["name"]
+        rest = next(f for f in o["fill"] if f.get("selector", {}).get("id") == "default")["properties"]
+        assert rest["transparency"]["expr"]["Literal"]["Value"] == "100D"
+        assert ext_home.BTN_BORDER in repr(o["outline"]) and ext_home.BTN_BORDER_HOVER in repr(o["outline"])
+        hover = next(f for f in o["fill"] if f.get("selector", {}).get("id") == "hover")["properties"]
+        assert ext_home.BTN_HOVER_FILL in repr(hover)
+        t = o["text"][1]["properties"]
+        assert t["horizontalAlignment"] == pbir.s("center") and t["verticalAlignment"] == pbir.s("middle")
+        assert t["fontFamily"] == pbir.s("Segoe UI Semibold") and t["bold"] == pbir.b(False)
+        assert t["leftMargin"] == pbir.n(0) and t["rightMargin"] == pbir.n(0)
+
+
+def test_area_sparklines_are_soft_and_bare():
+    pg = _home()
+    for c in ("fin", "sch"):
+        v = _vc(pg, f"card_{c}_spark", "areaChart")["visual"]
+        o = v["objects"]
+        assert o["dataPoint"][0]["properties"]["transparency"] == pbir.n(ext_home.AREA_TRANSPARENCY)
+        assert 80 <= ext_home.AREA_TRANSPARENCY <= 85
+        for k in ("categoryAxis", "valueAxis", "legend"):
+            assert o[k][0]["properties"]["show"] == pbir.b(False), (c, k)
+        assert o["markers"][0]["properties"]["show"] == pbir.b(False)
+    for s_ in ("Financials", "Schedule"):
+        assert 'FORMAT ( _d, "mmm" )' in _expr(f"Spark From {s_}") and "MAXX" in _expr(f"Spark To {s_}")
+
+
+def test_unit_measures_pad_after_wider_numbers():
+    for s_ in SUBJECTS:
+        e = _expr(f"Unit {s_}")
+        assert "REPT ( UNICHAR ( 8199 ), 3 * _extra )" in e, s_
+
+
+def test_act_now_title_clear_of_the_panel_corner():
+    pg = _home()
+    grp = {vc["name"]: vc["position"] for vc in pg.visuals if "visualGroup" in vc}
+    t = _vc(pg, "act_title", "textbox")
+    gx = grp[t["parentGroupName"]]["x"]
+    assert gx + t["position"]["x"] >= ext_home.RIGHT_X + 24
