@@ -54,8 +54,10 @@ HIDDEN_PAGES += HOME_TIPS
 PID = {k: uid("insights-page", k) for k, _ in PAGES + HIDDEN_PAGES}
 ORDER = [k for k, _ in PAGES]
 LAYOUT_SKIPPED = []  # story pages layout.act_first left as they are (custom layouts); filled by build_all
-# pages layout.act_first must leave alone: exec: ④ is navigation; status: its list (change ledger) is already ②
-ACT_FIRST_EXCLUDED = ("home", "exec", "status")
+# pages layout.act_first must leave alone: exec: ④ is navigation; status: its list (change ledger) is already ②;
+# lifecycle: the list to act on (stuck gates/approvals) is ③ and its ④ is dependency analysis;
+# tsstatus: its ④ is a workflow audit trail, the action parts are ② and ③
+ACT_FIRST_EXCLUDED = ("home", "exec", "status", "lifecycle", "tsstatus")
 
 # ---------------------------------------------------------------- common bits
 DP = lambda p: C("DimProject", p)  # noqa: E731

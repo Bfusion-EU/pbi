@@ -1,4 +1,3 @@
-import json
 import sys
 from pathlib import Path
 
@@ -43,3 +42,21 @@ def test_status_keeps_its_ledger_first():
     assert s2["position"]["y"] < s3["position"]["y"] < s4["position"]["y"]
     assert sec_text(s2).startswith("②")
     assert dict(pages.PAGES)["status"] not in pages.LAYOUT_SKIPPED
+
+
+def test_act_first_bands_do_not_overlap():
+    for k in STANDARD:
+        pg = page(k)
+        tops = sorted((v["position"]["y"], v["position"]["y"] + v["position"]["height"])
+                      for v in pg.visuals if not v.get("parentGroupName") and pages.Y2 <= v["position"]["y"] < pages.YNEXT)
+        assert all(bottom <= pages.YNEXT for _, bottom in tops), k
+        s2, s3, s4 = sec(pg, 2), sec(pg, 3), sec(pg, 4)
+        for upper, lower in ((s4, s2), (s2, s3)):
+            band_bottom = max(b for t, b in tops if upper["position"]["y"] <= t < lower["position"]["y"])
+            assert band_bottom <= lower["position"]["y"], k
+
+
+def test_excluded_pages_keep_their_order():
+    for k in ("lifecycle", "tsstatus", "status"):
+        pg = page(k)
+        assert sec(pg, 2)["position"]["y"] < sec(pg, 3)["position"]["y"] < sec(pg, 4)["position"]["y"], k
