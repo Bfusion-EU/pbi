@@ -5730,7 +5730,7 @@
         {
           "name": "Story | Status · MoM Has Previous Month",
           "dataType": "Integer",
-          "expression": "IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), FactStatusReport[Report_ReportEnd] < EOMONTH ( EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 ), -1 ) + 1,\n    FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) ) > 0, 1, 0 )",
+          "expression": "VAR _pe = EOMONTH ( EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 ), -1 )   -- a VAR: a filter argument may not contain CALCULATE (THIS_END does)\nRETURN IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), FactStatusReport[Report_ReportEnd] < _pe + 1,\n    FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) ) > 0, 1, 0 )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "0",
           "description": "1 when any status report exists on or before last month's end (else there is nothing to compare)."
