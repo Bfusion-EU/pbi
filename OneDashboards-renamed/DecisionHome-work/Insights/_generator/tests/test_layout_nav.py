@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 
@@ -60,3 +61,47 @@ def test_excluded_pages_keep_their_order():
     for k in ("lifecycle", "tsstatus", "status"):
         pg = page(k)
         assert sec(pg, 2)["position"]["y"] < sec(pg, 3)["position"]["y"] < sec(pg, 4)["position"]["y"], k
+
+
+def _names(pg):
+    return {v["name"] for v in pg.visuals}
+
+
+def test_breadcrumb_on_every_story_page():
+    for k, _ in pages.PAGES:
+        if k == "home":
+            continue
+        assert pbir.uid(pages.PID[k], "nav_home", "actionButton") in _names(page(k)), k
+
+
+def test_chapter_strip():
+    with_strip = set()
+    for k, _ in pages.PAGES:
+        if k == "home":
+            continue
+        pg = page(k)
+        chap, members = layout.chapter_of(k)
+        strip_names = {pbir.uid(pg.id, f"nav_strip_{m}", "actionButton") for m in members}
+        strip = [v for v in pg.visuals if v["name"] in strip_names]
+        if len(members) > 1:
+            with_strip.add(chap)
+            assert len(strip) == len(members), k
+            current = [v for v in strip if "#E8612A" in json.dumps(v)]
+            assert [v["name"] for v in current] == [pbir.uid(pg.id, f"nav_strip_{k}", "actionButton")], k
+        else:
+            assert strip == [], k
+    assert with_strip == {"portfolio", "finance", "resources", "schedule"}
+
+
+def test_headline_moved_below_nav_row():
+    pg = page("finance")
+    head = next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, "headline", "card"))
+    assert head["position"]["y"] == 84 + layout.NAV_SHIFT
+
+
+def test_passes_are_idempotent():
+    pg = page("finance")
+    before = json.dumps(pg.visuals, sort_keys=True)
+    layout.act_first(pg)
+    layout.nav_row(pg, "finance")
+    assert json.dumps(pg.visuals, sort_keys=True) == before

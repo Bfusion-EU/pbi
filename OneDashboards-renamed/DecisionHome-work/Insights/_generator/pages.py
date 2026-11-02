@@ -771,6 +771,8 @@ def build_all():
     for k, _ in PAGES:
         if k in built and k not in ACT_FIRST_EXCLUDED and not layout.act_first(built[k]):
             skipped.append(dict(PAGES)[k])
+        if k in built and k != "home":
+            layout.nav_row(built[k], k)
     LAYOUT_SKIPPED[:] = skipped
     a11y.apply(pages_out)
     return pages_out

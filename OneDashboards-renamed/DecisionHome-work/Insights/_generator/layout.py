@@ -52,3 +52,79 @@ def act_first(pg):
     _renumber(s2, c[1], c[2])
     _renumber(s3, c[2], c[3])
     return True
+
+
+def _code(display):
+    m = CODE.match(display)
+    return m.groups() if m else None
+
+
+def chapter_of(key):
+    """-> (chapter key, page keys of that chapter in story order); (None, []) for Home."""
+    import pages as P
+    c = _code(dict(P.PAGES)[key])
+    if not c:
+        return None, []
+    members = [k for k, d in P.PAGES if _code(d) and _code(d)[0] == c[0]]
+    return members[0], members
+
+
+def _label(display):
+    num, letter, name = _code(display)
+    return f"{num}{letter} {name}"
+
+
+def _w(text):
+    return round(len(text) * 6.4 + 28)               # Segoe UI 10 pt button: ~6.4 px per character + padding
+
+
+def _crumb(text, target, tip):
+    return pbir.nav_button(text, target, tip, fill="#FFFFFF", hover=pbir.ORANGE_SOFT, press=pbir.ORANGE_SOFT,
+                           font=pbir.NAVY, size=10)
+
+
+def nav_row(pg, key):
+    import pages as P
+    if pbir.uid(pg.id, "nav_home", "actionButton") in {v["name"] for v in pg.visuals}:
+        return
+    for vc in _top(pg):                              # room for the row: everything between header and Next/Back
+        y = vc["position"]["y"]
+        if HEADER_BOTTOM <= y < P.YNEXT:
+            vc["position"]["y"] = y + NAV_SHIFT
+    limit = P.YNEXT - 8
+    for vc in _top(pg):                              # nothing may run into the Next/Back row
+        p = vc["position"]
+        if p["y"] < P.YNEXT and p["y"] + p["height"] > limit:
+            new_h = limit - p["y"]
+            if new_h < 0.6 * p["height"]:
+                raise ValueError(f"{pg.display}: {vc['name']} would lose more than 40% of its height")
+            p["height"] = new_h
+    names = dict(P.PAGES)
+    chap, members = chapter_of(key)
+    x = 16
+    pg.add(x, NAV_Y, _w("Home"), NAV_H, _crumb("Home", P.PID["home"], "Back to the command center"), key="nav_home")
+    x += _w("Home")
+    trail = ([(chap, True)] if chap != key else []) + [(key, False)]
+    for k, link in trail:
+        pg.add(x, NAV_Y, 18, NAV_H, pbir.textbox([[("›", pbir.st("Segoe UI", 11, pbir.MUTED))]]), key=f"nav_sep_{k}")
+        x += 18
+        text = _label(names[k])
+        if link:
+            pg.add(x, NAV_Y, _w(text), NAV_H, _crumb(text, P.PID[k], "Open this chapter"), key=f"nav_crumb_{k}")
+        else:
+            pg.add(x, NAV_Y, _w(text) + 40, NAV_H,
+                   pbir.textbox([[(text, pbir.st("Segoe UI Semibold", 10, pbir.NAVY, True))]]), key=f"nav_here_{k}")
+        x += _w(text)
+    if len(members) > 1:
+        widths = [_w(_label(names[m])) for m in members]
+        x = P.W - 16 - sum(widths) - 6 * (len(members) - 1)
+        for m, w in zip(members, widths):
+            cur = m == key
+            btn = pbir.nav_button(_label(names[m]), P.PID[m], "Open this page",
+                                  fill=pbir.ORANGE if cur else "#FFFFFF",
+                                  hover=pbir.ORANGE_DK if cur else pbir.ORANGE_SOFT,
+                                  press=pbir.ORANGE_DK if cur else pbir.ORANGE_SOFT,
+                                  font="#FFFFFF" if cur else pbir.NAVY, size=10,
+                                  outline=None if cur else pbir.BORDER)
+            pg.add(x, NAV_Y, w, NAV_H, btn, key=f"nav_strip_{m}")
+            x += w + 6
