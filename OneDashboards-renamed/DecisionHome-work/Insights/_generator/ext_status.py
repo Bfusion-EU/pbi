@@ -200,13 +200,13 @@ DATE_MOVE_D = 7                         # finish date moved: at least this many 
 BIG_DATE_D = 30                         # ... a big move (change size 2) above this
 FC_MOVE_PCT, FC_MOVE_EUR = 0.02, 10000  # forecast moved: at least max(2% of last month's forecast, EUR 10K)
 BIG_FC_PCT = 0.05                       # ... a big move (change size 2) above 5%
-THIS_END = f"EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( {END} ), REMOVEFILTERS () ) ), 0 )"
+THIS_END = f"EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( {END} ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )"
 MFOLDER = FOLDER + "\\MoM"
 
 
 def snap_end(d):
     """The project's latest report end on or before date d (date filters ignored)."""
-    return f"CALCULATE ( MAX ( {END} ), REMOVEFILTERS ( DimDate ), {END} <= {d}, {END} > DATE ( 1900, 1, 1 ) )"
+    return f"CALCULATE ( MAX ( {END} ), REMOVEFILTERS ( DimDate ), {END} < {d} + 1, {END} > DATE ( 1900, 1, 1 ) )"
 
 
 MOM = f"""
@@ -309,7 +309,7 @@ IF ( {ONE},
     VAR _s =
         IF ( _hm > 0, 3, IF ( _hm < 0, 1, 0 ) )
             + IF ( _sh > {BIG_DATE_D}, 2, IF ( _sh >= {DATE_MOVE_D}, 1, 0 ) )
-            + IF ( {mref("Forecast Moved")} = 1, IF ( ABS ( DIVIDE ( _fd, _fb ) ) > {BIG_FC_PCT}, 2, 1 ), 0 )
+            + IF ( {mref("Forecast Moved")} = 1, IF ( _fb = 0 || ABS ( DIVIDE ( _fd, _fb ) ) > {BIG_FC_PCT}, 2, 1 ), 0 )
             + IF ( COALESCE ( {mref("Risks Delta")}, 0 ) <> 0, 1, 0 )
             + IF ( NOT ISBLANK ( {mref("State Change")} ), 1, 0 )
             + COALESCE ( {mref("Is New")}, 0 )
@@ -329,7 +329,7 @@ add(mm("Dates KPI"), T, f"""
 VAR _c = {mref("Dates Moved")}
 RETURN FORMAT ( _c, "0" ) & IF ( _c > 0, " (" & FORMAT ( {mref("Net Days")}, "+0;-0;0" ) & " d)", "" )""",
     folder=MFOLDER)
-add(mm("Forecast Net"), D, f"SUMX ( {PKS}, {mref('Forecast Delta')} )", "+#,##0;-#,##0;0", MFOLDER,
+add(mm("Forecast Net"), D, f"SUMX ( {PKS}, {mref('Forecast Delta')} ) + 0", "+#,##0;-#,##0;0", MFOLDER,
     "Net forecast movement since last month, projects with a report in both months.")
 add(mm("Risks Net"), I, f"SUMX ( {PKS}, {mref('Risks Delta')} ) + 0", "+0;-0;0", MFOLDER)
 add(mm("New"), I, f"SUMX ( {PKS}, {mref('Is New')} ) + 0", "#,##0", MFOLDER)
@@ -343,7 +343,7 @@ CALCULATE ( SUMX ( {PKS}, IF ( {mref("Comparable")} = 0, 1 ) ), KEEPFILTERS ( Di
     "#,##0", MFOLDER, "Active projects without a report as of one of the two month ends.")
 add(mm("Changed Projects"), I, f"SUMX ( {PKS}, IF ( {mref('Change Size')} > 0, 1 ) ) + 0", "#,##0", MFOLDER)
 add(mm("Has Previous Month"), I, f"""
-IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), {END} <= EOMONTH ( {THIS_END}, -1 ),
+IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), {END} < EOMONTH ( {THIS_END}, -1 ) + 1,
     {END} > DATE ( 1900, 1, 1 ) ) > 0, 1, 0 )""", "0", MFOLDER,
     "1 when any status report exists on or before last month's end (else there is nothing to compare).")
 
@@ -376,7 +376,7 @@ RETURN
                 & FORMAT ( _nd, "+0;-0;0" ) & " days net); forecast " & IF ( _fn >= 0, "+", "−" ) & {money("_fna")}
                 & "; active risks " & FORMAT ( _rk, "+0;-0;0" ) & "; " & {mref("New Closed KPI")} & "." )
             & IF ( _nc > 0, " " & FORMAT ( _nc, "0" )
-                & " active project(s) cannot be compared (no report in one of the two months).", "" ) )""",
+                & " active project(s) have no report yet as of " & _plb & ".", "" ) )""",
     folder="Story\\Headlines")
 
 # ------------------------------------------------------------------ reporting discipline
@@ -503,7 +503,7 @@ def build():
 
     # ① pulse
     pages.section(pg, pages.Y1, 1, "What moved this month?",
-                  "This month's latest report per project against last month's; projects without both are counted apart.")
+                  "This month's latest report per project against last month's; projects without both (new ones too) are counted apart.")
     pages.kpi_row(pg, pages.Y1K, [
         (mm("Worsened"), "Health worse", {"value_colour": RED}),
         (mm("Improved"), "Health better", {"value_colour": TEAL}),

@@ -45,7 +45,7 @@ add(s("Milestone At Risk"), I, f"IF ( {ONE}, IF ( CALCULATE ( COUNTROWS ( DimTas
     FOLDER, f"S2: 1 when an open milestone is due within {MS_DAYS} days and is under {MS_DONE}% done.")
 add(s("Milestone Text"), T, f"""
 IF ( {ONE},
-    VAR _t = TOPN ( 1, CALCULATETABLE ( DimTask, {MS} ), DimTask[EndDate], ASC, DimTask[Name], ASC )
+    VAR _t = TOPN ( 1, CALCULATETABLE ( DimTask, {MS} ), DimTask[EndDate], ASC, DimTask[Name], ASC, DimTask[TaskKey], ASC )
     VAR _nm = MAXX ( _t, DimTask[Name] )
     RETURN IF ( NOT ISBLANK ( _nm ),
         "milestone " & _nm & " in " & FORMAT ( INT ( MAXX ( _t, DimTask[EndDate] ) ) - INT ( TODAY () ), "0" )
@@ -60,7 +60,8 @@ _S3 = f"""
     VAR _lp = IF ( NOT ISBLANK ( _prev ), {ext_status.at(_LATE, "_prev")} )"""
 add(s("Late Tasks Rising"), I, f"""
 IF ( {ONE},{_S3}
-    RETURN IF ( NOT ISBLANK ( _ln ) && NOT ISBLANK ( _lp ) && _ln > _lp, 1, 0 ) )""", "0", FOLDER,
+    RETURN IF ( NOT ISBLANK ( _ln ) && NOT ISBLANK ( _lp ) && _ln > _lp
+        && _cur >= TODAY () - 2 * {ext_status.STALE_DAYS}, 1, 0 ) )""", "0", FOLDER,
     "S3: 1 when the latest status report counts more late tasks than the report before it.")
 add(s("Late Tasks Text"), T, f"""
 IF ( {ONE},{_S3}
@@ -69,7 +70,7 @@ IF ( {ONE},{_S3}
 
 # S4 finish date slipping since last month (page 5c month snapshots)
 add(s("Finish Slipping"), I, f"""
-IF ( {ONE}, IF ( [Story | Status · MoM Finish Shift (d)] >= {ext_status.DATE_MOVE_D}, 1, 0 ) )""", "0", FOLDER,
+IF ( {ONE}, IF ( CALCULATE ( [Story | Status · MoM Finish Shift (d)], REMOVEFILTERS ( DimDate ) ) >= {ext_status.DATE_MOVE_D}, 1, 0 ) )""", "0", FOLDER,
     f"S4: 1 when the finish date moved {ext_status.DATE_MOVE_D}+ days later since last month.")
 
 add(s("Signals"), I, f"""
@@ -88,7 +89,7 @@ IF ( {r("Flag")} = 1,
             & IF ( {r("Milestone At Risk")} = 1, ", " & {r("Milestone Text")} )
             & IF ( {r("Late Tasks Rising")} = 1, ", " & {r("Late Tasks Text")} )
             & IF ( {r("Finish Slipping")} = 1,
-                ", finish " & FORMAT ( [Story | Status · MoM Finish Shift (d)], "+0" ) & " d since last month" )
+                ", finish " & FORMAT ( CALCULATE ( [Story | Status · MoM Finish Shift (d)], REMOVEFILTERS ( DimDate ) ), "+0" ) & " d since last month" )
     RETURN "May slip: "
         & IF ( {r("Signals")} >= 2, MID ( _t, 3, 500 ),
             FORMAT ( [Story | Project · Overdue Tasks], "0" ) & " overdue tasks" ) )""", folder=FOLDER,

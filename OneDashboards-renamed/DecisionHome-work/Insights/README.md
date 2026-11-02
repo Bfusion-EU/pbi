@@ -110,7 +110,7 @@ Added 2026-11-02 (one definition per number):
   later than last month. It also fires on more than 10 overdue tasks. Missing data never makes a signal true.
 - **What changed (5c):** each project's latest report as of this month end is compared with the one as of last
   month end. The Report period slicer picks the month; the default is the latest. "Moved" means a finish date
-  shift of 7+ d, or a forecast shift of at least 2% or €10K.
+  shift of 7+ d, or a forecast shift of at least 2% or €10K. Snapshots use each project's latest status report regardless of its workflow state (draft or submitted), as on the rest of 5c.
 
 ## Data notes (from the model audit)
 

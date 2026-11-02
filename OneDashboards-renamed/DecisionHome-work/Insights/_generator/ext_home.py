@@ -294,10 +294,10 @@ RETURN IF ( _red > 0, "{C_RED}", IF ( [Story | Projects Over Budget] + 0 > 0, "{
      folder=_COL, desc="Red: any project more than 5% over EAC; amber: any project over budget; else teal. Matches the card number.")
 
 _add("Colour Status", T, f"""
-VAR _w = [Story | Status · Overall Worsened] + 0
+VAR _w = [Story | Status · MoM Worsened] + 0
 VAR _n = [Story | Status · Not Reporting] + 0
 RETURN IF ( _w >= 3 || _n >= 5, "{C_RED}", IF ( _w >= 1 || _n >= 1, "{C_AMBER}", "{C_TEAL}" ) )""",
-     folder=_COL, desc="Red: 3+ projects worse since their last report or 5+ not reporting; amber: any; else teal.")
+     folder=_COL, desc="Red: 3+ projects worse than last month (as on page 5c) or 5+ not reporting; amber: any; else teal.")
 
 # ---------------------------------------------------------------- subject cards: sentence, pill word, pill fill
 WORST = """
@@ -435,8 +435,8 @@ FACTS = {
         ("Planned benefits", f'VAR _b = [Story | Benefits At Completion]\nRETURN {money("_b")}', None),
         ("EAC", f'VAR _e = [Story | Finance EAC]\nRETURN {money("_e")}', None)],
     "Status": [
-        ("Worse than last", _cnt("[Story | Status · Overall Worsened]"),
-         _rag("[Story | Status · Overall Worsened] + 0", 3, 1)),
+        ("Worse vs last month", _cnt("[Story | Status · MoM Worsened]"),
+         _rag("[Story | Status · MoM Worsened] + 0", 3, 1)),
         ("Avg days since",
          'VAR _d = [Story | Status · Avg Days Since Report]\nRETURN IF ( ISBLANK ( _d ), "–", FORMAT ( _d, "0" ) & " d" )', None)],
     "Governance": [
@@ -768,7 +768,7 @@ VAL_GAP = 10                              # gap between a fact label and the wid
 # fact labels in px (Segoe UI 11 pt, measured): the value column takes the rest of the row, right-aligned
 FACT_LABEL_PX = {"EAC vs budget": 96, "Worst project": 90, "On track": 55, "Worst slip": 66, "Over 100%": 71,
                  "Timesheets missing": 128, "Active risks": 73, "Without mitigation": 126, "Active projects": 98,
-                 "Proposed": 63, "Planned benefits": 110, "EAC": 27, "Worse than last": 102,
+                 "Proposed": 63, "Planned benefits": 110, "EAC": 27, "Worse vs last month": 124,
                  "Avg days since": 97, "Project plans failing": 131, "Other plans failing": 122}
 R_FOOT, FOOT_H, FOOT_R, FOOT_GAP = ROW_H - 44, 28, 14, 8     # action pills
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge

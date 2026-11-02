@@ -24,7 +24,7 @@ def test_mom_measures_registered():
 
 def test_mom_reads_month_end_snapshots():
     expr = NAMES["Story | Status · MoM Health Now"]["expression"]
-    assert "EOMONTH" in expr and "<= _te" in expr          # latest report on or before this month's end
+    assert "EOMONTH" in expr and "< _te + 1" in expr        # latest report on or before this month's end
     assert "REMOVEFILTERS ()" in NAMES["Story | Status · MoM This Month End"]["expression"]
 
 
@@ -121,3 +121,20 @@ def test_status_page_subtitle_fits():
     subs = [r for r in runs if "Report period picks the month" in r]
     assert len(subs) == 1
     assert len(subs[0]) <= pages.SUBTITLE_MAX, (len(subs[0]), pages.SUBTITLE_MAX)
+
+
+def _expr(name):
+    e = NAMES[name]["expression"]
+    return e if isinstance(e, str) else "\n".join(e)
+
+
+def test_final_review_pins():
+    assert "< _te + 1" in _expr("Story | Status · MoM Health Now")
+    assert "REMOVEFILTERS ( DimDate )" in _expr("Story | Slip · Finish Slipping")
+    assert "REMOVEFILTERS ( DimDate )" in _expr("Story | Slip · Reason")
+    tip = next(m for n, m in NAMES.items() if n.endswith("Tip May Slip"))
+    assert "= 70" in (tip["expression"] if isinstance(tip["expression"], str) else "\n".join(tip["expression"]))
+    assert _expr("Story | Status · MoM Forecast Net").rstrip().endswith("+ 0")
+    assert "EOMONTH ( TODAY (), 0 )" in _expr("Story | Status · MoM This Month End")
+    assert "_fb = 0 ||" in _expr("Story | Status · MoM Change Size")
+    assert "DimTask[TaskKey], ASC" in _expr("Story | Slip · Milestone Text")

@@ -5274,7 +5274,7 @@
         {
           "name": "Story | Status · MoM This Month End",
           "dataType": "DateTime",
-          "expression": "EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )",
+          "expression": "EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "dd mmm yyyy",
           "description": "End of the month under review: the report-period pick, capped at the latest status report in the model."
@@ -5282,19 +5282,19 @@
         {
           "name": "Story | Status · MoM Month Label",
           "dataType": "Text",
-          "expression": "FORMAT ( EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 ), \"mmm yyyy\" )",
+          "expression": "FORMAT ( EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 ), \"mmm yyyy\" )",
           "displayFolder": "Story\\Status\\MoM"
         },
         {
           "name": "Story | Status · MoM Previous Month Label",
           "dataType": "Text",
-          "expression": "FORMAT ( EOMONTH ( EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 ), -1 ), \"mmm yyyy\" )",
+          "expression": "FORMAT ( EOMONTH ( EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 ), -1 ), \"mmm yyyy\" )",
           "displayFolder": "Story\\Status\\MoM"
         },
         {
           "name": "Story | Status · MoM Health Then",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAXX ( FactStatusReport, SWITCH ( LEFT ( FactStatusReport[OverallHealth], 3 ), \"(1)\", 1, \"(2)\", 2, \"(3)\", 3, \"(4)\", 4, \"(5)\", 5 ) ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAXX ( FactStatusReport, SWITCH ( LEFT ( FactStatusReport[OverallHealth], 3 ), \"(1)\", 1, \"(2)\", 2, \"(3)\", 3, \"(4)\", 4, \"(5)\", 5 ) ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "0",
           "description": "Overall health rank on the project's latest report as of last month's end (1 = On Track)."
@@ -5302,7 +5302,7 @@
         {
           "name": "Story | Status · MoM Health Now",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ), CALCULATE ( MAXX ( FactStatusReport, SWITCH ( LEFT ( FactStatusReport[OverallHealth], 3 ), \"(1)\", 1, \"(2)\", 2, \"(3)\", 3, \"(4)\", 4, \"(5)\", 5 ) ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ), CALCULATE ( MAXX ( FactStatusReport, SWITCH ( LEFT ( FactStatusReport[OverallHealth], 3 ), \"(1)\", 1, \"(2)\", 2, \"(3)\", 3, \"(4)\", 4, \"(5)\", 5 ) ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "0",
           "description": "Overall health rank on the project's latest report as of this month's end (1 = On Track)."
@@ -5368,7 +5368,7 @@
         {
           "name": "Story | Status · MoM Finish Shift (d)",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _fn = IF ( NOT ISBLANK ( _n ), CALCULATE ( MAX ( FactStatusReport[Summary_EndDate] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) )\n    VAR _fp = IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Summary_EndDate] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) )\n    RETURN IF ( NOT ISBLANK ( _fn ) && NOT ISBLANK ( _fp ), INT ( _fn ) - INT ( _fp ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _fn = IF ( NOT ISBLANK ( _n ), CALCULATE ( MAX ( FactStatusReport[Summary_EndDate] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) )\n    VAR _fp = IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Summary_EndDate] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) )\n    RETURN IF ( NOT ISBLANK ( _fn ) && NOT ISBLANK ( _fp ), INT ( _fn ) - INT ( _fp ) ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "+0;-0;0",
           "description": "Finish date this month minus last month, in days (both status reports must hold a finish date)."
@@ -5376,14 +5376,14 @@
         {
           "name": "Story | Status · MoM Forecast Then",
           "dataType": "Double",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "#,##0"
         },
         {
           "name": "Story | Status · MoM Forecast Delta",
           "dataType": "Double",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ),\n        COALESCE ( CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ), 0 ) - COALESCE ( CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ), 0 ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ),\n        COALESCE ( CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ), 0 ) - COALESCE ( CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ), 0 ) ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "+#,##0;-#,##0;0",
           "description": "Forecast this month minus last month (status reports)."
@@ -5413,7 +5413,7 @@
         {
           "name": "Story | Status · MoM Risks Delta",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ),\n        COALESCE ( CALCULATE ( MAX ( FactStatusReport[ActiveRisks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ), 0 ) - COALESCE ( CALCULATE ( MAX ( FactStatusReport[ActiveRisks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ), 0 ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ),\n        COALESCE ( CALCULATE ( MAX ( FactStatusReport[ActiveRisks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ), 0 ) - COALESCE ( CALCULATE ( MAX ( FactStatusReport[ActiveRisks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ), 0 ) ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "+0;-0;0",
           "description": "Active risks this month minus last month (status reports)."
@@ -5421,13 +5421,13 @@
         {
           "name": "Story | Status · MoM State Then",
           "dataType": "Text",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[State] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[State] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
           "displayFolder": "Story\\Status\\MoM"
         },
         {
           "name": "Story | Status · MoM State Now",
           "dataType": "Text",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ), CALCULATE ( MAX ( FactStatusReport[State] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ), CALCULATE ( MAX ( FactStatusReport[State] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) ) )",
           "displayFolder": "Story\\Status\\MoM"
         },
         {
@@ -5453,7 +5453,7 @@
         {
           "name": "Story | Status · MoM Is New",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && ISBLANK ( _p ), 1, 0 ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && ISBLANK ( _p ), 1, 0 ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "0",
           "description": "1 when the project has a report this month but none on or before last month's end."
@@ -5461,7 +5461,7 @@
         {
           "name": "Story | Status · MoM Comparable",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ), 1, 0 ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _te + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ), 1, 0 ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "0",
           "description": "1 when the project has a report as of both month ends."
@@ -5469,7 +5469,7 @@
         {
           "name": "Story | Status · MoM Change Size",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _hm = [Story | Status · MoM Health Move]\n    VAR _sh = ABS ( [Story | Status · MoM Finish Shift (d)] )\n    VAR _fd = [Story | Status · MoM Forecast Delta]\n    VAR _fb = [Story | Status · MoM Forecast Then]\n    VAR _s =\n        IF ( _hm > 0, 3, IF ( _hm < 0, 1, 0 ) )\n            + IF ( _sh > 30, 2, IF ( _sh >= 7, 1, 0 ) )\n            + IF ( [Story | Status · MoM Forecast Moved] = 1, IF ( ABS ( DIVIDE ( _fd, _fb ) ) > 0.05, 2, 1 ), 0 )\n            + IF ( COALESCE ( [Story | Status · MoM Risks Delta], 0 ) <> 0, 1, 0 )\n            + IF ( NOT ISBLANK ( [Story | Status · MoM State Change] ), 1, 0 )\n            + COALESCE ( [Story | Status · MoM Is New], 0 )\n    RETURN IF ( _s > 0, _s ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _hm = [Story | Status · MoM Health Move]\n    VAR _sh = ABS ( [Story | Status · MoM Finish Shift (d)] )\n    VAR _fd = [Story | Status · MoM Forecast Delta]\n    VAR _fb = [Story | Status · MoM Forecast Then]\n    VAR _s =\n        IF ( _hm > 0, 3, IF ( _hm < 0, 1, 0 ) )\n            + IF ( _sh > 30, 2, IF ( _sh >= 7, 1, 0 ) )\n            + IF ( [Story | Status · MoM Forecast Moved] = 1, IF ( _fb = 0 || ABS ( DIVIDE ( _fd, _fb ) ) > 0.05, 2, 1 ), 0 )\n            + IF ( COALESCE ( [Story | Status · MoM Risks Delta], 0 ) <> 0, 1, 0 )\n            + IF ( NOT ISBLANK ( [Story | Status · MoM State Change] ), 1, 0 )\n            + COALESCE ( [Story | Status · MoM Is New], 0 )\n    RETURN IF ( _s > 0, _s ) )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "0",
           "description": "Ledger sort key: health worse 3; finish moved > 30 d or forecast > 5% 2; any other change 1 (added up). Blank = no change.",
@@ -5607,7 +5607,7 @@
         {
           "name": "Story | Status · MoM Forecast Net",
           "dataType": "Double",
-          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), [Story | Status · MoM Forecast Delta] )",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), [Story | Status · MoM Forecast Delta] ) + 0",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "+#,##0;-#,##0;0",
           "description": "Net forecast movement since last month, projects with a report in both months.",
@@ -5730,7 +5730,7 @@
         {
           "name": "Story | Status · MoM Has Previous Month",
           "dataType": "Integer",
-          "expression": "IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), FactStatusReport[Report_ReportEnd] <= EOMONTH ( EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 ), -1 ),\n    FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) ) > 0, 1, 0 )",
+          "expression": "IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), FactStatusReport[Report_ReportEnd] < EOMONTH ( EOMONTH ( MIN ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), EOMONTH ( TODAY (), 0 ) ), 0 ), -1 ) + 1,\n    FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) ) > 0, 1, 0 )",
           "displayFolder": "Story\\Status\\MoM",
           "formatString": "0",
           "description": "1 when any status report exists on or before last month's end (else there is nothing to compare)."
@@ -5883,7 +5883,7 @@
         {
           "name": "Story | Status · MoM Headline",
           "dataType": "Text",
-          "expression": "VAR _lbl = [Story | Status · MoM Month Label]\nVAR _plb = [Story | Status · MoM Previous Month Label]\nVAR _ch = [Story | Status · MoM Changed Projects]\nVAR _w = [Story | Status · MoM Worsened]\nVAR _i = [Story | Status · MoM Improved]\nVAR _dm = [Story | Status · MoM Dates Moved]\nVAR _nd = COALESCE ( [Story | Status · MoM Net Days], 0 )\nVAR _fn = COALESCE ( [Story | Status · MoM Forecast Net], 0 )\nVAR _fna = ABS ( _fn )\nVAR _rk = [Story | Status · MoM Risks Net]\nVAR _nc = [Story | Status · MoM Not Comparable]\nRETURN\n    IF ( [Story | Status · MoM Has Previous Month] = 0,\n        \"Only one month of status reports so far (\" & _lbl & \") — nothing to compare yet.\",\n        IF ( _ch = 0, \"In \" & _lbl & \" no project changed against \" & _plb & \".\",\n            \"In \" & _lbl & \" versus \" & _plb & \": \" & FORMAT ( _w, \"0\" ) & \" project(s) got worse and \"\n                & FORMAT ( _i, \"0\" ) & \" improved; \" & FORMAT ( _dm, \"0\" ) & \" finish date(s) moved (\"\n                & FORMAT ( _nd, \"+0;-0;0\" ) & \" days net); forecast \" & IF ( _fn >= 0, \"+\", \"−\" ) & IF ( ISBLANK ( _fna ), \"–\", IF ( ABS ( _fna ) >= 1000000, \"€\" & FORMAT ( _fna / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _fna ) >= 1000, \"€\" & FORMAT ( _fna / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _fna, \"#,0\" ) ) ) )\n                & \"; active risks \" & FORMAT ( _rk, \"+0;-0;0\" ) & \"; \" & [Story | Status · MoM New Closed KPI] & \".\" )\n            & IF ( _nc > 0, \" \" & FORMAT ( _nc, \"0\" )\n                & \" active project(s) cannot be compared (no report in one of the two months).\", \"\" ) )",
+          "expression": "VAR _lbl = [Story | Status · MoM Month Label]\nVAR _plb = [Story | Status · MoM Previous Month Label]\nVAR _ch = [Story | Status · MoM Changed Projects]\nVAR _w = [Story | Status · MoM Worsened]\nVAR _i = [Story | Status · MoM Improved]\nVAR _dm = [Story | Status · MoM Dates Moved]\nVAR _nd = COALESCE ( [Story | Status · MoM Net Days], 0 )\nVAR _fn = COALESCE ( [Story | Status · MoM Forecast Net], 0 )\nVAR _fna = ABS ( _fn )\nVAR _rk = [Story | Status · MoM Risks Net]\nVAR _nc = [Story | Status · MoM Not Comparable]\nRETURN\n    IF ( [Story | Status · MoM Has Previous Month] = 0,\n        \"Only one month of status reports so far (\" & _lbl & \") — nothing to compare yet.\",\n        IF ( _ch = 0, \"In \" & _lbl & \" no project changed against \" & _plb & \".\",\n            \"In \" & _lbl & \" versus \" & _plb & \": \" & FORMAT ( _w, \"0\" ) & \" project(s) got worse and \"\n                & FORMAT ( _i, \"0\" ) & \" improved; \" & FORMAT ( _dm, \"0\" ) & \" finish date(s) moved (\"\n                & FORMAT ( _nd, \"+0;-0;0\" ) & \" days net); forecast \" & IF ( _fn >= 0, \"+\", \"−\" ) & IF ( ISBLANK ( _fna ), \"–\", IF ( ABS ( _fna ) >= 1000000, \"€\" & FORMAT ( _fna / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _fna ) >= 1000, \"€\" & FORMAT ( _fna / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _fna, \"#,0\" ) ) ) )\n                & \"; active risks \" & FORMAT ( _rk, \"+0;-0;0\" ) & \"; \" & [Story | Status · MoM New Closed KPI] & \".\" )\n            & IF ( _nc > 0, \" \" & FORMAT ( _nc, \"0\" )\n                & \" active project(s) have no report yet as of \" & _plb & \".\", \"\" ) )",
           "displayFolder": "Story\\Headlines",
           "references": {
             "measures": [
@@ -6200,13 +6200,13 @@
         {
           "name": "Story | Slip · Milestone Text",
           "dataType": "Text",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _t = TOPN ( 1, CALCULATETABLE ( DimTask, KEEPFILTERS ( DimTask[Milestone] = TRUE () ), KEEPFILTERS ( DimTask[PercentDone] < 50 ), KEEPFILTERS ( DimTask[EndDate] >= TODAY () && DimTask[EndDate] <= TODAY () + 30 ), KEEPFILTERS ( NOT ISBLANK ( DimTask[ProjectKey] ) ) ), DimTask[EndDate], ASC, DimTask[Name], ASC )\n    VAR _nm = MAXX ( _t, DimTask[Name] )\n    RETURN IF ( NOT ISBLANK ( _nm ),\n        \"milestone \" & _nm & \" in \" & FORMAT ( INT ( MAXX ( _t, DimTask[EndDate] ) ) - INT ( TODAY () ), \"0\" )\n            & \" d (\" & FORMAT ( MAXX ( _t, DimTask[PercentDone] ), \"0\" ) & \"% done)\" ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _t = TOPN ( 1, CALCULATETABLE ( DimTask, KEEPFILTERS ( DimTask[Milestone] = TRUE () ), KEEPFILTERS ( DimTask[PercentDone] < 50 ), KEEPFILTERS ( DimTask[EndDate] >= TODAY () && DimTask[EndDate] <= TODAY () + 30 ), KEEPFILTERS ( NOT ISBLANK ( DimTask[ProjectKey] ) ) ), DimTask[EndDate], ASC, DimTask[Name], ASC, DimTask[TaskKey], ASC )\n    VAR _nm = MAXX ( _t, DimTask[Name] )\n    RETURN IF ( NOT ISBLANK ( _nm ),\n        \"milestone \" & _nm & \" in \" & FORMAT ( INT ( MAXX ( _t, DimTask[EndDate] ) ) - INT ( TODAY () ), \"0\" )\n            & \" d (\" & FORMAT ( MAXX ( _t, DimTask[PercentDone] ), \"0\" ) & \"% done)\" ) )",
           "displayFolder": "Story\\Slip"
         },
         {
           "name": "Story | Slip · Late Tasks Rising",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _cur = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ) )\n    VAR _prev = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _cur, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _ln = IF ( NOT ISBLANK ( _cur ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _cur ) )\n    VAR _lp = IF ( NOT ISBLANK ( _prev ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _prev ) )\n    RETURN IF ( NOT ISBLANK ( _ln ) && NOT ISBLANK ( _lp ) && _ln > _lp, 1, 0 ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _cur = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ) )\n    VAR _prev = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _cur, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _ln = IF ( NOT ISBLANK ( _cur ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _cur ) )\n    VAR _lp = IF ( NOT ISBLANK ( _prev ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _prev ) )\n    RETURN IF ( NOT ISBLANK ( _ln ) && NOT ISBLANK ( _lp ) && _ln > _lp\n        && _cur >= TODAY () - 2 * 30, 1, 0 ) )",
           "displayFolder": "Story\\Slip",
           "formatString": "0",
           "description": "S3: 1 when the latest status report counts more late tasks than the report before it."
@@ -6220,7 +6220,7 @@
         {
           "name": "Story | Slip · Finish Slipping",
           "dataType": "Integer",
-          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ), IF ( [Story | Status · MoM Finish Shift (d)] >= 7, 1, 0 ) )",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ), IF ( CALCULATE ( [Story | Status · MoM Finish Shift (d)], REMOVEFILTERS ( DimDate ) ) >= 7, 1, 0 ) )",
           "displayFolder": "Story\\Slip",
           "formatString": "0",
           "description": "S4: 1 when the finish date moved 7+ days later since last month.",
@@ -6306,7 +6306,7 @@
         {
           "name": "Story | Slip · Reason",
           "dataType": "Text",
-          "expression": "IF ( [Story | Slip · Flag] = 1,\n    VAR _t =\n        IF ( [Story | Slip · Behind Pace] = 1, \", \" & FORMAT ( [Story | Slip · Pace Gap (pt)], \"0\" ) & \" pt behind pace\" )\n            & IF ( [Story | Slip · Milestone At Risk] = 1, \", \" & [Story | Slip · Milestone Text] )\n            & IF ( [Story | Slip · Late Tasks Rising] = 1, \", \" & [Story | Slip · Late Tasks Text] )\n            & IF ( [Story | Slip · Finish Slipping] = 1,\n                \", finish \" & FORMAT ( [Story | Status · MoM Finish Shift (d)], \"+0\" ) & \" d since last month\" )\n    RETURN \"May slip: \"\n        & IF ( [Story | Slip · Signals] >= 2, MID ( _t, 3, 500 ),\n            FORMAT ( [Story | Project · Overdue Tasks], \"0\" ) & \" overdue tasks\" ) )",
+          "expression": "IF ( [Story | Slip · Flag] = 1,\n    VAR _t =\n        IF ( [Story | Slip · Behind Pace] = 1, \", \" & FORMAT ( [Story | Slip · Pace Gap (pt)], \"0\" ) & \" pt behind pace\" )\n            & IF ( [Story | Slip · Milestone At Risk] = 1, \", \" & [Story | Slip · Milestone Text] )\n            & IF ( [Story | Slip · Late Tasks Rising] = 1, \", \" & [Story | Slip · Late Tasks Text] )\n            & IF ( [Story | Slip · Finish Slipping] = 1,\n                \", finish \" & FORMAT ( CALCULATE ( [Story | Status · MoM Finish Shift (d)], REMOVEFILTERS ( DimDate ) ), \"+0\" ) & \" d since last month\" )\n    RETURN \"May slip: \"\n        & IF ( [Story | Slip · Signals] >= 2, MID ( _t, 3, 500 ),\n            FORMAT ( [Story | Project · Overdue Tasks], \"0\" ) & \" overdue tasks\" ) )",
           "displayFolder": "Story\\Slip",
           "description": "Act-now reason: the slip signals that are true, or the overdue-task count when that alone flagged it.",
           "references": {
@@ -9557,15 +9557,15 @@
         {
           "name": "Story | Home · Colour Status",
           "dataType": "Text",
-          "expression": "VAR _w = [Story | Status · Overall Worsened] + 0\nVAR _n = [Story | Status · Not Reporting] + 0\nRETURN IF ( _w >= 3 || _n >= 5, \"#FF8A80\", IF ( _w >= 1 || _n >= 1, \"#F2C46B\", \"#5DCAA5\" ) )",
+          "expression": "VAR _w = [Story | Status · MoM Worsened] + 0\nVAR _n = [Story | Status · Not Reporting] + 0\nRETURN IF ( _w >= 3 || _n >= 5, \"#FF8A80\", IF ( _w >= 1 || _n >= 1, \"#F2C46B\", \"#5DCAA5\" ) )",
           "displayFolder": "Story\\Home\\Colours",
-          "description": "Red: 3+ projects worse since their last report or 5+ not reporting; amber: any; else teal.",
+          "description": "Red: 3+ projects worse than last month (as on page 5c) or 5+ not reporting; amber: any; else teal.",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Status · Overall Worsened"
+                "name": "Story | Status · MoM Worsened"
               },
               {
                 "schema": "extension",
@@ -10442,15 +10442,15 @@
         {
           "name": "Story | Home · Fact Status 1 Value",
           "dataType": "Text",
-          "expression": "FORMAT ( [Story | Status · Overall Worsened] + 0, \"0\" )",
+          "expression": "FORMAT ( [Story | Status · MoM Worsened] + 0, \"0\" )",
           "displayFolder": "Story\\Home\\Cards",
-          "description": "Status card, fact 1 ('Worse than last'): the value as text.",
+          "description": "Status card, fact 1 ('Worse vs last month'): the value as text.",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Status · Overall Worsened"
+                "name": "Story | Status · MoM Worsened"
               }
             ]
           }
@@ -10458,15 +10458,15 @@
         {
           "name": "Story | Home · Fact Status 1 Colour",
           "dataType": "Text",
-          "expression": "VAR _v = [Story | Status · Overall Worsened] + 0\nRETURN SWITCH ( TRUE (), _v >= 3, \"#FF8A80\", _v >= 1, \"#F2C46B\", \"#E8ECF4\" )",
+          "expression": "VAR _v = [Story | Status · MoM Worsened] + 0\nRETURN SWITCH ( TRUE (), _v >= 3, \"#FF8A80\", _v >= 1, \"#F2C46B\", \"#E8ECF4\" )",
           "displayFolder": "Story\\Home\\Colours",
-          "description": "Status card, fact 1 ('Worse than last'): value colour.",
+          "description": "Status card, fact 1 ('Worse vs last month'): value colour.",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Status · Overall Worsened"
+                "name": "Story | Status · MoM Worsened"
               }
             ]
           }
