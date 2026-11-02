@@ -4,6 +4,8 @@ Measures: report-level, prefix "Story | Home · ", folder Story\\Home. Built on 
 history-based numbers (sparklines, change chips) come from FactStatusReport snapshots per report month.
 Layout: see build() (Task 4/5). Spec: docs/superpowers/specs/2026-10-31-insights-command-center-design.md
 """
+import functools
+
 import pages
 import pbir
 from pbir import (ORANGE, PEACH, GREY, Page, headline, chart, textbox, st, shape, image, slicer, nav_button,
@@ -70,11 +72,13 @@ CHIPS = [(k, lbl, lbl.title(), C_RED if k >= 80 else C_AMBER) for k, lbl in _BUC
 CHIP_ON, CHIP_OFF = "#E8ECF4", "#8C98B3"   # off = dimmed but readable (5.2:1 on the card navy)
 for _k, _lbl, _nm, _dot in CHIPS:
     _cnt = f"COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {_k} ) ) + 0"
-    # The count alone: its own card, centred in a fixed-width box so 1- and 2-digit counts line up on every chip.
-    _add(f"Chip {_nm}", T, f'''FORMAT ( {_cnt}, "0" )''',
-         desc=f"Active projects whose Act score is {_k} ({_lbl}); 0 when none. The six chips add up to Act Count.")
-    _add(f"Chip Label {_nm}", T, f'"{_lbl}"',
-         desc=f"Label of the '{_lbl}' chip (its own card, so the label starts at the same x on every chip).")
+    # Count and label in one card (one query per chip). A 1-digit count is padded with a figure space (as wide as a
+    # digit), so the label starts at the same x whatever the count.
+    _add(f"Chip {_nm}", T, f'''
+VAR _c = {_cnt}
+RETURN IF ( _c < 10, UNICHAR ( 8199 ), "" ) & FORMAT ( _c, "0" ) & "  {_lbl}"''',
+         desc=f"Chip text: active projects whose Act score is {_k} ({_lbl}), then the label; 0 when none. "
+              "The six chips add up to Act Count.")
     _add(f"Chip Colour {_nm}", T, f'''IF ( {_cnt} > 0, "{CHIP_ON}", "{CHIP_OFF}" )''',
          desc=f"Chip text colour: light when the count is above 0, dim when 0.", folder=FOLDER + "\\Colours")
 
@@ -533,7 +537,7 @@ BAR_PAD = 69               # category inner padding (%): ~11 px bar in the 110 p
 BAR_DY = 1                 # Desktop draws the single bar ~1 px below the chart centre at BAR_PAD 69 (~14 at 60)
 
 
-def progress(pg, x, y, w, h, value_measure, rest_measure, lo, hi, colour, key):
+def progress(pg, x, y, w, h, value_measure, rest_measure, lo, hi, colour, key, parent=None):
     """One stacked bar chart (barChart) with two measures: the value (status colour) and the remainder to the axis
     max (BAR_REST). Fill and track are the same bars, so they line up by construction. The value axis is fixed to
     lo..hi. Desktop shows only a placeholder for a chart shorter than ~100px, so the chart is CHART_H tall, centred
@@ -551,7 +555,7 @@ def progress(pg, x, y, w, h, value_measure, rest_measure, lo, hi, colour, key):
     vco["background"] = [{"properties": {"show": b(False)}}]
     vco["border"] = [{"properties": {"show": b(False)}}]
     vco["padding"] = [{"properties": {"top": n(0), "bottom": n(0), "left": n(0), "right": n(0)}}]
-    pg.add(x, round(y + h / 2 - CHART_H / 2 - BAR_DY, 2), w, CHART_H, v, key=key)
+    pg.add(x, round(y + h / 2 - CHART_H / 2 - BAR_DY, 2), w, CHART_H, v, key=key, parent=parent)
 
 
 def dark_slicer(field, label):
@@ -599,27 +603,26 @@ CH_X0 = PILL_X + PILL_W + 14           # first column, 14 px right of the pill
 # Offsets inside a chip (x from the chip's left edge, y from its top); identical for all six chips.
 CH_CAP = (4, 3, 46, 22)                # click-zone capsule x, y, w, h: covers the dot and the count, 3 px inside the chip
 CH_DOT, CH_DOT_X = 8, 10               # dot size, x (y centred in the chip)
-CH_CNT_X, CH_CNT_W = 20, 28            # count card: fixed width, text centred, so 1- and 2-digit counts share a centre
-CH_LBL_X, CH_LBL_PAD = 54, 4           # label text starts here; its card begins CH_LBL_PAD earlier
-CH_TXT_Y, CH_TXT_H = 2, CH_H - 4       # both text cards: same y and height, so the baselines match
-# Segoe UI 12 pt widths in px (measured), used to size each label card: a card centres its text, so a card as wide as
-# the text plus 2 x CH_LBL_PAD puts the text's left edge at CH_LBL_X for every label.
+CH_TXT_X = 25                          # chip text (count + label, one card) starts here: digits at 25-43, label after
+CH_DIGIT_PX, CH_SPACE_PX = 9, 4        # Segoe UI 12 pt: a digit (and the figure space) ~9 px, a space ~4 px
+# Segoe UI 12 pt widths in px (measured), used to centre each chip's text so its left edge sits at CH_TXT_X: the chip
+# card is the whole chip (it draws the outline) and its right padding takes up what the text does not need.
 CH_LABEL_PX = {"off track": 57, "over budget": 84, "late": 25, "may slip": 60, "not reporting": 92, "failing rules": 81}
 
 
-def chip_label_w(label):
-    return CH_LABEL_PX[label] + 2 * CH_LBL_PAD
+def chip_text_px(label):
+    """Width of a chip's text: a 2-character count, two spaces, the label."""
+    return 2 * CH_DIGIT_PX + 2 * CH_SPACE_PX + CH_LABEL_PX[label]
+
+
+def chip_padding(label):
+    """(left, right) padding of the chip card: the text box is exactly the text wide and starts at CH_TXT_X."""
+    return CH_TXT_X, CH_W - CH_TXT_X - chip_text_px(label)
 
 
 def chip_geometry():
     """-> [(index, x, y, w)] for the six chips: a fixed grid of 3 columns x 2 rows, all CH_W wide."""
     return [(k, CH_X0 + (k % 3) * (CH_W + CH_GAP), CH_ROWS_Y[k // 3], CH_W) for k in range(6)]
-
-
-def chip_outline(line="#3A4768"):
-    v = shape(PANEL, radius=14, line=line)
-    v["objects"]["fill"][0]["properties"]["transparency"] = n(100)
-    return v
 
 
 CHIP_SLUG = {k: lbl.replace(" ", "_") for k, (_s, lbl, _n, _d) in enumerate(CHIPS)}
@@ -671,27 +674,62 @@ def band_text(measure, size, colour=INK2, colour_measure=None):
     v = text_line(measure, size=size, colour=colour)
     v["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
     v["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
+    _colour_labels(v, colour_measure)
+    return v
+
+
+def _colour_labels(v, colour_measure):
     if colour_measure:
         v["objects"]["labels"][0]["properties"]["color"] = measure_colour(colour_measure)
+    return v
+
+
+CH_LINE = "#3A4768"                    # chip outline
+
+
+def boxed_text(measure, size, fill, radius, pad, colour=INK2, colour_measure=None, line=None, wrap=True):
+    """Single-line card that draws its own capsule: background `fill` (a colour, a colour measure name, or None for
+    transparent), an optional outline `line`, rounded `radius`; pad = (left, right, top, bottom) px. Replaces a shape
+    behind a text card (one object fewer)."""
+    v = text_line(measure, size=size, colour=colour)
+    vco = v["visualContainerObjects"]
+    if fill is None:
+        vco["background"] = [{"properties": {"show": b(False)}}]
+    else:
+        fc = measure_colour(fill) if fill.startswith(PX) else col_solid(fill)
+        vco["background"] = [{"properties": {"show": b(True), "color": fc, "transparency": n(0)}}]
+    # the border is always on (rounded corners need it): the outline colour, or the fill colour when there is none
+    border = {"show": b(line is not None or fill is not None), "radius": n(radius)}
+    if line is not None:
+        border["color"] = col_solid(line)
+    elif fill is not None:
+        border["color"] = vco["background"][0]["properties"]["color"]
+    vco["border"] = [{"properties": border}]
+    l, r, t, bt = pad
+    vco["padding"] = [{"properties": {"left": n(l), "right": n(r), "top": n(t), "bottom": n(bt)}}]
+    if not wrap:      # a 3-digit count overflows its box by a few px: let it run on one line instead of wrapping
+        v["objects"]["wordWrap"] = [{"properties": {"show": b(False)}}]
+    _colour_labels(v, colour_measure)
     return v
 
 
 def build_band(pg):
     pg.add(*BAND, shape(PANEL, radius=12), key="band_bg")
     build_brand(pg)
-    # decision pill: orange shape, white text on top
-    pg.add(PILL_X, PILL_Y, PILL_W, PILL_H, shape(ORANGE, radius=10), key="pill_bg")
-    pg.add(PILL_X + 8, PILL_Y + 4, PILL_W - 16, PILL_H - 8,
-           with_tip(band_text(hm("Briefing Pill"), 15, "#FFFFFF"), "tip_home_act"), key="pill")
+    # decision pill: the text card draws the orange capsule itself (no shape behind it)
+    pg.add(PILL_X, PILL_Y, PILL_W, PILL_H,
+           with_tip(boxed_text(hm("Briefing Pill"), 15, ORANGE, 10, (8, 8, 4, 4), colour="#FFFFFF"), "tip_home_act"),
+           key="pill")
     for k, x, y, w in chip_geometry():
-        nm = CHIPS[k][2]
-        pg.add(x, y, w, CH_H, chip_outline(), key=f"chip_bg{k}")
+        nm, lbl = CHIPS[k][2], CHIPS[k][1]
+        # one card per chip: count + label, and the chip outline as the card's own border
+        pg.add(x, y, w, CH_H,
+               with_tip(boxed_text(hm(f"Chip {nm}"), CH_FONT, None, 14, (*chip_padding(lbl), 0, 0),
+                                   colour_measure=hm(f"Chip Colour {nm}"), line=CH_LINE, wrap=False),
+                        f"tip_home_{CHIP_SLUG[k]}"),
+               key=f"chip{k}")
+        # the dot after the card, so it sits on top of it
         pg.add(x + CH_DOT_X, y + (CH_H - CH_DOT) / 2, CH_DOT, CH_DOT, shape(CHIPS[k][3], radius=50), key=f"chip_dot{k}")
-        pg.add(x + CH_CNT_X, y + CH_TXT_Y, CH_CNT_W, CH_TXT_H,
-               band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")), key=f"chip_n{k}")
-        pg.add(x + CH_LBL_X - CH_LBL_PAD, y + CH_TXT_Y, chip_label_w(CHIPS[k][1]), CH_TXT_H,
-               with_tip(band_text(hm(f"Chip Label {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")),
-                        f"tip_home_{CHIP_SLUG[k]}"), key=f"chip{k}")
     pg.add(1220, 15, 160, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
     pg.add(1390, 15, 160, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
@@ -761,9 +799,9 @@ R_BAR = R_CAP - 14                        # progress bar centre line, just above
 BAR_T, MARK_H = 11, 15                    # bar thickness (px), target marker height (a little taller than the bar)
 R_TGT, TGT_W = R_BAR - BAR_T / 2 - 4 - CAP_H, 90     # target label row above the bar, centred on the marker
 R_DIV = 270                               # hairline divider above the facts
-R_FACT, FACT_H, FACT_PT = (282, 316), 26, 11        # fact label rows (textbox tops)
-FACT_DY = 14                              # value cell sits FACT_DY above its label row (header row)
-FACT_CELL_H = 66                          # 11 pt text + header + 28 px headroom
+R_FACT, FACT_H, FACT_PT = (282, 316), 26, 11        # fact rows: top of each row's text, row height, font size
+FACT_DY = 14                              # the fact matrix starts FACT_DY above row 1 (its blended header row)
+FACT_ROW_PAD = 7                          # matrix row padding: 11 pt rows ~20 px + 2 x 7 = the 34 px row pitch
 VAL_GAP = 10                              # gap between a fact label and the widest value its row can hold
 # fact labels in px (Segoe UI 11 pt, measured): the value column takes the rest of the row, right-aligned
 FACT_LABEL_PX = {"EAC vs budget": 96, "Worst project": 90, "On track": 55, "Worst slip": 66, "Over 100%": 71,
@@ -778,9 +816,6 @@ ACT_H = 398                # Act-now table: header + 8 rows
 CHIP_TEXT_PX = {"target 80%": 64, "target ≥ 1.0": 69, "target 90": 53}
 CHIP_DYN_W = {"Financials": 76, "Schedule": 76, "Risk": 84, "Status": 100}   # dynamic chips: room for the longest text
 MUTED2, RULE2 = "#8C98B3", "#26314F"   # muted text 5.2:1 on the card navy
-
-
-VAL_CELL_EXTRA = 60        # a table cell wider than its fixed column, so no horizontal scrollbar appears
 
 
 def fact_value_w(label):
@@ -873,14 +908,6 @@ def card_text(measure, size, colour=INK2, colour_measure=None):
     return band_text(measure, size, colour=colour, colour_measure=colour_measure)
 
 
-def right_cell(measure, size, col_w, colour_measure=None, colour=INK2):
-    """One-cell table with a fixed column width and right-aligned text (fact values)."""
-    v = _cell(measure, size, colour_measure, colour)
-    v["objects"]["columnWidth"] = [{"properties": {"value": n(col_w)}, "selector": {"metadata": pbir.qref(M(measure))}}]
-    v["objects"]["columnFormatting"] = [{"properties": {"alignment": s("Right")}, "selector": {"metadata": pbir.qref(M(measure))}}]
-    return v
-
-
 AREA_TRANSPARENCY = 82     # soft area under the line
 
 
@@ -910,97 +937,173 @@ def caption(text, align):
     return textbox([[(text, st("Segoe UI", CAP_PT, MUTED2))]], align=align)
 
 
-def subject_card(pg, x, y, spec):
+FACT_ROW = R_FACT[1] - R_FACT[0]          # 34 px between the two fact rows
+FACT_BLOCK_H = FACT_DY + 2 * FACT_ROW + 28
+
+
+def fact_block(sub):
+    """Both facts of a card in ONE matrix (one query): values on rows, so each row is label (row header) + value.
+    Per-row value colours stay: conditional font colour is set per measure. Replaces 2 label text boxes + 2 one-cell
+    tables. The header row is blended into the card (panel colour, 1 pt)."""
+    rows = FACTS[sub]
+    fields = [M(hm(f"Fact {sub} {j} Value")) for j in (1, 2)]
+    vw = min(fact_value_w(lbl) for lbl, *_x in rows)
+    obj = {"columnHeaders": [{"properties": {"backColor": col_solid(PANEL), "fontColor": col_solid(PANEL),
+                                             "fontSize": n(1), "outline": s("None"), "autoSizeColumnWidth": b(False)}}],
+           "rowHeaders": [{"properties": {"fontSize": n(FACT_PT), "fontColor": col_solid(LABEL),
+                                          "backColor": col_solid(PANEL), "outline": s("None"), "wordWrap": b(False)}}],
+           "values": [{"properties": {"fontSize": n(FACT_PT), "fontColorPrimary": col_solid(INK),
+                                      "backColorPrimary": col_solid(PANEL), "fontColorSecondary": col_solid(INK),
+                                      "backColorSecondary": col_solid(PANEL), "outline": s("None"),
+                                      "valuesOnRow": b(True)}}],
+           "grid": [{"properties": {"gridHorizontal": b(False), "gridVertical": b(False),
+                                    "rowPadding": n(FACT_ROW_PAD), "outlineColor": col_solid(PANEL)}}],
+           "columnWidth": [{"properties": {"value": n(vw)}, "selector": {"metadata": pbir.qref(f)}} for f in fields],
+           "columnFormatting": [{"properties": {"alignment": s("Right")}, "selector": {"metadata": pbir.qref(f)}}
+                                for f in fields]}
+    for f, j in zip(fields, (1, 2)):
+        if FACT_COLOUR[(sub, j)]:
+            obj["values"].append(pbir.cf_font(f, FACT_COLOUR[(sub, j)]))
+    v = chart("pivotTable", {"Values": [P(f, lbl) for f, (lbl, *_x) in zip(fields, rows)]}, "", obj)
+    vco = v["visualContainerObjects"]
+    vco["title"] = [{"properties": {"show": b(False)}}]
+    vco["background"] = [{"properties": {"show": b(False)}}]
+    vco["border"] = [{"properties": {"show": b(False)}}]
+    vco["general"] = [{"properties": {"altText": s(f"{sub}: " + ", ".join(lbl for lbl, *_x in rows))}}]
+    return v
+
+
+def subject_card(pg, x, y, spec, parent=None):
     key, name, num, colour = spec["key"], spec["name"], spec["num"], spec["colour"]
     sub = _PILL_NAME[key]
     p = f"card_{key}"
+    add = functools.partial(pg.add, parent=parent)   # row-2 cards live in the hidden "More" group
     W = COL_W
-    panel(pg, x, y, W, ROW_H, f"{p}_bg")
+    panel(pg, x, y, W, ROW_H, f"{p}_bg", parent=parent)
     # 1 header: icon tile (pill fill) + grey icon, title, status capsule (fill, dot, word)
-    pg.add(x + PAD, y + R_HEAD, TILE, TILE, fx_shape(hm(f"Pill Fill {sub}"), TILE_R), key=f"{p}_tile")
+    add(x + PAD, y + R_HEAD, TILE, TILE, fx_shape(hm(f"Pill Fill {sub}"), TILE_R), key=f"{p}_tile")
     icon = image(f"rail-{spec['icon']}-grey.png", f"{name} icon")
     icon["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")
     off = (TILE - TILE_IMG) / 2
-    pg.add(x + PAD + off, y + R_HEAD + off, TILE_IMG, TILE_IMG, icon, key=f"{p}_icon")
-    pg.add(x + TITLE_X, y + R_HEAD, 170, TILE, textbox([[(name, st("Segoe UI Semibold", 14, INK2, True))]]),
+    add(x + PAD + off, y + R_HEAD + off, TILE_IMG, TILE_IMG, icon, key=f"{p}_icon")
+    add(x + TITLE_X, y + R_HEAD, 170, TILE, textbox([[(name, st("Segoe UI Semibold", 14, INK2, True))]]),
            key=f"{p}_title")
     sx, sy = x + W - PAD - SP_W, y + R_HEAD + (TILE - SP_H) / 2
-    pg.add(sx, sy, SP_W, SP_H, fx_shape(hm(f"Pill Fill {sub}"), SP_R), key=f"{p}_pillbg")
-    pg.add(sx + 12, sy + (SP_H - SP_DOT) / 2, SP_DOT, SP_DOT, fx_shape(colour, 50), key=f"{p}_dot")
-    pg.add(sx + 20, sy, SP_W - 26, SP_H, card_text(hm(f"Pill {sub}"), 10, colour_measure=colour), key=f"{p}_pill")
+    # the pill word's card draws the capsule (fill measure) itself; the dot goes on top of it
+    add(sx, sy, SP_W, SP_H, boxed_text(hm(f"Pill {sub}"), 10, hm(f"Pill Fill {sub}"), SP_R, (20, 6, 0, 0),
+                                       colour_measure=colour), key=f"{p}_pill")
+    add(sx + 12, sy + (SP_H - SP_DOT) / 2, SP_DOT, SP_DOT, fx_shape(colour, 50), key=f"{p}_dot")
     # 2 hero line: unit (padded measure, right of the number), chip right-aligned at the top of the digits
     unit_x = x + PAD + NUM_MIN_PX[key] + UNIT_GAP - TBL_PADL
-    pg.add(round(unit_x, 2), y + R_NUM + NUM_BASE - UNIT_BASE, W - (unit_x - x) - PAD, 66,
+    add(round(unit_x, 2), y + R_NUM + NUM_BASE - UNIT_BASE, W - (unit_x - x) - PAD, 66,
            text_cell(hm(f"Unit {sub}"), size=UNIT_PT, colour=LABEL), key=f"{p}_unit")
     cw = chip_w(spec)
     cx = x + W - PAD - cw
     kind, arg = spec["chip"]
     if kind == "measure":
-        pg.add(cx, y + R_CHIP, cw, CHIP_TH, fx_shape(hm(f"Delta Fill {arg}"), CHIP_R), key=f"{p}_chipbg")
+        add(cx, y + R_CHIP, cw, CHIP_TH, fx_shape(hm(f"Delta Fill {arg}"), CHIP_R), key=f"{p}_chipbg")
         txt = card_text(hm(f"Delta {arg}"), CHIP_PT, colour_measure=hm(f"Delta Colour {arg}"))
     elif kind == "context":
-        pg.add(cx, y + R_CHIP, cw, CHIP_TH, shape(RULE2, radius=CHIP_R), key=f"{p}_chipbg")
+        add(cx, y + R_CHIP, cw, CHIP_TH, shape(RULE2, radius=CHIP_R), key=f"{p}_chipbg")
         txt = card_text(hm(f"Delta {arg}"), CHIP_PT, colour=LABEL)
     else:
-        pg.add(cx, y + R_CHIP, cw, CHIP_TH, shape(RULE2, radius=CHIP_R), key=f"{p}_chipbg")
+        add(cx, y + R_CHIP, cw, CHIP_TH, shape(RULE2, radius=CHIP_R), key=f"{p}_chipbg")
         txt = textbox([[(arg, st("Segoe UI", CHIP_PT, LABEL))]], align="center")
-    pg.add(cx, y + R_CHIP - 3, cw, CHIP_TH + 6, txt, key=f"{p}_chip")
+    add(cx, y + R_CHIP - 3, cw, CHIP_TH + 6, txt, key=f"{p}_chip")
     # 3 visual row: area sparkline + month captions, progress bar + marker + captions, or an explicit empty slot
     vis = spec["visual"]
     tw = W - 2 * PAD
     if vis and vis[0] == "area":
         _k, measure, cap = vis
         # captions first: the chart (transparent) is drawn on top of them
-        pg.add(x + PAD - 6, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark From {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap0")
-        pg.add(x + PAD + 40, y + R_CAP, tw - 80, CAP_H, caption(cap, "center"), key=f"{p}_cap1")
-        pg.add(x + W - PAD - 38, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark To {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap2")
+        add(x + PAD - 6, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark From {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap0")
+        add(x + PAD + 40, y + R_CAP, tw - 80, CAP_H, caption(cap, "center"), key=f"{p}_cap1")
+        add(x + W - PAD - 38, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark To {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap2")
         spark = area_spark(measure, colour)
         spark["visualContainerObjects"]["general"] = [{"properties": {"altText": pbir.s(f"Trend: {name}, {cap}")}}]
-        pg.add(x + PAD - 4, y + R_VIS, tw + 8, VIS_H, spark, key=f"{p}_spark")
+        add(x + PAD - 4, y + R_VIS, tw + 8, VIS_H, spark, key=f"{p}_spark")
     elif vis and vis[0] == "bar":
         lo, hi, rest, target, labels = vis[1]
         value = vis[2] if len(vis) > 2 else num
-        progress(pg, x + PAD, y + R_BAR - BAR_T / 2, tw, BAR_T, value, rest, lo, hi, colour, f"{p}_bar")
-        pg.add(x + PAD - 4, y + R_CAP, 60, CAP_H, caption(labels[0], "left"), key=f"{p}_cap0")
+        progress(pg, x + PAD, y + R_BAR - BAR_T / 2, tw, BAR_T, value, rest, lo, hi, colour, f"{p}_bar", parent=parent)
+        add(x + PAD - 4, y + R_CAP, 60, CAP_H, caption(labels[0], "left"), key=f"{p}_cap0")
         if target is None:
-            pg.add(x + PAD + 60, y + R_CAP, tw - 120, CAP_H, caption(labels[1], "center"), key=f"{p}_cap1")
+            add(x + PAD + 60, y + R_CAP, tw - 120, CAP_H, caption(labels[1], "center"), key=f"{p}_cap1")
         else:
             mx = x + PAD + tw * (target - lo) / (hi - lo)
-            pg.add(round(mx - 1, 2), y + R_BAR - MARK_H / 2, 2, MARK_H, shape(C_TEAL), key=f"{p}_mark")
+            add(round(mx - 1, 2), y + R_BAR - MARK_H / 2, 2, MARK_H, shape(C_TEAL), key=f"{p}_mark")
             # the target label sits ABOVE the bar, centred on the marker; 0 / 100 stay under the bar ends
-            pg.add(round(mx - TGT_W / 2, 2), y + R_TGT, TGT_W, CAP_H, caption(labels[1], "center"), key=f"{p}_cap1")
-        pg.add(x + W - PAD - 56, y + R_CAP, 60, CAP_H, caption(labels[2], "right"), key=f"{p}_cap2")
+            add(round(mx - TGT_W / 2, 2), y + R_TGT, TGT_W, CAP_H, caption(labels[1], "center"), key=f"{p}_cap1")
+        add(x + W - PAD - 56, y + R_CAP, 60, CAP_H, caption(labels[2], "right"), key=f"{p}_cap2")
     # 4 facts: hairline, then two label / value rows. Row 2's cell is added first: row 1's cell (on top) keeps its text
     # clear of row 2's header row.
-    pg.add(x + PAD, y + R_DIV, tw, 1, shape(RULE2), key=f"{p}_rule")
-    for j in (2, 1):
-        lbl = FACTS[sub][j - 1][0]
-        ry = y + R_FACT[j - 1]
-        pg.add(x + PAD, ry, FACT_LABEL_PX[lbl] + 24, FACT_H, textbox([[(lbl, st("Segoe UI", FACT_PT, LABEL))]]), key=f"{p}_f{j}l")
-        vw = fact_value_w(lbl)
-        vx = x + W - PAD - vw - TBL_PADL
-        pg.add(round(vx, 2), ry - FACT_DY, vw + VAL_CELL_EXTRA, FACT_CELL_H,
-               right_cell(hm(f"Fact {sub} {j} Value"), FACT_PT, vw, colour_measure=FACT_COLOUR[(sub, j)]),
-               key=f"{p}_f{j}v")
+    add(x + CELL_X, y + R_FACT[0] - FACT_DY, W - 2 * CELL_X, FACT_BLOCK_H, fact_block(sub), key=f"{p}_facts")
+    # the hairline after the matrix: the matrix paints the panel colour over its whole box
+    add(x + PAD, y + R_DIV, tw, 1, shape(RULE2), key=f"{p}_rule")
     # whole-card link: everything above the footer; the number and the footer pills sit on top of it
-    pg.add(x, y, W, R_FOOT - 4, ghost_link(spec["link"], name), key=f"{p}_go")
+    add(x, y, W, R_FOOT - 4, ghost_link(spec["link"], name), key=f"{p}_go")
     # the number sits ABOVE the ghost link so hovering it shows its list (a button cannot show a report-page tooltip);
     # it is only NUM_W wide, so the rest of the hero line still clicks through to the chapter
-    pg.add(x + PAD - NUM_PADL, y + R_NUM, NUM_W, NUM_H,
+    add(x + PAD - NUM_PADL, y + R_NUM, NUM_W, NUM_H,
            with_tip(value_cell(num, colour_measure=colour, size=NUM_PT), f"tip_home_{key}"), key=f"{p}_num")
     # 5 action pills
     labels, size, widths = chip_layout(spec["footer"])
     fx = x + PAD
     for j, ((txt_, target), label, w) in enumerate(zip(spec["footer"], labels, widths)):
-        pg.add(round(fx, 2), y + R_FOOT, w, FOOT_H, action_pill(label, target, size), key=f"{p}_ft{j}")
+        add(round(fx, 2), y + R_FOOT, w, FOOT_H, action_pill(label, target, size), key=f"{p}_ft{j}")
         fx += w + FOOT_GAP
 
 
-def build_cards(pg):
+MORE_IN = NUM_PADL - PAD                   # the hero number cell starts this far left of its card
+MORE_BOX = (GRID_X0 - MORE_IN, GRID_Y[1], 4 * COL_W + 3 * GAP + MORE_IN, ROW_H)   # both row-2 groups: x, y, w, h
+MORE_BTN = (150, 32)                       # "Show figures" button (w, h), centred in each placeholder card
+
+
+def show_button(bm, tooltip):
+    """Neutral outline button (as the card actions) that applies a bookmark."""
+    return pbir._relink(neutral_button("Show figures", "home", 11),
+                        {"show": b(True), "type": s("Bookmark"), "bookmark": s(bm), "tooltip": s(tooltip)})
+
+
+def placeholder_card(pg, x, y, spec, grp, bm_show):
+    """Row-2 card before its figures are loaded: frame, icon, title, the chapter links and a "Show figures" button.
+    Static objects only, so it costs no query; the button shows the real cards (the "More" group)."""
+    key, name = spec["key"], spec["name"]
+    p = f"ph_{key}"
+    panel(pg, x, y, COL_W, ROW_H, f"{p}_bg", parent=grp)
+    pg.add(x + PAD, y + R_HEAD, TILE, TILE, shape(RULE2, radius=TILE_R), key=f"{p}_tile", parent=grp)
+    icon = image(f"rail-{spec['icon']}-grey.png", f"{name} icon")
+    icon["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")
+    off = (TILE - TILE_IMG) / 2
+    pg.add(x + PAD + off, y + R_HEAD + off, TILE_IMG, TILE_IMG, icon, key=f"{p}_icon", parent=grp)
+    pg.add(x + TITLE_X, y + R_HEAD, 170, TILE, textbox([[(name, st("Segoe UI Semibold", 14, INK2, True))]]),
+           key=f"{p}_title", parent=grp)
+    bw, bh = MORE_BTN
+    by = y + (R_FOOT - bh) / 2
+    pg.add(x + (COL_W - bw) / 2, by, bw, bh,
+           show_button(bm_show, "Load the Portfolio, Benefits, Status reports and Governance figures"),
+           key=f"{p}_show", parent=grp)
+    pg.add(x + PAD, by + bh + 8, COL_W - 2 * PAD, 24,
+           textbox([[("Figures load on request, so Home opens faster", st("Segoe UI", 9, MUTED2))]], align="center"),
+           key=f"{p}_hint", parent=grp)
+    labels, size, widths = chip_layout(spec["footer"])
+    fx = x + PAD
+    for j, ((txt_, target), label, w) in enumerate(zip(spec["footer"], labels, widths)):
+        pg.add(round(fx, 2), y + R_FOOT, w, FOOT_H, action_pill(label, target, size), key=f"{p}_ft{j}", parent=grp)
+        fx += w + FOOT_GAP
+
+
+def build_placeholders(pg, grp, bm_show):
+    for k, spec in enumerate(SUBJECTS_LAYOUT[4:]):
+        placeholder_card(pg, GRID_X0 + k * (COL_W + GAP), GRID_Y[1], spec, grp, bm_show)
+
+
+def build_cards(pg, more):
+    """Row 1 on the page; row 2 inside the group `more` (hidden until the user asks for it)."""
     for k, spec in enumerate(SUBJECTS_LAYOUT):
         x = GRID_X0 + (k % 4) * (COL_W + GAP)
         y = GRID_Y[k // 4]
-        subject_card(pg, x, y, spec)
+        subject_card(pg, x, y, spec, parent=more if k >= 4 else None)
 
 
 def _dark_table_obj(fields, widths, why=None):
@@ -1228,7 +1331,14 @@ def build():
               display_option="FitToPage")
     build_rail(pg)
     build_band(pg)
-    build_cards(pg)
+    # Row 2 (Portfolio, Benefits, Status reports, Governance) loads on request: its cards sit in the hidden group
+    # "More cards" (hidden visuals send no query), and the visible group "More cards · placeholder" shows static
+    # stand-ins with a "Show figures" button. Their own bookmark targets only these two groups.
+    g_more = pg.add_group(*MORE_BOX, "More cards", key="grp_more", hidden=True)
+    build_cards(pg, g_more)
+    g_ph = pg.add_group(*MORE_BOX, "More cards · placeholder", key="grp_more_ph")
+    bm_more = pbir.bookmark("Home · More cards", "home_more", pg.id, {g_more: False, g_ph: True})
+    build_placeholders(pg, g_ph, bm_more)
     pg.add(1580, 24, 196, 44, shape("#26314F", radius=14), key="switch_bg")
     # Groups hold only the right column. grp_pmo_rest: the PMO panel, pill, One-Pager button, Next 30 days.
     # grp_act_all / grp_act_<bucket>: the seven Act-now versions on top of that panel. grp_exec: the Executive view.

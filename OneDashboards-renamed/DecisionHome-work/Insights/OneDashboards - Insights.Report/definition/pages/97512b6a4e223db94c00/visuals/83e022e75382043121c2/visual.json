@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "83e022e75382043121c2",
   "position": {
-    "x": 934,
-    "y": 52,
-    "z": 6000,
-    "width": 100,
-    "height": 24,
-    "tabOrder": 2300
+    "x": 884,
+    "y": 50,
+    "z": 4800,
+    "width": 158,
+    "height": 28,
+    "tabOrder": 1800
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Home · Chip Label Not Reporting"
+                  "Property": "Story | Home · Chip Not Reporting"
                 }
               },
-              "queryRef": "_Measures.Story | Home · Chip Label Not Reporting",
-              "nativeQueryRef": "Story | Home · Chip Label Not Reporting"
+              "queryRef": "_Measures.Story | Home · Chip Not Reporting",
+              "nativeQueryRef": "Story | Home · Chip Not Reporting"
             }
           ]
         }
@@ -91,7 +91,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             }
@@ -132,7 +132,25 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#3A4768'"
+                    }
+                  }
                 }
               }
             }
@@ -142,6 +160,20 @@
       "padding": [
         {
           "properties": {
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "25D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
             "top": {
               "expr": {
                 "Literal": {
@@ -150,20 +182,6 @@
               }
             },
             "bottom": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "left": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "right": {
               "expr": {
                 "Literal": {
                   "Value": "0D"

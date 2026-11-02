@@ -14,7 +14,7 @@ HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
          "EAC Var % (reports)", "On Track % (reports)", "EAC Change", "On Track Change", "Due",
          "Colour Financials", "Colour Util", "Colour Trust", "Colour Portfolio", "Colour Schedule", "Colour Risk",
          "Colour Benefits", "Colour Status"]
-        + [f"Chip {c}" for c in CHIPN] + [f"Chip Label {c}" for c in CHIPN] + [f"Chip Colour {c}" for c in CHIPN]
+        + [f"Chip {c}" for c in CHIPN] + [f"Chip Colour {c}" for c in CHIPN]
         + [f"Pill {s}" for s in SUBJECTS] + [f"Pill Fill {s}" for s in SUBJECTS]
         + [f"Unit {s}" for s in SUBJECTS] + [f"Fact {s} {k} Value" for s in SUBJECTS for k in (1, 2)]
         + [f"Delta {s}" for s in ("Financials", "Schedule", "Risk", "Status")]
@@ -120,8 +120,10 @@ def _hidden(bm):
 
 BUCKETS = ["off track", "over budget", "late", "may slip", "not reporting", "failing rules"]
 SLUGS = [b.replace(" ", "_") for b in BUCKETS]
-GROUP_NAMES = {"PMO view", "Executive view", "Act now · all"} | {f"Act now · {b}" for b in BUCKETS}
-BOOKMARK_NAMES = ({"Home · PMO view", "Home · Executive view"} | {f"Home · Act now — {b}" for b in BUCKETS})
+MORE_GROUPS = {"More cards", "More cards · placeholder"}
+GROUP_NAMES = {"PMO view", "Executive view", "Act now · all"} | {f"Act now · {b}" for b in BUCKETS} | MORE_GROUPS
+BOOKMARK_NAMES = ({"Home · PMO view", "Home · Executive view", "Home · More cards"}
+                  | {f"Home · Act now — {b}" for b in BUCKETS})
 
 
 def test_view_groups_and_bookmarks():
@@ -130,7 +132,9 @@ def test_view_groups_and_bookmarks():
     groups = {vc["visualGroup"]["displayName"]: vc for vc in pg.visuals if "visualGroup" in vc}
     assert set(groups) == GROUP_NAMES
     # default = PMO view with the full Act-now list: only the PMO panel group and act_all are visible
-    assert {n for n, g in groups.items() if not g.get("isHidden")} == {"PMO view", "Act now · all"}
+    # and row 2 shows its placeholders, not its cards
+    assert {n for n, g in groups.items() if not g.get("isHidden")} == {"PMO view", "Act now · all",
+                                                                        "More cards · placeholder"}
     assert {bm["displayName"] for bm in pbir.BOOKMARKS} == BOOKMARK_NAMES
     children = [vc for vc in pg.visuals if vc.get("parentGroupName")]
     assert len(children) > 15
@@ -138,13 +142,18 @@ def test_view_groups_and_bookmarks():
 
 CARD_KEYS = ["fin", "sch", "res", "risk", "port", "ben", "sr", "gov"]
 # visual names are uid(page, key, visualType) hashes; _name() (already in this file) rebuilds them
-PART_TYPE = {"bg": "shape", "tile": "shape", "icon": "image", "title": "textbox", "pillbg": "shape", "dot": "shape",
-             "pill": "card", "chipbg": "shape", "rule": "shape", "f1l": "textbox", "f2l": "textbox", "go": "actionButton",
+PART_TYPE = {"bg": "shape", "tile": "shape", "icon": "image", "title": "textbox", "dot": "shape",
+             "pill": "card", "chipbg": "shape", "rule": "shape", "facts": "pivotTable", "go": "actionButton",
              "ft0": "actionButton"}
 
 
 def _vc(pg, key, vtype):
-    return next((vc for vc in pg.visuals if vc["name"] == _name(pg, key, vtype)), None)
+    """The visual container, with its position made absolute when it sits in a group (PBIR stores it group-relative)."""
+    vc = next((vc for vc in pg.visuals if vc["name"] == _name(pg, key, vtype)), None)
+    if vc is None or not vc.get("parentGroupName"):
+        return vc
+    gp = next(g for g in pg.visuals if g["name"] == vc["parentGroupName"])["position"]
+    return {**vc, "position": {**vc["position"], "x": vc["position"]["x"] + gp["x"], "y": vc["position"]["y"] + gp["y"]}}
 
 
 def _chip_vc(pg, c):
@@ -162,8 +171,9 @@ def test_every_card_has_the_design_a_anatomy():
         c = spec["key"]
         for part, vtype in PART_TYPE.items():
             assert _vc(pg, f"card_{c}_{part}", vtype) is not None, (c, part)
-        for part in ("num", "unit", "f1v", "f2v"):
+        for part in ("num", "unit"):
             assert _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL) is not None, (c, part)
+        assert _vc(pg, f"card_{c}_pillbg", "shape") is None, c                  # the pill card draws its own capsule
         assert _chip_vc(pg, c) is not None, c
         assert _vc(pg, f"card_{c}_sent", ext_home.VALUE_VISUAL) is None, c          # the sentence is gone
         vis = spec["visual"]
@@ -173,8 +183,9 @@ def test_every_card_has_the_design_a_anatomy():
             assert len(_visual_row(pg, c)) == 1, c
             assert {"area": "areaChart", "bar": "barChart"}[vis[0]] == _visual_row(pg, c)[0]["visual"]["visualType"], c
         assert "Unit " in repr(_vc(pg, f"card_{c}_unit", ext_home.VALUE_VISUAL)["visual"]["query"]), c
+        q = repr(_vc(pg, f"card_{c}_facts", "pivotTable")["visual"]["query"])
         for j in (1, 2):
-            assert f"Fact {ext_home._PILL_NAME[c]} {j} Value" in repr(_vc(pg, f"card_{c}_f{j}v", ext_home.VALUE_VISUAL)["visual"]["query"])
+            assert f"Fact {ext_home._PILL_NAME[c]} {j} Value" in q, (c, j)
 
 
 def test_card_elements_sit_at_the_same_offsets_in_each_row():
@@ -185,11 +196,12 @@ def test_card_elements_sit_at_the_same_offsets_in_each_row():
             bg = _vc(pg, f"card_{c}_bg", "shape")["position"]
             out = {}
             for vc in pg.visuals:
-                for part in ("tile", "icon", "title", "pillbg", "dot", "pill", "num", "unit", "chipbg", "chip", "spark", "bar",
-                             "cap0", "cap1", "cap2", "mark", "rule", "f1l", "f1v", "f2l", "f2v", "ft0", "go"):
-                    if vc["name"] in {_name(pg, f"card_{c}_{part}", t) for t in ("shape", "image", "textbox", "card", "tableEx",
-                                                                                  "areaChart", "barChart", "actionButton")}:
-                        out[part] = round(vc["position"]["y"] - bg["y"], 2)
+                for part in ("tile", "icon", "title", "dot", "pill", "num", "unit", "chipbg", "chip", "spark", "bar",
+                             "cap0", "cap1", "cap2", "mark", "rule", "facts", "ft0", "go"):
+                    for t in ("shape", "image", "textbox", "card", "tableEx", "pivotTable", "areaChart", "barChart",
+                              "actionButton"):
+                        if vc["name"] == _name(pg, f"card_{c}_{part}", t):
+                            out[part] = round(_vc(pg, f"card_{c}_{part}", t)["position"]["y"] - bg["y"], 2)
             rel.append(out)
         for part in {p for r in rel for p in r} - {"cap1"}:          # cap1 sits above the bar on target cards
             ys = {r[part] for r in rel if part in r}
@@ -225,22 +237,27 @@ def test_hero_number_unit_and_chip_do_not_overlap():
         assert num["y"] + num["height"] <= bg["y"] + r.R_CAP, c
 
 
-def test_fact_values_end_at_the_same_x_and_fit_beside_their_label():
+def test_facts_are_one_matrix_per_card():
+    """Both facts in one matrix (values on rows): label = row header, value right-aligned in a fixed column, per-fact
+    colour kept as conditional formatting on that fact's measure."""
     pg = _home()
     for spec in ext_home.SUBJECTS_LAYOUT:
         c = spec["key"]
+        sub = ext_home._PILL_NAME[c]
         bg = _vc(pg, f"card_{c}_bg", "shape")["position"]
-        for j, (lbl, *_x) in enumerate(ext_home.FACTS[ext_home._PILL_NAME[c]], 1):
-            v = _vc(pg, f"card_{c}_f{j}v", ext_home.VALUE_VISUAL)
-            col = v["visual"]["objects"]["columnWidth"][0]["properties"]["value"]["expr"]["Literal"]["Value"]
-            colw = float(col.rstrip("D"))
-            # text column ends at card right - PAD, it starts after the label + gap, and the cell is wider than its column
-            assert abs(v["position"]["x"] + ext_home.TBL_PADL + colw - (bg["x"] + bg["width"] - ext_home.PAD)) < 0.01, (c, j)
-            assert bg["x"] + ext_home.PAD + ext_home.FACT_LABEL_PX[lbl] + ext_home.VAL_GAP <= v["position"]["x"] + ext_home.TBL_PADL + 0.01
-            assert v["position"]["width"] >= colw + 40, (c, j)                         # no horizontal scrollbar
-            assert "Right" in repr(v["visual"]["objects"]["columnFormatting"]), (c, j)
-            lb = _vc(pg, f"card_{c}_f{j}l", "textbox")["position"]
-            assert lb["width"] >= ext_home.FACT_LABEL_PX[lbl] + 16, (c, j)              # label never truncated
+        v = _vc(pg, f"card_{c}_facts", "pivotTable")
+        o = v["visual"]["objects"]
+        proj = v["visual"]["query"]["queryState"]["Values"]["projections"]
+        assert [p_["displayName"] for p_ in proj] == [lbl for lbl, *_x in ext_home.FACTS[sub]], c
+        assert "true" in repr(o["values"][0]["properties"]["valuesOnRow"]), c
+        assert len(o["columnWidth"]) == 2 and repr(o["columnFormatting"]).count("Right") == 2, c
+        n_cf = sum(1 for x in o["values"][1:] if "fontColor" in x["properties"])
+        assert n_cf == sum(1 for j in (1, 2) if ext_home.FACT_COLOUR[(sub, j)]), c
+        p_ = v["position"]
+        assert bg["x"] <= p_["x"] and p_["x"] + p_["width"] <= bg["x"] + bg["width"], c          # inside the card
+        assert bg["y"] + ext_home.R_DIV - 2 <= p_["y"] and p_["y"] + p_["height"] <= bg["y"] + ext_home.R_FOOT, c
+        for j in (1, 2):
+            assert _vc(pg, f"card_{c}_f{j}v", "tableEx") is None and _vc(pg, f"card_{c}_f{j}l", "textbox") is None
 
 
 def test_financials_and_status_cards_use_their_own_measures():
@@ -260,12 +277,12 @@ def test_cards_align_in_grid():
     assert {(round(p["width"]), round(p["height"])) for p in pos} == {(297, 436)}
 
 
-def test_only_right_column_is_grouped():
+def test_only_right_column_and_row_2_are_grouped():
     pg = _home()
     groups = {vc["name"]: vc for vc in pg.visuals if "visualGroup" in vc}
     assert {g["visualGroup"]["displayName"] for g in groups.values()} == GROUP_NAMES
     for vc in pg.visuals:
-        if vc.get("parentGroupName"):
+        if vc.get("parentGroupName") and groups[vc["parentGroupName"]]["visualGroup"]["displayName"] not in MORE_GROUPS:
             gx = groups[vc["parentGroupName"]]["position"]["x"]
             assert gx + vc["position"]["x"] >= 1356 - 0.5, vc["name"]
 
@@ -308,14 +325,16 @@ def test_bookmarks_hide_the_other_view():
 
     def only(*keys):
         return {name: name not in {g[k] for k in keys} for name in every}
-    assert len(pbir.BOOKMARKS) == 8
+    assert len(pbir.BOOKMARKS) == 9
+    more, ph = pbir.uid(pg.id, "grp_more", "group"), pbir.uid(pg.id, "grp_more_ph", "group")
+    assert _hidden(_bm("Home · More cards")) == {more: False, ph: True}       # touches only the row-2 groups
     assert _hidden(_bm("Home · PMO view")) == only("grp_pmo_rest", "grp_act_all")
     assert _hidden(_bm("Home · Executive view")) == only("grp_exec")
     for b, slug in zip(BUCKETS, SLUGS):
         assert _hidden(_bm(f"Home · Act now — {b}")) == only("grp_pmo_rest", f"grp_act_{slug}"), b
     for bm in pbir.BOOKMARKS:
         assert bm["options"]["suppressData"] is True
-        assert set(bm["options"]["targetVisualNames"]) == every
+        assert set(bm["options"]["targetVisualNames"]) == ({more, ph} if bm["displayName"] == "Home · More cards" else every)
 
 
 def _bookmark_target(vc):
@@ -465,12 +484,14 @@ def test_progress_bars_are_one_stacked_chart():
 def test_cells_have_service_headroom():
     """The Service renders text taller than Desktop; every value/text cell needs >= 28 px over its text height."""
     pg = _home()
-    pts = {"num": ext_home.NUM_PT, "unit": ext_home.UNIT_PT, "f1v": ext_home.FACT_PT, "f2v": ext_home.FACT_PT}
+    pts = {"num": ext_home.NUM_PT, "unit": ext_home.UNIT_PT}
     for c in CARD_KEYS:
         for part, size in pts.items():
             vc = _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL)
             need = size * 1.33 + 22 + 28                       # text + header row + Service headroom
             assert vc["position"]["height"] >= need, (c, part)
+        facts = _vc(pg, f"card_{c}_facts", "pivotTable")["position"]
+        assert facts["height"] >= ext_home.FACT_DY + 2 * ext_home.FACT_ROW + 28, c
     r = ext_home
     assert r.R_FACT[1] + r.FACT_H <= r.R_FOOT and r.R_FOOT + r.FOOT_H <= r.ROW_H
 
@@ -493,7 +514,9 @@ def test_header_single_band():
     assert "Briefing Pill" in repr(_vc(pg, "pill", "card")["visual"]["query"])
     for k in range(6):
         assert "Chip" in repr(_vc(pg, f"chip{k}", "card")["visual"]["query"]), k
-        assert _vc(pg, f"chip_bg{k}", "shape") is not None and _vc(pg, f"chip_dot{k}", "shape") is not None, k
+        assert _vc(pg, f"chip_dot{k}", "shape") is not None, k
+        assert _vc(pg, f"chip_bg{k}", "shape") is None and _vc(pg, f"chip_n{k}", "card") is None, k    # one card per chip
+        assert "true" in repr(_vc(pg, f"chip{k}", "card")["visual"]["visualContainerObjects"]["border"]), k    # its outline
     assert [k for k in ("greet", "refreshed", "brief", "brief_reasons") for vt in ("card", "tableEx", "textbox")
             if _vc(pg, k, vt) is not None] == []
     assert _vc(pg, "brief_bg", "shape") is None
@@ -514,7 +537,7 @@ def test_view_groups_contain_their_pills():
     pg = _home()
     for gkey, pkey in (("grp_pmo_rest", "view_pill_pmo"), ("grp_exec", "view_pill_exec")):
         g, p = _vc(pg, gkey, "group")["position"], _vc(pg, pkey, "shape")["position"]
-        px, py = g["x"] + p["x"], g["y"] + p["y"]      # group children are stored relative to the group
+        px, py = p["x"], p["y"]                         # _vc already made the child's position absolute
         assert g["x"] <= px and px + p["width"] <= g["x"] + g["width"]
         assert g["y"] <= py and py + p["height"] <= g["y"] + g["height"]
 
@@ -604,11 +627,11 @@ def test_tooltip_visuals_sit_above_ghost_links():
         # the number does not cover the whole row, so the rest of the card still clicks through ...
         assert num["position"]["width"] < go["position"]["width"] - 80, c
         # ... the facts, chip and footer are not under it
-        for part, vt in (("f1l", "textbox"), ("chipbg", "shape"), ("ft0", "actionButton")):
+        for part, vt in (("facts", "pivotTable"), ("chipbg", "shape"), ("ft0", "actionButton")):
             assert not _overlap(num["position"], _vc(pg, f"card_{c}_{part}", vt)["position"]), (c, part)
         # every other data visual of the card sits under the ghost link (so the card still clicks through)
-        for part in ("unit", "f1v", "f2v"):
-            assert _vc(pg, f"card_{c}_{part}", ext_home.VALUE_VISUAL)["position"]["z"] < go["position"]["z"], (c, part)
+        assert _vc(pg, f"card_{c}_unit", ext_home.VALUE_VISUAL)["position"]["z"] < go["position"]["z"], c
+        assert _vc(pg, f"card_{c}_facts", "pivotTable")["position"]["z"] < go["position"]["z"], c
 
 
 def test_each_chip_has_a_bookmark_button_to_its_bucket():
@@ -616,13 +639,12 @@ def test_each_chip_has_a_bookmark_button_to_its_bucket():
     pg = _home()
     for k, (b, slug) in enumerate(zip(BUCKETS, SLUGS)):
         btn, txt = _vc(pg, f"chip_go{k}", "actionButton"), _vc(pg, f"chip{k}", "card")
-        bg = _vc(pg, f"chip_bg{k}", "shape")
         assert _bookmark_target(btn) == _bm(f"Home · Act now — {b}")["name"], b
         assert "parentGroupName" not in btn
-        bp, tp, cp = btn["position"], txt["position"], bg["position"]
-        # click zone: the capsule over dot + count, above the text and fully inside the chip; the label card is the hover zone
-        assert bp["z"] > tp["z"] > 0 and bp["z"] > _vc(pg, f"chip_n{k}", "card")["position"]["z"], b
-        assert bp["x"] + bp["width"] <= tp["x"] + 2, b
+        bp, tp = btn["position"], txt["position"]
+        # click zone: the capsule over dot + count, above the chip card and inside it; the label part is the hover zone
+        assert bp["z"] > tp["z"] > 0, b
+        assert _inside(bp, tp) and bp["x"] + bp["width"] <= tp["x"] + ext_home.CH_TXT_X + 2 * ext_home.CH_DIGIT_PX + 8, b
     pill_go = _vc(pg, "pill_go", "actionButton")
     assert _bookmark_target(pill_go) == _bm("Home · PMO view")["name"]
     assert pill_go["position"]["z"] > _vc(pg, "pill", "card")["position"]["z"]
@@ -705,34 +727,26 @@ def _inside(inner, outer):
 
 def test_chips_form_an_aligned_grid():
     pg = _home()
-    parts = ("chip_bg", "chip_dot", "chip_n", "chip", "chip_go")
-    vt = {"chip_bg": "shape", "chip_dot": "shape", "chip_n": "card", "chip": "card", "chip_go": "actionButton"}
+    parts = ("chip", "chip_dot", "chip_go")
+    vt = {"chip": "card", "chip_dot": "shape", "chip_go": "actionButton"}
     pos = {k: {p: _vc(pg, f"{p}{k}", vt[p])["position"] for p in parts} for k in range(6)}
-    bgs = [pos[k]["chip_bg"] for k in range(6)]
+    bgs = [pos[k]["chip"] for k in range(6)]
     # same size; 3 distinct columns and 2 distinct rows; row 1 = off track, over budget, late
     assert len({(round(p["width"], 2), round(p["height"], 2)) for p in bgs}) == 1
     assert sorted({round(p["x"], 2) for p in bgs}) == [round(bgs[k]["x"], 2) for k in range(3)] and len({p["x"] for p in bgs}) == 3
     assert len({p["y"] for p in bgs}) == 2 and bgs[0]["y"] == bgs[1]["y"] == bgs[2]["y"] < bgs[3]["y"] == bgs[4]["y"] == bgs[5]["y"]
     assert [bgs[k]["x"] for k in (3, 4, 5)] == [bgs[k]["x"] for k in (0, 1, 2)]
     assert len({round(bgs[k + 1]["x"] - bgs[k]["x"] - bgs[k]["width"], 2) for k in (0, 1, 3, 4)}) == 1   # fixed column gap
-    # every part sits at the same offset (and has the same size) inside its chip, for all six chips
-    rel = {k: {p: tuple(round(v, 2) for v in (q["x"] - pos[k]["chip_bg"]["x"], q["y"] - pos[k]["chip_bg"]["y"],
-                                               q["height"]))
+    # dot and button at the same offset (and size) inside every chip; the dot sits above the card, inside the button
+    rel = {k: {p: tuple(round(v, 2) for v in (q["x"] - bgs[k]["x"], q["y"] - bgs[k]["y"], q["width"], q["height"]))
                for p, q in pos[k].items() if p != "chip"} for k in range(6)}
     assert all(rel[k] == rel[0] for k in range(6))
-    assert len({(pos[k]["chip_n"]["width"], pos[k]["chip_go"]["width"], pos[k]["chip_dot"]["width"]) for k in range(6)}) == 1
-    # label text starts at the same x in every chip (card = text + 2 pads, so its left edge + pad is the text edge)
-    assert len({round(pos[k]["chip"]["x"] - pos[k]["chip_bg"]["x"], 2) for k in range(6)}) == 1
-    assert len({(pos[k]["chip"]["y"] - pos[k]["chip_bg"]["y"], pos[k]["chip"]["height"]) for k in range(6)}) == 1
-    # capsule and button: inside the chip, vertically centred, covering dot + count and not the label text
     for k in range(6):
-        c, go, dot, cnt, lbl = (pos[k][p] for p in ("chip_bg", "chip_go", "chip_dot", "chip_n", "chip"))
-        for part in (go, dot, cnt, lbl):
-            assert _inside(part, c), k
+        c, go, dot = bgs[k], pos[k]["chip_go"], pos[k]["chip_dot"]
+        assert _inside(go, c) and _inside(dot, go), k
         assert abs((go["y"] + go["height"] / 2) - (c["y"] + c["height"] / 2)) < 0.01, k
-        assert _inside(dot, go) and go["x"] <= cnt["x"] and cnt["x"] + cnt["width"] <= go["x"] + go["width"], k
-        assert go["x"] + go["width"] <= lbl["x"] + ext_home.CH_LBL_PAD + 0.01, k
-        assert dot["x"] + dot["width"] <= cnt["x"] and cnt["x"] + cnt["width"] <= lbl["x"] + 2, k
+        assert dot["z"] > c["z"], k
+        assert dot["x"] + dot["width"] <= c["x"] + ext_home.CH_TXT_X, k
     # the grid fits between the pill and the slicers, inside the band, rows evenly spaced
     band = _vc(pg, "band_bg", "shape")["position"]
     top = min(p["y"] for p in bgs)
@@ -746,12 +760,13 @@ def test_chips_form_an_aligned_grid():
             assert max(p["x"] + p["width"] for p in bgs) <= vc["position"]["x"]
 
 
-def test_chip_labels_fit_their_cards():
-    # the label card is the text width plus padding and the text (starting at CH_LBL_X) ends inside its chip
+def test_chip_text_fits_its_chip():
+    """The chip card centres its text; the padding makes the text box exactly the text wide, starting at CH_TXT_X."""
     for k, x, y, w in ext_home.chip_geometry():
         lbl = ext_home.CHIPS[k][1]
-        assert ext_home.CH_LBL_X + ext_home.CH_LABEL_PX[lbl] + 4 <= ext_home.CH_W, lbl
-        assert ext_home.chip_label_w(lbl) == ext_home.CH_LABEL_PX[lbl] + 2 * ext_home.CH_LBL_PAD
+        left, right = ext_home.chip_padding(lbl)
+        assert left == ext_home.CH_TXT_X and right >= 8, lbl
+        assert left + ext_home.chip_text_px(lbl) + right == ext_home.CH_W, lbl
 
 
 def test_card_buttons_are_neutral_and_centred():
