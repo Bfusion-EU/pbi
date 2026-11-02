@@ -11,6 +11,7 @@ import re
 import pbir
 
 NAV_Y, NAV_H, NAV_SHIFT = 86, 30, 36
+FOOTER_FALLBACK_Y = 1500   # only used when a page has neither its own Next nor Back button
 HEADER_BOTTOM = 80   # header chrome (title, subtitle, slicers) ends above 80; content starts at 82-84 (2d hero at 82)
 CODE = re.compile(r"^(\d)([a-z]?) · (.+)$")    # "5c · What Changed" -> ("5", "c", "What Changed")
 
@@ -26,7 +27,8 @@ def _sec(pg, num):
 
 def _renumber(vc, old, new):
     run = vc["visual"]["objects"]["general"][0]["properties"]["paragraphs"][0]["textRuns"][0]
-    assert run["value"].startswith(old), run["value"]
+    if not run["value"].startswith(old):
+        raise ValueError(f"section label {run['value']!r} does not start with {old!r}")
     run["value"] = new + run["value"][len(old):]
 
 
@@ -75,20 +77,29 @@ def _label(display):
 
 
 def _w(text):
-    return round(len(text) * 6.4 + 28)               # Segoe UI 10 pt button: ~6.4 px per character + padding
+    return round(len(text) * 7.3 + 32)               # bold Segoe UI 10 pt button: ~7.3 px per character + margins
+
+
+def _alt(btn, text):
+    """Alt text on a button (a11y.apply keeps an existing altText)."""
+    btn["visualContainerObjects"].setdefault("general", [{"properties": {}}])[0]["properties"]["altText"] = pbir.s(text)
+    return btn
 
 
 def _crumb(text, target, tip):
-    return pbir.nav_button(text, target, tip, fill="#FFFFFF", hover=pbir.ORANGE_SOFT, press=pbir.ORANGE_SOFT,
-                           font=pbir.NAVY, size=10)
+    return _alt(pbir.nav_button(text, target, tip, fill="#FFFFFF", hover=pbir.ORANGE_SOFT, press=pbir.ORANGE_SOFT,
+                                font=pbir.NAVY, size=10), f"Breadcrumb: {text}")
 
 
 def nav_row(pg, key):
     import pages as P
     if pbir.uid(pg.id, "nav_home", "actionButton") in {v["name"] for v in pg.visuals}:
         return
-    foot = min((v["position"]["y"] for v in _top(pg)
-                if v["visual"]["visualType"] == "actionButton" and v["position"]["y"] >= 1500), default=P.YNEXT)
+    own = {pbir.uid(pg.id, k, "actionButton") for k in ("next", "back")}
+    foot = min((v["position"]["y"] for v in _top(pg) if v["name"] in own), default=None)
+    if foot is None:                                 # no Next/Back row: fall back to "buttons low on the page"
+        foot = min((v["position"]["y"] for v in _top(pg) if v["visual"]["visualType"] == "actionButton"
+                    and v["position"]["y"] >= FOOTER_FALLBACK_Y), default=P.YNEXT)
     for vc in _top(pg):                              # room for the row: everything between header and Next/Back
         y = vc["position"]["y"]
         if HEADER_BOTTOM <= y < foot:
@@ -122,12 +133,14 @@ def nav_row(pg, key):
         x = P.W - 16 - sum(widths) - 6 * (len(members) - 1)
         for m, w in zip(members, widths):
             cur = m == key
-            btn = pbir.nav_button(_label(names[m]), P.PID[m], "Open this page",
+            btn = pbir.nav_button(_label(names[m]), P.PID[m], "You are here" if cur else "Open this page",
                                   fill=pbir.ORANGE if cur else "#FFFFFF",
                                   hover=pbir.ORANGE_DK if cur else pbir.ORANGE_SOFT,
                                   press=pbir.ORANGE_DK if cur else pbir.ORANGE_SOFT,
                                   font="#FFFFFF" if cur else pbir.NAVY, size=10,
                                   outline=None if cur else pbir.BORDER)
+            if cur:
+                _alt(btn, f"{_label(names[m])} (current page)")
             pg.add(x, NAV_Y, w, NAV_H, btn, key=f"nav_strip_{m}")
             x += w + 6
 

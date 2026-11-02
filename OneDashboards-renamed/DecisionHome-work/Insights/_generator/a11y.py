@@ -101,10 +101,18 @@ def _set_alt(v, text):
         props["altText"] = pbir.s(text[:MAX_ALT])
 
 
+def _only_text(v):
+    """All text of a textbox visual, concatenated."""
+    paras = v.get("objects", {}).get("general", [{}])[0].get("properties", {}).get("paragraphs", [])
+    return "".join(r.get("value", "") for p in paras for r in p.get("textRuns", [])).strip()
+
+
 def _decorative(vc):
     v = vc.get("visual")
     if v is None:
         return False
+    if v["visualType"] == "textbox" and _only_text(v) == "›":      # breadcrumb separator
+        return True
     return v["visualType"] in DECORATIVE or (
         v["visualType"] == "image" and "visualLink" not in v.get("visualContainerObjects", {}))
 

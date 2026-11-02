@@ -8,7 +8,8 @@ import pbir  # noqa: E402
 import layout  # noqa: E402
 
 BUILT = {pg.id: pg for pg in pages.build_all()}
-STANDARD = ["portfolio", "finance", "finance2", "resources", "schedule", "risk", "benefits", "governance"]
+STANDARD = ["portfolio", "finance", "finance2", "resources", "schedule", "risk", "benefits", "governance",
+            "scenarios", "timesheets"]
 
 
 def page(key):
@@ -34,6 +35,7 @@ def test_standard_pages_are_act_first():
 def test_skip_list():
     names = dict(pages.PAGES)
     assert not any(names[k] in pages.LAYOUT_SKIPPED for k in STANDARD)
+    assert set(pages.LAYOUT_SKIPPED) == {names[k] for k in ("gantt", "baseline", "onepager", "resource")}, pages.LAYOUT_SKIPPED
     assert names["exec"] not in pages.LAYOUT_SKIPPED            # excluded on purpose, not "skipped"
 
 
@@ -105,6 +107,10 @@ def test_passes_are_idempotent():
     layout.act_first(pg)
     layout.nav_row(pg, "finance")
     assert json.dumps(pg.visuals, sort_keys=True) == before
+    pg = page("status")
+    before = json.dumps(pg.visuals, sort_keys=True)
+    layout.nav_row(pg, "status")
+    assert json.dumps(pg.visuals, sort_keys=True) == before
 
 
 def test_nothing_overlaps_nav_row():
@@ -144,3 +150,86 @@ def test_exec_single_chapter_row():
     names = {pbir.uid(pg.id, f"chap{i}", "actionButton") for i in range(20)}
     btns = [v for v in pg.visuals if v["name"] in names]
     assert len(btns) == 7 and len({v["position"]["y"] for v in btns}) == 1
+
+
+def test_register_moved_by_nav_shift():
+    for k in STANDARD:
+        pg = page(k)
+        assert sec(pg, 4)["position"]["y"] == pages.Y2 + layout.NAV_SHIFT, k
+        tables = [v for v in pg.visuals if not v.get("parentGroupName")
+                  and v["visual"]["visualType"] in ("tableEx", "pivotTable")
+                  and v["position"]["y"] == pages.Y2V + layout.NAV_SHIFT]
+        assert tables, k
+
+
+def test_strip_geometry():
+    for k, _ in pages.PAGES:
+        if k == "home":
+            continue
+        pg = page(k)
+        chap, members = layout.chapter_of(k)
+        if len(members) < 2:
+            continue
+        strip = [v["position"] for v in pg.visuals
+                 if v["name"] in {pbir.uid(pg.id, f"nav_strip_{m}", "actionButton") for m in members}]
+        left = min(p["x"] for p in strip)
+        right = max(p["x"] + p["width"] for p in strip)
+        assert left >= 16 and right <= 1784, (k, left, right)
+        crumbs = [v["position"] for v in pg.visuals if v["name"].startswith("") and v["position"]["y"] == layout.NAV_Y
+                  and v["position"]["height"] == layout.NAV_H and v["position"]["x"] < left]
+        assert max(p["x"] + p["width"] for p in crumbs) + 40 <= left, (k, left)
+
+
+def test_current_button_and_crumb_alt():
+    pg = page("finance2")
+    cur = next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, "nav_strip_finance2", "actionButton"))
+    props = cur["visual"]["visualContainerObjects"]["general"][0]["properties"]
+    assert "(current page)" in props["altText"]["expr"]["Literal"]["Value"]
+    home = next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, "nav_home", "actionButton"))
+    assert "Breadcrumb: Home" in json.dumps(home["visual"]["visualContainerObjects"]["general"])
+
+
+def test_separators_decorative():
+    pg = page("finance2")
+    seps = [v for v in pg.visuals if v["name"] in {pbir.uid(pg.id, f"nav_sep_{k}", "textbox") for k in ("finance", "finance2")}]
+    assert len(seps) == 2
+    import a11y
+    content_max = max(v["position"]["tabOrder"] for v in pg.visuals
+                      if not a11y._decorative(v) and not v.get("parentGroupName"))
+    for v in seps:
+        assert a11y._decorative(v) and "altText" not in json.dumps(v)
+        assert v["position"]["tabOrder"] > content_max
+
+
+def test_too_tall_visual_raises():
+    import pytest
+    pg = pbir.Page("p" * 20, "9 · Synthetic", 1800, 1800)
+    pg.add(16, 1400, 500, 400, pbir.textbox([[("x", pbir.st("Segoe UI", 10, pbir.NAVY))]]), key="tall")
+    pg.add(16, 1606, 220, 36, pbir.nav_button("Back", pages.PID["home"]), key="back")
+    with pytest.raises(ValueError):
+        layout.nav_row(pg, "exec")
+
+
+def test_hidden_deep_dives_reachable():
+    targets = {}
+    for pg in BUILT.values():
+        out = set()
+        for v in pg.visuals:
+            vis = v.get("visual", {})
+            if vis.get("visualType") == "actionButton":
+                link = vis.get("visualContainerObjects", {}).get("visualLink", [{}])[0].get("properties", {})
+                val = link.get("navigationSection", {}).get("expr", {}).get("Literal", {}).get("Value", "")
+                if val:
+                    out.add(val.strip("'"))
+        targets[pg.id] = out
+    hidden = {pg.id for pg in BUILT.values() if pg.page.get("visibility") == "HiddenInViewMode"}
+    visible = [pg.id for pg in BUILT.values() if pg.id not in hidden]
+    seen, queue = set(visible), list(visible)
+    while queue:
+        for t in targets.get(queue.pop(), ()):
+            if t not in seen:
+                seen.add(t)
+                queue.append(t)
+    named = {pages.PID[k] for k, d in pages.PAGES if layout._code(d) and layout._code(d)[1]}
+    assert len(named) == 10
+    assert named <= seen, named - seen

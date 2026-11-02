@@ -211,7 +211,8 @@ def build_exec():
     for k, m in enumerate(["Story | Exec Action Money", "Story | Exec Action People", "Story | Exec Action Risk"]):
         pg.add(1192, Y3V + k * 136, 592, 124, headline(m, bg="#FFFFFF", border=ORANGE, size=12), key=f"act{k}")
     section(pg, Y4, 4, "Where should I look next?", "Each chapter answers one question in depth.")
-    chapters = [k for k, d in PAGES if d[:1] in "2345678" and d[1:4] == " · "]   # chapters 2-8, no deep-dives
+    import layout
+    chapters = [k for k, d in PAGES if layout._code(d) and layout._code(d)[0] in "2345678" and not layout._code(d)[1]]  # chapters 2-8, no deep-dives
     bw = (1768 - 10 * (len(chapters) - 1)) / len(chapters)
     for k, ck in enumerate(chapters):
         pg.add(round(16 + k * (bw + 10), 2), Y4V, round(bw, 2), 56,
@@ -754,6 +755,7 @@ def build_governance():
 
 def build_all():
     import extensions  # extension pages register in extensions.BUILDERS
+    pbir.BOOKMARKS.clear()
     built = {"exec": build_exec(), "portfolio": build_portfolio(), "finance": build_finance(),
              "finance2": build_finance2(), "resources": build_resources(), "schedule": build_schedule(),
              "risk": build_risk(), "benefits": build_benefits(), "governance": build_governance()}
