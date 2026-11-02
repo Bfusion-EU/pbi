@@ -28,7 +28,7 @@ PAGES = [  # (key, display name) — the story order; "Next chapter" follows thi
     ("resource", "4d · Resource Detail"),
     ("schedule", "5 · Planning & Scheduling"),
     ("gantt", "5b · Gantt View"),
-    ("status", "5c · Status-Report Trend"),
+    ("status", "5c · What Changed"),
     ("baseline", "5d · Plan vs Baseline"),
     ("risk", "6 · Risk Management"),
     ("benefits", "7 · Benefits & Value"),

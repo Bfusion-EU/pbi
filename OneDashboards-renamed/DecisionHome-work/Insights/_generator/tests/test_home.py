@@ -698,21 +698,6 @@ def test_click_zones():
     rest = next(f for f in fill if f.get("selector", {}).get("id") == "default")["properties"]["transparency"]
     assert rest["expr"]["Literal"]["Value"].rstrip("D") != "100"      # visible at rest
 
-def test_status_movement_charts_two_rows_inside_the_standard_section():
-    import ext_status
-    pg = next(p for p in ext_status.build() if p.id == pages.PID["status"])
-    vcs = {d: next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, f"v_move_{d}", "barChart"))["position"]
-           for d, _ in ext_status.DIMS}
-    assert {p["height"] for p in vcs.values()} == {150}              # a bar chart needs ~150 px to draw its bars
-    assert {vcs[d]["y"] for d in ("Overall", "Schedule")} == {pages.Y2V}
-    assert {vcs[d]["y"] for d in ("Financial", "Effort", "Issue")} == {pages.Y2V + 155}
-    assert max(p["y"] + p["height"] for p in vcs.values()) <= pages.Y2V + pages.H2
-    assert [round(vcs[d]["width"]) for d in ("Overall", "Schedule")] == [278, 278]
-    assert [round(vcs[d]["width"]) for d in ("Financial", "Effort", "Issue")] == [183, 183, 183]
-    sec = {n: next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, f"sec{n}", "textbox"))["position"]["y"]
-           for n in (3, 4)}
-    assert (sec[3], sec[4]) == (pages.Y3, pages.Y4)                    # sections 3 and 4 are back in place
-
 def _inside(inner, outer):
     return (outer["x"] <= inner["x"] + 0.01 and inner["x"] + inner["width"] <= outer["x"] + outer["width"] + 0.01
             and outer["y"] <= inner["y"] + 0.01 and inner["y"] + inner["height"] <= outer["y"] + outer["height"] + 0.01)

@@ -1,4 +1,4 @@
-"""5b · Status-Report Trend — which projects got better or worse since their last
+"""5c · What Changed — month-on-month change briefing (§ month on month) plus each project against its own previous
 status report, and who is not reporting?
 
 Data: FactStatusReport (one row per OnePlan status report; ReportEndKey -> DimDate
@@ -27,7 +27,7 @@ DimProject[Id]-not-blank visual filter (pages.filter_real_projects).
 import pages
 import pbir
 from pbir import AMBER_TEXT, GREY_TEXT
-from pbir import C, M, P, b, chart, cf_back, cf_font, measure_fill, table_style, title, labels_on, legend
+from pbir import C, M, P, b, chart, cf_back, cf_font, table_style
 from pbir import NAVY, TEAL, AMBER, RED, GREY
 from story_measures import add, money, T, D, I, MEASURES
 
@@ -488,86 +488,50 @@ RETURN
 
 
 # ================================================================== page
-def _dark_labels():
-    """Value labels in navy: the default label colour disappears on the light grey 'Unchanged' bar."""
-    lab = labels_on(True, 0, 9)
-    lab[0]["properties"]["color"] = pbir.col_solid(NAVY)
-    return lab
-
-
-def _movement_bar(dim, ttl):
-    imp, unc, wor = (M(m(f"{dim} {w}")) for w in ("Improved", "Unchanged", "Worsened"))
-    return chart("barChart", {"Y": [P(imp, "Improved"), P(unc, "Unchanged"), P(wor, "Worsened")]}, ttl,
-                 {"dataPoint": [measure_fill(imp, TEAL), measure_fill(unc, "#C9CED8"), measure_fill(wor, RED)],
-                  "legend": legend("Top", False), "labels": _dark_labels(),
-                  "categoryAxis": [{"properties": {"show": b(False)}}],
-                  "valueAxis": [{"properties": {"show": b(False)}}]},
-                 extra_vco={"title": title(ttl, 10),
-                            # Desktop adds an auto subtitle ("Improved, Unchanged and Worsened") that eats ~15 px
-                            "subTitle": [{"properties": {"show": b(False)}}]})
-
-
 def build():
     DP = pages.DP
     slicers = [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"),
                (DP("ProjectType_Value"), "Project type"), (C("DimDate", "Period"), "Report period")]
-    pg = pages.analytic_page("status", "STATUS REPORTS", "GETTING BETTER OR WORSE?",
-                             "Each project compared with its own previous OnePlan status report — health, money and risks — "
-                             "plus who has stopped reporting. The report-period slicer picks the 'latest' report.",
-                             slicers, m("Headline"))
+    pg = pages.analytic_page(
+        "status", "STATUS", "WHAT CHANGED SINCE LAST MONTH?",
+        f"Latest report per project versus last month's. Moved = finish {DATE_MOVE_D}+ days or forecast "
+        f"{FC_MOVE_PCT:.0%} / €{FC_MOVE_EUR // 1000}K. Report period picks the month.",
+        slicers, mm("Headline"))
     assert pg.id == pages.PID["status"] and pg.display == dict(pages.PAGES)["status"]
 
     # ① pulse
-    pages.section(pg, pages.Y1, 1, "The reporting pulse",
-                  "Movement counts compare each project's latest report with the one before it.")
+    pages.section(pg, pages.Y1, 1, "What moved this month?",
+                  "This month's latest report per project against last month's; projects without both are counted apart.")
     pages.kpi_row(pg, pages.Y1K, [
-        (m("Projects Reporting"), "Projects reporting"),
-        (m("Overall Improved"), "Improved overall", {"value_colour": TEAL}),
-        (m("Overall Worsened"), "Worsened overall", {"value_colour": RED}),
-        (m("Forecast Drift"), "Forecast drift", {"colour_measure": m("Forecast Drift Colour")}),
-        (m("Active Risks Drift"), "Active-risk drift", {"colour_measure": m("Active Risks Drift Colour")}),
-        (m("Avg Days Since Report"), "Avg days since last report"),
-        (m("Not Reporting"), f"Not reporting ({STALE_DAYS} d)", {"value_colour": RED}),
-        ("Story | PMO · Plans With Open Status Report", "Plans with open report", {"value_colour": AMBER}),
+        (mm("Worsened"), "Health worse", {"value_colour": RED}),
+        (mm("Improved"), "Health better", {"value_colour": TEAL}),
+        (mm("Dates KPI"), "Finish dates moved (net)", {"size": pbir.KPI_TEXT_PT}),
+        (mm("Forecast Net"), "Forecast moved (net €)"),
+        (mm("Risks Net"), "Active risks (net)"),
+        (mm("New Closed KPI"), "New · closed", {"size": pbir.KPI_TEXT_PT}),
+        (mm("Not Comparable"), "Not comparable", {"value_colour": AMBER}),
     ])
 
-    # ② movement
+    # ② change ledger
     Y2, Y2V, H2 = pages.Y2, pages.Y2V, pages.H2
-    gap, bh = 5, 150
-    pages.section(pg, Y2, 2, "Who got better or worse since the last report?",
-                  "Per health dimension, then project by project — worst moves first.")
-    pages.legend_note(pg, 1084, Y2 + 4, 700, [("Improved", TEAL), ("Unchanged", "#C9CED8"), ("Worsened", RED)],
-                      "move_legend")
-    # A bar chart needs ~100 px of rendered height (title + plot) and more when the canvas is scaled down:
-    # at 64 px Desktop draws the title and no bars, at 110 px a placeholder icon, at 150 px the bars.
-    # So the five charts sit in TWO rows of 150 px inside the standard section height (2 x 150 + gap <= H2):
-    # Overall and Schedule on top (2 columns), Financial, Effort and Issue below (3 columns).
-    assert 2 * bh + gap <= H2
-    colw = 560
-    for k, (dim, _) in enumerate(DIMS):
-        per_row = 2 if k < 2 else 3
-        w = round((colw - gap * (per_row - 1)) / per_row, 2)
-        i = k if k < 2 else k - 2
-        x, y = round(16 + i * (w + gap), 2), Y2V + (0 if k < 2 else bh + gap)
-        pg.add(x, y, w, bh, _movement_bar(dim, f"{dim} health"), key=f"v_move_{dim}")
-    cols =[P(DP("Name"), "Project"), P(M(m("Previous Report End")), "Previous report"),
-            P(M(m("Latest Report End")), "Latest report"), P(M(m("Overall Change")), "Overall: before → now"),
-            P(M(m("Overall Move")), "Overall Δ")]
+    pages.section(pg, Y2, 2, "Which projects changed — biggest change first?",
+                  f"Size: health worse 3 · finish > {BIG_DATE_D} d or forecast > {BIG_FC_PCT:.0%} 2 · any other change 1. "
+                  "Unchanged projects are not listed; ✓ = may slip (Act now).")
+    size, hc = M(mm("L · Size")), M(mm("L · Health Change"))
     obj = table_style(9)
-    obj["values"] += [cf_font(M(m("Overall Change")), m("Overall Now Colour")),
-                      cf_font(M(m("Overall Move")), m("Overall Arrow Colour"))]
-    for dim, _ in DIMS[1:]:
-        f = M(m(f"{dim} Arrow"))
-        cols.append(P(f, dim))
-        obj["values"].append(cf_font(f, m(f"{dim} Arrow Colour")))
-    pg.add(588, Y2V, 1196, H2, chart("tableEx", {"Values": cols},
-                                     "Movement since the previous report — Δ +1 = one health level worse",
-                                     obj, sort=[(M(m("Overall Move")), "Descending")]), key="v_move_table")
+    obj["values"] += [cf_font(hc, mm("Health Change Colour"))]
+    pg.add(16, Y2V, 1768, H2, chart("tableEx",
+        {"Values": [P(DP("Name"), "Project"), P(hc, "Health: last month → now"),
+                    P(M(mm("L · Finish Shift (d)")), "Finish Δ days"), P(M(mm("L · Forecast Delta")), "Forecast Δ"),
+                    P(M(mm("L · Risks Delta")), "Risks Δ"), P(M(mm("L · State Change")), "State"),
+                    P(M("Story | Slip · Flag Text"), "May slip"), P(size, "Change size")]},
+        "Change ledger — this month versus last month", obj, sort=[(size, "Descending")]),
+        key="v_ledger", filters=[pages.REAL_PROJECTS])
 
     # ③ heat strip + drift
     Y3, Y3V, H3 = pages.Y3, pages.Y3V, pages.H3
     pages.section(pg, Y3, 3, "How has health evolved, and what drifted?",
-                  "Latest overall health per report month; budget, forecast and risks on the latest versus previous report.")
+                  "Latest overall health per report month; drift = each project's latest report versus its own previous one.")
     pages.legend_note(pg, 1084, Y3 + 4, 700, [("On Track", TEAL), ("At Risk", AMBER), ("Off Track", RED)],
                       "heat_legend")
     heat = M(m("Heat Cell"))

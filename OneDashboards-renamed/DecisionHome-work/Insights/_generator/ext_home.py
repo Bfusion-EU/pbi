@@ -194,7 +194,7 @@ RETURN IF ( NOT ISBLANK ( [{hm("Tip Status")}] ) && _k < 9999, _k )""", "0",
      "Days since the last submitted report of a listed project; blank when it never submitted one (its sort key is 9999).",
      folder=_TIPS)
 _list_footer("Status", "Tip Status Key", ("project not reporting", "projects not reporting"),
-             ("longest silence first", "top 12 · longest silence first"), "Status-Report Trend")
+             ("longest silence first", "top 12 · longest silence first"), "What Changed")
 _add("Tip Governance Key", I, f"""
 VAR _f = [Story | Project · Failing Rules]
 RETURN IF ( {ONE_PROJECT} && _f > 0, _f )""", "0",
@@ -727,7 +727,7 @@ SUBJECTS_LAYOUT = [
          colour=hm("Colour Benefits"), link="benefits", footer=[("Benefits", "benefits")]),
     dict(key="sr", name="Status reports", icon="exec", num="Story | Status · Not Reporting",
          unit=f"not reporting {STALE_DAYS}+ days", chip=("context", "Status"), visual=None,
-         colour=hm("Colour Status"), link="status", footer=[("Trend", "status")]),
+         colour=hm("Colour Status"), link="status", footer=[("Changes", "status")]),
     dict(key="gov", name="Governance", icon="governance", num="PMO | Governance Score", unit="data trust score",
          chip=("text", "target 90"), visual=("bar", (0, 100, hm("Trust Rest"), 90, ("0", "target 90", "100"))),
          colour=hm("Colour Trust"), link="governance", footer=[("Governance", "governance")]),
@@ -796,7 +796,7 @@ def chip_w(spec):
 CHIP_GAP, CHIP_PAD, CHAR_PX = 8, 24, 8.0     # (Executive view links) Desktop pads a button ~16 px beyond its text
 # action pills: bold Segoe UI 11 pt widths in px (measured); a pill is its text + FOOT_PAD (text margins FOOT_MARGIN each side)
 FOOT_TEXT_PX = {"Spend": 43, "Pareto": 45, "Schedule": 62, "Gantt": 37, "Baseline": 56, "People": 47, "Time": 33, "TS": 16,
-                "Person": 47, "Risk": 27, "Gates": 37, "Scenarios": 65, "Project": 48, "Benefits": 54, "Trend": 40,
+                "Person": 47, "Risk": 27, "Gates": 37, "Scenarios": 65, "Project": 48, "Benefits": 54, "Changes": 52,
                 "Governance": 82}           # Segoe UI Semibold 11 pt
 FOOT_PAD, FOOT_MARGIN, FOOT_FONT = 24, 0, "Segoe UI Semibold"
 CHIP_H = 30

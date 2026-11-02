@@ -80,3 +80,22 @@ def test_act_buckets_order():
 
 def test_tip_buckets_follow_chips():
     assert pages.HOME_TIP_BUCKETS == ["off_track", "over_budget", "late", "may_slip", "not_reporting", "failing_rules"]
+
+
+import json  # noqa: E402
+
+
+def _status_page():
+    import ext_status
+    return ext_status.build()[0]
+
+
+def test_status_page_is_what_changed():
+    assert dict(pages.PAGES)["status"] == "5c · What Changed"
+    pg = _status_page()
+    pulse = [vc for vc in pg.visuals if vc.get("visual", {}).get("visualType") == "card"
+             and vc["position"]["y"] == pages.Y1K]
+    assert len(pulse) == 7
+    ledger = [vc for vc in pg.visuals if "Story | Status · MoM L · Size" in json.dumps(vc, ensure_ascii=False)]
+    assert len(ledger) == 1 and "Story | Slip · Flag Text" in json.dumps(ledger[0], ensure_ascii=False)
+    assert "Story | Status · MoM Headline" in json.dumps(pg.visuals, ensure_ascii=False)
