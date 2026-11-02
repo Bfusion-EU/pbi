@@ -102,6 +102,17 @@ and columns that the existing pack already uses. Examples:
 
 Added 2026-11-02 (one definition per number):
 
+- **Data-trust notes** (`_generator/trust.py`). When less than 95% of the active projects have the data a headline
+  rests on, the headline ends with a note such as "ⓘ Based on N of M active projects with a financial plan (P%)":
+  - **3 and 3b:** a budget or an EAC.
+  - **4:** scheduled hours.
+  - **5:** at least one work-plan task.
+  - **7:** planned benefits, out of the projects with an EAC.
+
+  The Executive headline always ends with the governance data-trust score. Some headlines are left alone:
+  - 4b, 5c, 5d and Portfolio already state their own coverage.
+  - Risk has no honest test, because a project can genuinely have no risks.
+
 - **Finish slip vs baseline** has one definition, `Story | Baseline · Finish Slip (days)` (page 5d). Page 5 and the Home
   Schedule card count **active** projects late against their current baseline. They say how many active projects
   have a baseline, and the headline warns when fewer than half do.

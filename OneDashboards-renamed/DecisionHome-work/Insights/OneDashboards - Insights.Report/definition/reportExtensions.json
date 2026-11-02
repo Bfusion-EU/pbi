@@ -397,7 +397,7 @@
           }
         },
         {
-          "name": "Story | Finance Headline",
+          "name": "Story | Finance Headline · Core",
           "dataType": "Text",
           "expression": "VAR _bac = [Story | Budget At Completion]\nVAR _eac = [Story | Finance EAC]\nVAR _v = [Story | EAC Variance]\nVAR _absv = ABS ( _v )\nVAR _btd = [Story | Budget To Date]\nVAR _a = [Story | Actual Cost]\nVAR _n = [Story | Projects Over Budget]\nVAR _top =\n    TOPN ( 1,\n        FILTER (\n            ADDCOLUMNS ( VALUES ( DimProject[Id] ), \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ),\n                \"@b\", [Story | Budget At Completion], \"@v\", [Story | EAC Variance] ),\n            NOT ISBLANK ( DimProject[Id] ) && [@b] > 0 && [@v] > 0 ),\n        [@v], DESC, DimProject[Id], ASC )\nVAR _tn = MAXX ( _top, [@n] )\nVAR _tv = MAXX ( _top, [@v] )\nRETURN\n    IF ( ISBLANK ( _bac ) && ISBLANK ( _eac ),\n        \"No financial plan data in the current selection.\",\n        \"At completion: budget \" & IF ( ISBLANK ( _bac ), \"–\", IF ( ABS ( _bac ) >= 1000000, \"€\" & FORMAT ( _bac / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _bac ) >= 1000, \"€\" & FORMAT ( _bac / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _bac, \"#,0\" ) ) ) ) & \", EAC \" & IF ( ISBLANK ( _eac ), \"–\", IF ( ABS ( _eac ) >= 1000000, \"€\" & FORMAT ( _eac / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _eac ) >= 1000, \"€\" & FORMAT ( _eac / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _eac, \"#,0\" ) ) ) )\n            & IF ( COALESCE ( _v, 0 ) >= 0, \"  →  +\", \"  →  −\" ) & IF ( ISBLANK ( _absv ), \"–\", IF ( ABS ( _absv ) >= 1000000, \"€\" & FORMAT ( _absv / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _absv ) >= 1000, \"€\" & FORMAT ( _absv / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _absv, \"#,0\" ) ) ) ) & \" (\"\n            & IF ( ISBLANK ( DIVIDE ( _v, _bac ) ), \"–\", FORMAT ( DIVIDE ( _v, _bac ), \"+0.0%;-0.0%\" ) ) & \"). To date: actuals \" & IF ( ISBLANK ( _a ), \"–\", IF ( ABS ( _a ) >= 1000000, \"€\" & FORMAT ( _a / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _a ) >= 1000, \"€\" & FORMAT ( _a / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _a, \"#,0\" ) ) ) ) & \" against \"\n            & IF ( ISBLANK ( _btd ), \"–\", IF ( ABS ( _btd ) >= 1000000, \"€\" & FORMAT ( _btd / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _btd ) >= 1000, \"€\" & FORMAT ( _btd / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _btd, \"#,0\" ) ) ) ) & \" budgeted (\" & IF ( ISBLANK ( DIVIDE ( _a, _btd ) ), \"–\", FORMAT ( DIVIDE ( _a, _btd ), \"0%\" ) ) & \"). \"\n            & IF ( _n > 0,\n                FORMAT ( _n, \"0\" ) & \" project(s) have an EAC above budget; the largest overrun is \" & _tn & \" (+\" & IF ( ISBLANK ( _tv ), \"–\", IF ( ABS ( _tv ) >= 1000000, \"€\" & FORMAT ( _tv / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _tv ) >= 1000, \"€\" & FORMAT ( _tv / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _tv, \"#,0\" ) ) ) ) & \").\",\n                \"No project has an EAC above its budget.\" )\n    )",
           "displayFolder": "Story\\Headlines",
@@ -796,7 +796,7 @@
           }
         },
         {
-          "name": "Story | Resource Headline",
+          "name": "Story | Resource Headline · Core",
           "dataType": "Text",
           "expression": "VAR _r = [Resource KPI | Total Resources]\nVAR _c = [Capacity | Resource Capacity]\nVAR _s = [Story | Scheduled Hours]\nVAR _u = [Story | Utilisation %]\nVAR _o = [Story | Over-allocated People]\nVAR _role = \n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimResource[Role_Value] ), \"@u\", [Story | Utilisation %] ),\n            NOT ISBLANK ( DimResource[Role_Value] ) && [@u] > 0 ),\n        [@u], DESC, DimResource[Role_Value], ASC )\nVAR _rn = TRIM ( MAXX ( _role, DimResource[Role_Value] ) )\nVAR _ru = MAXX ( _role, [@u] )\nVAR _k = [Story | Committed Hours]\nVAR _gap = [Story | Committed Gap (h)]\nVAR _absg = ABS ( COALESCE ( _gap, 0 ) )\nVAR _nos = COALESCE ( [Story | Committed Without Schedule (h)], 0 )\nRETURN\n    IF ( COALESCE ( _c, 0 ) = 0,\n        \"No capacity in the current selection — pick a year or department with resource calendars.\",\n        FORMAT ( COALESCE ( _r, 0 ), \"#,0\" ) & \" people offer \" & FORMAT ( _c, \"#,0\" ) & \" h of capacity; \" & FORMAT ( COALESCE ( _s, 0 ), \"#,0\" )\n            & \" h are scheduled on project plans  →  \" & IF ( ISBLANK ( _u ), \"–\", FORMAT ( _u, \"0%\" ) ) & \" utilised (organisation-wide). \" & FORMAT ( _o, \"0\" )\n            & \" people go above 100% in at least one month\"\n            & IF ( NOT ISBLANK ( _rn ), \"; the most stretched role is \" & _rn & \" at \" & IF ( ISBLANK ( _ru ), \"–\", FORMAT ( _ru, \"0%\" ) ), \"\" ) & \". \"\n            & IF ( ISBLANK ( _k ), \"No committed hours are recorded.\",\n                \"Committed hours (\" & FORMAT ( _k, \"#,0\" ) & \" h) are \"\n                    & IF ( _absg = 0, \"equal to scheduled\",\n                        FORMAT ( _absg, \"#,0\" ) & \" h \" & IF ( _gap > 0, \"above\", \"below\" ) & \" scheduled\" )\n                    & IF ( _nos > 0, \"; \" & FORMAT ( _nos, \"#,0\" ) & \" h are committed where nothing is scheduled\", \"\" )\n                    & \" — reconcile the resource plans.\" )\n    )",
           "displayFolder": "Story\\Headlines",
@@ -994,7 +994,7 @@
           }
         },
         {
-          "name": "Story | Schedule Headline",
+          "name": "Story | Schedule Headline · Core",
           "dataType": "Text",
           "expression": "VAR _ot = [Story | On Schedule %]\nVAR _ar = [Story | Schedule At Risk]\nVAR _sl = [Story | Schedule Off Track]\nVAR _od = [Story | Overdue Tasks]\nVAR _ms = [Story | Milestones Next 30d]\nVAR _n = [Story | Active Projects]\nVAR _b = CALCULATE ( [Story | Baseline · Baselined Projects], KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) )\nVAR _late = CALCULATE ( [Story | Baseline · Late Projects], KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) )\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ),\n            \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ), \"@d\", [Story | Baseline · Finish Slip (days)] ),\n            NOT ISBLANK ( DimProject[Id] ) && [@d] > 0 ),\n        [@d], DESC, DimProject[Id], ASC )\nRETURN\n    IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" of active projects are on schedule; \" & FORMAT ( _ar, \"0\" ) & \" are at risk and \" & FORMAT ( _sl, \"0\" )\n        & \" are off track. \" & FORMAT ( _od, \"#,0\" ) & \" project tasks are overdue and \" & FORMAT ( _ms, \"0\" )\n        & \" milestone(s) fall due in the next 30 days. \"\n        & IF ( COALESCE ( _b, 0 ) = 0, \"No active project has a baseline, so slippage cannot be measured yet.\",\n            FORMAT ( _late, \"0\" ) & \" of \" & FORMAT ( _b, \"0\" ) & \" baselined active projects finish later than their baseline\"\n                & IF ( COUNTROWS ( _top ) > 0,\n                    \" (worst: \" & MAXX ( _top, [@n] ) & \", +\" & FORMAT ( MAXX ( _top, [@d] ), \"0\" ) & \" days)\", \"\" )\n                & IF ( DIVIDE ( _b, _n ) < 0.5,\n                    \"; only \" & FORMAT ( _b, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" )\n                        & \" active projects have a baseline, so treat this as a sample, not the portfolio.\",\n                    \".\" ) )",
           "displayFolder": "Story\\Headlines",
@@ -1297,7 +1297,7 @@
           }
         },
         {
-          "name": "Story | Benefits Headline",
+          "name": "Story | Benefits Headline · Core",
           "dataType": "Text",
           "expression": "VAR _b = [Story | Benefits At Completion]\nVAR _due = [Story | Benefits Due To Date]\nVAR _a = [Story | Benefits Actual]\nVAR _c = [Story | Finance EAC]\nVAR _rev = [Story | Revenue At Completion]\nVAR _x = [Story | Value Ratio]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ),\n            \"@x\", [Story | Value Ratio] ), NOT ISBLANK ( DimProject[Id] ) && [@x] > 0 ),\n        [@x], DESC, DimProject[Id], ASC )\nVAR _neg = COUNTROWS ( FILTER ( VALUES ( DimProject[Id] ),\n    NOT ISBLANK ( DimProject[Id] ) && [Story | Finance EAC] > 0 && COALESCE ( [Story | Benefits At Completion], 0 ) = 0 ) )\nRETURN\n    IF ( COALESCE ( _b, 0 ) = 0,\n        \"No planned benefits in the financial plans of this selection — capture expected benefits in OnePlan to tell the value story.\",\n        \"The selection plans \" & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" of benefits\"\n            & IF ( COALESCE ( _rev, 0 ) > 0, \" and \" & IF ( ISBLANK ( _rev ), \"–\", IF ( ABS ( _rev ) >= 1000000, \"€\" & FORMAT ( _rev / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _rev ) >= 1000, \"€\" & FORMAT ( _rev / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _rev, \"#,0\" ) ) ) ) & \" of revenue\", \"\" )\n            & \" against an EAC of \" & IF ( ISBLANK ( _c ), \"–\", IF ( ABS ( _c ) >= 1000000, \"€\" & FORMAT ( _c / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _c ) >= 1000, \"€\" & FORMAT ( _c / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _c, \"#,0\" ) ) ) )\n            & IF ( NOT ISBLANK ( _x ), \" (\" & FORMAT ( _x, \"0.0\" ) & \"× value ÷ EAC)\", \"\" ) & \". \"\n            & IF ( ISBLANK ( _a ),\n                \"No actual benefits recorded yet in OnePlan — realisation cannot be measured; benefits due to date: \" & IF ( ISBLANK ( _due ), \"–\", IF ( ABS ( _due ) >= 1000000, \"€\" & FORMAT ( _due / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _due ) >= 1000, \"€\" & FORMAT ( _due / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _due, \"#,0\" ) ) ) ) & \".\",\n                \"Actual benefits \" & IF ( ISBLANK ( _a ), \"–\", IF ( ABS ( _a ) >= 1000000, \"€\" & FORMAT ( _a / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _a ) >= 1000, \"€\" & FORMAT ( _a / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _a, \"#,0\" ) ) ) ) & \" against \" & IF ( ISBLANK ( _due ), \"–\", IF ( ABS ( _due ) >= 1000000, \"€\" & FORMAT ( _due / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _due ) >= 1000, \"€\" & FORMAT ( _due / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _due, \"#,0\" ) ) ) ) & \" due to date (\"\n                    & IF ( ISBLANK ( DIVIDE ( _a, _due ) ), \"–\", FORMAT ( DIVIDE ( _a, _due ), \"0%\" ) ) & \").\" )\n            & IF ( COUNTROWS ( _top ) > 0,\n                \" Best value for money: \" & MAXX ( _top, [@n] ) & \" (\" & FORMAT ( MAXX ( _top, [@x] ), \"0.0\" ) & \"×).\", \"\" )\n            & \" \" & FORMAT ( COALESCE ( _neg, 0 ), \"0\" ) & \" project(s) with an EAC have no planned benefit.\"\n    )",
           "displayFolder": "Story\\Headlines",
@@ -1337,7 +1337,7 @@
           }
         },
         {
-          "name": "Story | Exec Headline",
+          "name": "Story | Exec Headline · Core",
           "dataType": "Text",
           "expression": "VAR _n = [Story | Active Projects]\nVAR _ot = [Story | On Track %]\nVAR _vp = [Story | EAC Variance %]\nVAR _u = [Story | Utilisation %]\nVAR _o = [Story | Over-allocated People]\nVAR _ch = [Story | Critical High Risks]\nVAR _people = COUNTROWS ( CALCULATETABLE ( SUMMARIZE ( FactCapacity, DimResource[ResourceKey] ),\n    KEEPFILTERS ( DimResource[Inactive] = FALSE () ) ) )\nVAR _focus =\n    SWITCH ( TRUE (),\n        NOT ISBLANK ( _vp ) && _vp > 0.05, \"cost overrun\",\n        DIVIDE ( _o, _people ) >= 0.1, \"resource overload\",\n        NOT ISBLANK ( _ot ) && _ot < 0.7, \"delivery health\",\n        _ch > 5, \"risk exposure\",\n        \"keeping the course\" )\nRETURN\n    FORMAT ( _n, \"0\" ) & \" active projects, \" & IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" on track\" & IF ( [Story | Not Rated] > 0, \" (\" & FORMAT ( [Story | Not Rated], \"0\" ) & \" not rated)\", \"\" ) & \". EAC is \"\n        & IF ( ISBLANK ( _vp ), \"–\", FORMAT ( _vp, \"+0.0%;-0.0%;0.0%\" ) ) & \" versus budget at completion. Organisation-wide, people are \" & IF ( ISBLANK ( _u ), \"–\", FORMAT ( _u, \"0%\" ) )\n        & \" utilised (\" & FORMAT ( _o, \"0\" ) & \" above 100% in at least one month) and \" & FORMAT ( _ch, \"0\" )\n        & \" critical/high risks are open. This month's focus: \" & _focus & \".\"",
           "displayFolder": "Story\\Headlines",
@@ -1748,7 +1748,7 @@
           }
         },
         {
-          "name": "Story | Pareto PnL Headline",
+          "name": "Story | Pareto PnL Headline · Core",
           "dataType": "Text",
           "expression": "VAR _k = [Story | Projects For 80% Spend]\nVAR _m = [Story | Projects With Spend]\nVAR _top =\n    TOPN ( 1, FILTER ( CALCULATETABLE ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ), \"@c\", [Story | Finance EAC] ), ALLSELECTED ( DimProject ) ), NOT ISBLANK ( DimProject[Id] ) ),\n        [@c], DESC, DimProject[Id], ASC )\nVAR _tshare = DIVIDE ( MAXX ( _top, [@c] ), SUMX ( FILTER ( CALCULATETABLE ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), \"@c\", [Story | Finance EAC] ), ALLSELECTED ( DimProject ) ), NOT ISBLANK ( DimProject[Id] ) ), [@c] ) )\nVAR _o = [Story | Overrun]\nVAR _o3 = [Story | Top3 Overrun Share]\nVAR _v = [Story | Total Value]\nVAR _c = [Story | Finance EAC]\nVAR _n = [Story | Net Value]\nVAR _p =\n    ADDCOLUMNS (\n        FILTER ( VALUES ( DimProject[Portfolio Name] ),\n            NOT ISBLANK ( DimProject[Portfolio Name] ) && DimProject[Portfolio Name] <> \"(No portfolio)\" ),\n        \"@n\", [Story | Net Value] )\nVAR _best = TOPN ( 1, FILTER ( _p, NOT ISBLANK ( [@n] ) ), [@n], DESC, DimProject[Portfolio Name], ASC )\nVAR _worst = TOPN ( 1, FILTER ( _p, NOT ISBLANK ( [@n] ) ), [@n], ASC, DimProject[Portfolio Name], ASC )\nRETURN\n    IF ( _m = 0, \"No EAC in the current selection.\",\n        FORMAT ( _k, \"0\" ) & \" of \" & FORMAT ( _m, \"0\" ) & \" projects (\" & IF ( ISBLANK ( DIVIDE ( _k, _m ) ), \"–\", FORMAT ( DIVIDE ( _k, _m ), \"0%\" ) )\n            & \") make up 80% of EAC; the largest, \" & MAXX ( _top, [@n] ) & \", alone takes \"\n            & IF ( ISBLANK ( _tshare ), \"–\", FORMAT ( _tshare, \"0%\" ) ) & \". \"\n            & IF ( COALESCE ( _o, 0 ) > 0,\n                \"Overruns at completion total \" & IF ( ISBLANK ( _o ), \"–\", IF ( ABS ( _o ) >= 1000000, \"€\" & FORMAT ( _o / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _o ) >= 1000, \"€\" & FORMAT ( _o / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _o, \"#,0\" ) ) ) ) & \" and the top 3 projects carry \" & IF ( ISBLANK ( _o3 ), \"–\", FORMAT ( _o3, \"0%\" ) ) & \" of it. \",\n                \"No project has an EAC above its budget. \" )\n            & \"At completion: value \" & IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, \"€\" & FORMAT ( _v / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _v ) >= 1000, \"€\" & FORMAT ( _v / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _v, \"#,0\" ) ) ) ) & \" against EAC \" & IF ( ISBLANK ( _c ), \"–\", IF ( ABS ( _c ) >= 1000000, \"€\" & FORMAT ( _c / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _c ) >= 1000, \"€\" & FORMAT ( _c / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _c, \"#,0\" ) ) ) ) & \"  →  net \"\n            & IF ( ISBLANK ( _n ), \"–\", IF ( ABS ( _n ) >= 1000000, \"€\" & FORMAT ( _n / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _n ) >= 1000, \"€\" & FORMAT ( _n / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _n, \"#,0\" ) ) ) ) & \" (\" & IF ( ISBLANK ( DIVIDE ( _n, _v ) ), \"–\", FORMAT ( DIVIDE ( _n, _v ), \"0%\" ) ) & \" margin)\"\n            & IF ( COUNTROWS ( _best ) > 0,\n                \"; strongest portfolio \" & MAXX ( _best, DimProject[Portfolio Name] ) & \" (\" & IF ( ISBLANK ( MAXX ( _best, [@n] ) ), \"–\", IF ( ABS ( MAXX ( _best, [@n] ) ) >= 1000000, \"€\" & FORMAT ( MAXX ( _best, [@n] ) / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( MAXX ( _best, [@n] ) ) >= 1000, \"€\" & FORMAT ( MAXX ( _best, [@n] ) / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( MAXX ( _best, [@n] ), \"#,0\" ) ) ) )\n                    & \"), weakest \" & MAXX ( _worst, DimProject[Portfolio Name] ) & \" (\" & IF ( ISBLANK ( MAXX ( _worst, [@n] ) ), \"–\", IF ( ABS ( MAXX ( _worst, [@n] ) ) >= 1000000, \"€\" & FORMAT ( MAXX ( _worst, [@n] ) / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( MAXX ( _worst, [@n] ) ) >= 1000, \"€\" & FORMAT ( MAXX ( _worst, [@n] ) / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( MAXX ( _worst, [@n] ), \"#,0\" ) ) ) ) & \").\",\n                \".\" )\n    )",
           "displayFolder": "Story\\Headlines",
@@ -10535,6 +10535,335 @@
               {
                 "entity": "_Measures",
                 "name": "PMO | Plans Failing"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Base Finance",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Denominator of the finance data-trust note: active projects."
+        },
+        {
+          "name": "Story | Trust · Covered Finance",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), [Story | Budget At Completion] > 0 || [Story | Finance EAC] > 0 ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Active projects with a financial plan.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Budget At Completion"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance EAC"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Note Finance",
+          "dataType": "Text",
+          "expression": "VAR _n = [Story | Trust · Covered Finance]\nVAR _m = [Story | Trust · Base Finance]\nRETURN IF ( _m > 0 && DIVIDE ( _n, _m ) < 0.95,\n    \"  ⓘ Based on \" & FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _m, \"0\" ) & \" active projects with a financial plan (\"\n        & FORMAT ( DIVIDE ( _n, _m ), \"0%\" ) & \").\" )",
+          "displayFolder": "Story\\Trust",
+          "description": "Shown after the headline only when fewer than 95% of active projects are with a financial plan.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Covered Finance"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Base Finance"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Base Resources",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Denominator of the resources data-trust note: active projects."
+        },
+        {
+          "name": "Story | Trust · Covered Resources",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), CALCULATE ( [Story | Project Scheduled Hours], REMOVEFILTERS ( DimDate ) ) > 0 ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Active projects with a resource plan.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project Scheduled Hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Note Resources",
+          "dataType": "Text",
+          "expression": "VAR _n = [Story | Trust · Covered Resources]\nVAR _m = [Story | Trust · Base Resources]\nRETURN IF ( _m > 0 && DIVIDE ( _n, _m ) < 0.95,\n    \"  ⓘ Based on \" & FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _m, \"0\" ) & \" active projects with a resource plan (\"\n        & FORMAT ( DIVIDE ( _n, _m ), \"0%\" ) & \").\" )",
+          "displayFolder": "Story\\Trust",
+          "description": "Shown after the headline only when fewer than 95% of active projects are with a resource plan.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Covered Resources"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Base Resources"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Base Schedule",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Denominator of the schedule data-trust note: active projects."
+        },
+        {
+          "name": "Story | Trust · Covered Schedule",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), CALCULATE ( COUNTROWS ( DimTask ), KEEPFILTERS ( DimTask[WorkType] = \"Tasks\" ) ) > 0 ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Active projects with a work plan."
+        },
+        {
+          "name": "Story | Trust · Note Schedule",
+          "dataType": "Text",
+          "expression": "VAR _n = [Story | Trust · Covered Schedule]\nVAR _m = [Story | Trust · Base Schedule]\nRETURN IF ( _m > 0 && DIVIDE ( _n, _m ) < 0.95,\n    \"  ⓘ Based on \" & FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _m, \"0\" ) & \" active projects with a work plan (\"\n        & FORMAT ( DIVIDE ( _n, _m ), \"0%\" ) & \").\" )",
+          "displayFolder": "Story\\Trust",
+          "description": "Shown after the headline only when fewer than 95% of active projects are with a work plan.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Covered Schedule"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Base Schedule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Base Benefits",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), [Story | Finance EAC] > 0 ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Denominator of the benefits data-trust note: active projects with an EAC.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance EAC"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Covered Benefits",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( FILTER ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), [Story | Finance EAC] > 0 ), [Story | Benefits At Completion] > 0 ) ) + 0",
+          "displayFolder": "Story\\Trust",
+          "formatString": "#,##0",
+          "description": "Active projects with an eac that plan benefits.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance EAC"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefits At Completion"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Note Benefits",
+          "dataType": "Text",
+          "expression": "VAR _n = [Story | Trust · Covered Benefits]\nVAR _m = [Story | Trust · Base Benefits]\nRETURN IF ( _m > 0 && DIVIDE ( _n, _m ) < 0.95,\n    \"  ⓘ Based on \" & FORMAT ( _n, \"0\" ) & \" of \" & FORMAT ( _m, \"0\" ) & \" active projects with an EAC that plan benefits (\"\n        & FORMAT ( DIVIDE ( _n, _m ), \"0%\" ) & \").\" )",
+          "displayFolder": "Story\\Trust",
+          "description": "Shown after the headline only when fewer than 95% of active projects with an EAC are that plan benefits.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Covered Benefits"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Base Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Finance Headline",
+          "dataType": "Text",
+          "expression": "[Story | Finance Headline · Core] & [Story | Trust · Note Finance]",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance Headline · Core"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Note Finance"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Pareto PnL Headline",
+          "dataType": "Text",
+          "expression": "[Story | Pareto PnL Headline · Core] & [Story | Trust · Note Finance]",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Pareto PnL Headline · Core"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Note Finance"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Resource Headline",
+          "dataType": "Text",
+          "expression": "[Story | Resource Headline · Core] & [Story | Trust · Note Resources]",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Resource Headline · Core"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Note Resources"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Schedule Headline",
+          "dataType": "Text",
+          "expression": "[Story | Schedule Headline · Core] & [Story | Trust · Note Schedule]",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Schedule Headline · Core"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Note Schedule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Benefits Headline",
+          "dataType": "Text",
+          "expression": "[Story | Benefits Headline · Core] & [Story | Trust · Note Benefits]",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefits Headline · Core"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Note Benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Trust · Exec Score",
+          "dataType": "Text",
+          "expression": "VAR _g = [PMO | Governance Score]\nRETURN IF ( ISBLANK ( _g ), \"\", \" Data trust: \" & FORMAT ( _g, \"0\" ) & \"/100.\" )",
+          "displayFolder": "Story\\Trust",
+          "description": "Appended to the Executive headline: the governance data-trust score (Governance page).",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Exec Headline",
+          "dataType": "Text",
+          "expression": "[Story | Exec Headline · Core] & [Story | Trust · Exec Score]",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Exec Headline · Core"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Trust · Exec Score"
               }
             ]
           }

@@ -17,7 +17,7 @@ AREAS = [
      "with a resource plan", "active projects"),
     ("Schedule", 'CALCULATE ( COUNTROWS ( DimTask ), KEEPFILTERS ( DimTask[WorkType] = "Tasks" ) ) > 0', None,
      "with a work plan", "active projects"),
-    ("Benefits", "[Story | Benefits At Completion] > 0", "[Story | Finance EAC] > 0", "with planned benefits",
+    ("Benefits", "[Story | Benefits At Completion] > 0", "[Story | Finance EAC] > 0", "that plan benefits",
      "active projects with an EAC"),
 ]
 WRAP = {"Story | Finance Headline": "Finance", "Story | Pareto PnL Headline": "Finance",
