@@ -31,7 +31,8 @@ def _field_names(v):
     for role in v.get("query", {}).get("queryState", {}).values():
         for pr in role.get("projections", []):
             f = pr["field"]
-            name = _nice(f[("Measure" if "Measure" in f else "Column")]["Property"])
+            kind = f.get("Measure") or f.get("Column") or {}
+            name = _nice(kind.get("Property", ""))
             if name and name not in out:
                 out.append(name)
     return out
@@ -55,15 +56,24 @@ def _button_tooltip(v):
     return _lit(link.get("tooltip"))
 
 
-def _image_name(v):
-    item = v["objects"]["image"][0]["properties"]["sourceFile"]["image"]["url"]["expr"]["ResourcePackageItem"]["ItemName"]
-    stem = re.sub(r"\.\w+$", "", item)
-    stem = re.sub(r"^rail-|-(grey|white)$", "", stem)
-    return re.sub(r"\d{6,}$", "", stem).replace("_", " ").replace("-", " ").strip()
+def _image_label(v):
+    """Display name stored by pbir.image (filename-derived when empty)."""
+    img = v["objects"]["image"][0]["properties"]["sourceFile"]["image"]
+    name = _lit(img.get("name"))
+    if not name:
+        item = img["url"]["expr"]["ResourcePackageItem"]["ItemName"]
+        stem = re.sub(r"\.\w+$", "", item)
+        stem = re.sub(r"^rail-|-(grey|white)$", "", stem)
+        name = re.sub(r"\d{6,}$", "", stem).replace("_", " ").replace("-", " ").strip()
+    return name
+
+
+def _is_linked(v):
+    return "visualLink" in v.get("visualContainerObjects", {})
 
 
 def alt_text(v):
-    """Alt text for one visual, or '' when it gets none."""
+    """Alt text for one visual, or '' when it gets none (value-bearing / decorative: read natively)."""
     t = v["visualType"]
     if t in NO_ALT:
         return ""
@@ -72,9 +82,16 @@ def alt_text(v):
     if t == "actionButton":
         return _button_text(v) or _button_tooltip(v) or "Button"
     if t == "image":
-        return "Icon: " + _image_name(v)
-    text = _title_text(v) or ", ".join(_field_names(v)[:3]) or t
-    return "KPI: " + text if t == "card" else text
+        name = _image_label(v)
+        if re.search(r"(^|\s)logo$", name, re.I):
+            return "Logo: " + re.sub(r"\s*logo$", "", name, flags=re.I).strip()
+        if not _is_linked(v):
+            return ""
+        return "Icon: " + (re.sub(r"\s+icon$", "", name, flags=re.I).strip() or name)
+    title = _title_text(v)
+    if title:
+        return "KPI: " + title if t == "card" else title
+    return ""   # untitled card/table/chart: value read natively; charts may carry a caller-supplied label
 
 
 def _set_alt(v, text):

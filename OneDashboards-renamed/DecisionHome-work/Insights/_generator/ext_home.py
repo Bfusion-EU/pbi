@@ -954,7 +954,9 @@ def subject_card(pg, x, y, spec):
         pg.add(x + PAD - 6, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark From {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap0")
         pg.add(x + PAD + 40, y + R_CAP, tw - 80, CAP_H, caption(cap, "center"), key=f"{p}_cap1")
         pg.add(x + W - PAD - 38, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark To {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap2")
-        pg.add(x + PAD - 4, y + R_VIS, tw + 8, VIS_H, area_spark(measure, colour), key=f"{p}_spark")
+        spark = area_spark(measure, colour)
+        spark["visualContainerObjects"]["general"] = [{"properties": {"altText": pbir.s(f"Trend: {name}, {cap}")}}]
+        pg.add(x + PAD - 4, y + R_VIS, tw + 8, VIS_H, spark, key=f"{p}_spark")
     elif vis and vis[0] == "bar":
         lo, hi, rest, target, labels = vis[1]
         value = vis[2] if len(vis) > 2 else num
