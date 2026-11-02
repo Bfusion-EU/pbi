@@ -3,7 +3,7 @@
 import importlib
 from pathlib import Path
 
-MODULES = ["ext_project", "ext_lifecycle", "ext_scenarios", "ext_timesheets", "ext_status",
+MODULES = ["ext_project", "ext_lifecycle", "ext_scenarios", "ext_timesheets", "ext_status", "ext_slip",
            "ext_tsstatus", "ext_resource", "ext_gantt", "ext_baseline", "ext_home"]
 BUILDERS = []
 for _name in MODULES:

@@ -30,3 +30,21 @@ def test_mom_reads_month_end_snapshots():
 def test_mom_thresholds_in_change_size():
     expr = NAMES["Story | Status · MoM Change Size"]["expression"]
     assert "> 30" in expr and ">= 7" in expr and "0.05" in expr
+
+
+SLIP = ["Pace Gap (pt)", "Behind Pace", "Milestone At Risk", "Milestone Text", "Late Tasks Rising", "Late Tasks Text",
+        "Finish Slipping", "Signals", "Flag", "Flag Text", "Reason", "Projects"]
+
+
+def test_slip_measures_registered():
+    missing = [n for n in SLIP if f"Story | Slip · {n}" not in NAMES]
+    assert missing == []
+
+
+def test_slip_flag_rule():
+    expr = NAMES["Story | Slip · Flag"]["expression"]
+    assert ">= 2" in expr and "[Story | Project · Overdue Tasks] > 10" in expr and '"Active"' in expr
+
+
+def test_slip_pace_uses_percent_0_100():
+    assert "/ 100" in NAMES["Story | Slip · Pace Gap (pt)"]["expression"]
