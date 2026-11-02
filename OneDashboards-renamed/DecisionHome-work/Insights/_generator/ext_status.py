@@ -26,6 +26,7 @@ DimProject[Id]-not-blank visual filter (pages.filter_real_projects).
 """
 import pages
 import pbir
+from pbir import AMBER_TEXT, GREY_TEXT
 from pbir import C, M, P, b, chart, cf_back, cf_font, measure_fill, table_style, title, labels_on, legend
 from pbir import NAVY, TEAL, AMBER, RED, GREY
 from story_measures import add, money, T, D, I
@@ -135,7 +136,7 @@ IF ( {ONE} && NOT ISBLANK ( {ref(dim + " Rank")} ),
 )""", folder=FOLDER + "\\Movement")
     add(m(f"{dim} Arrow Colour"), T, f"""
 VAR _m = {ref(dim + " Move")}
-RETURN IF ( ISBLANK ( _m ) || _m = 0, "{GREY}", IF ( _m < 0, "{TEAL}", "{RED}" ) )""", folder="Story\\Colours")
+RETURN IF ( ISBLANK ( _m ) || _m = 0, "{GREY_TEXT}", IF ( _m < 0, "{TEAL}", "{RED}" ) )""", folder="Story\\Colours")
 
 add(m("Overall Now"), T, f"IF ( {ONE}, {label(ref('Overall Rank'))} )", folder=FOLDER + "\\Movement")
 add(m("Overall Change"), T, f"""
@@ -184,7 +185,7 @@ SUMX (
         f"Latest minus previous {col} per project (projects with both reports), summed.")
     add(m(f"{nm} Drift Colour"), T, f"""
 VAR _d = {ref(nm + " Drift")}
-RETURN IF ( ISBLANK ( _d ) || _d = 0, "{GREY}", IF ( _d > 0, "{RED if nm != 'Budget' else NAVY}", "{TEAL if nm != 'Budget' else AMBER}" ) )""",
+RETURN IF ( ISBLANK ( _d ) || _d = 0, "{GREY_TEXT}", IF ( _d > 0, "{RED if nm != 'Budget' else NAVY}", "{TEAL if nm != 'Budget' else AMBER_TEXT}" ) )""",
         folder="Story\\Colours")
 add(m("Projects Forecast Up"), I, f"""
 SUMX ( {PKS}, IF ( {ref("Forecast Drift")} > 0, 1 ) ) + 0""", "#,##0", FOLDER + "\\Drift",
@@ -349,7 +350,7 @@ def build():
     gap, bh = 5, 150
     pages.section(pg, Y2, 2, "Who got better or worse since the last report?",
                   "Per health dimension, then project by project — worst moves first.")
-    pages.legend_note(pg, 1084, Y2 + 4, 700, [("Improved", TEAL), ("Unchanged", "#8A93A0"), ("Worsened", RED)],
+    pages.legend_note(pg, 1084, Y2 + 4, 700, [("Improved", TEAL), ("Unchanged", "#C9CED8"), ("Worsened", RED)],
                       "move_legend")
     # A bar chart needs ~100 px of rendered height (title + plot) and more when the canvas is scaled down:
     # at 64 px Desktop draws the title and no bars, at 110 px a placeholder icon, at 150 px the bars.

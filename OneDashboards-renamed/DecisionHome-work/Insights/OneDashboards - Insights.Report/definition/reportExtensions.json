@@ -302,7 +302,7 @@
         {
           "name": "Story | Variance Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Colours",
           "description": "Red > 5% over budget at completion, amber slightly over, teal within budget.",
           "references": {
@@ -318,7 +318,7 @@
         {
           "name": "Story | To-Date Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | To-Date Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | To-Date Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -333,7 +333,7 @@
         {
           "name": "Story | Burn Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | Burn %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 1, \"#C0392B\", IF ( _p > 0.9, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | Burn %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 1, \"#C0392B\", IF ( _p > 0.9, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -491,7 +491,7 @@
         {
           "name": "Story | Plan Variance Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | Plan Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | Plan Variance %]\nRETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -514,7 +514,7 @@
         {
           "name": "Story | Health Colour",
           "dataType": "Text",
-          "expression": "SWITCH ( SELECTEDVALUE ( DimProject[OverallHealth_Value] ),\n    \"(1) On Track\", \"#1E6D6E\",\n    \"(2) At Risk\", \"#D9A832\",\n    \"(3) Off Track\", \"#C0392B\",\n    \"#666666\" )",
+          "expression": "SWITCH ( SELECTEDVALUE ( DimProject[OverallHealth_Value] ),\n    \"(1) On Track\", \"#1E6D6E\",\n    \"(2) At Risk\", \"#9A6B00\",\n    \"(3) Off Track\", \"#C0392B\",\n    \"#666666\" )",
           "displayFolder": "Story\\Colours"
         },
         {
@@ -768,7 +768,7 @@
         {
           "name": "Story | Util Colour",
           "dataType": "Text",
-          "expression": "VAR _u = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, \"#C0392B\", IF ( _u >= 0.8, \"#1E6D6E\", IF ( _u >= 0.5, \"#D9A832\", \"#9AA3AF\" ) ) ) )",
+          "expression": "VAR _u = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, \"#C0392B\", IF ( _u >= 0.8, \"#1E6D6E\", IF ( _u >= 0.5, \"#9A6B00\", \"#6B7280\" ) ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -955,7 +955,7 @@
         {
           "name": "Story | Due Colour",
           "dataType": "Text",
-          "expression": "VAR _d = MAX ( DimTask[EndDate] )\nVAR _p = MAX ( DimTask[PercentDone] )\nRETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d < TODAY () && _p < 100, \"#C0392B\", IF ( _d < TODAY () + 14, \"#D9A832\", \"#1F2A44\" ) ) )",
+          "expression": "VAR _d = MAX ( DimTask[EndDate] )\nVAR _p = MAX ( DimTask[PercentDone] )\nRETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d < TODAY () && _p < 100, \"#C0392B\", IF ( _d < TODAY () + 14, \"#9A6B00\", \"#1F2A44\" ) ) )",
           "displayFolder": "Story\\Colours"
         },
         {
@@ -981,7 +981,7 @@
         {
           "name": "Story | Slip Colour",
           "dataType": "Text",
-          "expression": "VAR _d = [Story | Late Task Slip (days)]\nRETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 20, \"#C0392B\", IF ( _d > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _d = [Story | Late Task Slip (days)]\nRETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 20, \"#C0392B\", IF ( _d > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -1113,7 +1113,7 @@
         {
           "name": "Story | Impact Colour",
           "dataType": "Text",
-          "expression": "SWITCH ( LEFT ( SELECTEDVALUE ( DimTask[Impact] ), 3 ),\n    \"(1)\", \"#C0392B\", \"(2)\", \"#E8612A\", \"(3)\", \"#D9A832\", \"(4)\", \"#1E6D6E\", \"#666666\" )",
+          "expression": "SWITCH ( LEFT ( SELECTEDVALUE ( DimTask[Impact] ), 3 ),\n    \"(1)\", \"#C0392B\", \"(2)\", \"#E8612A\", \"(3)\", \"#9A6B00\", \"(4)\", \"#1E6D6E\", \"#666666\" )",
           "displayFolder": "Story\\Colours"
         },
         {
@@ -1284,7 +1284,7 @@
         {
           "name": "Story | Ratio Colour",
           "dataType": "Text",
-          "expression": "VAR _r = [Story | Value Ratio]\nRETURN IF ( ISBLANK ( _r ), BLANK (), IF ( _r >= 2, \"#1E6D6E\", IF ( _r >= 1, \"#D9A832\", \"#C0392B\" ) ) )",
+          "expression": "VAR _r = [Story | Value Ratio]\nRETURN IF ( ISBLANK ( _r ), BLANK (), IF ( _r >= 2, \"#1E6D6E\", IF ( _r >= 1, \"#9A6B00\", \"#C0392B\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -1541,7 +1541,7 @@
         {
           "name": "Story | Pareto Class Colour",
           "dataType": "Text",
-          "expression": "VAR _c = LEFT ( [Story | Pareto Class], 1 )\nRETURN SWITCH ( _c, \"A\", \"#E8612A\", \"B\", \"#1F2A44\", \"C\", \"#9AA3AF\", BLANK () )",
+          "expression": "VAR _c = LEFT ( [Story | Pareto Class], 1 )\nRETURN SWITCH ( _c, \"A\", \"#E8612A\", \"B\", \"#1F2A44\", \"C\", \"#6B7280\", BLANK () )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -1730,7 +1730,7 @@
         {
           "name": "Story | Net Colour",
           "dataType": "Text",
-          "expression": "VAR _n = [Story | Net Value]\nRETURN IF ( ISBLANK ( _n ), BLANK (), IF ( _n < 0, \"#C0392B\", IF ( [Story | Net Margin %] < 0.2, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _n = [Story | Net Value]\nRETURN IF ( ISBLANK ( _n ), BLANK (), IF ( _n < 0, \"#C0392B\", IF ( [Story | Net Margin %] < 0.2, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -1841,6 +1841,54 @@
           }
         },
         {
+          "name": "Story | Variance Fill",
+          "dataType": "Text",
+          "expression": "SUBSTITUTE ( SUBSTITUTE ( [Story | Variance Colour], \"#9A6B00\", \"#D9A832\" ), \"#6B7280\", \"#9AA3AF\" )",
+          "displayFolder": "Story\\Colours",
+          "description": "Story | Variance Colour with fill shades (amber #D9A832, grey #9AA3AF) for bars.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Variance Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Util Fill",
+          "dataType": "Text",
+          "expression": "SUBSTITUTE ( SUBSTITUTE ( [Story | Util Colour], \"#9A6B00\", \"#D9A832\" ), \"#6B7280\", \"#9AA3AF\" )",
+          "displayFolder": "Story\\Colours",
+          "description": "Story | Util Colour with fill shades (amber #D9A832, grey #9AA3AF) for bars.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Util Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ratio Fill",
+          "dataType": "Text",
+          "expression": "SUBSTITUTE ( SUBSTITUTE ( [Story | Ratio Colour], \"#9A6B00\", \"#D9A832\" ), \"#6B7280\", \"#9AA3AF\" )",
+          "displayFolder": "Story\\Colours",
+          "description": "Story | Ratio Colour with fill shades (amber #D9A832, grey #9AA3AF) for bars.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Ratio Colour"
+              }
+            ]
+          }
+        },
+        {
           "name": "Story | Project · Name",
           "dataType": "Text",
           "expression": "SELECTEDVALUE ( DimProject[Name], \"Select one project\" )",
@@ -1901,7 +1949,7 @@
         {
           "name": "Story | Project · Overall Health Colour",
           "dataType": "Text",
-          "expression": "VAR _h = SELECTEDVALUE ( DimProject[OverallHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#D9A832\", \"(3)\", \"#C0392B\", \"#9AA3AF\" )",
+          "expression": "VAR _h = SELECTEDVALUE ( DimProject[OverallHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#9A6B00\", \"(3)\", \"#C0392B\", \"#6B7280\" )",
           "displayFolder": "Story\\Project\\Colours"
         },
         {
@@ -1913,7 +1961,7 @@
         {
           "name": "Story | Project · Schedule Health Colour",
           "dataType": "Text",
-          "expression": "VAR _h = SELECTEDVALUE ( DimProject[ScheduleHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#D9A832\", \"(3)\", \"#C0392B\", \"#9AA3AF\" )",
+          "expression": "VAR _h = SELECTEDVALUE ( DimProject[ScheduleHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#9A6B00\", \"(3)\", \"#C0392B\", \"#6B7280\" )",
           "displayFolder": "Story\\Project\\Colours"
         },
         {
@@ -1925,7 +1973,7 @@
         {
           "name": "Story | Project · Financial Health Colour",
           "dataType": "Text",
-          "expression": "VAR _h = SELECTEDVALUE ( DimProject[FinancialHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#D9A832\", \"(3)\", \"#C0392B\", \"#9AA3AF\" )",
+          "expression": "VAR _h = SELECTEDVALUE ( DimProject[FinancialHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#9A6B00\", \"(3)\", \"#C0392B\", \"#6B7280\" )",
           "displayFolder": "Story\\Project\\Colours"
         },
         {
@@ -1937,7 +1985,7 @@
         {
           "name": "Story | Project · Effort Health Colour",
           "dataType": "Text",
-          "expression": "VAR _h = SELECTEDVALUE ( DimProject[EffortHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#D9A832\", \"(3)\", \"#C0392B\", \"#9AA3AF\" )",
+          "expression": "VAR _h = SELECTEDVALUE ( DimProject[EffortHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#9A6B00\", \"(3)\", \"#C0392B\", \"#6B7280\" )",
           "displayFolder": "Story\\Project\\Colours"
         },
         {
@@ -1949,7 +1997,7 @@
         {
           "name": "Story | Project · Issue Health Colour",
           "dataType": "Text",
-          "expression": "VAR _h = SELECTEDVALUE ( DimProject[IssueHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#D9A832\", \"(3)\", \"#C0392B\", \"#9AA3AF\" )",
+          "expression": "VAR _h = SELECTEDVALUE ( DimProject[IssueHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#9A6B00\", \"(3)\", \"#C0392B\", \"#6B7280\" )",
           "displayFolder": "Story\\Project\\Colours"
         },
         {
@@ -1961,7 +2009,7 @@
         {
           "name": "Story | Project · Scope Health Colour",
           "dataType": "Text",
-          "expression": "VAR _h = SELECTEDVALUE ( DimProject[ScopeHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#D9A832\", \"(3)\", \"#C0392B\", \"#9AA3AF\" )",
+          "expression": "VAR _h = SELECTEDVALUE ( DimProject[ScopeHealth_Value] )\nRETURN SWITCH ( LEFT ( _h, 3 ), \"(1)\", \"#1E6D6E\", \"(2)\", \"#9A6B00\", \"(3)\", \"#C0392B\", \"#6B7280\" )",
           "displayFolder": "Story\\Project\\Colours"
         },
         {
@@ -2052,7 +2100,7 @@
         {
           "name": "Story | Project · EAC Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | Project · EAC Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | Project · EAC Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Project\\Colours",
           "references": {
             "measures": [
@@ -2158,7 +2206,7 @@
         {
           "name": "Story | Project · Overdue Colour",
           "dataType": "Text",
-          "expression": "VAR _o = [Story | Project · Overdue Tasks]\nRETURN IF ( _o = 0, \"#1E6D6E\", IF ( _o <= 3, \"#D9A832\", \"#C0392B\" ) )",
+          "expression": "VAR _o = [Story | Project · Overdue Tasks]\nRETURN IF ( _o = 0, \"#1E6D6E\", IF ( _o <= 3, \"#9A6B00\", \"#C0392B\" ) )",
           "displayFolder": "Story\\Project\\Colours",
           "references": {
             "measures": [
@@ -2349,7 +2397,7 @@
         {
           "name": "Story | Project · Resource Util Colour",
           "dataType": "Text",
-          "expression": "VAR _u = [Story | Project · Resource Utilisation]\nRETURN IF ( ISBLANK ( _u ) || _u = 0, \"#9AA3AF\", IF ( _u > 1, \"#C0392B\", IF ( _u >= 0.8, \"#1E6D6E\", IF ( _u >= 0.5, \"#D9A832\", \"#9AA3AF\" ) ) ) )",
+          "expression": "VAR _u = [Story | Project · Resource Utilisation]\nRETURN IF ( ISBLANK ( _u ) || _u = 0, \"#6B7280\", IF ( _u > 1, \"#C0392B\", IF ( _u >= 0.8, \"#1E6D6E\", IF ( _u >= 0.5, \"#9A6B00\", \"#6B7280\" ) ) ) )",
           "displayFolder": "Story\\Project\\Colours",
           "references": {
             "measures": [
@@ -2479,7 +2527,7 @@
         {
           "name": "Story | Lifecycle · Ageing Colour",
           "dataType": "Text",
-          "expression": "VAR _d = [Story | Lifecycle · Max Days in Step]\nVAR _thr = [Story | Lifecycle · Stuck Threshold Days]\nRETURN IF ( ISBLANK ( _d ), \"#666666\", IF ( _d > 2 * _thr, \"#C0392B\", IF ( _d > _thr, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _d = [Story | Lifecycle · Max Days in Step]\nVAR _thr = [Story | Lifecycle · Stuck Threshold Days]\nRETURN IF ( ISBLANK ( _d ), \"#666666\", IF ( _d > 2 * _thr, \"#C0392B\", IF ( _d > _thr, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Lifecycle",
           "description": "Red = more than twice the threshold, amber = over the threshold, teal = within.",
           "references": {
@@ -2656,7 +2704,7 @@
         {
           "name": "Story | Lifecycle · Dependency Flag Colour",
           "dataType": "Text",
-          "expression": "VAR _r = [Story | Lifecycle · At Risk Count]\nVAR _o = [Story | Lifecycle · Overlap Days]\nRETURN IF ( _r > 0, \"#C0392B\", IF ( ISBLANK ( _o ), \"#9AA3AF\", \"#1E6D6E\" ) )",
+          "expression": "VAR _r = [Story | Lifecycle · At Risk Count]\nVAR _o = [Story | Lifecycle · Overlap Days]\nRETURN IF ( _r > 0, \"#C0392B\", IF ( ISBLANK ( _o ), \"#6B7280\", \"#1E6D6E\" ) )",
           "displayFolder": "Story\\Lifecycle",
           "references": {
             "measures": [
@@ -2977,7 +3025,7 @@
         {
           "name": "Story | Scenario · Gap Colour A",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | Scenario · Budget Gap % A]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | Scenario · Budget Gap % A]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Scenario",
           "references": {
             "measures": [
@@ -3250,7 +3298,7 @@
         {
           "name": "Story | Scenario · Gap Colour B",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | Scenario · Budget Gap % B]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | Scenario · Budget Gap % B]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Scenario",
           "references": {
             "measures": [
@@ -4091,7 +4139,7 @@
         {
           "name": "Story | Timesheet · Accuracy Colour",
           "dataType": "Text",
-          "expression": "VAR _s = [Story | Timesheet · Scheduled To Date]\nVAR _a = [Timesheet | Actual Hours]\nVAR _r = DIVIDE ( _a, _s )\nRETURN\n    SWITCH (\n        TRUE (),\n        ISBLANK ( _s ) && ISBLANK ( _a ), \"#9AA3AF\",\n        COALESCE ( _s, 0 ) = 0, \"#8E1B12\",\n        _r > 1.2, \"#C0392B\",\n        _r >= 0.8, \"#1E6D6E\",\n        \"#D9A832\"\n    )",
+          "expression": "VAR _s = [Story | Timesheet · Scheduled To Date]\nVAR _a = [Timesheet | Actual Hours]\nVAR _r = DIVIDE ( _a, _s )\nRETURN\n    SWITCH (\n        TRUE (),\n        ISBLANK ( _s ) && ISBLANK ( _a ), \"#6B7280\",\n        COALESCE ( _s, 0 ) = 0, \"#8E1B12\",\n        _r > 1.2, \"#C0392B\",\n        _r >= 0.8, \"#1E6D6E\",\n        \"#9A6B00\"\n    )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -4110,7 +4158,7 @@
         {
           "name": "Story | Timesheet · Accuracy KPI Colour",
           "dataType": "Text",
-          "expression": "VAR _r = [Story | Timesheet · Plan Accuracy %]\nRETURN IF ( ISBLANK ( _r ), \"#9AA3AF\", IF ( _r > 1.2, \"#C0392B\", IF ( _r >= 0.8, \"#1E6D6E\", \"#D9A832\" ) ) )",
+          "expression": "VAR _r = [Story | Timesheet · Plan Accuracy %]\nRETURN IF ( ISBLANK ( _r ), \"#6B7280\", IF ( _r > 1.2, \"#C0392B\", IF ( _r >= 0.8, \"#1E6D6E\", \"#9A6B00\" ) ) )",
           "displayFolder": "Story\\Colours",
           "description": "Colour of the Plan accuracy KPI (overlap projects); same bands as Accuracy Colour.",
           "references": {
@@ -4271,7 +4319,7 @@
         {
           "name": "Story | Timesheet · Approval Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Timesheet | Approval %]\nRETURN IF ( ISBLANK ( _p ), \"#9AA3AF\", IF ( _p >= 0.95, \"#1E6D6E\", IF ( _p >= 0.8, \"#D9A832\", \"#C0392B\" ) ) )",
+          "expression": "VAR _p = [Timesheet | Approval %]\nRETURN IF ( ISBLANK ( _p ), \"#6B7280\", IF ( _p >= 0.95, \"#1E6D6E\", IF ( _p >= 0.8, \"#9A6B00\", \"#C0392B\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -4285,7 +4333,7 @@
         {
           "name": "Story | Timesheet · Compliance Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Timesheet | Reporting Compliance %]\nRETURN IF ( ISBLANK ( _p ), \"#9AA3AF\", IF ( _p >= 0.9, \"#1E6D6E\", IF ( _p >= 0.7, \"#D9A832\", \"#C0392B\" ) ) )",
+          "expression": "VAR _p = [Timesheet | Reporting Compliance %]\nRETURN IF ( ISBLANK ( _p ), \"#6B7280\", IF ( _p >= 0.9, \"#1E6D6E\", IF ( _p >= 0.7, \"#9A6B00\", \"#C0392B\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -4484,7 +4532,7 @@
         {
           "name": "Story | Status · Overall Arrow Colour",
           "dataType": "Text",
-          "expression": "VAR _m = [Story | Status · Overall Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#9AA3AF\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
+          "expression": "VAR _m = [Story | Status · Overall Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#6B7280\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -4608,7 +4656,7 @@
         {
           "name": "Story | Status · Schedule Arrow Colour",
           "dataType": "Text",
-          "expression": "VAR _m = [Story | Status · Schedule Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#9AA3AF\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
+          "expression": "VAR _m = [Story | Status · Schedule Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#6B7280\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -4732,7 +4780,7 @@
         {
           "name": "Story | Status · Financial Arrow Colour",
           "dataType": "Text",
-          "expression": "VAR _m = [Story | Status · Financial Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#9AA3AF\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
+          "expression": "VAR _m = [Story | Status · Financial Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#6B7280\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -4856,7 +4904,7 @@
         {
           "name": "Story | Status · Effort Arrow Colour",
           "dataType": "Text",
-          "expression": "VAR _m = [Story | Status · Effort Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#9AA3AF\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
+          "expression": "VAR _m = [Story | Status · Effort Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#6B7280\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -4980,7 +5028,7 @@
         {
           "name": "Story | Status · Issue Arrow Colour",
           "dataType": "Text",
-          "expression": "VAR _m = [Story | Status · Issue Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#9AA3AF\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
+          "expression": "VAR _m = [Story | Status · Issue Move]\nRETURN IF ( ISBLANK ( _m ) || _m = 0, \"#6B7280\", IF ( _m < 0, \"#1E6D6E\", \"#C0392B\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -5116,7 +5164,7 @@
         {
           "name": "Story | Status · Budget Drift Colour",
           "dataType": "Text",
-          "expression": "VAR _d = [Story | Status · Budget Drift]\nRETURN IF ( ISBLANK ( _d ) || _d = 0, \"#9AA3AF\", IF ( _d > 0, \"#1F2A44\", \"#D9A832\" ) )",
+          "expression": "VAR _d = [Story | Status · Budget Drift]\nRETURN IF ( ISBLANK ( _d ) || _d = 0, \"#6B7280\", IF ( _d > 0, \"#1F2A44\", \"#9A6B00\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -5155,7 +5203,7 @@
         {
           "name": "Story | Status · Forecast Drift Colour",
           "dataType": "Text",
-          "expression": "VAR _d = [Story | Status · Forecast Drift]\nRETURN IF ( ISBLANK ( _d ) || _d = 0, \"#9AA3AF\", IF ( _d > 0, \"#C0392B\", \"#1E6D6E\" ) )",
+          "expression": "VAR _d = [Story | Status · Forecast Drift]\nRETURN IF ( ISBLANK ( _d ) || _d = 0, \"#6B7280\", IF ( _d > 0, \"#C0392B\", \"#1E6D6E\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -5194,7 +5242,7 @@
         {
           "name": "Story | Status · Active Risks Drift Colour",
           "dataType": "Text",
-          "expression": "VAR _d = [Story | Status · Active Risks Drift]\nRETURN IF ( ISBLANK ( _d ) || _d = 0, \"#9AA3AF\", IF ( _d > 0, \"#C0392B\", \"#1E6D6E\" ) )",
+          "expression": "VAR _d = [Story | Status · Active Risks Drift]\nRETURN IF ( ISBLANK ( _d ) || _d = 0, \"#6B7280\", IF ( _d > 0, \"#C0392B\", \"#1E6D6E\" ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -5949,7 +5997,7 @@
         {
           "name": "Story | TS Status · On-Time Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | TS Status · On-Time %]\nRETURN IF ( ISBLANK ( _p ), \"#9AA3AF\", IF ( _p >= 0.9, \"#1E6D6E\", IF ( _p >= 0.7, \"#D9A832\", \"#C0392B\" ) ) )",
+          "expression": "VAR _p = [Story | TS Status · On-Time %]\nRETURN IF ( ISBLANK ( _p ), \"#6B7280\", IF ( _p >= 0.9, \"#1E6D6E\", IF ( _p >= 0.7, \"#9A6B00\", \"#C0392B\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -5964,7 +6012,7 @@
         {
           "name": "Story | TS Status · Approval Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Timesheet | Approval %]\nRETURN IF ( ISBLANK ( _p ), \"#9AA3AF\", IF ( _p >= 0.95, \"#1E6D6E\", IF ( _p >= 0.8, \"#D9A832\", \"#C0392B\" ) ) )",
+          "expression": "VAR _p = [Timesheet | Approval %]\nRETURN IF ( ISBLANK ( _p ), \"#6B7280\", IF ( _p >= 0.95, \"#1E6D6E\", IF ( _p >= 0.8, \"#9A6B00\", \"#C0392B\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
@@ -6919,7 +6967,7 @@
         {
           "name": "Story | Baseline · Coverage Colour",
           "dataType": "Text",
-          "expression": "VAR _p = DIVIDE ( [Story | Baseline · Baselined Projects], [Story | Baseline · Projects] )\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p < 0.5, \"#C0392B\", IF ( _p < 0.9, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = DIVIDE ( [Story | Baseline · Baselined Projects], [Story | Baseline · Projects] )\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p < 0.5, \"#C0392B\", IF ( _p < 0.9, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Baseline\\Colours",
           "references": {
             "measures": [
@@ -6980,7 +7028,7 @@
         {
           "name": "Story | Baseline · Slip Colour",
           "dataType": "Text",
-          "expression": "VAR _d = [Story | Baseline · Finish Slip (days)]\nRETURN IF ( ISBLANK ( _d ), \"#666666\", IF ( _d > 10, \"#C0392B\", IF ( _d > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _d = [Story | Baseline · Finish Slip (days)]\nRETURN IF ( ISBLANK ( _d ), \"#666666\", IF ( _d > 10, \"#C0392B\", IF ( _d > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Baseline\\Colours",
           "references": {
             "measures": [
@@ -7010,7 +7058,7 @@
         {
           "name": "Story | Baseline · Cost Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | Baseline · Cost Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | Baseline · Cost Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Baseline\\Colours",
           "references": {
             "measures": [
@@ -7025,7 +7073,7 @@
         {
           "name": "Story | Baseline · Hours Colour",
           "dataType": "Text",
-          "expression": "VAR _p = [Story | Baseline · Hours Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = [Story | Baseline · Hours Variance %]\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.05, \"#C0392B\", IF ( _p > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Baseline\\Colours",
           "references": {
             "measures": [
@@ -7040,7 +7088,7 @@
         {
           "name": "Story | Baseline · FTE Colour",
           "dataType": "Text",
-          "expression": "VAR _p = ABS ( [Story | Baseline · FTE Variance %] )\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.25, \"#C0392B\", IF ( _p > 0.1, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _p = ABS ( [Story | Baseline · FTE Variance %] )\nRETURN IF ( ISBLANK ( _p ), \"#666666\", IF ( _p > 0.25, \"#C0392B\", IF ( _p > 0.1, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Baseline\\Colours",
           "description": "FTE intensity moved more than 10% (amber) or 25% (red), either way.",
           "references": {
@@ -7107,7 +7155,7 @@
         {
           "name": "Story | Baseline · Signal Colour",
           "dataType": "Text",
-          "expression": "VAR _s = LEFT ( [Story | Baseline · Signal], 1 )\nRETURN SWITCH ( _s, \"▲\", IF ( [Story | Baseline · Finish Slip (days)] > 10, \"#C0392B\", \"#D9A832\" ), \"▼\", \"#1E6D6E\", \"●\", \"#1E6D6E\",\n    \"◇\", \"#9AA3AF\", BLANK () )",
+          "expression": "VAR _s = LEFT ( [Story | Baseline · Signal], 1 )\nRETURN SWITCH ( _s, \"▲\", IF ( [Story | Baseline · Finish Slip (days)] > 10, \"#C0392B\", \"#9A6B00\" ), \"▼\", \"#1E6D6E\", \"●\", \"#1E6D6E\",\n    \"◇\", \"#6B7280\", BLANK () )",
           "displayFolder": "Story\\Baseline\\Colours",
           "references": {
             "measures": [
@@ -7269,7 +7317,7 @@
         {
           "name": "Story | Baseline · Task Slip Colour",
           "dataType": "Text",
-          "expression": "VAR _d = [Story | Baseline · Task Finish Shift]\nRETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 10, \"#C0392B\", IF ( _d > 0, \"#D9A832\", \"#1E6D6E\" ) ) )",
+          "expression": "VAR _d = [Story | Baseline · Task Finish Shift]\nRETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 10, \"#C0392B\", IF ( _d > 0, \"#9A6B00\", \"#1E6D6E\" ) ) )",
           "displayFolder": "Story\\Baseline\\Colours",
           "references": {
             "measures": [
@@ -7643,7 +7691,7 @@
         {
           "name": "Story | Home · Chip Colour Off Track",
           "dataType": "Text",
-          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 100 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {
@@ -7682,7 +7730,7 @@
         {
           "name": "Story | Home · Chip Colour Over Budget",
           "dataType": "Text",
-          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 90 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {
@@ -7721,7 +7769,7 @@
         {
           "name": "Story | Home · Chip Colour Late",
           "dataType": "Text",
-          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 80 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {
@@ -7760,7 +7808,7 @@
         {
           "name": "Story | Home · Chip Colour Overdue Work",
           "dataType": "Text",
-          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {
@@ -7799,7 +7847,7 @@
         {
           "name": "Story | Home · Chip Colour Not Reporting",
           "dataType": "Text",
-          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 50 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {
@@ -7838,7 +7886,7 @@
         {
           "name": "Story | Home · Chip Colour Failing Rules",
           "dataType": "Text",
-          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0 > 0, \"#E8ECF4\", \"#5A6680\" )",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 40 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {

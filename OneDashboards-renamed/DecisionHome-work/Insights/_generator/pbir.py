@@ -20,15 +20,45 @@ ORANGE_SOFT = "#FDF1EB"
 PEACH = "#FFB38A"
 TEAL = "#1E6D6E"
 TEAL_LT = "#2C8B8B"
-AMBER = "#D9A832"
+AMBER = "#D9A832"            # fills (bars, cells); text uses AMBER_TEXT
+AMBER_TEXT = "#9A6B00"       # amber for text: 4.7:1 on white (AMBER is 2.2:1)
 RED = "#C0392B"
-GREY = "#9AA3AF"
+GREY = "#9AA3AF"             # fills; text uses GREY_TEXT
+GREY_TEXT = "#6B7280"        # muted text: 4.8:1 on white (GREY is 2.6:1)
 MUTED = "#666666"
 BORDER = "#E3E6EC"
 INK = "#2B2F36"
 SLATE = "#A6B3CC"
 
+TEXT_SAFE = {AMBER: AMBER_TEXT, GREY: GREY_TEXT}  # fill colour -> readable text colour
+KPI_VALUE_PT, KPI_TEXT_PT = 24, 20  # one KPI tile spec: numbers / text values (e.g. "Not recorded")
+
 HEALTH_COLOURS = {"(1) On Track": TEAL, "(2) At Risk": AMBER, "(3) Off Track": RED}
+
+THEME_FILE = "BFusionInsightsTheme.json"
+_NO_HEADER = {"*": {"visualHeader": [{"show": False}]}}
+
+
+def theme():
+    """Report theme generated from the palette above: one source for colours and text classes. Visuals still set
+    their own formatting; the theme covers new visuals added in Desktop and switches the hover header off on
+    decoration (shapes, text boxes, images, buttons)."""
+    return {
+        "name": "BFusion Insights",
+        "dataColors": [NAVY, ORANGE, TEAL, AMBER, RED, SLATE, GREY, TEAL_LT, PEACH, "#5B6B8C"],
+        "good": TEAL, "neutral": AMBER, "bad": RED,
+        "maximum": NAVY, "center": "#F7F8FA", "minimum": "#FFFFFF",
+        "foreground": INK, "foregroundNeutralSecondary": GREY_TEXT, "foregroundNeutralTertiary": GREY,
+        "background": "#FFFFFF", "backgroundLight": "#F7F8FA", "backgroundNeutral": BORDER, "tableAccent": NAVY,
+        "textClasses": {
+            "callout": {"fontSize": KPI_VALUE_PT, "fontFace": "Segoe UI Semibold", "color": NAVY},
+            "title": {"fontSize": 12, "fontFace": "Segoe UI Semibold", "color": NAVY},
+            "header": {"fontSize": 12, "fontFace": "Segoe UI Semibold", "color": NAVY},
+            "label": {"fontSize": 10, "fontFace": "Segoe UI", "color": INK},
+        },
+        "visualStyles": {v: _NO_HEADER for v in ("shape", "textbox", "image", "actionButton")},
+    }
+
 
 # Measures that live in reportExtensions.json (filled in by build script)
 EXTENSION_MEASURES = set()
@@ -382,7 +412,9 @@ def slicer(field, label, sync=True, dark=False, group=None):
     return v
 
 
-def card(measure, label, value_colour=NAVY, colour_measure=None, size=24, units=0, dark=False):
+def card(measure, label, value_colour=NAVY, colour_measure=None, size=None, units=0, dark=False):
+    size = KPI_VALUE_PT if size is None else size
+    value_colour = TEXT_SAFE.get(value_colour, value_colour)
     labels = {"fontSize": n(size), "color": measure_colour(colour_measure) if colour_measure else col_solid(value_colour),
               "labelDisplayUnits": n(units)}
     vco = {"title": title(label, 11, "#FFFFFF" if dark else NAVY)}

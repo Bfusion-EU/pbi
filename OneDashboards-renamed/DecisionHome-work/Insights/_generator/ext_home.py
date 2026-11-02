@@ -67,7 +67,7 @@ RETURN IF ( _n = 0, "No project needs a decision",
      desc="How many active projects need a decision (Act-now count), short form for the header pill.")
 # One chip per Act-score bucket (same buckets as the Act-now table, so the six counts add up to Act Count).
 CHIPS = [(k, lbl, lbl.title(), C_RED if k >= 80 else C_AMBER) for k, lbl in _BUCKETS]    # (score, label, name, dot colour)
-CHIP_ON, CHIP_OFF = "#E8ECF4", "#5A6680"
+CHIP_ON, CHIP_OFF = "#E8ECF4", "#8C98B3"   # off = dimmed but readable (5.2:1 on the card navy)
 for _k, _lbl, _nm, _dot in CHIPS:
     _cnt = f"COUNTROWS ( FILTER ( {PROJECTS}, [{hm('Act Score')}] = {_k} ) ) + 0"
     # The count alone: its own card, centred in a fixed-width box so 1- and 2-digit counts line up on every chip.
@@ -777,7 +777,7 @@ ACT_H = 398                # Act-now table: header + 8 rows
 # text widths in px (Segoe UI, measured): chip texts at 10 pt
 CHIP_TEXT_PX = {"target 80%": 64, "target ≥ 1.0": 69, "target 90": 53}
 CHIP_DYN_W = {"Financials": 76, "Schedule": 76, "Risk": 84, "Status": 100}   # dynamic chips: room for the longest text
-MUTED2, RULE2 = "#5A6680", "#26314F"
+MUTED2, RULE2 = "#8C98B3", "#26314F"   # muted text 5.2:1 on the card navy
 
 
 VAL_CELL_EXTRA = 60        # a table cell wider than its fixed column, so no horizontal scrollbar appears
@@ -826,7 +826,7 @@ def chip_layout(footer):
 # Transparent fill, 1 px neutral border, Semibold label centred both ways, radius 14; hover: light grey fill, darker border.
 # The user's spec gives dark-grey text (#374151); on the dark #1B2540 card that is unreadable at rest, so the resting
 # label uses the light neutral BTN_TEXT and turns #374151 on the light hover fill.
-BTN_BORDER, BTN_BORDER_HOVER, BTN_HOVER_FILL = "#C9CED6", "#9CA3AF", "#F3F4F6"
+BTN_BORDER, BTN_BORDER_HOVER, BTN_HOVER_FILL = "#C9CED8", GREY, "#F3F4F6"
 BTN_TEXT, BTN_TEXT_HOVER = "#D0D5DD", "#374151"
 
 

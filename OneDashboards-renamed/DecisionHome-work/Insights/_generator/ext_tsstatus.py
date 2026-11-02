@@ -22,6 +22,7 @@ Model notes (checked in ModeL360Star.bim and against the live model, 2026-10-26)
 """
 import pages
 import pbir
+from pbir import AMBER_TEXT, GREY_TEXT
 from pbir import (C, M, P, AMBER, GREY, NAVY, RED, TEAL, b, card, chart, cf_back, cf_font, labels_on, legend,
                   measure_fill, n, series_colours, table_style)
 from story_measures import add
@@ -238,11 +239,11 @@ SWITCH ( SELECTEDVALUE ( FactTimesheetAudit[Action] ), "Approve", "{TEAL}", "Sub
 
 add(_m("On-Time Colour"), T, f"""
 VAR _p = {_r('On-Time %')}
-RETURN IF ( ISBLANK ( _p ), "{GREY}", IF ( _p >= 0.9, "{TEAL}", IF ( _p >= 0.7, "{AMBER}", "{RED}" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "{GREY_TEXT}", IF ( _p >= 0.9, "{TEAL}", IF ( _p >= 0.7, "{AMBER_TEXT}", "{RED}" ) ) )""",
     folder=COLOURS)
 add(_m("Approval Colour"), T, f"""
 VAR _p = [Timesheet | Approval %]
-RETURN IF ( ISBLANK ( _p ), "{GREY}", IF ( _p >= 0.95, "{TEAL}", IF ( _p >= 0.8, "{AMBER}", "{RED}" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "{GREY_TEXT}", IF ( _p >= 0.95, "{TEAL}", IF ( _p >= 0.8, "{AMBER_TEXT}", "{RED}" ) ) )""",
     folder=COLOURS)
 add(_m("Missing Colour"), T, f"""
 IF ( COALESCE ( {_r('Missing Timesheets')}, 0 ) > 0, "{RED}", "{TEAL}" )""", folder=COLOURS)
@@ -301,7 +302,7 @@ def build():
         (_m("Awaiting Hours"), "Hours awaiting approval", {"value_colour": AMBER}),
         (_m("Draft Timesheets"), "Drafts not submitted", {"value_colour": "#6B7280"}),
         (_m("Missing Timesheets"), "Missing resource-weeks (no timesheet)", {"colour_measure": _m("Missing Colour")}),
-        (_m("Approval Lag"), "Approval lag avg / max", {"size": 20}),
+        (_m("Approval Lag"), "Approval lag avg / max", {"size": pbir.KPI_TEXT_PT}),
         (_m("Rework Actions"), "Rework (recalls + unlocks)", {"value_colour": RETURNED}),
     ])
 

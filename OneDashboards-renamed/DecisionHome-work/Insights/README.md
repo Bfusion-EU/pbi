@@ -129,6 +129,16 @@ Open `SemanticModel/OneModel360Star.pbix` in Power BI Desktop, then run `python 
 It evaluates every report measure, including the measures it depends on, as a total and grouped by project, resource
 and month, and lists any errors. Use `--only <text>` to check a subset and `--show <text>` to print values.
 
+## Theme, colours and KPI tiles
+
+- The build writes a custom report theme, `BFusionInsightsTheme.json`, from the palette in `pbir.py`. It sets the
+  colours and text classes, and hides the hover header on shapes, text boxes, images and buttons.
+- **Fill colours and text colours are kept apart.** Amber `#D9A832` and grey `#9AA3AF` are used only for fills (bars,
+  cells, swatches). Text uses `AMBER_TEXT #9A6B00` and `GREY_TEXT #6B7280`, which reach at least 4.5:1 contrast on
+  white. The `Story | * Colour` measures return text colours. For bars that need the same rule, use the
+  `Story | * Fill` twins.
+- **KPI tiles** are 90 px high. Numbers use `KPI_VALUE_PT` (24) and text values use `KPI_TEXT_PT` (20).
+
 ## Rebuilding
 
 The pack is generated. Change the Python and rebuild rather than editing JSON by hand:

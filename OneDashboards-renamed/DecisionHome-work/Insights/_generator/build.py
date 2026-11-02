@@ -92,7 +92,11 @@ def report_json():
     rp = [p for p in ref["resourcePackages"] if p["type"] == "SharedResources"]
     rp.append({"name": "RegisteredResources", "type": "RegisteredResources",
                "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES + ICONS]})
-    return {"$schema": ref["$schema"], "themeCollection": ref["themeCollection"],
+    rp[-1]["items"].append({"name": pbir.THEME_FILE, "path": pbir.THEME_FILE, "type": "CustomTheme"})
+    themes = dict(ref["themeCollection"])
+    themes["customTheme"] = {"name": pbir.THEME_FILE, "reportVersionAtImport": themes["baseTheme"]["reportVersionAtImport"],
+                             "type": "RegisteredResources"}
+    return {"$schema": ref["$schema"], "themeCollection": themes,
             "filterConfig": {"filters": keep}, "objects": ref.get("objects", {}),
             "resourcePackages": rp, "settings": ref["settings"],
             "slowDataSourceSettings": ref.get("slowDataSourceSettings", {})}
@@ -121,6 +125,7 @@ def build():
     for r in ICONS:
         dst = OUT / "StaticResources" / "RegisteredResources" / r
         shutil.copy(ICON_DIR / r, dst)
+    dump(OUT / "StaticResources" / "RegisteredResources" / pbir.THEME_FILE, pbir.theme())
     _, model_measures = load_model()
     dump(OUT / "definition" / "report.json", report_json())
     dump(OUT / "definition" / "reportExtensions.json", extension_json(model_measures))

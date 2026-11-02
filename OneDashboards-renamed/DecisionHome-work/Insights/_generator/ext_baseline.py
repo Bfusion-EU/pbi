@@ -22,6 +22,7 @@ Units
   Cost, hours and FTE totals are like-for-like: only projects whose baseline holds that number.
 """
 import pbir
+from pbir import AMBER_TEXT, GREY_TEXT
 from pbir import (n, qref, headline, chart, table_style, cf_font, slicer, P, M, C, b, measure_fill, legend, labels_on,
                   f_in, f_not_blank, NAVY, ORANGE, TEAL, AMBER, RED, GREY, MUTED, BORDER, INK)
 import pages
@@ -171,7 +172,7 @@ VAR _n = [{bm("Projects")}]
 RETURN FORMAT ( _b, "0" ) & " of " & FORMAT ( _n, "0" )""", desc="Baselined projects out of the projects in view.")
 _add("Coverage Colour", T, f"""
 VAR _p = DIVIDE ( [{bm("Baselined Projects")}], [{bm("Projects")}] )
-RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p < 0.5, "{RED}", IF ( _p < 0.9, "{AMBER}", "{TEAL}" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p < 0.5, "{RED}", IF ( _p < 0.9, "{AMBER_TEXT}", "{TEAL}" ) ) )""",
      folder=FOLDER + "\\Colours")
 _add("Late Projects", I, f"COUNTROWS ( FILTER ( {PROJECTS}, [{bm('Finish Slip (days)')}] > 0 ) ) + 0", "#,##0",
      "Projects whose plan finish is later than the compared baseline finish.")
@@ -189,17 +190,17 @@ _add("Rebaselined Projects", I, f"COUNTROWS ( FILTER ( {PROJECTS}, [{bm('Version
 # ---------------------------------------------------------------- colours
 _add("Slip Colour", T, f"""
 VAR _d = [{bm("Finish Slip (days)")}]
-RETURN IF ( ISBLANK ( _d ), "{MUTED}", IF ( _d > 10, "{RED}", IF ( _d > 0, "{AMBER}", "{TEAL}" ) ) )""",
+RETURN IF ( ISBLANK ( _d ), "{MUTED}", IF ( _d > 10, "{RED}", IF ( _d > 0, "{AMBER_TEXT}", "{TEAL}" ) ) )""",
      folder=FOLDER + "\\Colours")
 _add("Late Colour", T, f'IF ( [{bm("Late Projects")}] > 0, "{RED}", "{TEAL}" )', folder=FOLDER + "\\Colours")
 for _nm, _m in [("Cost", "Cost Variance %"), ("Hours", "Hours Variance %")]:
     _add(f"{_nm} Colour", T, f"""
 VAR _p = [{bm(_m)}]
-RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p > 0.05, "{RED}", IF ( _p > 0, "{AMBER}", "{TEAL}" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p > 0.05, "{RED}", IF ( _p > 0, "{AMBER_TEXT}", "{TEAL}" ) ) )""",
          folder=FOLDER + "\\Colours")
 _add("FTE Colour", T, f"""
 VAR _p = ABS ( [{bm("FTE Variance %")}] )
-RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p > 0.25, "{RED}", IF ( _p > 0.1, "{AMBER}", "{TEAL}" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p > 0.25, "{RED}", IF ( _p > 0.1, "{AMBER_TEXT}", "{TEAL}" ) ) )""",
      folder=FOLDER + "\\Colours", desc="FTE intensity moved more than 10% (amber) or 25% (red), either way.")
 
 # ---------------------------------------------------------------- smart signal per project
@@ -236,8 +237,8 @@ RETURN
      desc="Smart indicator per project: the pattern behind the deviation (scope growth, stretched, compressed, ahead).")
 _add("Signal Colour", T, f"""
 VAR _s = LEFT ( [{bm("Signal")}], 1 )
-RETURN SWITCH ( _s, "▲", IF ( [{bm("Finish Slip (days)")}] > 10, "{RED}", "{AMBER}" ), "▼", "{TEAL}", "●", "{TEAL}",
-    "◇", "{GREY}", BLANK () )""", folder=FOLDER + "\\Colours")
+RETURN SWITCH ( _s, "▲", IF ( [{bm("Finish Slip (days)")}] > 10, "{RED}", "{AMBER_TEXT}" ), "▼", "{TEAL}", "●", "{TEAL}",
+    "◇", "{GREY_TEXT}", BLANK () )""", folder=FOLDER + "\\Colours")
 _add("Next Step", T, f"""
 VAR _s = [{bm("Signal")}]
 RETURN
@@ -281,7 +282,7 @@ _add("Task Baseline Finish", DTM, TASK_MOVED.format(v="MAX ( DimTask[BaselineEnd
 _add("Task Finish", DTM, TASK_MOVED.format(v="MAX ( DimTask[EndDate] )"), "dd mmm yyyy")
 _add("Task Slip Colour", T, f"""
 VAR _d = [{bm("Task Finish Shift")}]
-RETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 10, "{RED}", IF ( _d > 0, "{AMBER}", "{TEAL}" ) ) )""",
+RETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 10, "{RED}", IF ( _d > 0, "{AMBER_TEXT}", "{TEAL}" ) ) )""",
      folder=FOLDER + "\\Colours")
 
 # ---------------------------------------------------------------- narrative

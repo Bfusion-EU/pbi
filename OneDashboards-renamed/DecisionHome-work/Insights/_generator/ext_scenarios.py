@@ -27,6 +27,7 @@ the plan sums are. The page labels them separately.
 """
 import pages
 import pbir
+from pbir import AMBER_TEXT, GREY_TEXT
 from pbir import (AMBER, GREY, NAVY, ORANGE, PEACH, RED, SLATE, TEAL, C, M, P, b, chart, col_solid,
                   labels_on, legend, measure_fill, n, s, slicer, table_style)
 from pages import H2, H3, H4, Y1, Y1K, Y2, Y2V, Y3, Y3V, Y4, Y4V, YNEXT
@@ -122,7 +123,7 @@ DIVIDE ( [{mn("Benefits " + side)}], [{mn("Budget " + side)}] )""", "0.00",
          f"Scenario {side} total benefits per euro of total budget.")
     _add(f"Gap Colour {side}", T, f"""
 VAR _p = [{mn("Budget Gap % " + side)}]
-RETURN IF ( ISBLANK ( _p ), "#666666", IF ( _p > 0.05, "{RED}", IF ( _p > 0, "{AMBER}", "{TEAL}" ) ) )""")
+RETURN IF ( ISBLANK ( _p ), "#666666", IF ( _p > 0.05, "{RED}", IF ( _p > 0, "{AMBER_TEXT}", "{TEAL}" ) ) )""")
     _add(f"Plans Text {side}", T, f"""
 VAR _k = [{mn("Key " + side)}]
 RETURN IF ( ISBLANK ( _k ), "–",
@@ -307,7 +308,7 @@ def build():
     for k, (m, label, o) in enumerate(fit):
         col, row = k % 2, k // 2
         pg.add(round(fx + col * (tw + 10), 2), round(Y2V + row * (fh + 10), 2), round(tw, 2), round(fh, 2),
-               pbir.card(m, label, size=22, **o), key=f"fit{k}")
+               pbir.card(m, label, **o), key=f"fit{k}")
 
     pages.section(pg, Y3, 3, "Where does the money move if we pick A?",
                   "Plan budget split by portfolio into only-A, both and only-B plans; right, the benefits A gains or loses.")

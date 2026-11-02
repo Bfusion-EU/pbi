@@ -75,7 +75,7 @@ def colour3(var_expr, red, amber):
     """Teal / amber / red rule on a ratio; BLANK in, BLANK out (no colour, no phantom rows)."""
     return f"""
 VAR _p = {var_expr}
-RETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > {red}, "#C0392B", IF ( _p > {amber}, "#D9A832", "#1E6D6E" ) ) )"""
+RETURN IF ( ISBLANK ( _p ), BLANK (), IF ( _p > {red}, "#C0392B", IF ( _p > {amber}, "#9A6B00", "#1E6D6E" ) ) )"""
 
 
 # ------------------------------------------------------------------ shared
@@ -213,7 +213,7 @@ add("Story | Priority Score", D, "AVERAGE ( DimProject[PrioritizationScore] )", 
 add("Story | Health Colour", T, """
 SWITCH ( SELECTEDVALUE ( DimProject[OverallHealth_Value] ),
     "(1) On Track", "#1E6D6E",
-    "(2) At Risk", "#D9A832",
+    "(2) At Risk", "#9A6B00",
     "(3) Off Track", "#C0392B",
     "#666666" )""", folder="Story\\Colours")
 add("Story | Step Index", I, "MIN ( DimProject[ProcessStepIndex] )", "0", "Story\\Portfolio",
@@ -302,7 +302,7 @@ RETURN
     "organisation-wide).")
 add("Story | Util Colour", T, """
 VAR _u = [Story | Utilisation %]
-RETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, "#C0392B", IF ( _u >= 0.8, "#1E6D6E", IF ( _u >= 0.5, "#D9A832", "#9AA3AF" ) ) ) )""",
+RETURN IF ( ISBLANK ( _u ), BLANK (), IF ( _u > 1, "#C0392B", IF ( _u >= 0.8, "#1E6D6E", IF ( _u >= 0.5, "#9A6B00", "#6B7280" ) ) ) )""",
     folder="Story\\Colours")
 add("Story | Util Cell Colour", T, """
 VAR _u = [Story | Utilisation %]
@@ -400,13 +400,13 @@ AVERAGEX ( FILTER ( DimTask, {_LATE_TASK} ), INT ( DimTask[EndDate] ) - INT ( Di
 add("Story | Due Colour", T, """
 VAR _d = MAX ( DimTask[EndDate] )
 VAR _p = MAX ( DimTask[PercentDone] )
-RETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d < TODAY () && _p < 100, "#C0392B", IF ( _d < TODAY () + 14, "#D9A832", "#1F2A44" ) ) )""",
+RETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d < TODAY () && _p < 100, "#C0392B", IF ( _d < TODAY () + 14, "#9A6B00", "#1F2A44" ) ) )""",
     folder="Story\\Colours")
 add("Story | Late Due Colour", T, """
 IF ( ISBLANK ( [Story | Late Task Slip (days)] ), BLANK (), [Story | Due Colour] )""", folder="Story\\Colours")
 add("Story | Slip Colour", T, """
 VAR _d = [Story | Late Task Slip (days)]
-RETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 20, "#C0392B", IF ( _d > 0, "#D9A832", "#1E6D6E" ) ) )""",
+RETURN IF ( ISBLANK ( _d ), BLANK (), IF ( _d > 20, "#C0392B", IF ( _d > 0, "#9A6B00", "#1E6D6E" ) ) )""",
     folder="Story\\Colours")
 add("Story | Schedule Headline", T, f"""
 VAR _ot = [Story | On Schedule %]
@@ -476,7 +476,7 @@ RETURN IF ( _sc = 0, BLANK (), IF ( _sc >= 12, "#E57368", IF ( _sc >= {HIGH_HEAT
     folder="Story\\Colours")
 add("Story | Impact Colour", T, """
 SWITCH ( LEFT ( SELECTEDVALUE ( DimTask[Impact] ), 3 ),
-    "(1)", "#C0392B", "(2)", "#E8612A", "(3)", "#D9A832", "(4)", "#1E6D6E", "#666666" )""", folder="Story\\Colours")
+    "(1)", "#C0392B", "(2)", "#E8612A", "(3)", "#9A6B00", "(4)", "#1E6D6E", "#666666" )""", folder="Story\\Colours")
 add("Story | Risk Headline", T, f"""
 VAR _r = [Story | Active Risk Count]
 VAR _ch = [Story | Critical High Risks]
@@ -528,7 +528,7 @@ add("Story | Value Ratio", D, "DIVIDE ( [Story | Total Value], [Story | Finance 
     "it costs. Story | Net ROI = this ratio − 1 (blank here when there is no value at all).")
 add("Story | Ratio Colour", T, """
 VAR _r = [Story | Value Ratio]
-RETURN IF ( ISBLANK ( _r ), BLANK (), IF ( _r >= 2, "#1E6D6E", IF ( _r >= 1, "#D9A832", "#C0392B" ) ) )""",
+RETURN IF ( ISBLANK ( _r ), BLANK (), IF ( _r >= 2, "#1E6D6E", IF ( _r >= 1, "#9A6B00", "#C0392B" ) ) )""",
     folder="Story\\Colours")
 add("Story | Benefits Headline", T, f"""
 VAR _b = [Story | Benefits At Completion]
@@ -656,7 +656,7 @@ RETURN IF ( ISBLANK ( _cum ), BLANK (), IF ( _prev < 0.8, "A · top 80%", IF ( _
     folder="Story\\Pareto")
 add("Story | Pareto Class Colour", T, """
 VAR _c = LEFT ( [Story | Pareto Class], 1 )
-RETURN SWITCH ( _c, "A", "#E8612A", "B", "#1F2A44", "C", "#9AA3AF", BLANK () )""", folder="Story\\Colours")
+RETURN SWITCH ( _c, "A", "#E8612A", "B", "#1F2A44", "C", "#6B7280", BLANK () )""", folder="Story\\Colours")
 add("Story | Projects For 80% Spend", I, f"""
 VAR _t = FILTER ( {_by_project('"@c", [Story | Finance EAC]')}, [@c] > 0 )
 VAR _all = SUMX ( _t, [@c] )
@@ -696,7 +696,7 @@ add("Story | Net ROI", D, "DIVIDE ( [Story | Net Value], [Story | Finance EAC] )
     "Net value as a share of EAC (= Story | Value Ratio − 1).")
 add("Story | Net Colour", T, """
 VAR _n = [Story | Net Value]
-RETURN IF ( ISBLANK ( _n ), BLANK (), IF ( _n < 0, "#C0392B", IF ( [Story | Net Margin %] < 0.2, "#D9A832", "#1E6D6E" ) ) )""",
+RETURN IF ( ISBLANK ( _n ), BLANK (), IF ( _n < 0, "#C0392B", IF ( [Story | Net Margin %] < 0.2, "#9A6B00", "#1E6D6E" ) ) )""",
     folder="Story\\Colours")
 add("Story | Pareto PnL Headline", T, f"""
 VAR _k = [Story | Projects For 80% Spend]
@@ -742,3 +742,11 @@ PMO_PROJ = "KEEPFILTERS ( FactPlanInsight[ProjectKey] > 0 )"
 for _pmo in ("Plans With Open Status Report", "Plans With Unsubmitted Timesheets", "Plans Not Up To Date"):
     add(f"Story | PMO · {_pmo}", I, f"CALCULATE ( [PMO | {_pmo}], {PMO_PROJ} ) + 0", "#,##0", "Story\\Governance",
         f"[PMO | {_pmo}] on project plans only (FactPlanInsight[ProjectKey] > 0).")
+
+
+# Fill twins: the colour measures above are text colours (dark amber / grey for contrast). Bars filled by the same
+# rule use these, which swap back to the lighter fill shades.
+for _c in ("Variance", "Util", "Ratio"):
+    add(f"Story | {_c} Fill", T, f"""
+SUBSTITUTE ( SUBSTITUTE ( [Story | {_c} Colour], "#9A6B00", "#D9A832" ), "#6B7280", "#9AA3AF" )""",
+        folder="Story\\Colours", desc=f"Story | {_c} Colour with fill shades (amber #D9A832, grey #9AA3AF) for bars.")

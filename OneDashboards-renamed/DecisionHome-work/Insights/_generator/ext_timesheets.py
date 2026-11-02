@@ -19,6 +19,7 @@ Model notes (checked in ModeL360Star.bim):
 """
 import pages
 import pbir
+from pbir import AMBER_TEXT, GREY_TEXT
 from pbir import (C, M, P, AMBER, GREY, MUTED, NAVY, ORANGE, RED, TEAL, b, card, chart, f_cmp, labels_on, legend,
                   measure_fill, n, table_style, cf_font)
 from story_measures import add
@@ -99,16 +100,16 @@ VAR _r = DIVIDE ( _a, _s )
 RETURN
     SWITCH (
         TRUE (),
-        ISBLANK ( _s ) && ISBLANK ( _a ), "#9AA3AF",
+        ISBLANK ( _s ) && ISBLANK ( _a ), "#6B7280",
         COALESCE ( _s, 0 ) = 0, "{UNPLANNED}",
         _r > 1.2, "{RED}",
         _r >= 0.8, "{TEAL}",
-        "{AMBER}"
+        "{AMBER_TEXT}"
     )""", folder="Story\\Colours")
 
 add(_m("Accuracy KPI Colour"), T, f"""
 VAR _r = [{_m('Plan Accuracy %')}]
-RETURN IF ( ISBLANK ( _r ), "#9AA3AF", IF ( _r > 1.2, "{RED}", IF ( _r >= 0.8, "{TEAL}", "{AMBER}" ) ) )""",
+RETURN IF ( ISBLANK ( _r ), "#6B7280", IF ( _r > 1.2, "{RED}", IF ( _r >= 0.8, "{TEAL}", "{AMBER_TEXT}" ) ) )""",
     folder="Story\\Colours", desc="Colour of the Plan accuracy KPI (overlap projects); same bands as Accuracy Colour.")
 
 add(_m("Accuracy Band"), T, f"""
@@ -164,12 +165,12 @@ COALESCE ( [Timesheet | Hours], 0 ) - COALESCE ( [Timesheet | Approved Hours], 0
 
 add(_m("Approval Colour"), T, """
 VAR _p = [Timesheet | Approval %]
-RETURN IF ( ISBLANK ( _p ), "#9AA3AF", IF ( _p >= 0.95, "#1E6D6E", IF ( _p >= 0.8, "#D9A832", "#C0392B" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "#6B7280", IF ( _p >= 0.95, "#1E6D6E", IF ( _p >= 0.8, "#9A6B00", "#C0392B" ) ) )""",
     folder="Story\\Colours")
 
 add(_m("Compliance Colour"), T, """
 VAR _p = [Timesheet | Reporting Compliance %]
-RETURN IF ( ISBLANK ( _p ), "#9AA3AF", IF ( _p >= 0.9, "#1E6D6E", IF ( _p >= 0.7, "#D9A832", "#C0392B" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "#6B7280", IF ( _p >= 0.9, "#1E6D6E", IF ( _p >= 0.7, "#9A6B00", "#C0392B" ) ) )""",
     folder="Story\\Colours")
 
 add(_m("Headline"), T, f"""
@@ -281,7 +282,7 @@ def build():
     for k, (m, label, o) in enumerate(tiles):
         x = 1264 + (k % 2) * (cw + 10)
         y = pages.Y3V + (k // 2) * (ch + 10)
-        pg.add(x, y, cw, ch, card(m, label, size=26, **o), key=f"ts_tile{k}")
+        pg.add(x, y, cw, ch, card(m, label, **o), key=f"ts_tile{k}")
 
     # ④ where effort over- or under-runs
     pages.section(pg, pages.Y4, 4, "Where does effort over- or under-run?",

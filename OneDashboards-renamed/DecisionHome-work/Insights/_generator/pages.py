@@ -109,7 +109,7 @@ def legend_note(pg, x, y, w, items, key):
     runs = []
     for k, (label, colour) in enumerate(items):
         runs.append(("■ " if k == 0 else "     ■ ", st("Segoe UI", 12, colour)))
-        runs.append((label, st("Segoe UI", 10, colour, True)))
+        runs.append((label, st("Segoe UI", 10, TEXT_SAFE.get(colour, colour), True)))  # swatch keeps the fill colour
     pg.add(x, y, w, 28, textbox([runs], align="right"), key=key)
 
 
@@ -174,7 +174,7 @@ def build_exec():
         ("Story | Utilisation %", "Utilisation (org-wide)", {"colour_measure": "Story | Util Colour"}),
         ("Story | Over-allocated People", "Over 100% (org-wide)", {"value_colour": RED}),
         ("Story | Critical High Risks", "Critical / high risks", {"value_colour": RED}),
-        ("Story | Benefits Realised KPI", "Benefits realised vs due", {"size": 18}),
+        ("Story | Benefits Realised KPI", "Benefits realised vs due", {"size": KPI_TEXT_PT}),
     ])
     section(pg, Y2, 2, "Where is the portfolio heading?", "Health of active projects, money at completion and the people curve.")
     health = DP("OverallHealth_Value")
@@ -343,7 +343,7 @@ def build_finance():
     pg.add(906, Y3V, 878, H3, chart("clusteredBarChart",
         {"Category": [P(DP("Name"), "Project")], "Y": [P(var, "EAC − budget")]},
         "Projects ranked by overrun at completion",
-        {"dataPoint": [{"properties": {"fill": measure_colour("Story | Variance Colour")}, "selector": FILL_ALL}],
+        {"dataPoint": [{"properties": {"fill": measure_colour("Story | Variance Fill")}, "selector": FILL_ALL}],
          "labels": labels_on(True, 0)}, sort=[(var, "Descending")]), key="v_proj_var", filters=[REAL_PROJECTS])
     section(pg, Y4, 4, "Project financial register",
             "Sorted by overrun at completion. Red = EAC more than 5% over budget, amber = slightly over, teal = within budget.")
@@ -462,7 +462,7 @@ def build_resources():
     pg.add(1192, Y2V, 592, H2, chart("clusteredBarChart",
         {"Category": [P(DR("Role_Value"), "Role")], "Y": [P(util, "Utilisation")]},
         "Utilisation by role",
-        {"dataPoint": [{"properties": {"fill": measure_colour("Story | Util Colour")}, "selector": FILL_ALL}],
+        {"dataPoint": [{"properties": {"fill": measure_colour("Story | Util Fill")}, "selector": FILL_ALL}],
          "labels": labels_on(True)}, sort=[(util, "Descending")]), key="v_role")
     section(pg, Y3, 3, "Who is over- or under-loaded, month by month?",
             "Scheduled ÷ capacity per person and month; rolling 12 months (3 back to 8 ahead) — change it in the filter pane.")
@@ -506,7 +506,7 @@ def build_schedule():
         ("Story | On Schedule %", "On schedule (active)"),
         ("Story | Schedule At Risk", "Schedule at risk", {"value_colour": AMBER}),
         ("Story | Schedule Off Track", "Schedule off track", {"value_colour": RED}),
-        ("Story | Late vs Baseline KPI", "Late vs baseline (active)", {"value_colour": AMBER, "size": 20}),
+        ("Story | Late vs Baseline KPI", "Late vs baseline (active)", {"value_colour": AMBER, "size": KPI_TEXT_PT}),
         ("Story | Overdue Tasks", "Overdue tasks", {"value_colour": RED}),
         ("Story | Slipped Tasks", "Tasks past baseline", {"value_colour": AMBER}),
         ("Story | Milestones Next 30d", "Milestones next 30 days"),
@@ -632,8 +632,8 @@ def build_benefits():
     kpi_row(pg, Y1K, [
         ("Story | Benefits At Completion", "Planned benefits"),
         ("Story | Benefits Due To Date", "Benefits due to date"),
-        ("Story | Benefits Actual Label", "Actually realised", {"size": 20}),
-        ("Story | Benefits Realised KPI", "Realised vs due", {"size": 20}),
+        ("Story | Benefits Actual Label", "Actually realised", {"size": KPI_TEXT_PT}),
+        ("Story | Benefits Realised KPI", "Realised vs due", {"size": KPI_TEXT_PT}),
         ("Story | Finance EAC", "EAC"),
         ("Story | Value Ratio", "Value ÷ EAC", {"colour_measure": "Story | Ratio Colour"}),
         ("Project | Total CostofDelay", "Cost of delay", {"value_colour": RED}),
@@ -673,7 +673,7 @@ def build_benefits():
     pg.add(1192, Y3V, 592, H3, chart("clusteredBarChart",
         {"Category": [P(DP("Name"), "Project")], "Y": [P(ratio, "Value ÷ EAC")]},
         "Best value for money (value ÷ EAC)",
-        {"dataPoint": [{"properties": {"fill": measure_colour("Story | Ratio Colour")}, "selector": FILL_ALL}],
+        {"dataPoint": [{"properties": {"fill": measure_colour("Story | Ratio Fill")}, "selector": FILL_ALL}],
          "labels": labels_on(True)}, sort=[(ratio, "Descending")]), key="v_ratio")
     section(pg, Y4, 4, "Benefits register",
             "Projects with an EAC but no planned benefit are the first gap; 'Actual' stays empty until OnePlan records it.")
@@ -730,9 +730,9 @@ def build_governance():
            ("PMO | Plans With Unsubmitted Timesheets", "Unsubmitted timesheets")]
     w = (1768 - 7 * 10) / 8
     for k, (m, label) in enumerate(hyg):
-        pg.add(round(16 + k * (w + 10), 2), Y3V, round(w, 2), 110, card(m, label, value_colour=NAVY, size=26),
+        pg.add(round(16 + k * (w + 10), 2), Y3V, round(w, 2), 90, card(m, label, value_colour=NAVY),
                key=f"hyg{k}")
-    pg.add(16, Y3V + 126, 1768, H3 - 126, chart("tableEx",
+    pg.add(16, Y3V + 106, 1768, H3 - 106, chart("tableEx",
         {"Values": [P(C("DimInsightRule", "RuleName"), "Rule"), P(C("DimInsightRule", "RuleArea"), "Area"),
                     P(C("DimInsightRule", "Severity"), "Severity"), P(pf, "Plans failing"),
                     P(C("DimInsightRule", "RecommendedAction"), "Recommended action")]},

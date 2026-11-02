@@ -12,6 +12,7 @@ source filter context (acceptsFilterContext "None"): only the drilled DimProject
 monthly charts show the whole plan. Money and overdue measures delegate to story_measures.py (one definition).
 """
 import pbir
+from pbir import AMBER_TEXT, GREY_TEXT
 from pbir import (Page, card, headline, chart, textbox, st, table_style, cf_font, nav_button, title, panel,
                   P, M, C, s, b, n, i, uid, col_solid, legend, labels_on, measure_fill, f_in, f_cmp,
                   NAVY, ORANGE, ORANGE_SOFT, TEAL, AMBER, RED, GREY, MUTED, BORDER)
@@ -38,7 +39,7 @@ def health_label(var):
 
 
 def health_colour(var):
-    return (f'SWITCH ( LEFT ( {var}, 3 ), "(1)", "{TEAL}", "(2)", "{AMBER}", "(3)", "{RED}", "{GREY}" )')
+    return (f'SWITCH ( LEFT ( {var}, 3 ), "(1)", "{TEAL}", "(2)", "{AMBER_TEXT}", "(3)", "{RED}", "{GREY_TEXT}" )')
 
 
 # OnePlan rich-text fields arrive as HTML (<div>, <p>, <b>, <br>…). Strip every tag generically:
@@ -121,7 +122,7 @@ add(pm("EAC Variance %"), D, "[Story | EAC Variance %]", "+0.0%;-0.0%;0.0%", FOL
     "EAC variance as a share of budget at completion (Story | EAC Variance %).")
 add(pm("EAC Colour"), T, f"""
 VAR _p = [{pm("EAC Variance %")}]
-RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p > 0.05, "{RED}", IF ( _p > 0, "{AMBER}", "{TEAL}" ) ) )""",
+RETURN IF ( ISBLANK ( _p ), "{MUTED}", IF ( _p > 0.05, "{RED}", IF ( _p > 0, "{AMBER_TEXT}", "{TEAL}" ) ) )""",
     folder=FOLDER + "\\Colours")
 add(pm("Burn %"), D, "[Story | Burn %]", "0%", FOLDER, "Lifetime actual cost as a share of budget at completion.")
 
@@ -141,7 +142,7 @@ add(pm("Overdue Tasks"), I, "CALCULATE ( [Story | Overdue Tasks], REMOVEFILTERS 
     "Story | Overdue Tasks for the whole project: open leaf tasks (not Completed, under 100%) past their finish date.")
 add(pm("Overdue Colour"), T, f"""
 VAR _o = [{pm("Overdue Tasks")}]
-RETURN IF ( _o = 0, "{TEAL}", IF ( _o <= 3, "{AMBER}", "{RED}" ) )""", folder=FOLDER + "\\Colours")
+RETURN IF ( _o = 0, "{TEAL}", IF ( _o <= 3, "{AMBER_TEXT}", "{RED}" ) )""", folder=FOLDER + "\\Colours")
 add(pm("Next Milestone"), T, """
 VAR _m =
     TOPN ( 1,
@@ -220,7 +221,7 @@ add(pm("Resource Utilisation"), D, "[Story | Utilisation %]", "0%", FOLDER,
     "Scheduled hours ÷ capacity, organisation-wide (Story | Utilisation %).")
 add(pm("Resource Util Colour"), T, f"""
 VAR _u = [{pm("Resource Utilisation")}]
-RETURN IF ( ISBLANK ( _u ) || _u = 0, "{GREY}", IF ( _u > 1, "{RED}", IF ( _u >= 0.8, "{TEAL}", IF ( _u >= 0.5, "{AMBER}", "{GREY}" ) ) ) )""",
+RETURN IF ( ISBLANK ( _u ) || _u = 0, "{GREY_TEXT}", IF ( _u > 1, "{RED}", IF ( _u >= 0.8, "{TEAL}", IF ( _u >= 0.5, "{AMBER_TEXT}", "{GREY_TEXT}" ) ) ) )""",
     folder=FOLDER + "\\Colours")
 add(pm("Resource Top Projects"), T, """
 VAR _t =

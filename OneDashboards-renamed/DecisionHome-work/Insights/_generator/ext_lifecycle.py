@@ -78,7 +78,7 @@ RETURN IF ( _d > _thr, _d )""", "#,0",
 _add("Ageing Colour", T, f"""
 VAR _d = [{L("Max Days in Step")}]
 VAR _thr = [{L("Stuck Threshold Days")}]
-RETURN IF ( ISBLANK ( _d ), "#666666", IF ( _d > 2 * _thr, "#C0392B", IF ( _d > _thr, "#D9A832", "#1E6D6E" ) ) )""",
+RETURN IF ( ISBLANK ( _d ), "#666666", IF ( _d > 2 * _thr, "#C0392B", IF ( _d > _thr, "#9A6B00", "#1E6D6E" ) ) )""",
      desc="Red = more than twice the threshold, amber = over the threshold, teal = within.")
 
 # ------------------------------------------------------------------ gate approvals (FactPlanProcessStep)
@@ -182,7 +182,7 @@ RETURN
 _add("Dependency Flag Colour", T, f"""
 VAR _r = [{L("At Risk Count")}]
 VAR _o = [{L("Overlap Days")}]
-RETURN IF ( _r > 0, "#C0392B", IF ( ISBLANK ( _o ), "#9AA3AF", "#1E6D6E" ) )""")
+RETURN IF ( _r > 0, "#C0392B", IF ( ISBLANK ( _o ), "#6B7280", "#1E6D6E" ) )""")
 _add("Dependency Note", T, f"""
 VAR _all = CALCULATE ( COUNTROWS ( BridgePlanDependency ), REMOVEFILTERS ( DimProject ) )
 VAR _n = [{L("Dependencies")}]
