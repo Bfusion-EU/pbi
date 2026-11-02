@@ -77,7 +77,7 @@ def extension_json(model_measures):
             "name": "extension", "entities": [{"name": "_Measures", "measures": out}]}
 
 
-def report_json():
+def report_json(extra_filters=None):
     ref = json.loads((REF / "definition" / "report.json").read_text(encoding="utf-8"))
     keep = []
     seen = set()
@@ -97,54 +97,62 @@ def report_json():
     themes["customTheme"] = {"name": pbir.THEME_FILE, "reportVersionAtImport": themes["baseTheme"]["reportVersionAtImport"],
                              "type": "RegisteredResources"}
     return {"$schema": ref["$schema"], "themeCollection": themes,
-            "filterConfig": {"filters": keep}, "objects": ref.get("objects", {}),
+            "filterConfig": {"filters": keep + list(extra_filters or [])}, "objects": ref.get("objects", {}),
             "resourcePackages": rp, "settings": ref["settings"],
             "slowDataSourceSettings": ref.get("slowDataSourceSettings", {})}
+
+
+def write_report(name, pages_, bookmarks, out_dir, extra_filters=None):
+    """Write one complete PBIR report (<out_dir>/<name>.pbip + <name>.Report) and return the .Report folder."""
+    out_dir = Path(out_dir)
+    out = out_dir / f"{name}.Report"
+    if out.exists():
+        shutil.rmtree(out)
+    # pbip + item metadata
+    dump(out_dir / f"{name}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
+                                    "version": "1.0", "artifacts": [{"report": {"path": f"{name}.Report"}}],
+                                    "settings": {"enableAutoRecovery": True}})
+    plat = json.loads((REF / ".platform").read_text(encoding="utf-8"))
+    plat["metadata"]["displayName"] = name
+    plat["config"]["logicalId"] = str(uuid.uuid5(uuid.NAMESPACE_URL, "bfusion/" + name))
+    dump(out / ".platform", plat)
+    shutil.copy(REF / "definition.pbir", out / "definition.pbir")
+    (out / "definition").mkdir(parents=True, exist_ok=True)
+    shutil.copy(REF / "definition" / "version.json", out / "definition" / "version.json")
+    for r in RESOURCES:
+        dst = out / "StaticResources" / "RegisteredResources" / r
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(REF / "StaticResources" / "RegisteredResources" / r, dst)
+    for r in ICONS:
+        dst = out / "StaticResources" / "RegisteredResources" / r
+        shutil.copy(ICON_DIR / r, dst)
+    dump(out / "StaticResources" / "RegisteredResources" / pbir.THEME_FILE, pbir.theme())
+    _, model_measures = load_model()
+    dump(out / "definition" / "report.json", report_json(extra_filters))
+    dump(out / "definition" / "reportExtensions.json", extension_json(model_measures))
+    for pg in pages_:
+        base = out / "definition" / "pages" / pg.id
+        dump(base / "page.json", pg.page)
+        for vc in pg.visuals:
+            dump(base / "visuals" / vc["name"] / "visual.json", vc)
+    dump(out / "definition" / "pages" / "pages.json",
+         {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+          "pageOrder": [pg.id for pg in pages_], "activePageName": pages_[0].id})
+    if bookmarks:
+        bdir = out / "definition" / "bookmarks"
+        for bm in bookmarks:
+            dump(bdir / f"{bm['name']}.bookmark.json", bm)
+        dump(bdir / "bookmarks.json",
+             {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+              "items": [{"name": bm["name"]} for bm in bookmarks]})
+    return out
 
 
 def build():
     assert len(ICONS) == 18, (f"expected 18 rail icons (9 icons x white/grey) in {ICON_DIR}, found {len(ICONS)}: "
                               "an icon is missing or an extra one was added")
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    # pbip + item metadata
-    dump(OUT.parent / f"{NAME}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
-                                 "version": "1.0", "artifacts": [{"report": {"path": f"{NAME}.Report"}}],
-                                 "settings": {"enableAutoRecovery": True}})
-    plat = json.loads((REF / ".platform").read_text(encoding="utf-8"))
-    plat["metadata"]["displayName"] = NAME
-    plat["config"]["logicalId"] = str(uuid.uuid5(uuid.NAMESPACE_URL, "bfusion/" + NAME))
-    dump(OUT / ".platform", plat)
-    shutil.copy(REF / "definition.pbir", OUT / "definition.pbir")
-    (OUT / "definition").mkdir(parents=True, exist_ok=True)
-    shutil.copy(REF / "definition" / "version.json", OUT / "definition" / "version.json")
-    for r in RESOURCES:
-        dst = OUT / "StaticResources" / "RegisteredResources" / r
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy(REF / "StaticResources" / "RegisteredResources" / r, dst)
-    for r in ICONS:
-        dst = OUT / "StaticResources" / "RegisteredResources" / r
-        shutil.copy(ICON_DIR / r, dst)
-    dump(OUT / "StaticResources" / "RegisteredResources" / pbir.THEME_FILE, pbir.theme())
-    _, model_measures = load_model()
-    dump(OUT / "definition" / "report.json", report_json())
-    dump(OUT / "definition" / "reportExtensions.json", extension_json(model_measures))
     built = pages.build_all()
-    for pg in built:
-        base = OUT / "definition" / "pages" / pg.id
-        dump(base / "page.json", pg.page)
-        for vc in pg.visuals:
-            dump(base / "visuals" / vc["name"] / "visual.json", vc)
-    dump(OUT / "definition" / "pages" / "pages.json",
-         {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
-          "pageOrder": [pg.id for pg in built], "activePageName": built[0].id})
-    if pbir.BOOKMARKS:
-        bdir = OUT / "definition" / "bookmarks"
-        for bm in pbir.BOOKMARKS:
-            dump(bdir / f"{bm['name']}.bookmark.json", bm)
-        dump(bdir / "bookmarks.json",
-             {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
-              "items": [{"name": bm["name"]} for bm in pbir.BOOKMARKS]})
+    write_report(NAME, built, pbir.BOOKMARKS, OUT.parent)
     print(f"built {len(built)} pages, {sum(len(p.visuals) for p in built)} visuals, {len(MEASURES)} story measures -> {OUT}")
     print("act_first skipped (custom layouts):", ", ".join(n.replace(" · ", " - ") for n in pages.LAYOUT_SKIPPED) or "none")
     return built
@@ -169,7 +177,7 @@ def layout_errors(pages_):
     return out
 
 
-def check(built):
+def check(built, out):
     import jsonschema
     from referencing import Registry, Resource
     import urllib.request
@@ -186,7 +194,7 @@ def check(built):
 
     registry = Registry(retrieve=retrieve)
     errors = 0
-    files = sorted(OUT.rglob("*.json"))
+    files = sorted(out.rglob("*.json"))
     for f in files:
         if f.name == "localSettings.json":
             continue
@@ -199,7 +207,7 @@ def check(built):
         errs = list(v.iter_errors(doc))
         for e in errs[:5]:
             errors += 1
-            print(f"SCHEMA {f.relative_to(OUT)}: {'/'.join(map(str, e.absolute_path))}: {e.message[:200]}")
+            print(f"SCHEMA {f.relative_to(out)}: {'/'.join(map(str, e.absolute_path))}: {e.message[:200]}")
     print(f"schema-checked {len(files)} files")
 
     cols, meas = load_model()
@@ -229,11 +237,11 @@ def check(built):
             for v in o:
                 walk(v)
 
-    for f in OUT.rglob("visual.json"):
+    for f in out.rglob("visual.json"):
         walk(json.loads(f.read_text(encoding="utf-8")))
-    walk(json.loads((OUT / "definition" / "report.json").read_text(encoding="utf-8")))
+    walk(json.loads((out / "definition" / "report.json").read_text(encoding="utf-8")))
     # filter column refs use Source aliases; check field entries
-    for f in OUT.rglob("visual.json"):
+    for f in out.rglob("visual.json"):
         d = json.loads(f.read_text(encoding="utf-8"))
         for flt in d.get("filterConfig", {}).get("filters", []):
             c = flt["field"].get("Column")
@@ -267,4 +275,4 @@ def check(built):
 if __name__ == "__main__":
     b = build()
     if "--check" in sys.argv:
-        sys.exit(1 if check(b) else 0)
+        sys.exit(1 if check(b, OUT) else 0)
