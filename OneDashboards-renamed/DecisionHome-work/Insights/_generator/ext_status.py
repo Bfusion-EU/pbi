@@ -343,7 +343,8 @@ CALCULATE ( SUMX ( {PKS}, IF ( {mref("Comparable")} = 0, 1 ) ), KEEPFILTERS ( Di
     "#,##0", MFOLDER, "Active projects without a report as of one of the two month ends.")
 add(mm("Changed Projects"), I, f"SUMX ( {PKS}, IF ( {mref('Change Size')} > 0, 1 ) ) + 0", "#,##0", MFOLDER)
 add(mm("Has Previous Month"), I, f"""
-IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), {END} < EOMONTH ( {THIS_END}, -1 ) + 1,
+VAR _pe = EOMONTH ( {THIS_END}, -1 )   -- a VAR: a filter argument may not contain CALCULATE (THIS_END does)
+RETURN IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), {END} < _pe + 1,
     {END} > DATE ( 1900, 1, 1 ) ) > 0, 1, 0 )""", "0", MFOLDER,
     "1 when any status report exists on or before last month's end (else there is nothing to compare).")
 
