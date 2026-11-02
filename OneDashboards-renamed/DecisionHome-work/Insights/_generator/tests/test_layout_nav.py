@@ -105,3 +105,29 @@ def test_passes_are_idempotent():
     layout.act_first(pg)
     layout.nav_row(pg, "finance")
     assert json.dumps(pg.visuals, sort_keys=True) == before
+
+
+def test_nothing_overlaps_nav_row():
+    for k, _ in pages.PAGES:
+        if k == "home":
+            continue
+        pg = page(k)
+        top = [v for v in pg.visuals if not v.get("parentGroupName")]
+        nav = [v for v in top if v["position"]["y"] == layout.NAV_Y and v["position"]["height"] == layout.NAV_H]
+        assert nav, k
+        names = {v["name"] for v in nav}
+        for v in top:
+            if v["name"] in names:
+                continue
+            y, h = v["position"]["y"], v["position"]["height"]
+            assert y + h <= layout.NAV_Y or y >= layout.NAV_Y + layout.NAV_H, (k, v["name"], y, h)
+
+
+def test_onepager_status_cards_keep_height():
+    pg = page("onepager")
+    cards = [v for v in pg.visuals if any(f"Project · {m}" in json.dumps(v, ensure_ascii=False)
+                                           for m in ("Accomplishments", "Planned Activities", "Additional Comments"))
+             and v["visual"]["visualType"] != "actionButton" and v["position"]["height"] < 400]
+    cards = [v for v in cards if v["name"] in {pbir.uid(pg.id, f"sr{i}", v["visual"]["visualType"]) for i in range(3)}]
+    assert len(cards) == 3
+    assert all(v["position"]["height"] >= 170 for v in cards), [v["position"]["height"] for v in cards]

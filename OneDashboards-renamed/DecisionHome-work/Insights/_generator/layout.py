@@ -11,7 +11,7 @@ import re
 import pbir
 
 NAV_Y, NAV_H, NAV_SHIFT = 86, 30, 36
-HEADER_BOTTOM = 84
+HEADER_BOTTOM = 80   # header chrome (title, subtitle, slicers) ends above 80; content starts at 82-84 (2d hero at 82)
 CODE = re.compile(r"^(\d)([a-z]?) · (.+)$")    # "5c · What Changed" -> ("5", "c", "What Changed")
 
 
@@ -87,14 +87,16 @@ def nav_row(pg, key):
     import pages as P
     if pbir.uid(pg.id, "nav_home", "actionButton") in {v["name"] for v in pg.visuals}:
         return
+    foot = min((v["position"]["y"] for v in _top(pg)
+                if v["visual"]["visualType"] == "actionButton" and v["position"]["y"] >= 1500), default=P.YNEXT)
     for vc in _top(pg):                              # room for the row: everything between header and Next/Back
         y = vc["position"]["y"]
-        if HEADER_BOTTOM <= y < P.YNEXT:
+        if HEADER_BOTTOM <= y < foot:
             vc["position"]["y"] = y + NAV_SHIFT
-    limit = P.YNEXT - 8
-    for vc in _top(pg):                              # nothing may run into the Next/Back row
+    limit = foot - 8
+    for vc in _top(pg):                              # nothing may run into this page's Next/Back row
         p = vc["position"]
-        if p["y"] < P.YNEXT and p["y"] + p["height"] > limit:
+        if p["y"] < foot and p["y"] + p["height"] > limit:
             new_h = limit - p["y"]
             if new_h < 0.6 * p["height"]:
                 raise ValueError(f"{pg.display}: {vc['name']} would lose more than 40% of its height")
