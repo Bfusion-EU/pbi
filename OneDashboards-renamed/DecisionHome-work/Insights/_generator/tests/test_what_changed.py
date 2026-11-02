@@ -4,6 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import pages  # noqa: E402,F401
 import extensions  # noqa: E402,F401
+import ext_slip  # noqa: E402
 from story_measures import MEASURES  # noqa: E402
 
 NAMES = {m["name"]: m for m in MEASURES}
@@ -43,8 +44,26 @@ def test_slip_measures_registered():
 
 def test_slip_flag_rule():
     expr = NAMES["Story | Slip · Flag"]["expression"]
-    assert ">= 2" in expr and "[Story | Project · Overdue Tasks] > 10" in expr and '"Active"' in expr
+    assert (">= 2" in expr and f"[Story | Project · Overdue Tasks] > {ext_slip.OVERDUE_MAX}" in expr
+            and '"Active"' in expr)
 
 
 def test_slip_pace_uses_percent_0_100():
     assert "/ 100" in NAMES["Story | Slip · Pace Gap (pt)"]["expression"]
+
+
+GUARDED = [n for n in SLIP if n not in ("Projects", "Flag Text", "Reason")]
+
+
+def test_slip_missing_data_is_false():
+    for n in ("Pace Gap (pt)", "Late Tasks Rising", "Late Tasks Text"):
+        assert "NOT ISBLANK" in NAMES[f"Story | Slip · {n}"]["expression"], n
+    rising = NAMES["Story | Slip · Late Tasks Rising"]["expression"]
+    assert "NOT ISBLANK ( _ln )" in rising and "NOT ISBLANK ( _lp )" in rising
+    for n in GUARDED:
+        assert "HASONEVALUE ( DimProject[Id] )" in NAMES[f"Story | Slip · {n}"]["expression"], n
+
+
+def test_slip_reason_strips_prefix():
+    expr = NAMES["Story | Slip · Reason"]["expression"]
+    assert "MID ( _t, 3" in expr and "overdue tasks" in expr
