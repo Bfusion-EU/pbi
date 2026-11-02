@@ -67,3 +67,16 @@ def test_slip_missing_data_is_false():
 def test_slip_reason_strips_prefix():
     expr = NAMES["Story | Slip · Reason"]["expression"]
     assert "MID ( _t, 3" in expr and "overdue tasks" in expr
+
+
+def test_act_buckets_order():
+    import ext_home
+    assert [k for k, _ in ext_home._BUCKETS] == [100, 90, 80, 70, 50, 40]
+    assert dict(ext_home._BUCKETS)[70] == "may slip"
+    expr = NAMES["Story | Home · Act Score"]["expression"]
+    assert "[Story | Slip · Flag] = 1, 70" in expr and "Overdue Tasks] > 10, 60" not in expr
+    assert "[Story | Slip · Reason]" in NAMES["Story | Home · Act Reason"]["expression"]
+
+
+def test_tip_buckets_follow_chips():
+    assert pages.HOME_TIP_BUCKETS == ["off_track", "over_budget", "late", "may_slip", "not_reporting", "failing_rules"]

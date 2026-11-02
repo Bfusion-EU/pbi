@@ -8,7 +8,7 @@ import extensions  # noqa: E402,F401
 from story_measures import MEASURES  # noqa: E402
 
 NAMES = {m["name"] for m in MEASURES}
-CHIPN = ["Off Track", "Over Budget", "Late", "Overdue Work", "Not Reporting", "Failing Rules"]
+CHIPN = ["Off Track", "Over Budget", "Late", "May Slip", "Not Reporting", "Failing Rules"]
 SUBJECTS = ["Financials", "Schedule", "Resources", "Risk", "Portfolio", "Benefits", "Status", "Governance"]
 HOME = (["Briefing Pill", "Act Score", "Act Reason", "Act Colour", "Act Count",
          "EAC Var % (reports)", "On Track % (reports)", "EAC Change", "On Track Change", "Due",
@@ -118,7 +118,7 @@ def _hidden(bm):
     return {g: v["isHidden"] for g, v in sec["visualContainerGroups"].items()}
 
 
-BUCKETS = ["off track", "over budget", "late", "overdue work", "not reporting", "failing rules"]
+BUCKETS = ["off track", "over budget", "late", "may slip", "not reporting", "failing rules"]
 SLUGS = [b.replace(" ", "_") for b in BUCKETS]
 GROUP_NAMES = {"PMO view", "Executive view", "Act now · all"} | {f"Act now · {b}" for b in BUCKETS}
 BOOKMARK_NAMES = ({"Home · PMO view", "Home · Executive view"} | {f"Home · Act now — {b}" for b in BUCKETS})
@@ -374,7 +374,7 @@ def test_z_order_background_groups_buttons():
 
 def test_chips_break_down_act_count():
     exprs = [next(m["expression"] for m in MEASURES if m["name"] == f"Story | Home · Chip {c}") for c in CHIPN]
-    for k, expr in zip((100, 90, 80, 60, 50, 40), exprs):
+    for k, expr in zip((100, 90, 80, 70, 50, 40), exprs):
         assert f"[Story | Home · Act Score] = {k}" in expr
 
 
@@ -586,7 +586,7 @@ def test_each_tooltip_table_uses_its_own_blank_unless_measure():
         # never a visual measure filter (rendered an empty table in Desktop)
         assert all("Measure" not in f["field"] for f in tbl.get("filterConfig", {}).get("filters", [])), c
     # each bucket measure is blank unless the Act score is that bucket's
-    for k, nm in zip((100, 90, 80, 60, 50, 40), CHIPN):
+    for k, nm in zip((100, 90, 80, 70, 50, 40), CHIPN):
         expr = next(m["expression"] for m in MEASURES if m["name"] == f"Story | Home · Tip {nm}")
         assert f"[Story | Home · Act Score] = {k}" in expr and expr.strip().startswith("IF"), nm
 

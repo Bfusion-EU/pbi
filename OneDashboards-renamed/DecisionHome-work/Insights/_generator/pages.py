@@ -43,7 +43,7 @@ HIDDEN_PAGES = [
 ]
 # Home "what's behind this number" tooltip pages (built by ext_home): the Act pill, the six reason chips
 # (one per Act-score bucket) and the eight subject-card numbers. Keys are stable, so the page ids are too.
-HOME_TIP_BUCKETS = ["off_track", "over_budget", "late", "overdue_work", "not_reporting", "failing_rules"]
+HOME_TIP_BUCKETS = ["off_track", "over_budget", "late", "may_slip", "not_reporting", "failing_rules"]
 HOME_TIP_CARDS = [("fin", "Financials"), ("sch", "Schedule"), ("res", "Resources"), ("risk", "Risk"),
                   ("port", "Portfolio"), ("ben", "Benefits"), ("sr", "Status reports"), ("gov", "Governance")]
 HOME_TIPS = ([("tip_home_act", "Tooltip · Home · Act now")]

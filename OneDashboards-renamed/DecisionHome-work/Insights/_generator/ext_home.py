@@ -37,7 +37,7 @@ RETURN
             LEFT ( _h, 3 ) = "(3)", 100,
             [Story | EAC Variance %] > 0.05, 90,
             [Story | Baseline · Finish Slip (days)] > 10, 80,
-            [Story | Project · Overdue Tasks] > 10, 60,
+            [Story | Slip · Flag] = 1, 70,
             [Story | Status · Days Since Report] > 30, 50,
             [Story | Project · Failing Rules] > 0, 40 ) )""", "0",
      "Impact rank of the worst reason an active project needs attention (blank = no reason).")
@@ -48,7 +48,7 @@ RETURN
         100, "Reported off track",
         90, "EAC " & FORMAT ( [Story | EAC Variance %], "+0%" ) & " over budget",
         80, FORMAT ( [Story | Baseline · Finish Slip (days)], "+0" ) & " days vs baseline",
-        60, FORMAT ( [Story | Project · Overdue Tasks], "0" ) & " overdue tasks",
+        70, [Story | Slip · Reason],
         50, "No status report for " & FORMAT ( [Story | Status · Days Since Report], "0" ) & " days",
         40, FORMAT ( [Story | Project · Failing Rules], "0" ) & " Plan Insights rule(s) failing" )""")
 _add("Act Colour", T, f"""
@@ -57,7 +57,7 @@ RETURN IF ( ISBLANK ( _s ), BLANK (), IF ( _s >= 80, "{C_RED}", "{C_AMBER}" ) )"
 _add("Act Count", I, f"COUNTROWS ( FILTER ( {PROJECTS}, NOT ISBLANK ( [{hm('Act Score')}] ) ) ) + 0", "0")
 
 # Reasons are counted from the same Act Score buckets as the Act-now table, so the parts add up to Act Count.
-_BUCKETS = [(100, "off track"), (90, "over budget"), (80, "late"), (60, "overdue work"),
+_BUCKETS = [(100, "off track"), (90, "over budget"), (80, "late"), (70, "may slip"),
             (50, "not reporting"), (40, "failing rules")]
 _add("Briefing Pill", T, f"""
 VAR _n = [{hm("Act Count")}]
@@ -604,7 +604,7 @@ CH_LBL_X, CH_LBL_PAD = 54, 4           # label text starts here; its card begins
 CH_TXT_Y, CH_TXT_H = 2, CH_H - 4       # both text cards: same y and height, so the baselines match
 # Segoe UI 12 pt widths in px (measured), used to size each label card: a card centres its text, so a card as wide as
 # the text plus 2 x CH_LBL_PAD puts the text's left edge at CH_LBL_X for every label.
-CH_LABEL_PX = {"off track": 57, "over budget": 84, "late": 25, "overdue work": 96, "not reporting": 92, "failing rules": 81}
+CH_LABEL_PX = {"off track": 57, "over budget": 84, "late": 25, "may slip": 60, "not reporting": 92, "failing rules": 81}
 
 
 def chip_label_w(label):
