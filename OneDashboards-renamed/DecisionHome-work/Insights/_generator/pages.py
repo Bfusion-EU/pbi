@@ -53,6 +53,7 @@ HOME_TIPS = ([("tip_home_act", "Tooltip · Home · Act now")]
 HIDDEN_PAGES += HOME_TIPS
 PID = {k: uid("insights-page", k) for k, _ in PAGES + HIDDEN_PAGES}
 ORDER = [k for k, _ in PAGES]
+LAYOUT_SKIPPED = []  # story pages layout.act_first left as they are (custom layouts); filled by build_all
 
 # ---------------------------------------------------------------- common bits
 DP = lambda p: C("DimProject", p)  # noqa: E731
@@ -761,6 +762,12 @@ def build_all():
     story = [p for p in pages_out if p.id not in {PID[k] for k, _ in HIDDEN_PAGES}]
     filter_real_projects(story)
     attach_tooltips(story)
+    import layout
+    skipped = []
+    for k, _ in PAGES:
+        if k in built and k not in ("home", "exec") and not layout.act_first(built[k]):
+            skipped.append(dict(PAGES)[k])
+    LAYOUT_SKIPPED[:] = skipped
     a11y.apply(pages_out)
     return pages_out
 

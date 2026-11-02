@@ -146,6 +146,7 @@ def build():
              {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
               "items": [{"name": bm["name"]} for bm in pbir.BOOKMARKS]})
     print(f"built {len(built)} pages, {sum(len(p.visuals) for p in built)} visuals, {len(MEASURES)} story measures -> {OUT}")
+    print("act_first skipped (custom layouts):", ", ".join(pages.LAYOUT_SKIPPED) or "none")
     return built
 
 
