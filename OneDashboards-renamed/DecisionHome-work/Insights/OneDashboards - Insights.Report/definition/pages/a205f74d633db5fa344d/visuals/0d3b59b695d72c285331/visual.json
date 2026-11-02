@@ -3,11 +3,11 @@
   "name": "0d3b59b695d72c285331",
   "position": {
     "x": 16,
-    "y": 1186,
-    "z": 3300,
+    "y": 370,
+    "z": 3400,
     "width": 1768,
     "height": 400,
-    "tabOrder": 3300
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "tableEx",
@@ -84,25 +84,26 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Plan Budget"
+                  "Property": "Story | Finance EAC"
                 }
               },
-              "queryRef": "_Measures.Story | Plan Budget",
-              "nativeQueryRef": "Plan budget",
-              "displayName": "Plan budget"
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "EAC",
+              "displayName": "EAC"
             },
             {
               "field": {
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Planned Benefits"
+                  "Property": "Story | Benefits At Completion"
                 }
               },
-              "queryRef": "_Measures.Benefits | Planned Benefits",
+              "queryRef": "_Measures.Story | Benefits At Completion",
               "nativeQueryRef": "Planned benefits",
               "displayName": "Planned benefits"
             },
@@ -115,42 +116,44 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Benefit Cost Ratio"
+                  "Property": "Story | Benefits Due To Date"
                 }
               },
-              "queryRef": "_Measures.Story | Benefit Cost Ratio",
-              "nativeQueryRef": "Benefit ÷ cost",
-              "displayName": "Benefit ÷ cost"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimProject"
-                    }
-                  },
-                  "Property": "Summary_PercentDone"
-                }
-              },
-              "queryRef": "DimProject.Summary_PercentDone",
-              "nativeQueryRef": "% done",
-              "displayName": "% done"
+              "queryRef": "_Measures.Story | Benefits Due To Date",
+              "nativeQueryRef": "Due to date",
+              "displayName": "Due to date"
             },
             {
               "field": {
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Benefits | Realized Benefits"
+                  "Property": "Story | Benefits Actual"
                 }
               },
-              "queryRef": "_Measures.Benefits | Realized Benefits",
-              "nativeQueryRef": "Realised",
-              "displayName": "Realised"
+              "queryRef": "_Measures.Story | Benefits Actual",
+              "nativeQueryRef": "Actual",
+              "displayName": "Actual"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Value Ratio"
+                }
+              },
+              "queryRef": "_Measures.Story | Value Ratio",
+              "nativeQueryRef": "Value ÷ EAC",
+              "displayName": "Value ÷ EAC"
             }
           ]
         }
@@ -162,10 +165,11 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
+                    "Schema": "extension",
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Benefits | Planned Benefits"
+                "Property": "Story | Benefits At Completion"
               }
             },
             "direction": "Descending"
@@ -276,6 +280,46 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Benefits register'"
                 }
               }
             }
@@ -418,7 +462,7 @@
                 }
               }
             ],
-            "metadata": "_Measures.Story | Benefit Cost Ratio"
+            "metadata": "_Measures.Story | Value Ratio"
           }
         }
       ],
@@ -454,5 +498,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

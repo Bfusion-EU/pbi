@@ -7,7 +7,7 @@
     "z": 1400,
     "width": 180,
     "height": 62,
-    "tabOrder": 1400
+    "tabOrder": 300
   },
   "visual": {
     "visualType": "slicer",
@@ -147,11 +147,24 @@
             }
           }
         }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Filter: Portfolio'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "Portfolio Name",
+      "groupName": "DimProject.Portfolio Name",
       "fieldChanges": true,
       "filterChanges": true
     }

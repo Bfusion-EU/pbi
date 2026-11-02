@@ -3,11 +3,11 @@
   "name": "99b7775af3a5b8c696b6",
   "position": {
     "x": 1032.0,
-    "y": 188,
+    "y": 224,
     "z": 2400,
     "width": 244.0,
     "height": 90,
-    "tabOrder": 2400
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "card",
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Task | Overdue Tasks"
+                  "Property": "Story | Overdue Tasks"
                 }
               },
-              "queryRef": "_Measures.Task | Overdue Tasks",
-              "nativeQueryRef": "Task | Overdue Tasks"
+              "queryRef": "_Measures.Story | Overdue Tasks",
+              "nativeQueryRef": "Story | Overdue Tasks"
             }
           ]
         }
@@ -181,6 +182,19 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'KPI: Overdue tasks'"
                 }
               }
             }

@@ -3,11 +3,11 @@
   "name": "7e8a81695a686963f2b3",
   "position": {
     "x": 778.0,
-    "y": 188,
+    "y": 224,
     "z": 2300,
     "width": 244.0,
     "height": 90,
-    "tabOrder": 2300
+    "tabOrder": 1900
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Project Slip (days)"
+                  "Property": "Story | Late vs Baseline KPI"
                 }
               },
-              "queryRef": "_Measures.Story | Project Slip (days)",
-              "nativeQueryRef": "Story | Project Slip (days)"
+              "queryRef": "_Measures.Story | Late vs Baseline KPI",
+              "nativeQueryRef": "Story | Late vs Baseline KPI"
             }
           ]
         }
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "24D"
+                  "Value": "20D"
                 }
               }
             },
@@ -63,7 +63,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#D9A832'"
+                      "Value": "'#9A6B00'"
                     }
                   }
                 }
@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Avg finish slip (days)'"
+                  "Value": "'Late vs baseline (active)'"
                 }
               }
             },
@@ -182,6 +182,19 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'KPI: Late vs baseline (active)'"
                 }
               }
             }

@@ -3,11 +3,11 @@
   "name": "3f9e45077dc987ab4146",
   "position": {
     "x": 16,
-    "y": 730,
+    "y": 1222,
     "z": 3100,
     "width": 878,
-    "height": 400,
-    "tabOrder": 3100
+    "height": 376,
+    "tabOrder": 2900
   },
   "visual": {
     "visualType": "clusteredBarChart",
@@ -43,10 +43,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Project Slip (days)"
+                  "Property": "Story | Baseline · Finish Slip (days)"
                 }
               },
-              "queryRef": "_Measures.Story | Project Slip (days)",
+              "queryRef": "_Measures.Story | Baseline · Finish Slip (days)",
               "nativeQueryRef": "Slip (days)",
               "displayName": "Slip (days)"
             }
@@ -64,7 +64,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Story | Project Slip (days)"
+                "Property": "Story | Baseline · Finish Slip (days)"
               }
             },
             "direction": "Descending"
@@ -87,7 +87,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Finish-date slip versus baseline, by project (days)'"
+                  "Value": "'Finish-date slip versus baseline, active projects (days)'"
                 }
               }
             },
@@ -180,6 +180,46 @@
             }
           }
         }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Finish-date slip versus baseline, active projects (days)'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
@@ -229,5 +269,116 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "e62c957d9005d48a02be",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "State_Value"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "t"
+                          }
+                        },
+                        "Property": "State_Value"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Active'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

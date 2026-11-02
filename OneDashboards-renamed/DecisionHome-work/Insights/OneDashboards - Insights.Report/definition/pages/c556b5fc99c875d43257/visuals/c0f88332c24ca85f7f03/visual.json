@@ -3,11 +3,11 @@
   "name": "c0f88332c24ca85f7f03",
   "position": {
     "x": 905.0,
-    "y": 188,
+    "y": 224,
     "z": 2400,
     "width": 212.25,
     "height": 90,
-    "tabOrder": 2400
+    "tabOrder": 1600
   },
   "visual": {
     "visualType": "card",
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Utilization%"
+                  "Property": "Story | Utilisation %"
                 }
               },
-              "queryRef": "_Measures.Capacity | Resource Utilization%",
-              "nativeQueryRef": "Capacity | Resource Utilization%"
+              "queryRef": "_Measures.Story | Utilisation %",
+              "nativeQueryRef": "Story | Utilisation %"
             }
           ]
         }
@@ -99,7 +100,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Utilisation'"
+                  "Value": "'Utilisation (org-wide)'"
                 }
               }
             },
@@ -187,6 +188,19 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'KPI: Utilisation (org-wide)'"
                 }
               }
             }

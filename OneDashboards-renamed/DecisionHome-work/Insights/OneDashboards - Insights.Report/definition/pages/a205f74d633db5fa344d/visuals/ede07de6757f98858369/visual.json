@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "ede07de6757f98858369",
   "position": {
-    "x": 1497.67,
-    "y": 188,
+    "x": 1286.0,
+    "y": 224,
     "z": 2500,
-    "width": 286.33,
+    "width": 244.0,
     "height": 90,
-    "tabOrder": 2500
+    "tabOrder": 1700
   },
   "visual": {
     "visualType": "card",
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Project | Total CostofDelay"
+                  "Property": "Story | Value Ratio"
                 }
               },
-              "queryRef": "_Measures.Project | Total CostofDelay",
-              "nativeQueryRef": "Project | Total CostofDelay"
+              "queryRef": "_Measures.Story | Value Ratio",
+              "nativeQueryRef": "Story | Value Ratio"
             }
           ]
         }
@@ -61,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#C0392B'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Ratio Colour"
                     }
                   }
                 }
@@ -93,7 +100,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Cost of delay'"
+                  "Value": "'Value ÷ EAC'"
                 }
               }
             },
@@ -181,6 +188,19 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'KPI: Value ÷ EAC'"
                 }
               }
             }

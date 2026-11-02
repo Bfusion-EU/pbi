@@ -7,7 +7,7 @@
     "z": 1600,
     "width": 180,
     "height": 62,
-    "tabOrder": 1600
+    "tabOrder": 500
   },
   "visual": {
     "visualType": "slicer",
@@ -147,11 +147,24 @@
             }
           }
         }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Filter: Rule area'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "RuleArea",
+      "groupName": "DimInsightRule.RuleArea",
       "fieldChanges": true,
       "filterChanges": true
     }

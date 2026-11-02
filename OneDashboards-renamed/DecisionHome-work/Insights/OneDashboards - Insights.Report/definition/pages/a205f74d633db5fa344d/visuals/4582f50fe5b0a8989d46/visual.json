@@ -3,11 +3,11 @@
   "name": "4582f50fe5b0a8989d46",
   "position": {
     "x": 1192,
-    "y": 730,
-    "z": 3100,
+    "y": 1222,
+    "z": 3200,
     "width": 592,
-    "height": 400,
-    "tabOrder": 3100
+    "height": 376,
+    "tabOrder": 2600
   },
   "visual": {
     "visualType": "clusteredBarChart",
@@ -43,12 +43,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Benefit Cost Ratio"
+                  "Property": "Story | Value Ratio"
                 }
               },
-              "queryRef": "_Measures.Story | Benefit Cost Ratio",
-              "nativeQueryRef": "Benefit ÷ cost",
-              "displayName": "Benefit ÷ cost"
+              "queryRef": "_Measures.Story | Value Ratio",
+              "nativeQueryRef": "Value ÷ EAC",
+              "displayName": "Value ÷ EAC"
             }
           ]
         }
@@ -64,7 +64,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Story | Benefit Cost Ratio"
+                "Property": "Story | Value Ratio"
               }
             },
             "direction": "Descending"
@@ -87,7 +87,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Best value for money (benefit ÷ cost)'"
+                  "Value": "'Best value for money (value ÷ EAC)'"
                 }
               }
             },
@@ -180,6 +180,46 @@
             }
           }
         }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Best value for money (value ÷ EAC)'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
@@ -198,7 +238,7 @@
                           "Entity": "_Measures"
                         }
                       },
-                      "Property": "Story | Ratio Colour"
+                      "Property": "Story | Ratio Fill"
                     }
                   }
                 }
@@ -244,5 +284,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

@@ -3,11 +3,11 @@
   "name": "83d55acd2f8079ebe63e",
   "position": {
     "x": 1192,
-    "y": 334,
+    "y": 826,
     "z": 3000,
     "width": 592,
     "height": 340,
-    "tabOrder": 3000
+    "tabOrder": 2700
   },
   "visual": {
     "visualType": "lineClusteredColumnComboChart",
@@ -107,7 +107,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Pareto of overruns (forecast above budget)'"
+                  "Value": "'Pareto of overruns (EAC above budget)'"
                 }
               }
             },
@@ -195,6 +195,46 @@
               "expr": {
                 "Literal": {
                   "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Pareto of overruns (EAC above budget)'"
                 }
               }
             }
@@ -330,5 +370,62 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ce26c83046d49410027b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "t"
+                            }
+                          },
+                          "Property": "Id"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
   }
 }

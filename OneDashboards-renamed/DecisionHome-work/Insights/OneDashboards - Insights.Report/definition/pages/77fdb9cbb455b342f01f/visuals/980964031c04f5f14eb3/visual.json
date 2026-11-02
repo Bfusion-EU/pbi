@@ -3,11 +3,11 @@
   "name": "980964031c04f5f14eb3",
   "position": {
     "x": 1192,
-    "y": 334,
+    "y": 826,
     "z": 2900,
     "width": 592,
     "height": 340,
-    "tabOrder": 2900
+    "tabOrder": 2800
   },
   "visual": {
     "visualType": "clusteredBarChart",
@@ -39,13 +39,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Resource Utilization%"
+                  "Property": "Story | Utilisation %"
                 }
               },
-              "queryRef": "_Measures.Capacity | Resource Utilization%",
+              "queryRef": "_Measures.Story | Utilisation %",
               "nativeQueryRef": "Utilisation",
               "displayName": "Utilisation"
             }
@@ -59,10 +60,11 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
+                    "Schema": "extension",
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Capacity | Resource Utilization%"
+                "Property": "Story | Utilisation %"
               }
             },
             "direction": "Descending"
@@ -178,6 +180,19 @@
             }
           }
         }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Utilisation by role'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
@@ -196,7 +211,7 @@
                           "Entity": "_Measures"
                         }
                       },
-                      "Property": "Story | Util Colour"
+                      "Property": "Story | Util Fill"
                     }
                   }
                 }

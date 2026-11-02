@@ -7,7 +7,7 @@
     "z": 1700,
     "width": 180,
     "height": 62,
-    "tabOrder": 1700
+    "tabOrder": 600
   },
   "visual": {
     "visualType": "slicer",
@@ -147,11 +147,24 @@
             }
           }
         }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Filter: Goal'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "Goals_Value",
+      "groupName": "DimProject.Goals_Value",
       "fieldChanges": true,
       "filterChanges": true
     }

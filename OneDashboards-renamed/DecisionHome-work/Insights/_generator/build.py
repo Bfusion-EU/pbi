@@ -8,6 +8,7 @@ theme, report filters and background images, and the semantic model .bim for
 reference validation.
 """
 import json
+import os
 import re
 import shutil
 import sys
@@ -19,17 +20,23 @@ ROOT = HERE.parent
 REF = ROOT.parent / "OneDashboards - Bfusion.Report"
 BIM = Path(r"C:\Users\HassanBezzizi\repos\BFusion-Apps\SemanticModel\ModeL360Star.bim")
 NAME = "OneDashboards - Insights"
-OUT = ROOT / f"{NAME}.Report"
+BOARD_NAME = "OneDashboards - Board Pack"
+# INSIGHTS_OUT lets parallel workers build into their own folder (validation only)
+OUT = Path(os.environ["INSIGHTS_OUT"]) / f"{NAME}.Report" if os.environ.get("INSIGHTS_OUT") else ROOT / f"{NAME}.Report"
+BOARD_OUT = OUT.parent / f"{BOARD_NAME}.Report"
 
 sys.path.insert(0, str(HERE))
 import pbir  # noqa: E402
 from story_measures import MEASURES  # noqa: E402
+import pages  # noqa: E402
+import extensions  # noqa: E402,F401  (registers extension measures)
 
 pbir.EXTENSION_MEASURES.update(m["name"] for m in MEASURES)
-import pages  # noqa: E402
 
 RESOURCES = ["bfv5_footer_band_1800x1800.png", "bfv5_footer_band_1800x1000.png",
              "OnePlan_logo_-_dark_background9901469509814106.png"]
+ICON_DIR = HERE / "assets" / "icons"
+ICONS = sorted(p.name for p in ICON_DIR.glob("rail-*.png"))
 
 
 def dump(path: Path, obj):
@@ -72,7 +79,7 @@ def extension_json(model_measures):
             "name": "extension", "entities": [{"name": "_Measures", "measures": out}]}
 
 
-def report_json():
+def report_json(extra_filters=None):
     ref = json.loads((REF / "definition" / "report.json").read_text(encoding="utf-8"))
     keep = []
     seen = set()
@@ -86,49 +93,101 @@ def report_json():
         keep.append(f)
     rp = [p for p in ref["resourcePackages"] if p["type"] == "SharedResources"]
     rp.append({"name": "RegisteredResources", "type": "RegisteredResources",
-               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES]})
-    return {"$schema": ref["$schema"], "themeCollection": ref["themeCollection"],
-            "filterConfig": {"filters": keep}, "objects": ref.get("objects", {}),
+               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES + ICONS]})
+    rp[-1]["items"].append({"name": pbir.THEME_FILE, "path": pbir.THEME_FILE, "type": "CustomTheme"})
+    themes = dict(ref["themeCollection"])
+    themes["customTheme"] = {"name": pbir.THEME_FILE, "reportVersionAtImport": themes["baseTheme"]["reportVersionAtImport"],
+                             "type": "RegisteredResources"}
+    return {"$schema": ref["$schema"], "themeCollection": themes,
+            "filterConfig": {"filters": keep + list(extra_filters or [])}, "objects": ref.get("objects", {}),
             "resourcePackages": rp, "settings": ref["settings"],
             "slowDataSourceSettings": ref.get("slowDataSourceSettings", {})}
 
 
-def build():
-    if OUT.exists():
-        shutil.rmtree(OUT)
+def write_report(name, pages_, bookmarks, out_dir, extra_filters=None):
+    """Write one complete PBIR report (<out_dir>/<name>.pbip + <name>.Report) and return the .Report folder."""
+    out_dir = Path(out_dir)
+    out = out_dir / f"{name}.Report"
+    if out.exists():
+        shutil.rmtree(out)
     # pbip + item metadata
-    dump(ROOT / f"{NAME}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
-                                 "version": "1.0", "artifacts": [{"report": {"path": f"{NAME}.Report"}}],
-                                 "settings": {"enableAutoRecovery": True}})
+    dump(out_dir / f"{name}.pbip", {"$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
+                                    "version": "1.0", "artifacts": [{"report": {"path": f"{name}.Report"}}],
+                                    "settings": {"enableAutoRecovery": True}})
     plat = json.loads((REF / ".platform").read_text(encoding="utf-8"))
-    plat["metadata"]["displayName"] = NAME
-    plat["config"]["logicalId"] = str(uuid.uuid5(uuid.NAMESPACE_URL, "bfusion/" + NAME))
-    dump(OUT / ".platform", plat)
-    shutil.copy(REF / "definition.pbir", OUT / "definition.pbir")
-    (OUT / "definition").mkdir(parents=True, exist_ok=True)
-    shutil.copy(REF / "definition" / "version.json", OUT / "definition" / "version.json")
+    plat["metadata"]["displayName"] = name
+    plat["config"]["logicalId"] = str(uuid.uuid5(uuid.NAMESPACE_URL, "bfusion/" + name))
+    dump(out / ".platform", plat)
+    shutil.copy(REF / "definition.pbir", out / "definition.pbir")
+    (out / "definition").mkdir(parents=True, exist_ok=True)
+    shutil.copy(REF / "definition" / "version.json", out / "definition" / "version.json")
     for r in RESOURCES:
-        dst = OUT / "StaticResources" / "RegisteredResources" / r
+        dst = out / "StaticResources" / "RegisteredResources" / r
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(REF / "StaticResources" / "RegisteredResources" / r, dst)
+    for r in ICONS:
+        dst = out / "StaticResources" / "RegisteredResources" / r
+        shutil.copy(ICON_DIR / r, dst)
+    dump(out / "StaticResources" / "RegisteredResources" / pbir.THEME_FILE, pbir.theme())
     _, model_measures = load_model()
-    dump(OUT / "definition" / "report.json", report_json())
-    dump(OUT / "definition" / "reportExtensions.json", extension_json(model_measures))
-    built = pages.build_all()
-    for pg in built:
-        base = OUT / "definition" / "pages" / pg.id
+    dump(out / "definition" / "report.json", report_json(extra_filters))
+    dump(out / "definition" / "reportExtensions.json", extension_json(model_measures))
+    for pg in pages_:
+        base = out / "definition" / "pages" / pg.id
         dump(base / "page.json", pg.page)
         for vc in pg.visuals:
             dump(base / "visuals" / vc["name"] / "visual.json", vc)
-    dump(OUT / "definition" / "pages" / "pages.json",
+    dump(out / "definition" / "pages" / "pages.json",
          {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
-          "pageOrder": [pg.id for pg in built], "activePageName": built[0].id})
+          "pageOrder": [pg.id for pg in pages_], "activePageName": pages_[0].id})
+    if bookmarks:
+        bdir = out / "definition" / "bookmarks"
+        for bm in bookmarks:
+            dump(bdir / f"{bm['name']}.bookmark.json", bm)
+        dump(bdir / "bookmarks.json",
+             {"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+              "items": [{"name": bm["name"]} for bm in bookmarks]})
+    return out
+
+
+def build():
+    assert len(ICONS) == 18, (f"expected 18 rail icons (9 icons x white/grey) in {ICON_DIR}, found {len(ICONS)}: "
+                              "an icon is missing or an extra one was added")
+    built = pages.build_all()
+    write_report(NAME, built, pbir.BOOKMARKS, OUT.parent)
     print(f"built {len(built)} pages, {sum(len(p.visuals) for p in built)} visuals, {len(MEASURES)} story measures -> {OUT}")
+    print("act_first skipped (custom layouts):", ", ".join(n.replace(" · ", " - ") for n in pages.LAYOUT_SKIPPED) or "none")
+    return built
+
+
+def build_board_pack():
+    import board
+    built = board.build_board()
+    write_report(BOARD_NAME, built, [], OUT.parent, extra_filters=[board.period_filter()])
+    print(f"built {len(built)} board slides, {sum(len(p.visuals) for p in built)} visuals -> {BOARD_OUT}")
     return built
 
 
 # ------------------------------------------------------------------ checks
-def check(built):
+def layout_errors(pages_):
+    """Visuals must sit inside the page and above the footer band. Child positions are stored relative to their
+    parent group, so they are resolved to page coordinates first."""
+    out = []
+    for pg in pages_:
+        limit = pg.height * 0.928 if pg.height == 1800 else pg.height
+        groups = {v["name"]: v["position"] for v in pg.visuals}
+        for vc in pg.visuals:
+            p = dict(vc["position"])
+            if vc.get("parentGroupName"):
+                gp = groups[vc["parentGroupName"]]
+                p["x"] += gp["x"]
+                p["y"] += gp["y"]
+            if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
+                out.append(f"LAYOUT {pg.display}: {vc.get('visual', {}).get('visualType', 'group')} at {p} outside page/footer")
+    return out
+
+
+def check(built, out):
     import jsonschema
     from referencing import Registry, Resource
     import urllib.request
@@ -145,7 +204,7 @@ def check(built):
 
     registry = Registry(retrieve=retrieve)
     errors = 0
-    files = sorted(OUT.rglob("*.json"))
+    files = sorted(out.rglob("*.json"))
     for f in files:
         if f.name == "localSettings.json":
             continue
@@ -158,7 +217,7 @@ def check(built):
         errs = list(v.iter_errors(doc))
         for e in errs[:5]:
             errors += 1
-            print(f"SCHEMA {f.relative_to(OUT)}: {'/'.join(map(str, e.absolute_path))}: {e.message[:200]}")
+            print(f"SCHEMA {f.relative_to(out)}: {'/'.join(map(str, e.absolute_path))}: {e.message[:200]}")
     print(f"schema-checked {len(files)} files")
 
     cols, meas = load_model()
@@ -188,14 +247,16 @@ def check(built):
             for v in o:
                 walk(v)
 
-    for f in OUT.rglob("visual.json"):
+    for f in out.rglob("visual.json"):
         walk(json.loads(f.read_text(encoding="utf-8")))
-    walk(json.loads((OUT / "definition" / "report.json").read_text(encoding="utf-8")))
+    walk(json.loads((out / "definition" / "report.json").read_text(encoding="utf-8")))
     # filter column refs use Source aliases; check field entries
-    for f in OUT.rglob("visual.json"):
+    for f in out.rglob("visual.json"):
         d = json.loads(f.read_text(encoding="utf-8"))
         for flt in d.get("filterConfig", {}).get("filters", []):
-            c = flt["field"]["Column"]
+            c = flt["field"].get("Column")
+            if c is None:  # measure filter: the generic walk() above already checks the measure
+                continue
             if (c["Expression"]["SourceRef"]["Entity"], c["Property"]) not in cols:
                 missing.add(("filter column", c["Property"]))
     # DAX references in story measures
@@ -214,19 +275,19 @@ def check(built):
     for kind, nm in sorted(missing):
         errors += 1
         print(f"REF {kind}: {nm}")
-    # layout: visuals inside page, above footer band
-    for pg in built:
-        limit = pg.height * 0.928 if pg.height == 1800 else pg.height
-        for vc in pg.visuals:
-            p = vc["position"]
-            if p["x"] < 0 or p["x"] + p["width"] > pg.width + 0.5 or p["y"] + p["height"] > limit:
-                errors += 1
-                print(f"LAYOUT {pg.display}: {vc['visual']['visualType']} at {p} outside page/footer")
+    for msg in layout_errors(built):
+        errors += 1
+        print(msg)
     print("OK" if errors == 0 else f"{errors} problem(s)")
     return errors
 
 
 if __name__ == "__main__":
     b = build()
+    bb = build_board_pack()
     if "--check" in sys.argv:
-        sys.exit(1 if check(b) else 0)
+        e1 = check(b, OUT)
+        e2 = check(bb, BOARD_OUT)
+        tot = (e1 or 0) + (e2 or 0)
+        print("OK" if tot == 0 else f"FAILED ({tot} problem(s))")
+        sys.exit(1 if tot else 0)

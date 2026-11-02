@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "215453322af982d7a4ae",
   "position": {
-    "x": 1228,
+    "x": 1416,
     "y": 10,
     "z": 1500,
     "width": 180,
     "height": 62,
-    "tabOrder": 1500
+    "tabOrder": 400
   },
   "visual": {
     "visualType": "slicer",
@@ -147,11 +147,24 @@
             }
           }
         }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Filter: Role'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "Role_Value",
+      "groupName": "DimResource.Role_Value",
       "fieldChanges": true,
       "filterChanges": true
     }

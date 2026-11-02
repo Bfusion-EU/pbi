@@ -7,7 +7,7 @@
     "z": 1700,
     "width": 180,
     "height": 62,
-    "tabOrder": 1700
+    "tabOrder": 600
   },
   "visual": {
     "visualType": "slicer",
@@ -20,15 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimDate"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Year"
+                  "Property": "State_Value"
                 }
               },
-              "queryRef": "DimDate.Year",
-              "nativeQueryRef": "Year",
-              "displayName": "Year",
+              "queryRef": "DimProject.State_Value",
+              "nativeQueryRef": "State",
+              "displayName": "State",
               "active": true
             }
           ]
@@ -147,11 +147,24 @@
             }
           }
         }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Filter: State'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "Year",
+      "groupName": "DimProject.State_Value",
       "fieldChanges": true,
       "filterChanges": true
     }
