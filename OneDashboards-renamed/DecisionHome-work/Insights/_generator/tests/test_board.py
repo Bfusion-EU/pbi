@@ -70,3 +70,24 @@ def test_act_now_sort():
     srt = tbl["visual"]["query"]["sortDefinition"]["sort"][0]
     assert srt["field"]["Measure"]["Property"] == "Story | Home · Act Score" and srt["direction"] == "Descending"
     assert "filterConfig" in tbl and all("Measure" not in json.dumps(f["field"]) for f in tbl["filterConfig"]["filters"])
+
+
+def test_headline_size_12_on_every_slide():
+    for pg in PAGES:
+        hl = next(vc for vc in pg.visuals if vc["position"]["y"] == 96 and vc["visual"]["visualType"] == "card")
+        assert hl["visual"]["objects"]["labels"][0]["properties"]["fontSize"]["expr"]["Literal"]["Value"] == "12D"
+
+
+def test_single_month_card_with_title_measure():
+    for pg in PAGES:
+        at62 = [vc for vc in pg.visuals if vc["position"]["y"] == 62]
+        assert len(at62) == 1 and at62[0]["visual"]["visualType"] == "card"
+        assert "Story | Board · Month Title" in json.dumps(at62[0], ensure_ascii=False)
+    assert any(m["name"] == "Story | Board · Month Title" for m in MEASURES)
+
+
+def test_act_table_has_column_widths():
+    tbl = next(vc for vc in PAGES[0].visuals if vc.get("visual", {}).get("visualType") == "tableEx")
+    cw = tbl["visual"]["objects"]["columnWidth"]
+    vals = [int(float(c["properties"]["value"]["expr"]["Literal"]["Value"].rstrip("DL"))) for c in cw]
+    assert len(vals) == 3 and sum(vals) <= 730

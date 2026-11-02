@@ -166,6 +166,25 @@ and month, and lists any errors. Use `--only <text>` to check a subset and `--sh
   `Story | * Fill` twins.
 - **KPI tiles** are 90 px high. Numbers use `KPI_VALUE_PT` (24) and text values use `KPI_TEXT_PT` (20).
 
+## Board Pack
+
+A second PBIP, `OneDashboards - Board Pack.pbip`, is generated together with Insights. It uses the same measures and
+filters, but is laid out as 6 slides of 1280x720, ready to export:
+
+1. **Board summary** - the headline, six KPIs, three actions and the ranked "Act now" table.
+2. **Are we on course?** - schedule and delivery health.
+3. **Where will the money land?** - budget, forecast and variance.
+4. **Do we have the people?** - capacity and utilisation.
+5. **What could go wrong?** - risks and issues.
+6. **What changed since last month?** - the month-on-month movements.
+
+To export: open `OneDashboards - Board Pack.pbip` in Desktop, optionally pick a month in the filter pane (Report period),
+then File > Export > PDF or PowerPoint. Every slide shows the chosen month and the month it is compared with.
+
+The pack is regenerated on every build (`python build.py`), so do not edit it in Desktop: change `_generator/board.py`.
+Slide registers show fewer columns than the Insights pages to stay readable on a slide (for example the risk register
+leaves out Stage, Mitigation and Due).
+
 ## Rebuilding
 
 The pack is generated. Change the Python and rebuild rather than editing JSON by hand:

@@ -288,4 +288,6 @@ if __name__ == "__main__":
     if "--check" in sys.argv:
         e1 = check(b, OUT)
         e2 = check(bb, BOARD_OUT)
-        sys.exit(1 if (e1 or e2) else 0)
+        tot = (e1 or 0) + (e2 or 0)
+        print("OK" if tot == 0 else f"FAILED ({tot} problem(s))")
+        sys.exit(1 if tot else 0)

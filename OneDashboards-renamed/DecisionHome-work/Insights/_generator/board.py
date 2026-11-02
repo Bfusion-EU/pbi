@@ -1,5 +1,6 @@
 """Board Pack: 6 export-ready 1280x720 slides built from the same measures and factories as the Insights pack."""
 import pages
+import story_measures
 import pbir
 import extensions  # noqa: F401  (registers extension measures)
 import a11y
@@ -7,6 +8,14 @@ from ext_status import mm
 from pbir import (Page, P, M, C, s, b, st, textbox, shape, image, chart, legend, labels_on,
                   measure_colour, series_colours, table_style, cf_font, cf_back, f_in, headline, NAVY, ORANGE, RED,
                   TEAL, HEALTH_COLOURS)
+
+MONTH_TITLE = "Story | Board · Month Title"
+story_measures.add(MONTH_TITLE, story_measures.T,
+                   '"Status month: " & [Story | Status · MoM Month Label] & "  ·  compared with " '
+                   '& [Story | Status · MoM Previous Month Label]', None, "Story\\Board",
+                   "Board Pack: month line shown under the title bar of every slide.")
+
+pbir.EXTENSION_MEASURES.add(MONTH_TITLE)
 
 W, H = 1280, 720
 DP, DT, DR = pages.DP, pages.DT, pages.DR
@@ -27,12 +36,11 @@ def frame(pg, n_, question):
     pg.add(16, 10, 124, 36, textbox([[("BFUSION", st("DIN", 16, "#FFFFFF", True))]]), key="brand")
     pg.add(150, 8, 960, 40, textbox([[(question, st("DIN", 20, "#FFFFFF", True))]]), key="question")
     pg.add(1180, 16, 84, 28, textbox([[(f"{n_} / 6", st("Segoe UI", 11, "#FFFFFF"))]], align="right"), key="pageno")
-    pg.add(16, 62, 104, 24, textbox([[("Status month:", st("Segoe UI", 11, pbir.MUTED))]]), key="month_lbl")
-    month = headline(mm("Month Label"), bg="#FFFFFF", border="#FFFFFF", size=11)
+    month = headline(MONTH_TITLE, bg="#FFFFFF", border="#FFFFFF", size=11)
     month["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
     month["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
     month["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI Semibold")
-    pg.add(120, 62, 496, 24, month, key="month")
+    pg.add(16, 62, 600, 24, month, key="month")
     logo = image(LOGO_RES, "OnePlan logo")
     logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")
     pg.add(1150, 680, 114, 30, logo, key="oneplan_logo")
@@ -41,7 +49,7 @@ def frame(pg, n_, question):
 def slide(key, n_, head, kpis=None):
     pg = Page(pbir.uid("board-page", key), DISPLAYS[key], W, H, background_colour="#FFFFFF", display_option="FitToPage")
     frame(pg, n_, dict(SLIDES)[key])
-    pg.add(16, Y0, 1248, 56, headline(head), key="headline")
+    pg.add(16, Y0, 1248, 56, headline(head, size=12), key="headline")
     if kpis:
         pages.kpi_row(pg, YK, kpis, h=80, x0=16, width=1248)
     return pg
@@ -65,9 +73,12 @@ def build_summary():
     score = M("Story | Home · Act Score")
     # Rows only where the project is flagged: Act Reason and Act Score are blank for the others.
     # No filter on the extension measure (it renders empty in Desktop).
-    t = chart("tableEx", {"Values": [P(DP("Name"), "Project"), P(M("Story | Home · Act Reason"), "Why"),
-                                      P(score, "Impact")]},
-              "Act now — ranked by impact", table_style(10), sort=[(score, "Descending")])
+    fields = [DP("Name"), M("Story | Home · Act Reason"), score]
+    style = table_style(10)
+    style["columnWidth"] = [{"properties": {"value": pbir.n(w)}, "selector": {"metadata": pbir.qref(f)}}
+                            for f, w in zip(fields, (300, 360, 60))]
+    t = chart("tableEx", {"Values": [P(fields[0], "Project"), P(fields[1], "Why"), P(score, "Impact")]},
+              "Act now — ranked by impact", style, sort=[(score, "Descending")])
     put(pg, RIGHT, t, "v_act")
     return pg
 

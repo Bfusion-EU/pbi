@@ -1,0 +1,508 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "Fluent2-CY26SU08",
+      "reportVersionAtImport": {
+        "visual": "2.12.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "BFusionInsightsTheme.json",
+      "reportVersionAtImport": {
+        "visual": "2.12.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "7b5321933dd0670c09c2",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactCost"
+              }
+            },
+            "Property": "CostCategory"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "2a4933d0c90655000d5a",
+        "ordinal": 1,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProgram"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "p",
+              "Entity": "DimProgram",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Contains": {
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "p"
+                            }
+                          },
+                          "Property": "Name"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "'Template'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "99c6d23741c414102ccb",
+        "ordinal": 2,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimPortfolio"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "p",
+              "Entity": "DimPortfolio",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Contains": {
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "p"
+                            }
+                          },
+                          "Property": "Name"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "'Template'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "8a69e305e6350904ceba",
+        "ordinal": 3,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "p",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Contains": {
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "p"
+                            }
+                          },
+                          "Property": "Name"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "'Template'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "16ef37a2300100c89220",
+        "ordinal": 4,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactCost"
+              }
+            },
+            "Property": "DetailRow"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "c",
+              "Entity": "FactCost",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "c"
+                          }
+                        },
+                        "Property": "DetailRow"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "false"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "4ecb84c571498b8685ac",
+        "ordinal": 6,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimPortfolio"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "51a894ee6c2021682626",
+        "ordinal": 7,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "1f9b901fcf3fa10cc48e",
+        "ordinal": 8,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProgram"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "630b1be4bc19e226d2a1",
+        "ordinal": 20,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimDate"
+              }
+            },
+            "Property": "Period"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      }
+    ]
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "Fluent2-CY26SU08",
+          "path": "BaseThemes/Fluent2-CY26SU08.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "bfv5_footer_band_1800x1800.png",
+          "path": "bfv5_footer_band_1800x1800.png",
+          "type": "Image"
+        },
+        {
+          "name": "bfv5_footer_band_1800x1000.png",
+          "path": "bfv5_footer_band_1800x1000.png",
+          "type": "Image"
+        },
+        {
+          "name": "OnePlan_logo_-_dark_background9901469509814106.png",
+          "path": "OnePlan_logo_-_dark_background9901469509814106.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-benefits-grey.png",
+          "path": "rail-benefits-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-benefits-white.png",
+          "path": "rail-benefits-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-cc-grey.png",
+          "path": "rail-cc-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-cc-white.png",
+          "path": "rail-cc-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-exec-grey.png",
+          "path": "rail-exec-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-exec-white.png",
+          "path": "rail-exec-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-finance-grey.png",
+          "path": "rail-finance-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-finance-white.png",
+          "path": "rail-finance-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-governance-grey.png",
+          "path": "rail-governance-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-governance-white.png",
+          "path": "rail-governance-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-portfolio-grey.png",
+          "path": "rail-portfolio-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-portfolio-white.png",
+          "path": "rail-portfolio-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-resources-grey.png",
+          "path": "rail-resources-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-resources-white.png",
+          "path": "rail-resources-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-risk-grey.png",
+          "path": "rail-risk-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-risk-white.png",
+          "path": "rail-risk-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-schedule-grey.png",
+          "path": "rail-schedule-grey.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-schedule-white.png",
+          "path": "rail-schedule-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "BFusionInsightsTheme.json",
+          "path": "BFusionInsightsTheme.json",
+          "type": "CustomTheme"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  },
+  "slowDataSourceSettings": {
+    "isCrossHighlightingDisabled": false,
+    "isSlicerSelectionsButtonEnabled": false,
+    "isFilterSelectionsButtonEnabled": false,
+    "isFieldWellButtonEnabled": false,
+    "isApplyAllButtonEnabled": false
+  }
+}
