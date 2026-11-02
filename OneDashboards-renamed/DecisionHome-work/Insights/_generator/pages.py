@@ -54,6 +54,8 @@ HIDDEN_PAGES += HOME_TIPS
 PID = {k: uid("insights-page", k) for k, _ in PAGES + HIDDEN_PAGES}
 ORDER = [k for k, _ in PAGES]
 LAYOUT_SKIPPED = []  # story pages layout.act_first left as they are (custom layouts); filled by build_all
+# pages layout.act_first must leave alone: exec: ④ is navigation; status: its list (change ledger) is already ②
+ACT_FIRST_EXCLUDED = ("home", "exec", "status")
 
 # ---------------------------------------------------------------- common bits
 DP = lambda p: C("DimProject", p)  # noqa: E731
@@ -765,7 +767,7 @@ def build_all():
     import layout
     skipped = []
     for k, _ in PAGES:
-        if k in built and k not in ("home", "exec") and not layout.act_first(built[k]):
+        if k in built and k not in ACT_FIRST_EXCLUDED and not layout.act_first(built[k]):
             skipped.append(dict(PAGES)[k])
     LAYOUT_SKIPPED[:] = skipped
     a11y.apply(pages_out)

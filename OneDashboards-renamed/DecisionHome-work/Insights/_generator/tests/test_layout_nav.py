@@ -35,3 +35,11 @@ def test_skip_list():
     names = dict(pages.PAGES)
     assert not any(names[k] in pages.LAYOUT_SKIPPED for k in STANDARD)
     assert names["exec"] not in pages.LAYOUT_SKIPPED            # excluded on purpose, not "skipped"
+
+
+def test_status_keeps_its_ledger_first():
+    pg = page("status")
+    s2, s3, s4 = sec(pg, 2), sec(pg, 3), sec(pg, 4)
+    assert s2["position"]["y"] < s3["position"]["y"] < s4["position"]["y"]
+    assert sec_text(s2).startswith("②")
+    assert dict(pages.PAGES)["status"] not in pages.LAYOUT_SKIPPED
