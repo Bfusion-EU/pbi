@@ -97,5 +97,27 @@ def test_status_page_is_what_changed():
              and vc["position"]["y"] == pages.Y1K]
     assert len(pulse) == 7
     ledger = [vc for vc in pg.visuals if "Story | Status · MoM L · Size" in json.dumps(vc, ensure_ascii=False)]
-    assert len(ledger) == 1 and "Story | Slip · Flag Text" in json.dumps(ledger[0], ensure_ascii=False)
+    assert len(ledger) == 1
+    ltxt = json.dumps(ledger[0], ensure_ascii=False)
+    # (a) the May-slip column is the change-gated ledger measure, not the ungated slip flag
+    assert "Story | Status · MoM L · May Slip" in ltxt
+    assert "Story | Slip · Flag Text" not in ltxt
+    # (b) the ledger carries the REAL_PROJECTS visual filter
+    assert "filterConfig" in ledger[0] and ledger[0]["filterConfig"]["filters"]
     assert "Story | Status · MoM Headline" in json.dumps(pg.visuals, ensure_ascii=False)
+
+
+def test_status_page_subtitle_fits():
+    # (c) the page subtitle is a textbox run that must fit on one line (pages.SUBTITLE_MAX)
+    pg = _status_page()
+    runs = []
+    for vc in pg.visuals:
+        vis = vc.get("visual", {})
+        if vis.get("visualType") != "textbox":
+            continue
+        for general in vis["objects"]["general"]:
+            for para in general["properties"]["paragraphs"]:
+                runs += [r["value"] for r in para["textRuns"]]
+    subs = [r for r in runs if "Report period picks the month" in r]
+    assert len(subs) == 1
+    assert len(subs[0]) <= pages.SUBTITLE_MAX, (len(subs[0]), pages.SUBTITLE_MAX)

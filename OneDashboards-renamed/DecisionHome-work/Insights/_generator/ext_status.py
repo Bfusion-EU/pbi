@@ -1,5 +1,6 @@
-"""5c · What Changed — month-on-month change briefing (§ month on month) plus each project against its own previous
-status report, and who is not reporting?
+"""5c · What Changed — month-on-month change briefing: each project's latest status report at month end versus last
+month's (pulse + change ledger), plus each project against its own previous report (heat strip, drift) and who is
+not reporting.
 
 Data: FactStatusReport (one row per OnePlan status report; ReportEndKey -> DimDate
 is the active date relationship, ProjectKey -> DimProject).
@@ -352,6 +353,7 @@ for _nm in ("Health Change", "Finish Shift (d)", "Forecast Delta", "Risks Delta"
     add(mm("L · " + _nm), _src["dataType"], f"IF ( NOT ISBLANK ( {mref('Change Size')} ), {mref(_nm)} )",
         _src["formatString"], MFOLDER + "\\Ledger", f"{_nm} of a project that changed since last month; blank otherwise.")
 add(mm("L · Size"), I, mref("Change Size"), "0", MFOLDER + "\\Ledger")
+add(mm("L · May Slip"), T, f'IF ( NOT ISBLANK ( {mref("Change Size")} ), [Story | Slip · Flag Text] )', folder=MFOLDER + "\\Ledger", desc="✓ for a project that changed since last month and may slip; blank otherwise.")
 
 add(mm("Headline"), T, f"""
 VAR _lbl = {mref("Month Label")}
@@ -524,7 +526,7 @@ def build():
         {"Values": [P(DP("Name"), "Project"), P(hc, "Health: last month → now"),
                     P(M(mm("L · Finish Shift (d)")), "Finish Δ days"), P(M(mm("L · Forecast Delta")), "Forecast Δ"),
                     P(M(mm("L · Risks Delta")), "Risks Δ"), P(M(mm("L · State Change")), "State"),
-                    P(M("Story | Slip · Flag Text"), "May slip"), P(size, "Change size")]},
+                    P(M(mm("L · May Slip")), "May slip"), P(size, "Change size")]},
         "Change ledger — this month versus last month", obj, sort=[(size, "Descending")]),
         key="v_ledger", filters=[pages.REAL_PROJECTS])
 
