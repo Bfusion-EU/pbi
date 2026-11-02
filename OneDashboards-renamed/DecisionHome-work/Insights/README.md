@@ -11,7 +11,7 @@ Open `OneDashboards - Insights.pbip` in Power BI Desktop. It connects to the pub
 
 Every chapter answers **one question** and reads from top to bottom:
 
-1. **Header**: `AREA | QUESTION?` with slicers on the right. Portfolio, Program and State slicers are synced across pages.
+1. **Header**: `AREA | QUESTION?` with slicers on the right. One Portfolio › Program › Project drop-down (it drills down) and the State slicer are synced across pages.
    A Year slicer appears only where it really filters the page (money and people); project-based pages use State instead.
 2. **Orange headline**: one sentence that a DAX measure writes from the data in the current filter.
    It gives the answer before the charts do.
@@ -38,7 +38,7 @@ On Executive, ④ is one row of 7 chapter buttons.
 | 2 | Portfolio | Are we investing in the right things? | Portfolio board, quarterly |
 | 2b | Pipeline, Gates & Dependencies (hidden tab: reach via the chapter strip) | Where is the pipeline stuck, and who waits on whom? | PMO, portfolio board |
 | 2c | Scenario Comparison (hidden tab: reach via the chapter strip) | If we fund scenario A instead of B, what do we gain? | Portfolio board |
-| 2d | Project One-Pager (hidden tab: reach via the chapter strip) | Everything about one project before I decide (pick it in the Project slicer) | Sponsors, PMO |
+| 2d | Project One-Pager (hidden tab: reach via the chapter strip) | Everything about one project before I decide (pick it in the Portfolio › Program › Project slicer) | Sponsors, PMO |
 | 3 | Financials | Are we spending as planned (at completion)? | Finance & PMO, monthly close |
 | 3b | Pareto & Portfolio P&L (hidden tab: reach via the chapter strip) | Where does the money concentrate, and what does it return? | Finance & portfolio board |
 | 4 | Resource Management | Do we have the people? | Resource managers, monthly |
@@ -53,7 +53,7 @@ On Executive, ④ is one row of 7 chapter buttons.
 | 7 | Benefits & Value | Will it pay off? | Sponsors, quarterly |
 | 8 | Governance & Data Trust | Can we trust the data? | PMO, weekly |
 
-Hidden pages: **Resource Detail (drill-through)** (right-click any resource), **Project One-Pager (drill-through)** (right-click any project → *Drill through*, with an *Open in OnePlan* button; page 2d has the same content with a Project slicer, 36 px lower because of the navigation row)
+Hidden pages: **Resource Detail (drill-through)** (right-click any resource), **Project One-Pager (drill-through)** (right-click any project → *Drill through*, with an *Open in OnePlan* button; page 2d has the same content with a Portfolio › Program › Project slicer, 36 px lower because of the navigation row)
 and two hover cards (project, resource) that appear on charts and tables grouped by project or resource.
 
 The page design takes ideas from OnePlan's own personas and questions ("Are we funding the right things?",
@@ -74,7 +74,7 @@ Financials, Schedule, Resources, Risk, Portfolio, Benefits, Status reports, Gove
 - Trend lines and "vs last month" chips come from status-report history (each active project's latest report
   as of month end, last 6 months).
 - Icon rail on the left to every chapter; card footers link to every follow-on page.
-- Portfolio and Program slicers on Home are synced with every chapter.
+- The Portfolio › Program › Project slicer on Home is synced with every chapter.
 - Measures: report-level, folder `Story\Home` (`ext_home.py`).
 ## Storytelling measures
 

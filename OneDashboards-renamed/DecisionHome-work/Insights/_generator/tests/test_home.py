@@ -105,8 +105,10 @@ def test_build_all_has_single_ext_home_page():
 
 def test_home_slicers_sync():
     sl = [vc for vc in _home().visuals if vc.get("visual", {}).get("visualType") == "slicer"]
-    assert len(sl) == 2
-    assert all("syncGroup" in vc["visual"] for vc in sl)
+    assert len(sl) == 1                     # one Portfolio > Program > Project drop-down
+    v = sl[0]["visual"]
+    assert v["syncGroup"]["groupName"] == "DimProject.Portfolio Name"
+    assert [p["displayName"] for p in v["query"]["queryState"]["Values"]["projections"]] == ["Portfolio", "Program", "Project"]
 
 
 def _bm(name):
@@ -420,7 +422,7 @@ def test_branding_present():
     assert "Command center" in repr(sub["visual"]["objects"]["general"])
     # logo: bottom-right corner of the right-column panel, above the groups, not in a group
     pos = logo["position"]
-    assert (pos["x"], pos["y"], pos["width"], pos["height"]) == (1646, 924, 110, 48)
+    assert (pos["x"], pos["y"], pos["width"], pos["height"]) == ext_home.LOGO
     assert "parentGroupName" not in logo
     assert pos["z"] > max(vc["position"]["z"] for vc in pg.visuals if vc.get("parentGroupName"))
     assert logo["visual"]["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"]["expr"]["Literal"][
@@ -499,7 +501,7 @@ def test_cells_have_service_headroom():
 def test_header_single_band():
     pg = _home()
     band = _vc(pg, "band_bg", "shape")["position"]
-    assert (band["x"], band["y"], band["width"], band["height"]) == (104, 8, 1680, 76)
+    assert (band["x"], band["y"], band["width"], band["height"]) == (16, 8, 1768, 76)     # over the rail column too
     top, bottom = band["y"], band["y"] + band["height"]
     # nothing sits in the 16 px between the band and the grid, nothing pokes out of the band
     for vc in pg.visuals:
@@ -800,7 +802,7 @@ def test_area_sparklines_are_soft_and_bare():
         assert 80 <= ext_home.AREA_TRANSPARENCY <= 85
         for k in ("categoryAxis", "valueAxis", "legend"):
             assert o[k][0]["properties"]["show"] == pbir.b(False), (c, k)
-        assert o["markers"][0]["properties"]["show"] == pbir.b(False)
+        assert o["lineStyles"][0]["properties"]["showMarker"] == pbir.b(False)
     for s_ in ("Financials", "Schedule"):
         assert 'FORMAT ( _d, "mmm" )' in _expr(f"Spark From {s_}") and "MAXX" in _expr(f"Spark To {s_}")
 
@@ -817,3 +819,26 @@ def test_act_now_title_clear_of_the_panel_corner():
     t = _vc(pg, "act_title", "textbox")
     gx = grp[t["parentGroupName"]]["x"]
     assert gx + t["position"]["x"] >= ext_home.RIGHT_X + 24
+
+
+def test_rail_starts_under_the_band():
+    pg = _home()
+    band = _vc(pg, "band_bg", "shape")["position"]
+    rail = _vc(pg, "rail_bg", "shape")["position"]
+    assert rail["y"] >= band["y"] + band["height"]
+    assert _vc(pg, "rail_img_cc", "image") is None and _vc(pg, "rail_on_cc", "shape") is None   # no Home button on Home
+    btns = sorted(vc["position"]["y"] for vc in pg.visuals if vc["name"] in
+                  {_name(pg, f"rail_btn_{icon}", "actionButton") for icon, *_ in ext_home.RAIL})
+    assert len(btns) == len(ext_home.RAIL) - 1 and btns[0] >= rail["y"]
+    assert btns[-1] + 52 <= rail["y"] + rail["height"]
+
+
+def test_pmo_column_stacks_without_overlap():
+    pg = _home()
+    keys = [("act_tbl", "tableEx"), ("act_drill", "actionButton"), ("next_title", "textbox"), ("next_tbl", "tableEx")]
+    ps = [_vc(pg, k, t)["position"] for k, t in keys]
+    for a, b_ in zip(ps, ps[1:]):
+        assert a["y"] + a["height"] <= b_["y"] + 0.01, (a, b_)
+    bg = _vc(pg, "act_bg", "shape")["position"]
+    assert ps[-1]["y"] + ps[-1]["height"] <= bg["y"] + bg["height"]
+    assert bg["y"] + bg["height"] <= ext_home.LOGO[1]                              # the logo sits under the panel

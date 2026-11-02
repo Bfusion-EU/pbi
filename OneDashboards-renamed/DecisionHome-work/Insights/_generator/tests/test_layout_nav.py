@@ -191,7 +191,7 @@ def test_current_button_and_crumb_alt():
 
 def test_separators_decorative():
     pg = page("finance2")
-    seps = [v for v in pg.visuals if v["name"] in {pbir.uid(pg.id, f"nav_sep_{k}", "textbox") for k in ("finance", "finance2")}]
+    seps = [v for v in pg.visuals if v["name"] in {pbir.uid(pg.id, f"nav_sep_{k}", "actionButton") for k in ("finance", "finance2")}]
     assert len(seps) == 2
     import a11y
     content_max = max(v["position"]["tabOrder"] for v in pg.visuals
@@ -233,3 +233,90 @@ def test_hidden_deep_dives_reachable():
     named = {pages.PID[k] for k, d in pages.PAGES if layout._code(d) and layout._code(d)[1]}
     assert len(named) == 10
     assert named <= seen, named - seen
+
+
+def _nav_items(pg):
+    return sorted((v for v in pg.visuals if not v.get("parentGroupName") and v["position"]["y"] == layout.NAV_Y
+                   and v["position"]["height"] == layout.NAV_H and v["position"]["x"] < 900),
+                  key=lambda v: v["position"]["x"])
+
+
+def test_breadcrumb_is_one_aligned_row_of_buttons():
+    """Home, separators, chapter crumb and current page: all buttons (text centred vertically), same y and height,
+    each starting where the previous ends; every label fits its button with the same margin on both sides."""
+    for k, _ in pages.PAGES:
+        if k == "home":
+            continue
+        pg = page(k)
+        items = _nav_items(pg)
+        assert items[0]["position"]["x"] == 16, k
+        assert all(v["visual"]["visualType"] == "actionButton" for v in items), k
+        for a, b_ in zip(items, items[1:]):
+            assert b_["position"]["x"] == a["position"]["x"] + a["position"]["width"], (k, b_["name"])
+        for v in items:
+            props = v["visual"]["objects"]["text"][1]["properties"]
+            text = props["text"]["expr"]["Literal"]["Value"].strip("'")
+            if text == "›":
+                assert "visualLink" not in v["visual"]["visualContainerObjects"], k
+                continue
+            assert props["leftMargin"] == props["rightMargin"] == pbir.n(layout.PAD_X), (k, text)
+            assert v["position"]["width"] == layout._w(text), (k, text)
+
+
+def test_nav_labels_are_measured():
+    labels = ["Home"] + [layout._label(d) for k, d in pages.PAGES if layout._code(d)]
+    for t in labels:
+        assert set(t) <= set(layout.BOLD10_PX), t                       # no fallback guess for any glyph
+        text_px = sum(layout.BOLD10_PX[c] for c in t)
+        assert layout._w(t) - 2 * layout.PAD_X >= text_px + 4, t       # never wraps (Home did at 61 px)
+    assert layout._w("Home") >= 70
+
+
+def test_current_page_is_not_a_link():
+    pg = page("finance2")
+    here = next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, "nav_here_finance2", "actionButton"))
+    assert "visualLink" not in here["visual"]["visualContainerObjects"]
+    assert "You are here" in json.dumps(here["visual"]["visualContainerObjects"]["general"])
+
+
+def _header_slicers(pg):
+    return [v for v in pg.visuals if v.get("visual", {}).get("visualType") == "slicer" and v["position"]["y"] < 80]
+
+
+def _levels(v):
+    return [p["queryRef"] for p in v["visual"]["query"]["queryState"]["Values"]["projections"]]
+
+
+def test_portfolio_slicer_drills_to_program_and_project():
+    """The user's layout: one Portfolio > Program > Project drop-down instead of separate Portfolio / Program
+    slicers; it takes both slots when a Program slicer used to follow."""
+    levels = ["DimProject.Portfolio Name", "DimProject.Program Name", "DimProject.Name"]
+    seen = 0
+    for pg in BUILT.values():
+        sl = _header_slicers(pg)
+        assert not any(_levels(v) == ["DimProject.Program Name"] for v in sl), pg.display
+        for v in sl:
+            if _levels(v)[0] == "DimProject.Portfolio Name":
+                seen += 1
+                assert _levels(v) == levels, pg.display
+                assert v["position"]["width"] in (180, 328, 368, 380), pg.display      # 328: Home band, 380: One-Pager
+        xs = sorted((v["position"]["x"], v["position"]["x"] + v["position"]["width"]) for v in sl)
+        assert all(a[1] <= b_[0] for a, b_ in zip(xs, xs[1:])), pg.display          # no overlaps
+    assert seen >= 14
+
+
+def test_subtitles_fit_on_one_line():
+    try:
+        from PIL import ImageFont
+        font = ImageFont.truetype("C:/Windows/Fonts/segoeui.ttf", 1000)
+    except (ImportError, OSError):
+        import pytest
+        pytest.skip("Segoe UI not available")
+    for pg in BUILT.values():
+        for v in pg.visuals:
+            if v["name"] != pbir.uid(pg.id, "subtitle", "textbox"):
+                continue
+            run = v["visual"]["objects"]["general"][0]["properties"]["paragraphs"][0]["textRuns"][0]
+            pt = float(run["textStyle"]["fontSize"][:-2])
+            px = font.getlength(run["value"]) * pt * 4 / 3 / 1000
+            assert px <= v["position"]["width"] - 16, (pg.display, round(px))

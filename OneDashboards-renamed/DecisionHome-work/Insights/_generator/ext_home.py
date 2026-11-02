@@ -558,30 +558,30 @@ def progress(pg, x, y, w, h, value_measure, rest_measure, lo, hi, colour, key, p
     pg.add(x, round(y + h / 2 - CHART_H / 2 - BAR_DY, 2), w, CHART_H, v, key=key, parent=parent)
 
 
-def dark_slicer(field, label):
-    v = slicer(field, label, dark=True)
+def dark_slicer(levels):
+    v = pbir.hierarchy_slicer(levels, dark=True)
     v["objects"]["items"] = [{"properties": {"fontFamily": s("Segoe UI"), "textSize": n(10),
                                              "fontColor": col_solid(INK2), "background": col_solid(PANEL)}}]
     # Desktop ignores items.background / dropdown styling for the closed state (still white box); left as is.
     return v
 
 
+RAIL_Y, RAIL_STEP = 168, 64   # first chapter button; the rail starts under the full-width header band (the user's layout)
+
+
 def build_rail(pg):
-    panel(pg, 16, 16, 72, 968, "rail_bg")
-    for k, (icon, target, tip) in enumerate(RAIL):
-        y = 32 + k * 64
-        on = target == "home"
-        if on:
-            pg.add(26, y, 52, 52, shape(ORANGE, radius=12), key=f"rail_on_{icon}")
-        pg.add(36, y + 10, 32, 32, image(f"rail-{icon}-{'white' if on else 'grey'}.png", f"{icon} icon"), key=f"rail_img_{icon}")
-        if not on:
-            pg.add(26, y, 52, 52, ghost_link(target, tip), key=f"rail_btn_{icon}")
+    """Chapter buttons down the left. Home itself has no button (the user removed the Command-center one: you are on it)."""
+    panel(pg, 16, 100, 72, 884, "rail_bg")
+    for k, (icon, target, tip) in enumerate(r for r in RAIL if r[1] != "home"):
+        y = RAIL_Y + k * RAIL_STEP
+        pg.add(36, y + 10, 32, 32, image(f"rail-{icon}-grey.png", f"{icon} icon"), key=f"rail_img_{icon}")
+        pg.add(26, y, 52, 52, ghost_link(target, tip), key=f"rail_btn_{icon}")
     pg.add(16, 944, 72, 24, textbox([[("bfusion.eu", st("Segoe UI", 9, LABEL))]], align="center"), key="rail_site")
 
 
-BAND = (X0, 8, X1 - X0, 76)    # the one header band: x, y, w, h  (y 8-84)
+BAND = (16, 8, X1 - 16, 76)    # the one header band, over the rail column too: x, y, w, h  (y 8-84)
 BAR_H = (10, 17, 13, 20, 9)   # the BFusion "equaliser" mark
-BX = X0 + 16                   # brand left edge inside the band
+BX = BAND[0] + 25               # brand left edge inside the band
 
 
 def build_brand(pg):
@@ -730,8 +730,7 @@ def build_band(pg):
                key=f"chip{k}")
         # the dot after the card, so it sits on top of it
         pg.add(x + CH_DOT_X, y + (CH_H - CH_DOT) / 2, CH_DOT, CH_DOT, shape(CHIPS[k][3], radius=50), key=f"chip_dot{k}")
-    pg.add(1220, 15, 160, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
-    pg.add(1390, 15, 160, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
+    pg.add(1220, 15, 328, 62, dark_slicer(pages.PROJECT_LEVELS), key="sl_portfolio")
 
 
 GRID_X0, GRID_Y, COL_W, ROW_H, GAP = 104, (100, 552), 297, 436, 16
@@ -810,7 +809,7 @@ FACT_LABEL_PX = {"EAC vs budget": 96, "Worst project": 90, "On track": 55, "Wors
                  "Avg days since": 97, "Project plans failing": 131, "Other plans failing": 122}
 R_FOOT, FOOT_H, FOOT_R, FOOT_GAP = ROW_H - 44, 28, 14, 8     # action pills
 CELL_X = 2                 # table cells carry ~14 px of left padding, so they start left of the 16 px text edge
-ACT_H = 398                # Act-now table: header + 8 rows
+ACT_TOP, ACT_H = 48, 405   # Act-now table: top (below RIGHT_Y), height (header + 8 rows)
 
 # text widths in px (Segoe UI, measured): chip texts at 10 pt
 CHIP_TEXT_PX = {"target 80%": 64, "target ≥ 1.0": 69, "target 90": 53}
@@ -922,8 +921,7 @@ def area_spark(measure, colour):
                "categoryAxis": [{"properties": {"show": b(False), "gridlineShow": b(False)}}],
                "valueAxis": [{"properties": {"show": b(False), "gridlineShow": b(False)}}],
                "labels": [{"properties": {"show": b(False)}}],
-               "lineStyles": [{"properties": {"strokeWidth": n(2), "showMarker": b(False), "areaShow": b(True)}}],
-               "markers": [{"properties": {"show": b(False)}}]},
+               "lineStyles": [{"properties": {"strokeWidth": n(2), "showMarker": b(False), "areaShow": b(True)}}]},
               sort=[(C("DimDate", "MonthStart"), "Ascending")])
     vco = v["visualContainerObjects"]
     vco["title"] = [{"properties": {"show": b(False)}}]
@@ -1139,17 +1137,21 @@ def act_table(why, impact=True):
     return tbl
 
 
-ACT_GRP = (RIGHT_X, RIGHT_Y, RIGHT_W, 44 + ACT_H)   # one Act-now version: title row + table
+ACT_GRP = (RIGHT_X, RIGHT_Y, RIGHT_W, ACT_TOP + ACT_H)   # one Act-now version: title row + table
+# PMO column under the Act-now list (y): One-Pager button / hint, "Next 30 days" title, its table; the panel behind it
+ACT_DRILL_Y = RIGHT_Y + ACT_TOP + ACT_H + 3
+NEXT_Y, NEXT_TBL_Y = ACT_DRILL_Y + 35, ACT_DRILL_Y + 75
+PMO_BG = (RIGHT_X, RIGHT_Y - 4, RIGHT_W, 826)      # ends above the OnePlan logo (the user's layout)
 ACT_TX = 24                # title inset: clear of the panel's rounded corner (Desktop draws radius 14 wide at this size)
 
 
 def build_act(pg, g_all, g_bucket, bm_all):
     """Seven versions of the Act-now list, each its own top-level group: all reasons, and one per chip bucket."""
     x, y = RIGHT_X, RIGHT_Y
-    pg.add(x + ACT_TX, y + 12, 392, 32, textbox([[("Act now", st("Segoe UI Semibold", 15, INK2, True)),
+    pg.add(x + ACT_TX, y + 12, 392, 38, textbox([[("Act now", st("Segoe UI Semibold", 15, INK2, True)),
                                               ("   ranked by impact", st("Segoe UI", 10, LABEL))]]),
            key="act_title", parent=g_all)
-    pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, act_table(hm("Act Reason")), key="act_tbl", parent=g_all,
+    pg.add(x + 8, y + ACT_TOP, RIGHT_W - 16, ACT_H, act_table(hm("Act Reason")), key="act_tbl", parent=g_all,
            filters=[pages.REAL_PROJECTS])
     for k, (_s, lbl, nm, _d) in enumerate(CHIPS):
         slug, grp = CHIP_SLUG[k], g_bucket[CHIP_SLUG[k]]
@@ -1159,7 +1161,7 @@ def build_act(pg, g_all, g_bucket, bm_all):
                pbir.bookmark_button("Show all ›", bm_all, "Show every Act-now project", fill=PANEL, hover="#26314F",
                                     press=ORANGE, font="#F29A6B", size=10, align="right", margin=4),
                key=f"act_all_{slug}", parent=grp)
-        pg.add(x + 8, y + 44, RIGHT_W - 16, ACT_H, act_table(hm(f"Tip {nm}"), impact=False), key=f"act_tbl_{slug}",
+        pg.add(x + 8, y + ACT_TOP, RIGHT_W - 16, ACT_H, act_table(hm(f"Tip {nm}"), impact=False), key=f"act_tbl_{slug}",
                parent=grp, filters=[pages.REAL_PROJECTS])
 
 
@@ -1167,12 +1169,12 @@ def build_right_pmo(pg, grp):
     """Everything in the PMO right column except the Act-now list (that lives in the act groups)."""
     view_pill(pg, grp, 0, "view_pill_pmo")
     x, y = RIGHT_X, RIGHT_Y
-    panel(pg, x, y, RIGHT_W, RIGHT_H, "act_bg", parent=grp)
-    pg.add(x + 16, y + 44 + ACT_H + 8, 200, 32, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
+    panel(pg, *PMO_BG, "act_bg", parent=grp)
+    pg.add(x + 16, ACT_DRILL_Y, 200, 32, pbir.drill_button("Open One-Pager ›", pages.PID["project"],
            "Select a project row first", fill=ORANGE, size=10), key="act_drill", parent=grp)
-    pg.add(x + 224, y + 44 + ACT_H + 12, RIGHT_W - 240, 26, textbox([[("or right-click › Drill through", st("Segoe UI", 10, LABEL))]]),
+    pg.add(x + 224, ACT_DRILL_Y + 4, RIGHT_W - 240, 26, textbox([[("or right-click › Drill through", st("Segoe UI", 10, LABEL))]]),
            key="act_hint", parent=grp)
-    pg.add(x + 16, y + 44 + ACT_H + 60, 300, 32, textbox([[("Next 30 days", st("Segoe UI Semibold", 15, INK2, True))]]),
+    pg.add(x + 16, NEXT_Y, 300, 38, textbox([[("Next 30 days", st("Segoe UI Semibold", 15, INK2, True))]]),
            key="next_title", parent=grp)
     due = M(hm("Due"))
     mobj = _dark_table_obj((due, pages.DP("Name"), pages.DT("Name")), (88, 130, 156))
@@ -1181,7 +1183,7 @@ def build_right_pmo(pg, grp):
                   "", mobj, sort=[(due, "Ascending")])
     for o in ("title", "background", "border"):
         miles["visualContainerObjects"][o] = [{"properties": {"show": b(False)}}]
-    pg.add(x + 8, y + 44 + ACT_H + 92, RIGHT_W - 16, LOGO[1] - 8 - (y + 44 + ACT_H + 92), miles, key="next_tbl", parent=grp,
+    pg.add(x + 8, NEXT_TBL_Y, RIGHT_W - 16, PMO_BG[1] + PMO_BG[3] - 28 - NEXT_TBL_Y, miles, key="next_tbl", parent=grp,
            filters=[pbir.f_in("DimTask", "Milestone", [True]), pbir.f_cmp("DimTask", "PercentDone", 3, 100),
                     pages.PROJECT_TASKS])
 
@@ -1203,13 +1205,13 @@ def build_right_exec(pg, grp):
                link_chip(chip, target), key=f"dec_go{k}", parent=grp)
 
 
-LOGO = (1646, 924, 110, 48)    # bottom-right corner of the right-column panel (the user's choice)
+LOGO = (1646, 924, 111, 64)    # bottom-right corner, under the PMO panel (the user's choice)
 
 
 def build_logo(pg):
     """OnePlan logo, added after the groups so it sits above the right column and is not inside a group."""
     logo = image("OnePlan_logo_-_dark_background9901469509814106.png", "OnePlan logo")
-    logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")  # 211x92 source, 110x48 box
+    logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")  # 211x92 source in a 111x64 box
     pg.add(*LOGO, logo, key="oneplan_logo")
 
 

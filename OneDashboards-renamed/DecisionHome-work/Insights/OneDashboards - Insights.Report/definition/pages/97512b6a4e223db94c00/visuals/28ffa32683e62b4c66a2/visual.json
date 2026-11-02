@@ -4,8 +4,8 @@
   "position": {
     "x": 1220,
     "y": 15,
-    "z": 5200,
-    "width": 160,
+    "z": 5000,
+    "width": 328,
     "height": 62,
     "tabOrder": 500
   },
@@ -30,6 +30,38 @@
               "nativeQueryRef": "Portfolio",
               "displayName": "Portfolio",
               "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program",
+              "displayName": "Program",
+              "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Project",
+              "displayName": "Project",
+              "active": false
             }
           ]
         }

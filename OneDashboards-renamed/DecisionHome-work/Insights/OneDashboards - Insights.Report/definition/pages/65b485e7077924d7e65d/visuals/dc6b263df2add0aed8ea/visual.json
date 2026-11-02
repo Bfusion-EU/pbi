@@ -23,13 +23,45 @@
                       "Entity": "DimProject"
                     }
                   },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio",
+              "displayName": "Portfolio",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program",
+              "displayName": "Program",
+              "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
                   "Property": "Name"
                 }
               },
               "queryRef": "DimProject.Name",
               "nativeQueryRef": "Project",
               "displayName": "Project",
-              "active": true
+              "active": false
             }
           ]
         }
@@ -154,7 +186,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Filter: Project'"
+                  "Value": "'Filter: Portfolio'"
                 }
               }
             }

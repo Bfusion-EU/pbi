@@ -306,8 +306,10 @@ def wrap_card(measure, label, size=14, **kw):
 
 
 def project_slicer():
-    """Single-select dropdown, no 'Select all'. Not synced: the pick belongs to the One-Pager only."""
-    v = pbir.slicer(DP("Name"), "Project", sync=False)
+    """Portfolio > Program > Project drop-down, single select, no 'Select all'. Not synced: the pick belongs to the
+    One-Pager only (synced, picking a project here would filter every other page down to it)."""
+    v = pbir.hierarchy_slicer(pages.PROJECT_LEVELS)
+    del v["syncGroup"]
     v["objects"]["selection"] = [{"properties": {"strictSingleSelect": b(True), "selectAllCheckboxEnabled": b(False)}}]
     return v
 

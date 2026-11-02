@@ -412,6 +412,15 @@ def slicer(field, label, sync=True, dark=False, group=None):
     return v
 
 
+def hierarchy_slicer(levels, dark=False):
+    """One drop-down slicer over a hierarchy, e.g. Portfolio > Program > Project. levels = [(field, label)]; it syncs
+    with the other pages under the first level's group, as the single-level slicer it replaces did."""
+    v = slicer(levels[0][0], levels[0][1], dark=dark)
+    v["query"]["queryState"]["Values"]["projections"] = [P(f, label, active=(k == 0))
+                                                         for k, (f, label) in enumerate(levels)]
+    return v
+
+
 def card(measure, label, value_colour=NAVY, colour_measure=None, size=None, units=0, dark=False):
     size = KPI_VALUE_PT if size is None else size
     value_colour = TEXT_SAFE.get(value_colour, value_colour)

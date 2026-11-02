@@ -79,11 +79,23 @@ def header(pg, area, question, subtitle, slicers):
     ssize = 11 if len(subtitle) <= SUBTITLE_MAX else 10
     pg.add(62, 52, 975, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
     x = W - 16 - len(slicers) * 188 + 8
-    for k, sl in enumerate(slicers):
+    k = 0
+    while k < len(slicers):
         # (field, label) or (field, label, sync group name) for a slicer outside the report-wide sync
-        field, label = sl[0], sl[1]
-        group = sl[2] if len(sl) > 2 else None
+        field, label = slicers[k][0], slicers[k][1]
+        group = slicers[k][2] if len(slicers[k]) > 2 else None
+        if field == DP("Program Name"):
+            raise ValueError("list Program right after Portfolio: they merge into one Portfolio > Program > Project slicer")
+        if field == DP("Portfolio Name"):
+            if group:
+                raise ValueError("the Portfolio > Program > Project slicer always syncs on the Portfolio group")
+            # Portfolio, Program and Project in one drop-down; it takes the Program slicer's slot too when that follows
+            slots = 2 if k + 1 < len(slicers) and slicers[k + 1][0] == DP("Program Name") else 1
+            pg.add(x + k * 188, 10, slots * 188 - 8, 62, hierarchy_slicer(PROJECT_LEVELS), key=f"slicer{k}")
+            k += slots      # skips the Program slicer it replaces
+            continue
         pg.add(x + k * 188, 10, 180, 62, slicer(field, label, group=group), key=f"slicer{k}")
+        k += 1
 
 
 def section(pg, y, num, question, explain, width=1768, x=16):
@@ -126,6 +138,8 @@ def analytic_page(key, area, question, subtitle, slicers, headline_measure):
     return pg
 
 
+# The header's Portfolio slicer drills down to Program and Project (header() merges a Portfolio + Program pair).
+PROJECT_LEVELS = [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"), (DP("Name"), "Project")]
 # Money / people pages: Year filters FactCost and FactCapacity/FactResourcePlan.
 STD_SLICERS = [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"),
                (DP("ProjectType_Value"), "Project type"), (C("DimDate", "Year"), "Year")]

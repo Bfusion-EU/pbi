@@ -244,7 +244,7 @@ def build():
                (DP("ProjectType_Value"), "Project type"), (step, "Process step")]
     pg = pages.analytic_page("lifecycle", "LIFECYCLE", "WHERE IS THE PIPELINE STUCK?",
                              "Projects per gate from OnePlan process steps, how long they have waited there, open gate "
-                             "approvals and the plan dependencies that make one project wait on another.",
+                             "approvals and the dependencies that hold one project up.",
                              slicers, L("Headline"))
 
     # ① pulse

@@ -6,6 +6,7 @@ nav_row(pg, key)     — 30 px row under the header: breadcrumb left, chapter st
 hide_deep_dives(...) — deep-dive pages ("5c · …") leave the tab bar; buttons and drill-through still reach them.
 Spec: BFusion-Apps docs/superpowers/specs/2026-11-02-insights-navigation-design.md
 """
+import math
 import re
 
 import pbir
@@ -76,8 +77,24 @@ def _label(display):
     return f"{num}{letter} {name}"
 
 
+# Bold Segoe UI 10 pt (13.33 px) glyph widths in px, measured from segoeuib.ttf. A per-character average (the old
+# 7.3 px) made short labels too narrow: "Home" wrapped inside its 61 px button and pushed the trail out of line.
+BOLD10_PX = {'a': 7.17, 'b': 8.27, 'c': 6.40, 'd': 8.25, 'e': 7.21, 'f': 5.11, 'g': 8.25, 'h': 8.03, 'i': 3.79,
+             'j': 3.79, 'k': 7.45, 'l': 3.79, 'm': 12.21, 'n': 8.07, 'o': 8.15, 'p': 8.27, 'q': 8.25, 'r': 5.31,
+             's': 5.87, 't': 5.19, 'u': 8.07, 'v': 7.23, 'w': 10.63, 'x': 7.36, 'y': 7.17, 'z': 6.39, 'A': 9.37,
+             'B': 8.55, 'C': 8.32, 'D': 9.83, 'E': 7.09, 'F': 6.93, 'G': 9.48, 'H': 10.21, 'I': 4.23, 'J': 5.93,
+             'K': 8.65, 'L': 6.81, 'M': 12.76, 'N': 10.53, 'O': 10.11, 'P': 8.19, 'Q': 10.11, 'R': 8.71, 'S': 7.48,
+             'T': 7.81, 'U': 9.64, 'V': 8.89, 'W': 13.40, 'X': 8.73, 'Y': 8.09, 'Z': 8.09, ' ': 3.68, '&': 11.33,
+             ',': 3.61, '-': 5.39, "'": 3.91, **{d: 7.67 for d in "0123456789"}}
+WIDE_PX = 13.4       # a glyph not in the table counts as the widest one ("W"), so a new label never wraps
+PAD_X = 12           # text margin on each side of every nav button (crumbs and chapter strip)
+SLACK = 10           # Desktop renders a little wider than the font metrics: never let a label wrap
+SEP_W = 16           # the "›" between crumbs
+
+
 def _w(text):
-    return round(len(text) * 7.3 + 32)               # bold Segoe UI 10 pt button: ~7.3 px per character + margins
+    """Nav button width: the measured text, PAD_X on both sides and SLACK."""
+    return math.ceil(sum(BOLD10_PX.get(c, WIDE_PX) for c in text)) + 2 * PAD_X + SLACK
 
 
 def _alt(btn, text):
@@ -86,9 +103,25 @@ def _alt(btn, text):
     return btn
 
 
+def _pad(btn, pad=PAD_X):
+    """Same text margin left and right, so a centred label sits in the middle of its button."""
+    btn["objects"]["text"][1]["properties"].update(leftMargin=pbir.n(pad), rightMargin=pbir.n(pad))
+    return btn
+
+
 def _crumb(text, target, tip):
-    return _alt(pbir.nav_button(text, target, tip, fill="#FFFFFF", hover=pbir.ORANGE_SOFT, press=pbir.ORANGE_SOFT,
-                                font=pbir.NAVY, size=10), f"Breadcrumb: {text}")
+    return _alt(_pad(pbir.nav_button(text, target, tip, fill="#FFFFFF", hover=pbir.ORANGE_SOFT,
+                                     press=pbir.ORANGE_SOFT, font=pbir.NAVY, size=10)), f"Breadcrumb: {text}")
+
+
+def _still(text, colour, size, bold=True, pad=PAD_X):
+    """A button without an action or fill. The separator and the current page use it instead of a text box: a button
+    centres its text vertically, a text box puts it at the top, so the trail would not line up."""
+    btn = _pad(pbir.nav_button(text, "", fill="#FFFFFF", font=colour, size=size), pad)
+    del btn["visualContainerObjects"]["visualLink"]
+    btn["objects"]["fill"] = [{"properties": {"show": pbir.b(False)}}]
+    btn["objects"]["text"][1]["properties"]["bold"] = pbir.b(bold)
+    return btn
 
 
 def nav_row(pg, key):
@@ -119,14 +152,14 @@ def nav_row(pg, key):
     x += _w("Home")
     trail = ([(chap, True)] if chap != key else []) + [(key, False)]
     for k, link in trail:
-        pg.add(x, NAV_Y, 18, NAV_H, pbir.textbox([[("›", pbir.st("Segoe UI", 11, pbir.MUTED))]]), key=f"nav_sep_{k}")
-        x += 18
+        pg.add(x, NAV_Y, SEP_W, NAV_H, _still("›", pbir.MUTED, 11, bold=False, pad=0), key=f"nav_sep_{k}")
+        x += SEP_W
         text = _label(names[k])
         if link:
             pg.add(x, NAV_Y, _w(text), NAV_H, _crumb(text, P.PID[k], "Open this chapter"), key=f"nav_crumb_{k}")
         else:
-            pg.add(x, NAV_Y, _w(text) + 40, NAV_H,
-                   pbir.textbox([[(text, pbir.st("Segoe UI Semibold", 10, pbir.NAVY, True))]]), key=f"nav_here_{k}")
+            pg.add(x, NAV_Y, _w(text), NAV_H, _alt(_still(text, pbir.NAVY, 10), f"You are here: {text}"),
+                   key=f"nav_here_{k}")
         x += _w(text)
     if len(members) > 1:
         widths = [_w(_label(names[m])) for m in members]
@@ -139,6 +172,7 @@ def nav_row(pg, key):
                                   press=pbir.ORANGE_DK if cur else pbir.ORANGE_SOFT,
                                   font="#FFFFFF" if cur else pbir.NAVY, size=10,
                                   outline=None if cur else pbir.BORDER)
+            _pad(btn)
             if cur:
                 _alt(btn, f"{_label(names[m])} (current page)")
             pg.add(x, NAV_Y, w, NAV_H, btn, key=f"nav_strip_{m}")

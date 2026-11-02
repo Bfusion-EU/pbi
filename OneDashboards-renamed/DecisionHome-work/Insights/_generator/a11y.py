@@ -80,6 +80,8 @@ def alt_text(v):
     if t == "slicer":
         return "Filter: " + _slicer_label(v)
     if t == "actionButton":
+        if _button_text(v) == "›" and not _is_linked(v):      # breadcrumb separator: decorative
+            return ""
         return _button_text(v) or _button_tooltip(v) or "Button"
     if t == "image":
         name = _image_label(v)
@@ -111,7 +113,7 @@ def _decorative(vc):
     v = vc.get("visual")
     if v is None:
         return False
-    if v["visualType"] == "textbox" and _only_text(v) == "›":      # breadcrumb separator
+    if v["visualType"] == "actionButton" and _button_text(v) == "›" and not _is_linked(v):   # breadcrumb separator
         return True
     return v["visualType"] in DECORATIVE or (
         v["visualType"] == "image" and "visualLink" not in v.get("visualContainerObjects", {}))

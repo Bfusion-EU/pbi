@@ -83,7 +83,7 @@ def test_titled_content_has_alt_text(built):
         v = vc["visual"]
         t = v["visualType"]
         titled = bool(a11y._title_text(v)) and t not in {"image", "textbox", "shape"}
-        if t in {"slicer", "actionButton"} or titled:
+        if (t in {"slicer", "actionButton"} or titled) and not a11y._decorative(vc):   # not the "›" separators
             n += 1
             assert _alt(vc), (pg.display, t, vc["name"])
     assert n > 300
