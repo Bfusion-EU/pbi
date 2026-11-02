@@ -45,6 +45,7 @@ RISK = f'KEEPFILTERS ( DimTask[WorkType] = "Risks" ), KEEPFILTERS ( DimTask[Stat
 IMPACT_SCORE = 'SWITCH ( LEFT ( DimTask[Impact], 3 ), "(1)", 4, "(2)", 3, "(3)", 2, "(4)", 1, 0 )'
 PROB_SCORE = 'SWITCH ( LEFT ( DimTask[Probability Category], 3 ), "(1)", 4, "(2)", 3, "(3)", 2, "(4)", 1, 0 )'
 HIGH_HEAT = 9  # impact x probability on the 4x4 grid (see Story | Heat Colour)
+OVERLOAD_SHARE = 0.10  # Exec focus "resource overload": this share of active people above 100% in a month in view
 
 
 def money(v):
@@ -85,7 +86,12 @@ add("Story | On Track %", D, f"""
 VAR _tot = CALCULATE ( COUNTROWS ( DimProject ), {ACTIVE}, KEEPFILTERS ( NOT ISBLANK ( DimProject[OverallHealth_Value] ) ) )
 VAR _ok = CALCULATE ( COUNTROWS ( DimProject ), {ACTIVE}, KEEPFILTERS ( DimProject[OverallHealth_Value] = "(1) On Track" ) )
 RETURN IF ( _tot > 0, DIVIDE ( COALESCE ( _ok, 0 ), _tot ) )""", "0%",
-    desc="Share of active projects whose overall health is (1) On Track.")
+    desc="Share of active projects whose overall health is (1) On Track, out of the active projects that have a "
+         "health rating (Story | Not Rated counts the others).")
+add("Story | Not Rated", I, f"""
+CALCULATE ( COUNTROWS ( DimProject ), {ACTIVE}, KEEPFILTERS ( ISBLANK ( DimProject[OverallHealth_Value] ) ) ) + 0""",
+    "#,##0", "Story\\Portfolio", "Active projects with no overall health rating; Story | On Track % leaves them out.")
+NOT_RATED = ('IF ( [Story | Not Rated] > 0, " (" & FORMAT ( [Story | Not Rated], "0" ) & " not rated)", "" )')
 
 # ------------------------------------------------------------------ finance (FactCost, time-phased plan)
 add("Story | Finance EAC", D, f"""
@@ -231,7 +237,7 @@ VAR _ot = [Story | On Track %]
 RETURN
     FORMAT ( _n, "0" ) & " active projects across " & FORMAT ( COALESCE ( _p, 0 ), "0" ) & " portfolios; the plans carry "
         & {money("_b")} & " of plan-field budget. " & {pct("_al")} & " of it sits in Strong/Extreme-aligned work; the largest share goes to "
-        & _tn & " (" & {pct("DIVIDE ( _tb, _b )")} & "). " & {pct("_ot")} & " of active projects report On Track overall and "
+        & _tn & " (" & {pct("DIVIDE ( _tb, _b )")} & "). " & {pct("_ot")} & " of active projects report On Track overall" & {NOT_RATED} & " and "
         & FORMAT ( _prop, "0" ) & " proposal(s) wait in the pipeline."
 """, folder="Story\\Headlines")
 
@@ -364,11 +370,16 @@ CALCULATE (
     KEEPFILTERS ( DimTask[EndDate] >= TODAY () && DimTask[EndDate] < TODAY () + 31 ),
     {PROJ_TASK}
 ) + 0""", "#,##0", "Story\\Schedule")
-add("Story | Project Slip (days)", D, """
-AVERAGEX (
-    FILTER ( DimProject, NOT ISBLANK ( DimProject[Summary_EndDate] ) && NOT ISBLANK ( DimProject[Summary_BaselineEndDate] ) ),
-    INT ( DimProject[Summary_EndDate] ) - INT ( DimProject[Summary_BaselineEndDate] )
-)""", "#,##0", "Story\\Schedule", "Average finish date minus baseline finish date, in days (projects with a baseline).")
+# Finish slip vs baseline has ONE definition: Story | Baseline · Finish Slip (days) and its counts (ext_baseline.py),
+# shared with page 5d and Home. The schedule page reads them for ACTIVE projects and states the baseline coverage.
+add("Story | Late Active Projects", I, f"CALCULATE ( [Story | Baseline · Late Projects], {ACTIVE} ) + 0", "#,##0",
+    "Story\\Schedule", "Active projects finishing later than their current baseline (Home Schedule card).")
+add("Story | Late vs Baseline KPI", T, f"""
+VAR _b = CALCULATE ( [Story | Baseline · Baselined Projects], {ACTIVE} )
+VAR _l = CALCULATE ( [Story | Baseline · Late Projects], {ACTIVE} )
+RETURN IF ( COALESCE ( _b, 0 ) = 0, "No baselines", FORMAT ( _l, "0" ) & " of " & FORMAT ( _b, "0" ) )""",
+    folder="Story\\Schedule",
+    desc="Active projects finishing later than their baseline, out of the active projects that have one.")
 _OPEN_TASK = ('DimTask[WorkType] = "Tasks" && DimTask[Leaf] = TRUE () && NOT ISBLANK ( DimTask[ProjectKey] ) '
               '&& DimTask[PercentDone] < 100 && DimTask[Status] <> "Completed"')
 _LATE_TASK = (_OPEN_TASK + " && NOT ISBLANK ( DimTask[EndDate] ) && NOT ISBLANK ( DimTask[BaselineEndDate] )"
@@ -403,21 +414,26 @@ VAR _ar = [Story | Schedule At Risk]
 VAR _sl = [Story | Schedule Off Track]
 VAR _od = [Story | Overdue Tasks]
 VAR _ms = [Story | Milestones Next 30d]
-VAR _slip = [Story | Project Slip (days)]
+VAR _n = [Story | Active Projects]
+VAR _b = CALCULATE ( [Story | Baseline · Baselined Projects], {ACTIVE} )
+VAR _late = CALCULATE ( [Story | Baseline · Late Projects], {ACTIVE} )
 VAR _top =
     TOPN ( 1,
-        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), "@n", CALCULATE ( MAX ( DimProject[Name] ) ),
-            "@d", [Story | Project Slip (days)] ), NOT ISBLANK ( DimProject[Id] ) && [@d] > 0 ),
+        FILTER ( ADDCOLUMNS ( CALCULATETABLE ( VALUES ( DimProject[Id] ), {ACTIVE} ),
+            "@n", CALCULATE ( MAX ( DimProject[Name] ) ), "@d", [Story | Baseline · Finish Slip (days)] ),
+            NOT ISBLANK ( DimProject[Id] ) && [@d] > 0 ),
         [@d], DESC, DimProject[Id], ASC )
 RETURN
     {pct("_ot")} & " of active projects are on schedule; " & FORMAT ( _ar, "0" ) & " are at risk and " & FORMAT ( _sl, "0" )
         & " are off track. " & FORMAT ( _od, "#,0" ) & " project tasks are overdue and " & FORMAT ( _ms, "0" )
         & " milestone(s) fall due in the next 30 days. "
-        & IF ( ISBLANK ( _slip ), "No baselines are set, so slippage cannot be measured yet.",
-            "Projects now finish on average " & FORMAT ( ABS ( _slip ), "0" ) & " days " & IF ( _slip >= 0, "later", "earlier" )
-                & " than baselined"
+        & IF ( COALESCE ( _b, 0 ) = 0, "No active project has a baseline, so slippage cannot be measured yet.",
+            FORMAT ( _late, "0" ) & " of " & FORMAT ( _b, "0" ) & " baselined active projects finish later than their baseline"
                 & IF ( COUNTROWS ( _top ) > 0,
-                    "; the biggest move is " & MAXX ( _top, [@n] ) & " (+" & FORMAT ( MAXX ( _top, [@d] ), "0" ) & " days).",
+                    " (worst: " & MAXX ( _top, [@n] ) & ", +" & FORMAT ( MAXX ( _top, [@d] ), "0" ) & " days)", "" )
+                & IF ( DIVIDE ( _b, _n ) < 0.5,
+                    "; only " & FORMAT ( _b, "0" ) & " of " & FORMAT ( _n, "0" )
+                        & " active projects have a baseline, so treat this as a sample, not the portfolio.",
                     "." ) )
 """, folder="Story\\Headlines")
 
@@ -504,10 +520,14 @@ VAR _a = [Story | Benefits Actual]
 VAR _d = [Story | Benefits Due To Date]
 RETURN IF ( ISBLANK ( _a ), "Not recorded", IF ( COALESCE ( _d, 0 ) = 0, {money("_a")}, FORMAT ( DIVIDE ( _a, _d ), "0%" ) & " of due" ) )""",
     folder="Story\\Benefits", desc="Actual vs due-to-date benefits, or 'Not recorded' when OnePlan holds no actuals.")
-add("Story | Benefit Cost Ratio", D, "DIVIDE ( [Story | Benefits At Completion], [Story | Finance EAC] )", "0.00",
-    "Story\\Benefits", "Planned benefits at completion divided by EAC.")
+# ONE value-for-money ratio for the pack (Home, Benefits, P&L): value at completion ÷ EAC, where value = planned
+# benefits + forecasted revenue (Story | Total Value). Story | Net ROI is this ratio minus 1 whenever there is value
+# (with no value at all the ratio is blank while Net ROI shows -100%).
+add("Story | Value Ratio", D, "DIVIDE ( [Story | Total Value], [Story | Finance EAC] )", "0.00",
+    "Story\\Benefits", "Value at completion (planned benefits + forecasted revenue, FactCost) ÷ EAC. 1.0 = returns what "
+    "it costs. Story | Net ROI = this ratio − 1 (blank here when there is no value at all).")
 add("Story | Ratio Colour", T, """
-VAR _r = [Story | Benefit Cost Ratio]
+VAR _r = [Story | Value Ratio]
 RETURN IF ( ISBLANK ( _r ), BLANK (), IF ( _r >= 2, "#1E6D6E", IF ( _r >= 1, "#D9A832", "#C0392B" ) ) )""",
     folder="Story\\Colours")
 add("Story | Benefits Headline", T, f"""
@@ -515,18 +535,22 @@ VAR _b = [Story | Benefits At Completion]
 VAR _due = [Story | Benefits Due To Date]
 VAR _a = [Story | Benefits Actual]
 VAR _c = [Story | Finance EAC]
+VAR _rev = [Story | Revenue At Completion]
+VAR _x = [Story | Value Ratio]
 VAR _top =
     TOPN ( 1,
         FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), "@n", CALCULATE ( MAX ( DimProject[Name] ) ),
-            "@x", [Story | Benefit Cost Ratio] ), NOT ISBLANK ( DimProject[Id] ) && [@x] > 0 ),
+            "@x", [Story | Value Ratio] ), NOT ISBLANK ( DimProject[Id] ) && [@x] > 0 ),
         [@x], DESC, DimProject[Id], ASC )
 VAR _neg = COUNTROWS ( FILTER ( VALUES ( DimProject[Id] ),
     NOT ISBLANK ( DimProject[Id] ) && [Story | Finance EAC] > 0 && COALESCE ( [Story | Benefits At Completion], 0 ) = 0 ) )
 RETURN
     IF ( COALESCE ( _b, 0 ) = 0,
         "No planned benefits in the financial plans of this selection — capture expected benefits in OnePlan to tell the value story.",
-        "The selection plans " & {money("_b")} & " of benefits against an EAC of " & {money("_c")}
-            & IF ( COALESCE ( _c, 0 ) > 0, " (" & FORMAT ( DIVIDE ( _b, _c ), "0.0" ) & "× return)", "" ) & ". "
+        "The selection plans " & {money("_b")} & " of benefits"
+            & IF ( COALESCE ( _rev, 0 ) > 0, " and " & {money("_rev")} & " of revenue", "" )
+            & " against an EAC of " & {money("_c")}
+            & IF ( NOT ISBLANK ( _x ), " (" & FORMAT ( _x, "0.0" ) & "× value ÷ EAC)", "" ) & ". "
             & IF ( ISBLANK ( _a ),
                 "No actual benefits recorded yet in OnePlan — realisation cannot be measured; benefits due to date: " & {money("_due")} & ".",
                 "Actual benefits " & {money("_a")} & " against " & {money("_due")} & " due to date ("
@@ -544,15 +568,17 @@ VAR _vp = [Story | EAC Variance %]
 VAR _u = [Story | Utilisation %]
 VAR _o = [Story | Over-allocated People]
 VAR _ch = [Story | Critical High Risks]
+VAR _people = COUNTROWS ( CALCULATETABLE ( SUMMARIZE ( FactCapacity, DimResource[ResourceKey] ),
+    KEEPFILTERS ( DimResource[Inactive] = FALSE () ) ) )
 VAR _focus =
     SWITCH ( TRUE (),
         NOT ISBLANK ( _vp ) && _vp > 0.05, "cost overrun",
-        _o > 0 && NOT ISBLANK ( _u ) && _u > 1, "resource overload",
+        DIVIDE ( _o, _people ) >= {OVERLOAD_SHARE}, "resource overload",
         NOT ISBLANK ( _ot ) && _ot < 0.7, "delivery health",
         _ch > 5, "risk exposure",
         "keeping the course" )
 RETURN
-    FORMAT ( _n, "0" ) & " active projects, " & {pct("_ot")} & " on track. EAC is "
+    FORMAT ( _n, "0" ) & " active projects, " & {pct("_ot")} & " on track" & {NOT_RATED} & ". EAC is "
         & {pct("_vp", "+0.0%;-0.0%;0.0%")} & " versus budget at completion. Organisation-wide, people are " & {pct("_u")}
         & " utilised (" & FORMAT ( _o, "0" ) & " above 100% in at least one month) and " & FORMAT ( _ch, "0" )
         & " critical/high risks are open. This month's focus: " & _focus & "."
@@ -667,7 +693,7 @@ RETURN IF ( ISBLANK ( _v ) && ISBLANK ( _c ), BLANK (), COALESCE ( _v, 0 ) - COA
     "Total value minus EAC, at completion (FactCost).")
 add("Story | Net Margin %", D, "DIVIDE ( [Story | Net Value], [Story | Total Value] )", "0%;-0%;0%", "Story\\P&L")
 add("Story | Net ROI", D, "DIVIDE ( [Story | Net Value], [Story | Finance EAC] )", "0%;-0%;0%", "Story\\P&L",
-    "Net value as a share of EAC.")
+    "Net value as a share of EAC (= Story | Value Ratio − 1).")
 add("Story | Net Colour", T, """
 VAR _n = [Story | Net Value]
 RETURN IF ( ISBLANK ( _n ), BLANK (), IF ( _n < 0, "#C0392B", IF ( [Story | Net Margin %] < 0.2, "#D9A832", "#1E6D6E" ) ) )""",

@@ -67,10 +67,30 @@ RETURN IF ( ISBLANK ( _s ) && ISBLANK ( _a ), BLANK (), COALESCE ( _a, 0 ) - COA
     "+#,##0;-#,##0;0", FOLDER,
     "Approved timesheet project hours minus scheduled hours to date. Positive = effort over-run.")
 
+# Timesheets and schedules often sit on different plans, so a portfolio-wide "all booked ÷ all scheduled" mixes
+# projects that only have one side. Accuracy is measured on the OVERLAP: projects with both, and the headline says
+# how many that is.
+_OVERLAP = f"""FILTER (
+        ADDCOLUMNS ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),
+            "@s", [{_m('Scheduled To Date')}], "@a", [Timesheet | Actual Hours] ),
+        [@s] > 0 && [@a] > 0 )"""
 add(_m("Plan Accuracy %"), D, f"""
-DIVIDE ( [Timesheet | Actual Hours], [{_m('Scheduled To Date')}] )""",
+VAR _t = {_OVERLAP}
+RETURN DIVIDE ( SUMX ( _t, [@a] ), SUMX ( _t, [@s] ) )""",
     "0%", FOLDER,
-    "Approved timesheet project hours ÷ scheduled hours to date. 80–120% = on plan.")
+    "Approved timesheet project hours ÷ scheduled hours to date, on projects that have both (the overlap). "
+    "80–120% = on plan.")
+add(_m("Booked vs Scheduled %"), D, f"""
+DIVIDE ( [Timesheet | Actual Hours], [{_m('Scheduled To Date')}] )""", "0%", FOLDER,
+    "All approved timesheet project hours ÷ all scheduled hours to date (no overlap rule): the month-by-month line, "
+    "where scheduled work nobody booked should pull the line down.")
+add(_m("Overlap Projects"), I, f"COUNTROWS ( {_OVERLAP} ) + 0", "#,##0", FOLDER,
+    "Projects with both scheduled hours to date and approved timesheet hours: the base of Plan Accuracy %.")
+add(_m("Projects With Hours"), I, f"""
+COUNTROWS (
+    FILTER ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),
+        [{_m('Scheduled To Date')}] > 0 || [Timesheet | Actual Hours] > 0 )
+) + 0""", "#,##0", FOLDER, "Projects with scheduled hours to date or approved timesheet hours (or both).")
 
 add(_m("Accuracy Colour"), T, f"""
 VAR _s = [{_m('Scheduled To Date')}]
@@ -85,6 +105,11 @@ RETURN
         _r >= 0.8, "{TEAL}",
         "{AMBER}"
     )""", folder="Story\\Colours")
+
+add(_m("Accuracy KPI Colour"), T, f"""
+VAR _r = [{_m('Plan Accuracy %')}]
+RETURN IF ( ISBLANK ( _r ), "#9AA3AF", IF ( _r > 1.2, "{RED}", IF ( _r >= 0.8, "{TEAL}", "{AMBER}" ) ) )""",
+    folder="Story\\Colours", desc="Colour of the Plan accuracy KPI (overlap projects); same bands as Accuracy Colour.")
 
 add(_m("Accuracy Band"), T, f"""
 VAR _s = [{_m('Scheduled To Date')}]
@@ -150,7 +175,9 @@ RETURN IF ( ISBLANK ( _p ), "#9AA3AF", IF ( _p >= 0.9, "#1E6D6E", IF ( _p >= 0.7
 add(_m("Headline"), T, f"""
 VAR _s = [{_m('Scheduled To Date')}]
 VAR _a = [Timesheet | Actual Hours]
-VAR _acc = DIVIDE ( _a, _s )
+VAR _acc = [{_m('Plan Accuracy %')}]
+VAR _ov = [{_m('Overlap Projects')}]
+VAR _np = [{_m('Projects With Hours')}]
 VAR _u = [{_m('Unplanned Share %')}]
 VAR _miss = COALESCE ( [Timesheet | Resources Missing Time], 0 )
 VAR _wait = COALESCE ( [{_m('Not Approved Hours')}], 0 )
@@ -161,7 +188,13 @@ RETURN
         "No scheduled or booked hours in this selection.",
         FORMAT ( COALESCE ( _a, 0 ), "#,##0" ) & " approved hours booked against "
             & FORMAT ( COALESCE ( _s, 0 ), "#,##0" ) & " scheduled to date"
-            & IF ( NOT ISBLANK ( _acc ), " (plan accuracy " & FORMAT ( _acc, "0%" ) & ")", "" ) & ". "
+            & ". "
+            & IF ( _np = 0, "No project has hours to compare. ",
+              IF ( DIVIDE ( _ov, _np ) < 0.3,
+                "Plan accuracy is not comparable: only " & FORMAT ( _ov, "0" ) & " of " & FORMAT ( _np, "0" )
+                    & " projects have both a schedule and booked time. ",
+                "Plan accuracy " & FORMAT ( _acc, "0%" ) & " on the " & FORMAT ( _ov, "0" ) & " of " & FORMAT ( _np, "0" )
+                    & " projects that have both a schedule and booked time. " ) )
             & IF ( _u > 0, FORMAT ( _u, "0%" ) & " of booked time went to projects with no schedule. ", "" )
             & SWITCH (
                 TRUE (),
@@ -188,6 +221,7 @@ def build():
 
     sched, act = M(_m("Scheduled To Date")), M("Timesheet | Actual Hours")
     acc, var = M(_m("Plan Accuracy %")), M(_m("Variance Hours"))
+    bvs = M(_m("Booked vs Scheduled %"))
     band = M(_m("Accuracy Band"))
     acc_col = _m("Accuracy Colour")
 
@@ -197,7 +231,7 @@ def build():
     pages.kpi_row(pg, pages.Y1K, [
         (_m("Scheduled To Date"), "Scheduled to date (h)"),
         ("Timesheet | Actual Hours", "Approved actuals (h)"),
-        (_m("Plan Accuracy %"), "Plan accuracy", {"colour_measure": acc_col}),
+        (_m("Plan Accuracy %"), "Plan accuracy (overlap)", {"colour_measure": _m("Accuracy KPI Colour")}),
         (_m("Unplanned Share %"), "Booked on unplanned work", {"value_colour": UNPLANNED}),
         (_m("Not Approved Hours"), "Hours not yet approved", {"value_colour": AMBER}),
         ("Timesheet | Reporting Compliance %", "Reporting compliance", {"colour_measure": _m("Compliance Colour")}),
@@ -208,12 +242,12 @@ def build():
 
     # ② plan vs actuals over time
     pages.section(pg, pages.Y2, 2, "Is the work happening as planned, month by month?",
-                  "Columns = scheduled and approved hours; the line is plan accuracy. Line far below 100% = plan not worked or time not in.")
+                  "Columns = scheduled and approved hours; the line is all booked ÷ all scheduled hours. Line far below 100% = plan not worked or time not in.")
     pg.add(16, pages.Y2V, 1160, pages.H2, chart("lineClusteredColumnComboChart",
         {"Category": [P(MONTH, "Month")], "Y": [P(sched, "Scheduled (h)"), P(act, "Approved actuals (h)")],
-         "Y2": [P(acc, "Plan accuracy")]},
+         "Y2": [P(bvs, "Booked ÷ scheduled")]},
         "Scheduled versus approved hours per month",
-        {"dataPoint": [measure_fill(sched, "#C9CED8"), measure_fill(act, NAVY), measure_fill(acc, ORANGE)],
+        {"dataPoint": [measure_fill(sched, "#C9CED8"), measure_fill(act, NAVY), measure_fill(bvs, ORANGE)],
          "legend": legend("Top"), "lineStyles": [{"properties": {"strokeWidth": n(3), "showMarker": b(True)}}]},
         sort=[(MONTH, "Ascending")]), key="v_ts_month")
     dept = DR("Department_Value")

@@ -506,7 +506,7 @@ def build_schedule():
         ("Story | On Schedule %", "On schedule (active)"),
         ("Story | Schedule At Risk", "Schedule at risk", {"value_colour": AMBER}),
         ("Story | Schedule Off Track", "Schedule off track", {"value_colour": RED}),
-        ("Story | Project Slip (days)", "Avg finish slip (days)", {"value_colour": AMBER}),
+        ("Story | Late vs Baseline KPI", "Late vs baseline (active)", {"value_colour": AMBER, "size": 20}),
         ("Story | Overdue Tasks", "Overdue tasks", {"value_colour": RED}),
         ("Story | Slipped Tasks", "Tasks past baseline", {"value_colour": AMBER}),
         ("Story | Milestones Next 30d", "Milestones next 30 days"),
@@ -527,13 +527,14 @@ def build_schedule():
         {"dataPoint": [{"properties": {"fill": col_solid(NAVY)}}], "labels": labels_on(True)},
         sort=[(step_idx, "Ascending")]), key="v_funnel")
     section(pg, Y3, 3, "Which finish dates moved, and what is coming up?",
-            "Slip = current finish minus baseline finish. Milestones overdue are red, due within 14 days amber.")
-    slip = M("Story | Project Slip (days)")
+            "Slip = current finish minus current baseline finish (same rule as Plan vs Baseline); active projects with a "
+            "baseline only. Milestones overdue are red, due within 14 days amber.")
+    slip = M("Story | Baseline · Finish Slip (days)")
     pg.add(16, Y3V, 878, H3, chart("clusteredBarChart",
         {"Category": [P(DP("Name"), "Project")], "Y": [P(slip, "Slip (days)")]},
-        "Finish-date slip versus baseline, by project (days)",
+        "Finish-date slip versus baseline, active projects (days)",
         {"dataPoint": [{"properties": {"fill": col_solid(ORANGE)}}], "labels": labels_on(True)},
-        sort=[(slip, "Descending")]), key="v_slip")
+        sort=[(slip, "Descending")]), key="v_slip", filters=[f_in("DimProject", "State_Value", ["Active"])])
     obj = table_style()
     obj["values"] += [cf_font(DT("EndDate"), "Story | Due Colour")]
     pg.add(906, Y3V, 878, H3, chart("tableEx",
@@ -634,7 +635,7 @@ def build_benefits():
         ("Story | Benefits Actual Label", "Actually realised", {"size": 20}),
         ("Story | Benefits Realised KPI", "Realised vs due", {"size": 20}),
         ("Story | Finance EAC", "EAC"),
-        ("Story | Benefit Cost Ratio", "Benefit ÷ EAC", {"colour_measure": "Story | Ratio Colour"}),
+        ("Story | Value Ratio", "Value ÷ EAC", {"colour_measure": "Story | Ratio Colour"}),
         ("Project | Total CostofDelay", "Cost of delay", {"value_colour": RED}),
     ])
     section(pg, Y2, 2, "When does the value land, and where?",
@@ -657,7 +658,7 @@ def build_benefits():
         {"dataPoint": [measure_fill(pba, TEAL), measure_fill(eac, "#C9CED8")], "legend": legend("Top")},
         sort=[(pba, "Descending")]), key="v_ben_port")
     section(pg, Y3, 3, "Value for money per project",
-            "Higher up and further left = more benefit per euro of EAC; the ranking on the right shows benefit ÷ EAC.")
+            "Higher up and further left = more benefit per euro of EAC; the ranking on the right shows value (benefits + revenue) ÷ EAC.")
     align = DP("StrategicAlignment_Value")
     pg.add(16, Y3V, 1160, H3, chart("scatterChart",
         {"Category": [P(DP("Name"), "Project")], "Series": [P(align, "Alignment")],
@@ -668,10 +669,10 @@ def build_benefits():
                                              "Not Rated": "#C9CED8"}),
          "legend": legend("Top"), "categoryLabels": [{"properties": {"show": b(True), "fontSize": n(8)}}]}),
         key="v_ben_scatter")
-    ratio = M("Story | Benefit Cost Ratio")
+    ratio = M("Story | Value Ratio")
     pg.add(1192, Y3V, 592, H3, chart("clusteredBarChart",
-        {"Category": [P(DP("Name"), "Project")], "Y": [P(ratio, "Benefit ÷ EAC")]},
-        "Best value for money (benefit ÷ EAC)",
+        {"Category": [P(DP("Name"), "Project")], "Y": [P(ratio, "Value ÷ EAC")]},
+        "Best value for money (value ÷ EAC)",
         {"dataPoint": [{"properties": {"fill": measure_colour("Story | Ratio Colour")}, "selector": FILL_ALL}],
          "labels": labels_on(True)}, sort=[(ratio, "Descending")]), key="v_ratio")
     section(pg, Y4, 4, "Benefits register",
@@ -681,7 +682,7 @@ def build_benefits():
     pg.add(16, Y4V, 1768, H4, chart("tableEx",
         {"Values": [P(DP("Name"), "Project"), P(DP("Portfolio Name"), "Portfolio"), P(DP("Goals_Value"), "Goal"),
                     P(align, "Alignment"), P(eac, "EAC"), P(pba, "Planned benefits"),
-                    P(M("Story | Benefits Due To Date"), "Due to date"), P(act, "Actual"), P(ratio, "Benefit ÷ EAC")]},
+                    P(M("Story | Benefits Due To Date"), "Due to date"), P(act, "Actual"), P(ratio, "Value ÷ EAC")]},
         "Benefits register", obj, sort=[(pba, "Descending")]), key="v_ben_table")
     next_chapter(pg, "benefits", YNEXT)
     return pg

@@ -43,10 +43,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Project Slip (days)"
+                  "Property": "Story | Baseline · Finish Slip (days)"
                 }
               },
-              "queryRef": "_Measures.Story | Project Slip (days)",
+              "queryRef": "_Measures.Story | Baseline · Finish Slip (days)",
               "nativeQueryRef": "Slip (days)",
               "displayName": "Slip (days)"
             }
@@ -64,7 +64,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Story | Project Slip (days)"
+                "Property": "Story | Baseline · Finish Slip (days)"
               }
             },
             "direction": "Descending"
@@ -87,7 +87,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Finish-date slip versus baseline, by project (days)'"
+                  "Value": "'Finish-date slip versus baseline, active projects (days)'"
                 }
               }
             },
@@ -259,6 +259,60 @@
   },
   "filterConfig": {
     "filters": [
+      {
+        "name": "e62c957d9005d48a02be",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "State_Value"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "t"
+                          }
+                        },
+                        "Property": "State_Value"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Active'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
       {
         "name": "ce26c83046d49410027b",
         "field": {

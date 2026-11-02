@@ -19,7 +19,15 @@
           "expression": "VAR _tot = CALCULATE ( COUNTROWS ( DimProject ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ), KEEPFILTERS ( NOT ISBLANK ( DimProject[OverallHealth_Value] ) ) )\nVAR _ok = CALCULATE ( COUNTROWS ( DimProject ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ), KEEPFILTERS ( DimProject[OverallHealth_Value] = \"(1) On Track\" ) )\nRETURN IF ( _tot > 0, DIVIDE ( COALESCE ( _ok, 0 ), _tot ) )",
           "displayFolder": "Story",
           "formatString": "0%",
-          "description": "Share of active projects whose overall health is (1) On Track."
+          "description": "Share of active projects whose overall health is (1) On Track, out of the active projects that have a health rating (Story | Not Rated counts the others)."
+        },
+        {
+          "name": "Story | Not Rated",
+          "dataType": "Integer",
+          "expression": "CALCULATE ( COUNTROWS ( DimProject ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ), KEEPFILTERS ( ISBLANK ( DimProject[OverallHealth_Value] ) ) ) + 0",
+          "displayFolder": "Story\\Portfolio",
+          "formatString": "#,##0",
+          "description": "Active projects with no overall health rating; Story | On Track % leaves them out."
         },
         {
           "name": "Story | Finance EAC",
@@ -520,7 +528,7 @@
         {
           "name": "Story | Portfolio Headline",
           "dataType": "Text",
-          "expression": "VAR _n = [Story | Active Projects]\nVAR _p =\n    COUNTROWS ( FILTER ( VALUES ( DimProject[Portfolio Name] ),\n        NOT ISBLANK ( DimProject[Portfolio Name] ) && DimProject[Portfolio Name] <> \"(No portfolio)\" ) )\nVAR _b = [Story | Plan Budget]\nVAR _al = [Story | Aligned Budget %]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Portfolio Name] ), \"@b\", CALCULATE ( SUM ( DimProject[Budget] ) ) ),\n            NOT ISBLANK ( DimProject[Portfolio Name] ) && [@b] > 0 ),\n        [@b], DESC, DimProject[Portfolio Name], ASC )\nVAR _tn = MAXX ( _top, DimProject[Portfolio Name] )\nVAR _tb = MAXX ( _top, [@b] )\nVAR _prop = [Story | Proposed Projects]\nVAR _ot = [Story | On Track %]\nRETURN\n    FORMAT ( _n, \"0\" ) & \" active projects across \" & FORMAT ( COALESCE ( _p, 0 ), \"0\" ) & \" portfolios; the plans carry \"\n        & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" of plan-field budget. \" & IF ( ISBLANK ( _al ), \"–\", FORMAT ( _al, \"0%\" ) ) & \" of it sits in Strong/Extreme-aligned work; the largest share goes to \"\n        & _tn & \" (\" & IF ( ISBLANK ( DIVIDE ( _tb, _b ) ), \"–\", FORMAT ( DIVIDE ( _tb, _b ), \"0%\" ) ) & \"). \" & IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" of active projects report On Track overall and \"\n        & FORMAT ( _prop, \"0\" ) & \" proposal(s) wait in the pipeline.\"",
+          "expression": "VAR _n = [Story | Active Projects]\nVAR _p =\n    COUNTROWS ( FILTER ( VALUES ( DimProject[Portfolio Name] ),\n        NOT ISBLANK ( DimProject[Portfolio Name] ) && DimProject[Portfolio Name] <> \"(No portfolio)\" ) )\nVAR _b = [Story | Plan Budget]\nVAR _al = [Story | Aligned Budget %]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Portfolio Name] ), \"@b\", CALCULATE ( SUM ( DimProject[Budget] ) ) ),\n            NOT ISBLANK ( DimProject[Portfolio Name] ) && [@b] > 0 ),\n        [@b], DESC, DimProject[Portfolio Name], ASC )\nVAR _tn = MAXX ( _top, DimProject[Portfolio Name] )\nVAR _tb = MAXX ( _top, [@b] )\nVAR _prop = [Story | Proposed Projects]\nVAR _ot = [Story | On Track %]\nRETURN\n    FORMAT ( _n, \"0\" ) & \" active projects across \" & FORMAT ( COALESCE ( _p, 0 ), \"0\" ) & \" portfolios; the plans carry \"\n        & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" of plan-field budget. \" & IF ( ISBLANK ( _al ), \"–\", FORMAT ( _al, \"0%\" ) ) & \" of it sits in Strong/Extreme-aligned work; the largest share goes to \"\n        & _tn & \" (\" & IF ( ISBLANK ( DIVIDE ( _tb, _b ) ), \"–\", FORMAT ( DIVIDE ( _tb, _b ), \"0%\" ) ) & \"). \" & IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" of active projects report On Track overall\" & IF ( [Story | Not Rated] > 0, \" (\" & FORMAT ( [Story | Not Rated], \"0\" ) & \" not rated)\", \"\" ) & \" and \"\n        & FORMAT ( _prop, \"0\" ) & \" proposal(s) wait in the pipeline.\"",
           "displayFolder": "Story\\Headlines",
           "references": {
             "measures": [
@@ -548,6 +556,11 @@
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | On Track %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Not Rated"
               }
             ]
           }
@@ -878,12 +891,42 @@
           "formatString": "#,##0"
         },
         {
-          "name": "Story | Project Slip (days)",
-          "dataType": "Double",
-          "expression": "AVERAGEX (\n    FILTER ( DimProject, NOT ISBLANK ( DimProject[Summary_EndDate] ) && NOT ISBLANK ( DimProject[Summary_BaselineEndDate] ) ),\n    INT ( DimProject[Summary_EndDate] ) - INT ( DimProject[Summary_BaselineEndDate] )\n)",
+          "name": "Story | Late Active Projects",
+          "dataType": "Integer",
+          "expression": "CALCULATE ( [Story | Baseline · Late Projects], KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ) + 0",
           "displayFolder": "Story\\Schedule",
           "formatString": "#,##0",
-          "description": "Average finish date minus baseline finish date, in days (projects with a baseline)."
+          "description": "Active projects finishing later than their current baseline (Home Schedule card).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Late Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Late vs Baseline KPI",
+          "dataType": "Text",
+          "expression": "VAR _b = CALCULATE ( [Story | Baseline · Baselined Projects], KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) )\nVAR _l = CALCULATE ( [Story | Baseline · Late Projects], KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) )\nRETURN IF ( COALESCE ( _b, 0 ) = 0, \"No baselines\", FORMAT ( _l, \"0\" ) & \" of \" & FORMAT ( _b, \"0\" ) )",
+          "displayFolder": "Story\\Schedule",
+          "description": "Active projects finishing later than their baseline, out of the active projects that have one.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Baselined Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Late Projects"
+              }
+            ]
+          }
         },
         {
           "name": "Story | Task Slip (days)",
@@ -953,7 +996,7 @@
         {
           "name": "Story | Schedule Headline",
           "dataType": "Text",
-          "expression": "VAR _ot = [Story | On Schedule %]\nVAR _ar = [Story | Schedule At Risk]\nVAR _sl = [Story | Schedule Off Track]\nVAR _od = [Story | Overdue Tasks]\nVAR _ms = [Story | Milestones Next 30d]\nVAR _slip = [Story | Project Slip (days)]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ),\n            \"@d\", [Story | Project Slip (days)] ), NOT ISBLANK ( DimProject[Id] ) && [@d] > 0 ),\n        [@d], DESC, DimProject[Id], ASC )\nRETURN\n    IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" of active projects are on schedule; \" & FORMAT ( _ar, \"0\" ) & \" are at risk and \" & FORMAT ( _sl, \"0\" )\n        & \" are off track. \" & FORMAT ( _od, \"#,0\" ) & \" project tasks are overdue and \" & FORMAT ( _ms, \"0\" )\n        & \" milestone(s) fall due in the next 30 days. \"\n        & IF ( ISBLANK ( _slip ), \"No baselines are set, so slippage cannot be measured yet.\",\n            \"Projects now finish on average \" & FORMAT ( ABS ( _slip ), \"0\" ) & \" days \" & IF ( _slip >= 0, \"later\", \"earlier\" )\n                & \" than baselined\"\n                & IF ( COUNTROWS ( _top ) > 0,\n                    \"; the biggest move is \" & MAXX ( _top, [@n] ) & \" (+\" & FORMAT ( MAXX ( _top, [@d] ), \"0\" ) & \" days).\",\n                    \".\" ) )",
+          "expression": "VAR _ot = [Story | On Schedule %]\nVAR _ar = [Story | Schedule At Risk]\nVAR _sl = [Story | Schedule Off Track]\nVAR _od = [Story | Overdue Tasks]\nVAR _ms = [Story | Milestones Next 30d]\nVAR _n = [Story | Active Projects]\nVAR _b = CALCULATE ( [Story | Baseline · Baselined Projects], KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) )\nVAR _late = CALCULATE ( [Story | Baseline · Late Projects], KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) )\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ),\n            \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ), \"@d\", [Story | Baseline · Finish Slip (days)] ),\n            NOT ISBLANK ( DimProject[Id] ) && [@d] > 0 ),\n        [@d], DESC, DimProject[Id], ASC )\nRETURN\n    IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" of active projects are on schedule; \" & FORMAT ( _ar, \"0\" ) & \" are at risk and \" & FORMAT ( _sl, \"0\" )\n        & \" are off track. \" & FORMAT ( _od, \"#,0\" ) & \" project tasks are overdue and \" & FORMAT ( _ms, \"0\" )\n        & \" milestone(s) fall due in the next 30 days. \"\n        & IF ( COALESCE ( _b, 0 ) = 0, \"No active project has a baseline, so slippage cannot be measured yet.\",\n            FORMAT ( _late, \"0\" ) & \" of \" & FORMAT ( _b, \"0\" ) & \" baselined active projects finish later than their baseline\"\n                & IF ( COUNTROWS ( _top ) > 0,\n                    \" (worst: \" & MAXX ( _top, [@n] ) & \", +\" & FORMAT ( MAXX ( _top, [@d] ), \"0\" ) & \" days)\", \"\" )\n                & IF ( DIVIDE ( _b, _n ) < 0.5,\n                    \"; only \" & FORMAT ( _b, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" )\n                        & \" active projects have a baseline, so treat this as a sample, not the portfolio.\",\n                    \".\" ) )",
           "displayFolder": "Story\\Headlines",
           "references": {
             "measures": [
@@ -985,7 +1028,22 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Project Slip (days)"
+                "name": "Story | Active Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Baselined Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Late Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Finish Slip (days)"
               }
             ]
           }
@@ -1202,18 +1260,18 @@
           }
         },
         {
-          "name": "Story | Benefit Cost Ratio",
+          "name": "Story | Value Ratio",
           "dataType": "Double",
-          "expression": "DIVIDE ( [Story | Benefits At Completion], [Story | Finance EAC] )",
+          "expression": "DIVIDE ( [Story | Total Value], [Story | Finance EAC] )",
           "displayFolder": "Story\\Benefits",
           "formatString": "0.00",
-          "description": "Planned benefits at completion divided by EAC.",
+          "description": "Value at completion (planned benefits + forecasted revenue, FactCost) ÷ EAC. 1.0 = returns what it costs. Story | Net ROI = this ratio − 1 (blank here when there is no value at all).",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Benefits At Completion"
+                "name": "Story | Total Value"
               },
               {
                 "schema": "extension",
@@ -1226,14 +1284,14 @@
         {
           "name": "Story | Ratio Colour",
           "dataType": "Text",
-          "expression": "VAR _r = [Story | Benefit Cost Ratio]\nRETURN IF ( ISBLANK ( _r ), BLANK (), IF ( _r >= 2, \"#1E6D6E\", IF ( _r >= 1, \"#D9A832\", \"#C0392B\" ) ) )",
+          "expression": "VAR _r = [Story | Value Ratio]\nRETURN IF ( ISBLANK ( _r ), BLANK (), IF ( _r >= 2, \"#1E6D6E\", IF ( _r >= 1, \"#D9A832\", \"#C0392B\" ) ) )",
           "displayFolder": "Story\\Colours",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Benefit Cost Ratio"
+                "name": "Story | Value Ratio"
               }
             ]
           }
@@ -1241,7 +1299,7 @@
         {
           "name": "Story | Benefits Headline",
           "dataType": "Text",
-          "expression": "VAR _b = [Story | Benefits At Completion]\nVAR _due = [Story | Benefits Due To Date]\nVAR _a = [Story | Benefits Actual]\nVAR _c = [Story | Finance EAC]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ),\n            \"@x\", [Story | Benefit Cost Ratio] ), NOT ISBLANK ( DimProject[Id] ) && [@x] > 0 ),\n        [@x], DESC, DimProject[Id], ASC )\nVAR _neg = COUNTROWS ( FILTER ( VALUES ( DimProject[Id] ),\n    NOT ISBLANK ( DimProject[Id] ) && [Story | Finance EAC] > 0 && COALESCE ( [Story | Benefits At Completion], 0 ) = 0 ) )\nRETURN\n    IF ( COALESCE ( _b, 0 ) = 0,\n        \"No planned benefits in the financial plans of this selection — capture expected benefits in OnePlan to tell the value story.\",\n        \"The selection plans \" & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" of benefits against an EAC of \" & IF ( ISBLANK ( _c ), \"–\", IF ( ABS ( _c ) >= 1000000, \"€\" & FORMAT ( _c / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _c ) >= 1000, \"€\" & FORMAT ( _c / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _c, \"#,0\" ) ) ) )\n            & IF ( COALESCE ( _c, 0 ) > 0, \" (\" & FORMAT ( DIVIDE ( _b, _c ), \"0.0\" ) & \"× return)\", \"\" ) & \". \"\n            & IF ( ISBLANK ( _a ),\n                \"No actual benefits recorded yet in OnePlan — realisation cannot be measured; benefits due to date: \" & IF ( ISBLANK ( _due ), \"–\", IF ( ABS ( _due ) >= 1000000, \"€\" & FORMAT ( _due / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _due ) >= 1000, \"€\" & FORMAT ( _due / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _due, \"#,0\" ) ) ) ) & \".\",\n                \"Actual benefits \" & IF ( ISBLANK ( _a ), \"–\", IF ( ABS ( _a ) >= 1000000, \"€\" & FORMAT ( _a / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _a ) >= 1000, \"€\" & FORMAT ( _a / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _a, \"#,0\" ) ) ) ) & \" against \" & IF ( ISBLANK ( _due ), \"–\", IF ( ABS ( _due ) >= 1000000, \"€\" & FORMAT ( _due / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _due ) >= 1000, \"€\" & FORMAT ( _due / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _due, \"#,0\" ) ) ) ) & \" due to date (\"\n                    & IF ( ISBLANK ( DIVIDE ( _a, _due ) ), \"–\", FORMAT ( DIVIDE ( _a, _due ), \"0%\" ) ) & \").\" )\n            & IF ( COUNTROWS ( _top ) > 0,\n                \" Best value for money: \" & MAXX ( _top, [@n] ) & \" (\" & FORMAT ( MAXX ( _top, [@x] ), \"0.0\" ) & \"×).\", \"\" )\n            & \" \" & FORMAT ( COALESCE ( _neg, 0 ), \"0\" ) & \" project(s) with an EAC have no planned benefit.\"\n    )",
+          "expression": "VAR _b = [Story | Benefits At Completion]\nVAR _due = [Story | Benefits Due To Date]\nVAR _a = [Story | Benefits Actual]\nVAR _c = [Story | Finance EAC]\nVAR _rev = [Story | Revenue At Completion]\nVAR _x = [Story | Value Ratio]\nVAR _top =\n    TOPN ( 1,\n        FILTER ( ADDCOLUMNS ( VALUES ( DimProject[Id] ), \"@n\", CALCULATE ( MAX ( DimProject[Name] ) ),\n            \"@x\", [Story | Value Ratio] ), NOT ISBLANK ( DimProject[Id] ) && [@x] > 0 ),\n        [@x], DESC, DimProject[Id], ASC )\nVAR _neg = COUNTROWS ( FILTER ( VALUES ( DimProject[Id] ),\n    NOT ISBLANK ( DimProject[Id] ) && [Story | Finance EAC] > 0 && COALESCE ( [Story | Benefits At Completion], 0 ) = 0 ) )\nRETURN\n    IF ( COALESCE ( _b, 0 ) = 0,\n        \"No planned benefits in the financial plans of this selection — capture expected benefits in OnePlan to tell the value story.\",\n        \"The selection plans \" & IF ( ISBLANK ( _b ), \"–\", IF ( ABS ( _b ) >= 1000000, \"€\" & FORMAT ( _b / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _b ) >= 1000, \"€\" & FORMAT ( _b / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _b, \"#,0\" ) ) ) ) & \" of benefits\"\n            & IF ( COALESCE ( _rev, 0 ) > 0, \" and \" & IF ( ISBLANK ( _rev ), \"–\", IF ( ABS ( _rev ) >= 1000000, \"€\" & FORMAT ( _rev / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _rev ) >= 1000, \"€\" & FORMAT ( _rev / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _rev, \"#,0\" ) ) ) ) & \" of revenue\", \"\" )\n            & \" against an EAC of \" & IF ( ISBLANK ( _c ), \"–\", IF ( ABS ( _c ) >= 1000000, \"€\" & FORMAT ( _c / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _c ) >= 1000, \"€\" & FORMAT ( _c / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _c, \"#,0\" ) ) ) )\n            & IF ( NOT ISBLANK ( _x ), \" (\" & FORMAT ( _x, \"0.0\" ) & \"× value ÷ EAC)\", \"\" ) & \". \"\n            & IF ( ISBLANK ( _a ),\n                \"No actual benefits recorded yet in OnePlan — realisation cannot be measured; benefits due to date: \" & IF ( ISBLANK ( _due ), \"–\", IF ( ABS ( _due ) >= 1000000, \"€\" & FORMAT ( _due / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _due ) >= 1000, \"€\" & FORMAT ( _due / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _due, \"#,0\" ) ) ) ) & \".\",\n                \"Actual benefits \" & IF ( ISBLANK ( _a ), \"–\", IF ( ABS ( _a ) >= 1000000, \"€\" & FORMAT ( _a / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _a ) >= 1000, \"€\" & FORMAT ( _a / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _a, \"#,0\" ) ) ) ) & \" against \" & IF ( ISBLANK ( _due ), \"–\", IF ( ABS ( _due ) >= 1000000, \"€\" & FORMAT ( _due / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _due ) >= 1000, \"€\" & FORMAT ( _due / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _due, \"#,0\" ) ) ) ) & \" due to date (\"\n                    & IF ( ISBLANK ( DIVIDE ( _a, _due ) ), \"–\", FORMAT ( DIVIDE ( _a, _due ), \"0%\" ) ) & \").\" )\n            & IF ( COUNTROWS ( _top ) > 0,\n                \" Best value for money: \" & MAXX ( _top, [@n] ) & \" (\" & FORMAT ( MAXX ( _top, [@x] ), \"0.0\" ) & \"×).\", \"\" )\n            & \" \" & FORMAT ( COALESCE ( _neg, 0 ), \"0\" ) & \" project(s) with an EAC have no planned benefit.\"\n    )",
           "displayFolder": "Story\\Headlines",
           "references": {
             "measures": [
@@ -1268,7 +1326,12 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Benefit Cost Ratio"
+                "name": "Story | Revenue At Completion"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Value Ratio"
               }
             ]
           }
@@ -1276,7 +1339,7 @@
         {
           "name": "Story | Exec Headline",
           "dataType": "Text",
-          "expression": "VAR _n = [Story | Active Projects]\nVAR _ot = [Story | On Track %]\nVAR _vp = [Story | EAC Variance %]\nVAR _u = [Story | Utilisation %]\nVAR _o = [Story | Over-allocated People]\nVAR _ch = [Story | Critical High Risks]\nVAR _focus =\n    SWITCH ( TRUE (),\n        NOT ISBLANK ( _vp ) && _vp > 0.05, \"cost overrun\",\n        _o > 0 && NOT ISBLANK ( _u ) && _u > 1, \"resource overload\",\n        NOT ISBLANK ( _ot ) && _ot < 0.7, \"delivery health\",\n        _ch > 5, \"risk exposure\",\n        \"keeping the course\" )\nRETURN\n    FORMAT ( _n, \"0\" ) & \" active projects, \" & IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" on track. EAC is \"\n        & IF ( ISBLANK ( _vp ), \"–\", FORMAT ( _vp, \"+0.0%;-0.0%;0.0%\" ) ) & \" versus budget at completion. Organisation-wide, people are \" & IF ( ISBLANK ( _u ), \"–\", FORMAT ( _u, \"0%\" ) )\n        & \" utilised (\" & FORMAT ( _o, \"0\" ) & \" above 100% in at least one month) and \" & FORMAT ( _ch, \"0\" )\n        & \" critical/high risks are open. This month's focus: \" & _focus & \".\"",
+          "expression": "VAR _n = [Story | Active Projects]\nVAR _ot = [Story | On Track %]\nVAR _vp = [Story | EAC Variance %]\nVAR _u = [Story | Utilisation %]\nVAR _o = [Story | Over-allocated People]\nVAR _ch = [Story | Critical High Risks]\nVAR _people = COUNTROWS ( CALCULATETABLE ( SUMMARIZE ( FactCapacity, DimResource[ResourceKey] ),\n    KEEPFILTERS ( DimResource[Inactive] = FALSE () ) ) )\nVAR _focus =\n    SWITCH ( TRUE (),\n        NOT ISBLANK ( _vp ) && _vp > 0.05, \"cost overrun\",\n        DIVIDE ( _o, _people ) >= 0.1, \"resource overload\",\n        NOT ISBLANK ( _ot ) && _ot < 0.7, \"delivery health\",\n        _ch > 5, \"risk exposure\",\n        \"keeping the course\" )\nRETURN\n    FORMAT ( _n, \"0\" ) & \" active projects, \" & IF ( ISBLANK ( _ot ), \"–\", FORMAT ( _ot, \"0%\" ) ) & \" on track\" & IF ( [Story | Not Rated] > 0, \" (\" & FORMAT ( [Story | Not Rated], \"0\" ) & \" not rated)\", \"\" ) & \". EAC is \"\n        & IF ( ISBLANK ( _vp ), \"–\", FORMAT ( _vp, \"+0.0%;-0.0%;0.0%\" ) ) & \" versus budget at completion. Organisation-wide, people are \" & IF ( ISBLANK ( _u ), \"–\", FORMAT ( _u, \"0%\" ) )\n        & \" utilised (\" & FORMAT ( _o, \"0\" ) & \" above 100% in at least one month) and \" & FORMAT ( _ch, \"0\" )\n        & \" critical/high risks are open. This month's focus: \" & _focus & \".\"",
           "displayFolder": "Story\\Headlines",
           "references": {
             "measures": [
@@ -1309,6 +1372,11 @@
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | Critical High Risks"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Not Rated"
               }
             ]
           }
@@ -1643,7 +1711,7 @@
           "expression": "DIVIDE ( [Story | Net Value], [Story | Finance EAC] )",
           "displayFolder": "Story\\P&L",
           "formatString": "0%;-0%;0%",
-          "description": "Net value as a share of EAC.",
+          "description": "Net value as a share of EAC (= Story | Value Ratio − 1).",
           "references": {
             "measures": [
               {
@@ -3939,10 +4007,31 @@
         {
           "name": "Story | Timesheet · Plan Accuracy %",
           "dataType": "Double",
+          "expression": "VAR _t = FILTER (\n        ADDCOLUMNS ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n            \"@s\", [Story | Timesheet · Scheduled To Date], \"@a\", [Timesheet | Actual Hours] ),\n        [@s] > 0 && [@a] > 0 )\nRETURN DIVIDE ( SUMX ( _t, [@a] ), SUMX ( _t, [@s] ) )",
+          "displayFolder": "Story\\Timesheets",
+          "formatString": "0%",
+          "description": "Approved timesheet project hours ÷ scheduled hours to date, on projects that have both (the overlap). 80–120% = on plan.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Timesheet · Scheduled To Date"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Timesheet | Actual Hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Timesheet · Booked vs Scheduled %",
+          "dataType": "Double",
           "expression": "DIVIDE ( [Timesheet | Actual Hours], [Story | Timesheet · Scheduled To Date] )",
           "displayFolder": "Story\\Timesheets",
           "formatString": "0%",
-          "description": "Approved timesheet project hours ÷ scheduled hours to date. 80–120% = on plan.",
+          "description": "All approved timesheet project hours ÷ all scheduled hours to date (no overlap rule): the month-by-month line, where scheduled work nobody booked should pull the line down.",
           "references": {
             "measures": [
               {
@@ -3953,6 +4042,48 @@
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | Timesheet · Scheduled To Date"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Timesheet · Overlap Projects",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER (\n        ADDCOLUMNS ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n            \"@s\", [Story | Timesheet · Scheduled To Date], \"@a\", [Timesheet | Actual Hours] ),\n        [@s] > 0 && [@a] > 0 ) ) + 0",
+          "displayFolder": "Story\\Timesheets",
+          "formatString": "#,##0",
+          "description": "Projects with both scheduled hours to date and approved timesheet hours: the base of Plan Accuracy %.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Timesheet · Scheduled To Date"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Timesheet | Actual Hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Timesheet · Projects With Hours",
+          "dataType": "Integer",
+          "expression": "COUNTROWS (\n    FILTER ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n        [Story | Timesheet · Scheduled To Date] > 0 || [Timesheet | Actual Hours] > 0 )\n) + 0",
+          "displayFolder": "Story\\Timesheets",
+          "formatString": "#,##0",
+          "description": "Projects with scheduled hours to date or approved timesheet hours (or both).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Timesheet · Scheduled To Date"
+              },
+              {
+                "entity": "_Measures",
+                "name": "Timesheet | Actual Hours"
               }
             ]
           }
@@ -3972,6 +4103,22 @@
               {
                 "entity": "_Measures",
                 "name": "Timesheet | Actual Hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Timesheet · Accuracy KPI Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = [Story | Timesheet · Plan Accuracy %]\nRETURN IF ( ISBLANK ( _r ), \"#9AA3AF\", IF ( _r > 1.2, \"#C0392B\", IF ( _r >= 0.8, \"#1E6D6E\", \"#D9A832\" ) ) )",
+          "displayFolder": "Story\\Colours",
+          "description": "Colour of the Plan accuracy KPI (overlap projects); same bands as Accuracy Colour.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Timesheet · Plan Accuracy %"
               }
             ]
           }
@@ -4152,7 +4299,7 @@
         {
           "name": "Story | Timesheet · Headline",
           "dataType": "Text",
-          "expression": "VAR _s = [Story | Timesheet · Scheduled To Date]\nVAR _a = [Timesheet | Actual Hours]\nVAR _acc = DIVIDE ( _a, _s )\nVAR _u = [Story | Timesheet · Unplanned Share %]\nVAR _miss = COALESCE ( [Timesheet | Resources Missing Time], 0 )\nVAR _wait = COALESCE ( [Story | Timesheet · Not Approved Hours], 0 )\nVAR _lag = [Timesheet | Avg Approval Lag (days)]\nRETURN\n    IF (\n        ISBLANK ( _s ) && ISBLANK ( _a ),\n        \"No scheduled or booked hours in this selection.\",\n        FORMAT ( COALESCE ( _a, 0 ), \"#,##0\" ) & \" approved hours booked against \"\n            & FORMAT ( COALESCE ( _s, 0 ), \"#,##0\" ) & \" scheduled to date\"\n            & IF ( NOT ISBLANK ( _acc ), \" (plan accuracy \" & FORMAT ( _acc, \"0%\" ) & \")\", \"\" ) & \". \"\n            & IF ( _u > 0, FORMAT ( _u, \"0%\" ) & \" of booked time went to projects with no schedule. \", \"\" )\n            & SWITCH (\n                TRUE (),\n                _miss > 0, _miss & \" person(s) with committed work booked no time. Action: chase the missing timesheets.\",\n                _wait > 0, FORMAT ( _wait, \"#,##0\" ) & \" h not yet approved. Action: chase the approvers.\",\n                _u > 0.2, \"Action: put the unplanned work into the resource plans.\",\n                \"Time is in and approved.\"\n            )\n            & IF ( NOT ISBLANK ( _lag ), \" Approval takes \" & FORMAT ( _lag, \"0.0\" ) & \" days on average.\", \"\" )\n    )",
+          "expression": "VAR _s = [Story | Timesheet · Scheduled To Date]\nVAR _a = [Timesheet | Actual Hours]\nVAR _acc = [Story | Timesheet · Plan Accuracy %]\nVAR _ov = [Story | Timesheet · Overlap Projects]\nVAR _np = [Story | Timesheet · Projects With Hours]\nVAR _u = [Story | Timesheet · Unplanned Share %]\nVAR _miss = COALESCE ( [Timesheet | Resources Missing Time], 0 )\nVAR _wait = COALESCE ( [Story | Timesheet · Not Approved Hours], 0 )\nVAR _lag = [Timesheet | Avg Approval Lag (days)]\nRETURN\n    IF (\n        ISBLANK ( _s ) && ISBLANK ( _a ),\n        \"No scheduled or booked hours in this selection.\",\n        FORMAT ( COALESCE ( _a, 0 ), \"#,##0\" ) & \" approved hours booked against \"\n            & FORMAT ( COALESCE ( _s, 0 ), \"#,##0\" ) & \" scheduled to date\"\n            & \". \"\n            & IF ( _np = 0, \"No project has hours to compare. \",\n              IF ( DIVIDE ( _ov, _np ) < 0.3,\n                \"Plan accuracy is not comparable: only \" & FORMAT ( _ov, \"0\" ) & \" of \" & FORMAT ( _np, \"0\" )\n                    & \" projects have both a schedule and booked time. \",\n                \"Plan accuracy \" & FORMAT ( _acc, \"0%\" ) & \" on the \" & FORMAT ( _ov, \"0\" ) & \" of \" & FORMAT ( _np, \"0\" )\n                    & \" projects that have both a schedule and booked time. \" ) )\n            & IF ( _u > 0, FORMAT ( _u, \"0%\" ) & \" of booked time went to projects with no schedule. \", \"\" )\n            & SWITCH (\n                TRUE (),\n                _miss > 0, _miss & \" person(s) with committed work booked no time. Action: chase the missing timesheets.\",\n                _wait > 0, FORMAT ( _wait, \"#,##0\" ) & \" h not yet approved. Action: chase the approvers.\",\n                _u > 0.2, \"Action: put the unplanned work into the resource plans.\",\n                \"Time is in and approved.\"\n            )\n            & IF ( NOT ISBLANK ( _lag ), \" Approval takes \" & FORMAT ( _lag, \"0.0\" ) & \" days on average.\", \"\" )\n    )",
           "displayFolder": "Story\\Timesheets",
           "references": {
             "measures": [
@@ -4164,6 +4311,21 @@
               {
                 "entity": "_Measures",
                 "name": "Timesheet | Actual Hours"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Timesheet · Plan Accuracy %"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Timesheet · Overlap Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Timesheet · Projects With Hours"
               },
               {
                 "schema": "extension",
@@ -7960,16 +8122,16 @@
         {
           "name": "Story | Home · Tip Benefits Key",
           "dataType": "Double",
-          "expression": "VAR _r = [Story | Benefit Cost Ratio]\nRETURN IF ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) && _r > 0, _r )",
+          "expression": "VAR _r = [Story | Value Ratio]\nRETURN IF ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) && _r > 0, _r )",
           "displayFolder": "Story\\Home\\Tooltips",
           "formatString": "0.00",
-          "description": "Sort key of the Benefits hover list: benefit / cost ratio of a project that has one (uncapped); blank otherwise.",
+          "description": "Sort key of the Benefits hover list: value ratio of a project that has one (uncapped); blank otherwise.",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Benefit Cost Ratio"
+                "name": "Story | Value Ratio"
               }
             ]
           }
@@ -7980,7 +8142,7 @@
           "expression": "VAR _v = [Story | Home · Tip Benefits Key]\nVAR _nm = SELECTEDVALUE ( DimProject[Name] )\nVAR _q = FILTER ( ALLSELECTED ( DimProject[Name] ), NOT ISBLANK ( [Story | Home · Tip Benefits Key] ) )\nVAR _rank = RANKX ( _q, [Story | Home · Tip Benefits Key], _v, ASC ) + COUNTROWS ( FILTER ( _q, [Story | Home · Tip Benefits Key] = _v && DimProject[Name] < _nm ) )\nRETURN IF ( NOT ISBLANK ( _v ) && _rank <= 12, _v )",
           "displayFolder": "Story\\Home\\Tooltips",
           "formatString": "0.00",
-          "description": "Benefit / cost ratio of the 12 weakest projects (lowest ratio first); blank otherwise.",
+          "description": "Value ratio of the 12 weakest projects (lowest ratio first); blank otherwise.",
           "references": {
             "measures": [
               {
@@ -8374,7 +8536,7 @@
         {
           "name": "Story | Home · Colour Schedule",
           "dataType": "Text",
-          "expression": "VAR _late10 = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Baseline · Finish Slip (days)] > 10 ) )\nRETURN IF ( _late10 > 0, \"#FF8A80\", IF ( [Story | Baseline · Late Projects] > 0, \"#F2C46B\", \"#5DCAA5\" ) )",
+          "expression": "VAR _late10 = COUNTROWS ( FILTER ( CALCULATETABLE ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), DimProject[State_Value] = \"Active\" ), [Story | Baseline · Finish Slip (days)] > 10 ) )\nRETURN IF ( _late10 > 0, \"#FF8A80\", IF ( [Story | Late Active Projects] > 0, \"#F2C46B\", \"#5DCAA5\" ) )",
           "displayFolder": "Story\\Home\\Colours",
           "references": {
             "measures": [
@@ -8386,7 +8548,7 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Baseline · Late Projects"
+                "name": "Story | Late Active Projects"
               }
             ]
           }
@@ -8409,15 +8571,15 @@
         {
           "name": "Story | Home · Colour Benefits",
           "dataType": "Text",
-          "expression": "VAR _r = [Story | Benefit Cost Ratio]\nRETURN IF ( ISBLANK ( _r ), \"#9AA3AF\", IF ( _r >= 1, \"#5DCAA5\", \"#F2C46B\" ) )",
+          "expression": "VAR _r = [Story | Value Ratio]\nRETURN IF ( ISBLANK ( _r ), \"#9AA3AF\", IF ( _r >= 1, \"#5DCAA5\", \"#F2C46B\" ) )",
           "displayFolder": "Story\\Home\\Colours",
-          "description": "Grey when there is no benefit/cost ratio; teal at 1.0 or more; else amber.",
+          "description": "Grey when there is no value ratio; teal at 1.0 or more; else amber.",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Benefit Cost Ratio"
+                "name": "Story | Value Ratio"
               }
             ]
           }
@@ -8739,7 +8901,7 @@
         {
           "name": "Story | Home · Unit Schedule",
           "dataType": "Text",
-          "expression": "VAR _v = [Story | Baseline · Late Projects]\nVAR _extra = IF ( ISBLANK ( _v ), 0, MAX ( 0, LEN ( FORMAT ( _v, \"#,##0\" ) ) - 1 ) )\nRETURN REPT ( UNICHAR ( 8199 ), 3 * _extra ) & \"slipping vs baseline\"",
+          "expression": "VAR _v = [Story | Late Active Projects]\nVAR _extra = IF ( ISBLANK ( _v ), 0, MAX ( 0, LEN ( FORMAT ( _v, \"#,##0\" ) ) - 1 ) )\nRETURN REPT ( UNICHAR ( 8199 ), 3 * _extra ) & \"slipping vs baseline\"",
           "displayFolder": "Story\\Home\\Cards",
           "description": "Unit label of the Schedule card number ('slipping vs baseline'), padded with figure spaces so it starts right after the number however many digits it has.",
           "references": {
@@ -8747,7 +8909,7 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Baseline · Late Projects"
+                "name": "Story | Late Active Projects"
               }
             ]
           }
@@ -8803,15 +8965,15 @@
         {
           "name": "Story | Home · Unit Benefits",
           "dataType": "Text",
-          "expression": "VAR _v = [Story | Benefit Cost Ratio]\nVAR _extra = IF ( ISBLANK ( _v ), 0, MAX ( 0, LEN ( FORMAT ( _v, \"0.00\" ) ) - 4 ) )\nRETURN REPT ( UNICHAR ( 8199 ), 3 * _extra ) & \"benefit / cost\"",
+          "expression": "VAR _v = [Story | Value Ratio]\nVAR _extra = IF ( ISBLANK ( _v ), 0, MAX ( 0, LEN ( FORMAT ( _v, \"0.00\" ) ) - 4 ) )\nRETURN REPT ( UNICHAR ( 8199 ), 3 * _extra ) & \"value / cost\"",
           "displayFolder": "Story\\Home\\Cards",
-          "description": "Unit label of the Benefits card number ('benefit / cost'), padded with figure spaces so it starts right after the number however many digits it has.",
+          "description": "Unit label of the Benefits card number ('value / cost'), padded with figure spaces so it starts right after the number however many digits it has.",
           "references": {
             "measures": [
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Benefit Cost Ratio"
+                "name": "Story | Value Ratio"
               }
             ]
           }

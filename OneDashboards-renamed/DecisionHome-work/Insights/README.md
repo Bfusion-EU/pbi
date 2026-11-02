@@ -90,6 +90,22 @@ and columns that the existing pack already uses. Examples:
 - **Priority** = `DimProject[PrioritizationScore]`.
 - No row-level security.
 
+Added 2026-11-02 (one definition per number):
+
+- **Finish slip vs baseline** has one definition, `Story | Baseline · Finish Slip (days)` (page 5d). Page 5 and the Home
+  Schedule card count **active** projects late against their current baseline. They say how many active projects
+  have a baseline, and the headline warns when fewer than half do.
+- **Value ratio** = (planned benefits + forecasted revenue) ÷ EAC, at completion (`Story | Value Ratio`). It is used on
+  Home, page 7 and the 3b P&L, and Net ROI = value ratio − 1. The scenario page's "Benefits per €" is a different
+  figure: it comes from the Modeler scenario.
+- **On track %** leaves out active projects with no health rating, and the headlines say how many those are ("n not rated").
+- **Plan accuracy (4b)** counts only projects that have both scheduled hours to date and approved hours. The headline
+  gives that overlap, and says "not comparable" when it is below 30%. The month line shows all booked hours ÷ all
+  scheduled hours.
+- **EAC vs budget** on Financials, Executive and Act now comes from the financial plan (FactCost). Portfolio uses the plan
+  fields and labels them that way. The Home Financials trend line comes from status reports, and its caption says so.
+- **Executive focus "resource overload"** triggers when at least 10% of active people are above 100% in a month in view.
+
 ## Data notes (from the model audit)
 
 - The report-level filters are copied from the Bfusion pack: `FactCost[DetailRow] = false` and the "Template"

@@ -172,12 +172,12 @@ _add("Tip Portfolio Budget", D, f'IF ( NOT ISBLANK ( [{hm("Tip Portfolio")}] ), 
      "Plan-field budget of a project listed by Tip Portfolio; blank otherwise.", folder=_TIPS)
 _list_footer("Portfolio", "Tip Portfolio Key", ("project", "projects"), ("largest budget first", "top 12 by budget"), "Portfolio")
 _add("Tip Benefits Key", D, f"""
-VAR _r = [Story | Benefit Cost Ratio]
+VAR _r = [Story | Value Ratio]
 RETURN IF ( {ONE_PROJECT} && _r > 0, _r )""", "0.00",
-     "Sort key of the Benefits hover list: benefit / cost ratio of a project that has one (uncapped); blank otherwise.",
+     "Sort key of the Benefits hover list: value ratio of a project that has one (uncapped); blank otherwise.",
      folder=_TIPS)
 _add("Tip Benefits", D, _capped("Tip Benefits Key", "ASC", "_v"), "0.00",
-     f"Benefit / cost ratio of the {TIP_ROWS} weakest projects (lowest ratio first); blank otherwise.", folder=_TIPS)
+     f"Value ratio of the {TIP_ROWS} weakest projects (lowest ratio first); blank otherwise.", folder=_TIPS)
 _list_footer("Benefits", "Tip Benefits Key", ("project", "projects"), ("weakest first", "12 weakest first"), "Benefits")
 _add("Tip Status Key", I, """
 VAR _g = [Story | Status · Reporting Gap]
@@ -280,14 +280,14 @@ VAR _p = [Story | Aligned Budget %]
 RETURN IF ( ISBLANK ( _p ), "{GREY}", IF ( _p >= 0.8, "{C_TEAL}", IF ( _p >= 0.6, "{C_AMBER}", "{C_RED}" ) ) )""",
      folder=FOLDER + "\\Colours")
 _add("Colour Schedule", T, f"""
-VAR _late10 = COUNTROWS ( FILTER ( {PROJECTS}, [Story | Baseline · Finish Slip (days)] > 10 ) )
-RETURN IF ( _late10 > 0, "{C_RED}", IF ( [Story | Baseline · Late Projects] > 0, "{C_AMBER}", "{C_TEAL}" ) )""",
+VAR _late10 = COUNTROWS ( FILTER ( {ACTIVE_PROJECTS}, [Story | Baseline · Finish Slip (days)] > 10 ) )
+RETURN IF ( _late10 > 0, "{C_RED}", IF ( [Story | Late Active Projects] > 0, "{C_AMBER}", "{C_TEAL}" ) )""",
      folder=FOLDER + "\\Colours")
 _add("Colour Risk", T, f'IF ( [Story | Critical High Risks] > 0, "{C_RED}", "{C_TEAL}" )', folder=FOLDER + "\\Colours")
 _add("Colour Benefits", T, f"""
-VAR _r = [Story | Benefit Cost Ratio]
+VAR _r = [Story | Value Ratio]
 RETURN IF ( ISBLANK ( _r ), "{GREY}", IF ( _r >= 1, "{C_TEAL}", "{C_AMBER}" ) )""", folder=FOLDER + "\\Colours",
-     desc="Grey when there is no benefit/cost ratio; teal at 1.0 or more; else amber.")
+     desc="Grey when there is no value ratio; teal at 1.0 or more; else amber.")
 _add("Colour Financials", T, f"""
 VAR _red = COUNTROWS ( FILTER ( {PROJECTS}, [Story | EAC Variance %] > 0.05 ) )
 RETURN IF ( _red > 0, "{C_RED}", IF ( [Story | Projects Over Budget] + 0 > 0, "{C_AMBER}", "{C_TEAL}" ) )""",
@@ -326,11 +326,11 @@ FIG = "UNICHAR ( 8199 )"           # figure space: 12 pt ~9 px; one extra 38 pt 
 # measure padded with figure spaces: 3 per character beyond the narrowest form of the number ("8", "8%", "0.00", "0.0").
 # (subject, number measure, format of the number, narrowest length, unit text)
 UNITS = [("Financials", "Story | Projects Over Budget", "#,##0", 1, "projects over EAC"),
-         ("Schedule", "Story | Baseline · Late Projects", "#,##0", 1, "slipping vs baseline"),
+         ("Schedule", "Story | Late Active Projects", "#,##0", 1, "slipping vs baseline"),
          ("Resources", "Story | Utilisation %", "0%", 2, "utilisation"),
          ("Risk", "Story | Critical High Risks", "#,##0", 1, "critical risks"),
          ("Portfolio", "Story | Aligned Budget %", "0%", 2, "budget aligned"),
-         ("Benefits", "Story | Benefit Cost Ratio", "0.00", 4, "benefit / cost"),
+         ("Benefits", "Story | Value Ratio", "0.00", 4, "value / cost"),
          ("Status", "Story | Status · Not Reporting", "#,##0", 1, f"not reporting {STALE_DAYS}+ days"),
          ("Governance", "PMO | Governance Score", "0.0", 3, "data trust score")]
 for _s, _num, _fmt, _base, _unit in UNITS:
@@ -704,9 +704,9 @@ RIGHT_X, RIGHT_W, RIGHT_Y, RIGHT_H = 1356, 428, 100, 888
 # (dynamic text, colour and fill measures by name) or a static text.
 SUBJECTS_LAYOUT = [
     dict(key="fin", name="Financials", icon="finance", num="Story | Projects Over Budget", unit="projects over EAC",
-         chip=("measure", "Financials"), visual=("area", hm("EAC Var % (reports)"), "EAC vs budget · 6 months"),
+         chip=("measure", "Financials"), visual=("area", hm("EAC Var % (reports)"), "Forecast vs budget · reports"),
          colour=hm("Colour Financials"), link="finance", footer=[("Spend", "finance"), ("Pareto", "finance2")]),
-    dict(key="sch", name="Schedule", icon="schedule", num="Story | Baseline · Late Projects", unit="slipping vs baseline",
+    dict(key="sch", name="Schedule", icon="schedule", num="Story | Late Active Projects", unit="slipping vs baseline",
          chip=("measure", "Schedule"), visual=("area", hm("On Track % (reports)"), "% on track · 6 months"),
          colour=hm("Colour Schedule"), link="schedule",
          footer=[("Schedule", "schedule"), ("Gantt", "gantt"), ("Baseline", "baseline")]),
@@ -722,7 +722,7 @@ SUBJECTS_LAYOUT = [
          chip=("text", "target 80%"), visual=("bar", (0, 1, hm("Aligned Rest"), 0.8, ("0%", "target 80%", "100%"))),
          colour=hm("Colour Portfolio"), link="portfolio",
          footer=[("Gates", "lifecycle"), ("Scenarios", "scenarios"), ("Project", "onepager")]),
-    dict(key="ben", name="Benefits", icon="benefits", num="Story | Benefit Cost Ratio", unit="benefit / cost",
+    dict(key="ben", name="Benefits", icon="benefits", num="Story | Value Ratio", unit="value / cost",
          chip=("text", "target ≥ 1.0"), visual=None,
          colour=hm("Colour Benefits"), link="benefits", footer=[("Benefits", "benefits")]),
     dict(key="sr", name="Status reports", icon="exec", num="Story | Status · Not Reporting",
@@ -1190,8 +1190,8 @@ def card_tips():
                  [(DPN, "Project", 150), (M(hm("Tip Portfolio")), "Alignment", 100),
                   (M(hm("Tip Portfolio Budget")), "Budget", 80)], _desc(hm("Tip Portfolio Budget")), (),
                  (hm("Tip Portfolio Sub"), hm("Tip Portfolio More"))),
-        "ben": ("Behind benefit / cost: ratio by project", "Planned benefits at completion ÷ EAC",
-                [(DPN, "Project", 220), (M(hm("Tip Benefits")), "Benefit / cost", 100)],
+        "ben": ("Behind value / cost: ratio by project", "Planned benefits + revenue at completion ÷ EAC",
+                [(DPN, "Project", 220), (M(hm("Tip Benefits")), "Value / cost", 100)],
                 [(M(hm("Tip Benefits")), "Ascending")], (), (hm("Tip Benefits Sub"), hm("Tip Benefits More"))),
         "sr": (f"Behind not reporting: no report in {STALE_DAYS}+ days", "Days since the last submitted report",
                [(DPN, "Project", 130), (M(hm("Tip Status")), "Reporting", 115), (M(hm("Tip Status Days")), "Days", 45)],
