@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "72d4c2ee8e0db9ea75eb",
   "position": {
-    "x": 1127.25,
+    "x": 1286.0,
     "y": 188,
     "z": 2500,
-    "width": 212.25,
+    "width": 244.0,
     "height": 90,
     "tabOrder": 2500
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Status · Avg Days Since Report"
+                  "Property": "Story | Status · MoM New Closed KPI"
                 }
               },
-              "queryRef": "_Measures.Story | Status · Avg Days Since Report",
-              "nativeQueryRef": "Story | Status · Avg Days Since Report"
+              "queryRef": "_Measures.Story | Status · MoM New Closed KPI",
+              "nativeQueryRef": "Story | Status · MoM New Closed KPI"
             }
           ]
         }
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "24D"
+                  "Value": "20D"
                 }
               }
             },
@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Avg days since last report'"
+                  "Value": "'New · closed'"
                 }
               }
             },

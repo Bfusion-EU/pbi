@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "2969f75036af97c09b9d",
+  "name": "dc742ad4f02defcf7561",
   "position": {
-    "x": 6,
-    "y": 60,
-    "z": 1400,
-    "width": 348,
-    "height": 194,
-    "tabOrder": 1400
+    "x": 8,
+    "y": 44,
+    "z": 27500,
+    "width": 412,
+    "height": 398,
+    "tabOrder": 27500
   },
   "visual": {
     "visualType": "tableEx",
@@ -39,10 +39,10 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Home · Tip Overdue Work"
+                  "Property": "Story | Home · Tip May Slip"
                 }
               },
-              "queryRef": "_Measures.Story | Home · Tip Overdue Work",
+              "queryRef": "_Measures.Story | Home · Tip May Slip",
               "nativeQueryRef": "Why",
               "displayName": "Why"
             }
@@ -107,6 +107,33 @@
             }
           }
         }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ef2c731d5a9e1bf24e07'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true,
@@ -119,7 +146,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F2A44'"
+                      "Value": "'#1B2540'"
                     }
                   }
                 }
@@ -146,14 +173,14 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "11D"
                 }
               }
             },
             "wordWrap": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             }
@@ -166,7 +193,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "11D"
                 }
               }
             },
@@ -175,7 +202,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2B2F36'"
+                      "Value": "'#E8ECF4'"
                     }
                   }
                 }
@@ -186,7 +213,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#FFFFFF'"
+                      "Value": "'#1B2540'"
                     }
                   }
                 }
@@ -197,7 +224,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2B2F36'"
+                      "Value": "'#E8ECF4'"
                     }
                   }
                 }
@@ -208,7 +235,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#F7F8FA'"
+                      "Value": "'#1B2540'"
                     }
                   }
                 }
@@ -217,10 +244,41 @@
             "wordWrap": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             }
+          }
+        },
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Home · Act Colour"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "_Measures.Story | Home · Tip May Slip"
           }
         }
       ],
@@ -239,7 +297,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E3E6EC'"
+                      "Value": "'#26314F'"
                     }
                   }
                 }
@@ -248,7 +306,7 @@
             "rowPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "2D"
+                  "Value": "6D"
                 }
               }
             }
@@ -274,7 +332,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "125D"
+                  "Value": "160D"
                 }
               }
             }
@@ -288,13 +346,13 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "165D"
+                  "Value": "200D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "_Measures.Story | Home · Tip Overdue Work"
+            "metadata": "_Measures.Story | Home · Tip May Slip"
           }
         }
       ]
@@ -356,5 +414,6 @@
         "howCreated": "User"
       }
     ]
-  }
+  },
+  "parentGroupName": "7a92ced0922680c739c2"
 }

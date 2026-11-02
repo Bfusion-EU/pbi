@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "4979bc5b11c9a60fe08e",
+  "name": "e958e016261ecb51a983",
   "position": {
-    "x": 8,
-    "y": 44,
-    "z": 27500,
-    "width": 412,
-    "height": 398,
-    "tabOrder": 27500
+    "x": 16,
+    "y": 334,
+    "z": 2800,
+    "width": 1768,
+    "height": 340,
+    "tabOrder": 2800
   },
   "visual": {
     "visualType": "tableEx",
@@ -39,12 +39,108 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Home · Tip Overdue Work"
+                  "Property": "Story | Status · MoM L · Health Change"
                 }
               },
-              "queryRef": "_Measures.Story | Home · Tip Overdue Work",
-              "nativeQueryRef": "Why",
-              "displayName": "Why"
+              "queryRef": "_Measures.Story | Status · MoM L · Health Change",
+              "nativeQueryRef": "Health: last month → now",
+              "displayName": "Health: last month → now"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Status · MoM L · Finish Shift (d)"
+                }
+              },
+              "queryRef": "_Measures.Story | Status · MoM L · Finish Shift (d)",
+              "nativeQueryRef": "Finish Δ days",
+              "displayName": "Finish Δ days"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Status · MoM L · Forecast Delta"
+                }
+              },
+              "queryRef": "_Measures.Story | Status · MoM L · Forecast Delta",
+              "nativeQueryRef": "Forecast Δ",
+              "displayName": "Forecast Δ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Status · MoM L · Risks Delta"
+                }
+              },
+              "queryRef": "_Measures.Story | Status · MoM L · Risks Delta",
+              "nativeQueryRef": "Risks Δ",
+              "displayName": "Risks Δ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Status · MoM L · State Change"
+                }
+              },
+              "queryRef": "_Measures.Story | Status · MoM L · State Change",
+              "nativeQueryRef": "State",
+              "displayName": "State"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Status · MoM L · May Slip"
+                }
+              },
+              "queryRef": "_Measures.Story | Status · MoM L · May Slip",
+              "nativeQueryRef": "May slip",
+              "displayName": "May slip"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Status · MoM L · Size"
+                }
+              },
+              "queryRef": "_Measures.Story | Status · MoM L · Size",
+              "nativeQueryRef": "Change size",
+              "displayName": "Change size"
             }
           ]
         }
@@ -53,16 +149,17 @@
         "sort": [
           {
             "field": {
-              "Column": {
+              "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "DimProject"
+                    "Schema": "extension",
+                    "Entity": "_Measures"
                   }
                 },
-                "Property": "Name"
+                "Property": "Story | Status · MoM L · Size"
               }
             },
-            "direction": "Ascending"
+            "direction": "Descending"
           }
         ],
         "isDefaultSort": false
@@ -75,7 +172,39 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Change ledger — this month versus last month'"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1F2A44'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             }
@@ -88,7 +217,25 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
                 }
               }
             }
@@ -101,7 +248,25 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E3E6EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
                 }
               }
             }
@@ -146,7 +311,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1B2540'"
+                      "Value": "'#1F2A44'"
                     }
                   }
                 }
@@ -173,7 +338,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "11D"
+                  "Value": "9D"
                 }
               }
             },
@@ -193,7 +358,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "11D"
+                  "Value": "9D"
                 }
               }
             },
@@ -202,7 +367,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E8ECF4'"
+                      "Value": "'#2B2F36'"
                     }
                   }
                 }
@@ -213,7 +378,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1B2540'"
+                      "Value": "'#FFFFFF'"
                     }
                   }
                 }
@@ -224,7 +389,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E8ECF4'"
+                      "Value": "'#2B2F36'"
                     }
                   }
                 }
@@ -235,16 +400,9 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1B2540'"
+                      "Value": "'#F7F8FA'"
                     }
                   }
-                }
-              }
-            },
-            "wordWrap": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
                 }
               }
             }
@@ -263,7 +421,7 @@
                           "Entity": "_Measures"
                         }
                       },
-                      "Property": "Story | Home · Act Colour"
+                      "Property": "Story | Status · MoM Health Change Colour"
                     }
                   }
                 }
@@ -278,7 +436,7 @@
                 }
               }
             ],
-            "metadata": "_Measures.Story | Home · Tip Overdue Work"
+            "metadata": "_Measures.Story | Status · MoM L · Health Change"
           }
         }
       ],
@@ -297,7 +455,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#26314F'"
+                      "Value": "'#E3E6EC'"
                     }
                   }
                 }
@@ -306,53 +464,10 @@
             "rowPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "6D"
+                  "Value": "4D"
                 }
               }
             }
-          }
-        }
-      ],
-      "total": [
-        {
-          "properties": {
-            "totals": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "columnWidth": [
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "160D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "DimProject.Name"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "200D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures.Story | Home · Tip Overdue Work"
           }
         }
       ]
@@ -414,6 +529,5 @@
         "howCreated": "User"
       }
     ]
-  },
-  "parentGroupName": "206ffa99fbb51327a1f4"
+  }
 }

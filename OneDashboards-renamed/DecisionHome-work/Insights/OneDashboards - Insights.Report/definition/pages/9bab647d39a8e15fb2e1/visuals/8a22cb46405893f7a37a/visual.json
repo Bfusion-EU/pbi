@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "8a22cb46405893f7a37a",
   "position": {
-    "x": 682.75,
+    "x": 778.0,
     "y": 188,
     "z": 2300,
-    "width": 212.25,
+    "width": 244.0,
     "height": 90,
     "tabOrder": 2300
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Status · Forecast Drift"
+                  "Property": "Story | Status · MoM Forecast Net"
                 }
               },
-              "queryRef": "_Measures.Story | Status · Forecast Drift",
-              "nativeQueryRef": "Story | Status · Forecast Drift"
+              "queryRef": "_Measures.Story | Status · MoM Forecast Net",
+              "nativeQueryRef": "Story | Status · MoM Forecast Net"
             }
           ]
         }
@@ -62,14 +62,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Status · Forecast Drift Colour"
+                    "Literal": {
+                      "Value": "'#1F2A44'"
                     }
                   }
                 }
@@ -100,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Forecast drift'"
+                  "Value": "'Forecast moved (net €)'"
                 }
               }
             },

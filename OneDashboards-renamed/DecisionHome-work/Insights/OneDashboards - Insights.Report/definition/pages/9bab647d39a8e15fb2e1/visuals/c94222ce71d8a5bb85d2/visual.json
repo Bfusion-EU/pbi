@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c94222ce71d8a5bb85d2",
   "position": {
-    "x": 1349.5,
+    "x": 1540.0,
     "y": 188,
     "z": 2600,
-    "width": 212.25,
+    "width": 244.0,
     "height": 90,
     "tabOrder": 2600
   },
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Status · Not Reporting"
+                  "Property": "Story | Status · MoM Not Comparable"
                 }
               },
-              "queryRef": "_Measures.Story | Status · Not Reporting",
-              "nativeQueryRef": "Story | Status · Not Reporting"
+              "queryRef": "_Measures.Story | Status · MoM Not Comparable",
+              "nativeQueryRef": "Story | Status · MoM Not Comparable"
             }
           ]
         }
@@ -63,7 +63,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#C0392B'"
+                      "Value": "'#9A6B00'"
                     }
                   }
                 }
@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Not reporting (30 d)'"
+                  "Value": "'Not comparable'"
                 }
               }
             },

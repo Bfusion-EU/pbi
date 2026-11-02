@@ -37,7 +37,7 @@ Every chapter answers **one question** and reads from top to bottom:
 | 4d | Resource Detail | Everything about one person: load, work, time in | Resource managers |
 | 5 | Planning & Scheduling | Will we deliver on time? | Delivery leads, weekly |
 | 5b | Gantt View (matrix) | What runs when, and what is late? | Delivery leads, PMO |
-| 5c | Status-Report Trend | Which projects got worse since their last report? | PMO, delivery leads |
+| 5c | What Changed | What changed since last month — who got worse, which dates and money moved? | PMO, delivery leads, board |
 | 5d | Plan vs Baseline | Is the plan still the plan we approved? (cost, days, hours, FTE) | PMO, sponsors, delivery leads |
 | 6 | Risk Management | What could go wrong? | Risk owners, fortnightly |
 | 7 | Benefits & Value | Will it pay off? | Sponsors, quarterly |
@@ -59,7 +59,7 @@ Financials, Schedule, Resources, Risk, Portfolio, Benefits, Status reports, Gove
 - **Briefing strip**: how many active projects need a decision, and why (counts per reason; they add up).
 - **Right column**, switched by the PMO / Executive buttons (display-only bookmarks — slicers stay):
   PMO = *Act now* (active projects ranked by worst reason: off track > EAC +5% > 10 d late vs baseline >
-  10 overdue tasks > no report 30 d > failing rules; the list scrolls; open the One-Pager from a selected row) and *Next 30 days*;
+  may slip (2 of 4 signals or > 10 overdue tasks) > no report 30 d > failing rules; the list scrolls; open the One-Pager from a selected row) and *Next 30 days*;
   Executive = the three decisions (money, people, risk).
 - Trend lines and "vs last month" chips come from status-report history (each active project's latest report
   as of month end, last 6 months).
@@ -105,6 +105,12 @@ Added 2026-11-02 (one definition per number):
 - **EAC vs budget** on Financials, Executive and Act now comes from the financial plan (FactCost). Portfolio uses the plan
   fields and labels them that way. The Home Financials trend line comes from status reports, and its caption says so.
 - **Executive focus "resource overload"** triggers when at least 10% of active people are above 100% in a month in view.
+- **May slip:** an active project with at least 2 of: behind pace by more than 15 pt (time elapsed % − % complete);
+  an open milestone due within 30 d and under 50% done; late tasks rising since the previous report; finish 7+ d
+  later than last month. It also fires on more than 10 overdue tasks. Missing data never makes a signal true.
+- **What changed (5c):** each project's latest report as of this month end is compared with the one as of last
+  month end. The Report period slicer picks the month; the default is the latest. "Moved" means a finish date
+  shift of 7+ d, or a forecast shift of at least 2% or €10K.
 
 ## Data notes (from the model audit)
 

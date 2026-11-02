@@ -5272,6 +5272,685 @@
           }
         },
         {
+          "name": "Story | Status · MoM This Month End",
+          "dataType": "DateTime",
+          "expression": "EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "dd mmm yyyy",
+          "description": "End of the month under review: the report-period pick, capped at the latest status report in the model."
+        },
+        {
+          "name": "Story | Status · MoM Month Label",
+          "dataType": "Text",
+          "expression": "FORMAT ( EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 ), \"mmm yyyy\" )",
+          "displayFolder": "Story\\Status\\MoM"
+        },
+        {
+          "name": "Story | Status · MoM Previous Month Label",
+          "dataType": "Text",
+          "expression": "FORMAT ( EOMONTH ( EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 ), -1 ), \"mmm yyyy\" )",
+          "displayFolder": "Story\\Status\\MoM"
+        },
+        {
+          "name": "Story | Status · MoM Health Then",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAXX ( FactStatusReport, SWITCH ( LEFT ( FactStatusReport[OverallHealth], 3 ), \"(1)\", 1, \"(2)\", 2, \"(3)\", 3, \"(4)\", 4, \"(5)\", 5 ) ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "0",
+          "description": "Overall health rank on the project's latest report as of last month's end (1 = On Track)."
+        },
+        {
+          "name": "Story | Status · MoM Health Now",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ), CALCULATE ( MAXX ( FactStatusReport, SWITCH ( LEFT ( FactStatusReport[OverallHealth], 3 ), \"(1)\", 1, \"(2)\", 2, \"(3)\", 3, \"(4)\", 4, \"(5)\", 5 ) ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "0",
+          "description": "Overall health rank on the project's latest report as of this month's end (1 = On Track)."
+        },
+        {
+          "name": "Story | Status · MoM Health Move",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _c = [Story | Status · MoM Health Now]\n    VAR _b = [Story | Status · MoM Health Then]\n    RETURN IF ( NOT ISBLANK ( _c ) && NOT ISBLANK ( _b ), _c - _b ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "+0;-0;0",
+          "description": "This month's minus last month's overall health rank: positive = worse.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Now"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Then"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Health Change",
+          "dataType": "Text",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _c = [Story | Status · MoM Health Now]\n    VAR _b = [Story | Status · MoM Health Then]\n    RETURN IF ( NOT ISBLANK ( _c ),\n        IF ( ISBLANK ( _b ), \"new · \" & SWITCH ( _c, 1, \"On Track\", 2, \"At Risk\", 3, \"Off Track\", 4, \"Level 4\", 5, \"Level 5\" ), SWITCH ( _b, 1, \"On Track\", 2, \"At Risk\", 3, \"Off Track\", 4, \"Level 4\", 5, \"Level 5\" ) & \" → \" & SWITCH ( _c, 1, \"On Track\", 2, \"At Risk\", 3, \"Off Track\", 4, \"Level 4\", 5, \"Level 5\" ) ) ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "description": "Overall health last month → this month ('new' when there was no report last month).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Now"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Then"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Health Change Colour",
+          "dataType": "Text",
+          "expression": "VAR _m = [Story | Status · MoM Health Move]\nRETURN IF ( _m > 0, \"#C0392B\", IF ( _m < 0, \"#1E6D6E\", \"#1F2A44\" ) )",
+          "displayFolder": "Story\\Colours",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Move"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Finish Shift (d)",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _fn = IF ( NOT ISBLANK ( _n ), CALCULATE ( MAX ( FactStatusReport[Summary_EndDate] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) )\n    VAR _fp = IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Summary_EndDate] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) )\n    RETURN IF ( NOT ISBLANK ( _fn ) && NOT ISBLANK ( _fp ), INT ( _fn ) - INT ( _fp ) ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "+0;-0;0",
+          "description": "Finish date this month minus last month, in days (both status reports must hold a finish date)."
+        },
+        {
+          "name": "Story | Status · MoM Forecast Then",
+          "dataType": "Double",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0"
+        },
+        {
+          "name": "Story | Status · MoM Forecast Delta",
+          "dataType": "Double",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ),\n        COALESCE ( CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ), 0 ) - COALESCE ( CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ), 0 ) ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "+#,##0;-#,##0;0",
+          "description": "Forecast this month minus last month (status reports)."
+        },
+        {
+          "name": "Story | Status · MoM Forecast Moved",
+          "dataType": "Integer",
+          "expression": "VAR _d = [Story | Status · MoM Forecast Delta]\nVAR _b = COALESCE ( [Story | Status · MoM Forecast Then], 0 )\nRETURN IF ( NOT ISBLANK ( _d ) && ABS ( _d ) >= MAX ( 0.02 * ABS ( _b ), 10000 ), 1, 0 )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "0",
+          "description": "1 when the forecast moved by at least 2% of last month's forecast or EUR 10,000.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Delta"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Then"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Risks Delta",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ),\n        COALESCE ( CALCULATE ( MAX ( FactStatusReport[ActiveRisks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ), 0 ) - COALESCE ( CALCULATE ( MAX ( FactStatusReport[ActiveRisks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ), 0 ) ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "+0;-0;0",
+          "description": "Active risks this month minus last month (status reports)."
+        },
+        {
+          "name": "Story | Status · MoM State Then",
+          "dataType": "Text",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[State] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _p ) ) )",
+          "displayFolder": "Story\\Status\\MoM"
+        },
+        {
+          "name": "Story | Status · MoM State Now",
+          "dataType": "Text",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ), CALCULATE ( MAX ( FactStatusReport[State] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _n ) ) )",
+          "displayFolder": "Story\\Status\\MoM"
+        },
+        {
+          "name": "Story | Status · MoM State Change",
+          "dataType": "Text",
+          "expression": "VAR _a = [Story | Status · MoM State Then]\nVAR _b = [Story | Status · MoM State Now]\nRETURN IF ( NOT ISBLANK ( _a ) && NOT ISBLANK ( _b ) && _a <> _b, _a & \" → \" & _b )",
+          "displayFolder": "Story\\Status\\MoM",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM State Then"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM State Now"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Is New",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && ISBLANK ( _p ), 1, 0 ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "0",
+          "description": "1 when the project has a report this month but none on or before last month's end."
+        },
+        {
+          "name": "Story | Status · MoM Comparable",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _te = EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 )\n    VAR _pe = EOMONTH ( _te, -1 )\n    VAR _n = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _te, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] <= _pe, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _n ) && NOT ISBLANK ( _p ), 1, 0 ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "0",
+          "description": "1 when the project has a report as of both month ends."
+        },
+        {
+          "name": "Story | Status · MoM Change Size",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[ProjectKey] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[ProjectKey] ) ) ),\n    VAR _hm = [Story | Status · MoM Health Move]\n    VAR _sh = ABS ( [Story | Status · MoM Finish Shift (d)] )\n    VAR _fd = [Story | Status · MoM Forecast Delta]\n    VAR _fb = [Story | Status · MoM Forecast Then]\n    VAR _s =\n        IF ( _hm > 0, 3, IF ( _hm < 0, 1, 0 ) )\n            + IF ( _sh > 30, 2, IF ( _sh >= 7, 1, 0 ) )\n            + IF ( [Story | Status · MoM Forecast Moved] = 1, IF ( ABS ( DIVIDE ( _fd, _fb ) ) > 0.05, 2, 1 ), 0 )\n            + IF ( COALESCE ( [Story | Status · MoM Risks Delta], 0 ) <> 0, 1, 0 )\n            + IF ( NOT ISBLANK ( [Story | Status · MoM State Change] ), 1, 0 )\n            + COALESCE ( [Story | Status · MoM Is New], 0 )\n    RETURN IF ( _s > 0, _s ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "0",
+          "description": "Ledger sort key: health worse 3; finish moved > 30 d or forecast > 5% 2; any other change 1 (added up). Blank = no change.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Move"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Finish Shift (d)"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Delta"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Then"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Moved"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Risks Delta"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM State Change"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Is New"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Worsened",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), IF ( [Story | Status · MoM Health Move] > 0, 1 ) ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Move"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Improved",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), IF ( [Story | Status · MoM Health Move] < 0, 1 ) ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Move"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Dates Moved",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), IF ( ABS ( [Story | Status · MoM Finish Shift (d)] ) >= 7, 1 ) ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0",
+          "description": "Projects whose finish date moved 7+ days since last month.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Finish Shift (d)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Net Days",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), VAR _s = [Story | Status · MoM Finish Shift (d)] RETURN IF ( ABS ( _s ) >= 7, _s ) )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "+0;-0;0",
+          "description": "Net finish-date movement of the projects counted by Dates Moved, in days.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Finish Shift (d)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Dates KPI",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Status · MoM Dates Moved]\nRETURN FORMAT ( _c, \"0\" ) & IF ( _c > 0, \" (\" & FORMAT ( [Story | Status · MoM Net Days], \"+0;-0;0\" ) & \" d)\", \"\" )",
+          "displayFolder": "Story\\Status\\MoM",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Dates Moved"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Net Days"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Forecast Net",
+          "dataType": "Double",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), [Story | Status · MoM Forecast Delta] )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "+#,##0;-#,##0;0",
+          "description": "Net forecast movement since last month, projects with a report in both months.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Delta"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Risks Net",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), [Story | Status · MoM Risks Delta] ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "+0;-0;0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Risks Delta"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM New",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), [Story | Status · MoM Is New] ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Is New"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Closed",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), IF ( [Story | Status · MoM State Now] = \"Closed\" && NOT ISBLANK ( [Story | Status · MoM State Change] ), 1 ) ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM State Now"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM State Change"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM New Closed KPI",
+          "dataType": "Text",
+          "expression": "FORMAT ( [Story | Status · MoM New], \"0\" ) & \" new · \" & FORMAT ( [Story | Status · MoM Closed], \"0\" ) & \" closed\"",
+          "displayFolder": "Story\\Status\\MoM",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM New"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Closed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Not Comparable",
+          "dataType": "Integer",
+          "expression": "CALCULATE ( SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), IF ( [Story | Status · MoM Comparable] = 0, 1 ) ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0",
+          "description": "Active projects without a report as of one of the two month ends.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Comparable"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Changed Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ), IF ( [Story | Status · MoM Change Size] > 0, 1 ) ) + 0",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "#,##0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Has Previous Month",
+          "dataType": "Integer",
+          "expression": "IF ( CALCULATE ( COUNTROWS ( FactStatusReport ), REMOVEFILTERS (), FactStatusReport[Report_ReportEnd] <= EOMONTH ( EOMONTH ( MIN ( MAX ( DimDate[Date] ), CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS () ) ), 0 ), -1 ),\n    FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) ) > 0, 1, 0 )",
+          "displayFolder": "Story\\Status\\MoM",
+          "formatString": "0",
+          "description": "1 when any status report exists on or before last month's end (else there is nothing to compare)."
+        },
+        {
+          "name": "Story | Status · MoM L · Health Change",
+          "dataType": "Text",
+          "expression": "IF ( NOT ISBLANK ( [Story | Status · MoM Change Size] ), [Story | Status · MoM Health Change] )",
+          "displayFolder": "Story\\Status\\MoM\\Ledger",
+          "description": "Health Change of a project that changed since last month; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Health Change"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM L · Finish Shift (d)",
+          "dataType": "Integer",
+          "expression": "IF ( NOT ISBLANK ( [Story | Status · MoM Change Size] ), [Story | Status · MoM Finish Shift (d)] )",
+          "displayFolder": "Story\\Status\\MoM\\Ledger",
+          "formatString": "+0;-0;0",
+          "description": "Finish Shift (d) of a project that changed since last month; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Finish Shift (d)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM L · Forecast Delta",
+          "dataType": "Double",
+          "expression": "IF ( NOT ISBLANK ( [Story | Status · MoM Change Size] ), [Story | Status · MoM Forecast Delta] )",
+          "displayFolder": "Story\\Status\\MoM\\Ledger",
+          "formatString": "+#,##0;-#,##0;0",
+          "description": "Forecast Delta of a project that changed since last month; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Delta"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM L · Risks Delta",
+          "dataType": "Integer",
+          "expression": "IF ( NOT ISBLANK ( [Story | Status · MoM Change Size] ), [Story | Status · MoM Risks Delta] )",
+          "displayFolder": "Story\\Status\\MoM\\Ledger",
+          "formatString": "+0;-0;0",
+          "description": "Risks Delta of a project that changed since last month; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Risks Delta"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM L · State Change",
+          "dataType": "Text",
+          "expression": "IF ( NOT ISBLANK ( [Story | Status · MoM Change Size] ), [Story | Status · MoM State Change] )",
+          "displayFolder": "Story\\Status\\MoM\\Ledger",
+          "description": "State Change of a project that changed since last month; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM State Change"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM L · Size",
+          "dataType": "Integer",
+          "expression": "[Story | Status · MoM Change Size]",
+          "displayFolder": "Story\\Status\\MoM\\Ledger",
+          "formatString": "0",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM L · May Slip",
+          "dataType": "Text",
+          "expression": "IF ( NOT ISBLANK ( [Story | Status · MoM Change Size] ), [Story | Slip · Flag Text] )",
+          "displayFolder": "Story\\Status\\MoM\\Ledger",
+          "description": "✓ for a project that changed since last month and may slip; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Change Size"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Flag Text"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Status · MoM Headline",
+          "dataType": "Text",
+          "expression": "VAR _lbl = [Story | Status · MoM Month Label]\nVAR _plb = [Story | Status · MoM Previous Month Label]\nVAR _ch = [Story | Status · MoM Changed Projects]\nVAR _w = [Story | Status · MoM Worsened]\nVAR _i = [Story | Status · MoM Improved]\nVAR _dm = [Story | Status · MoM Dates Moved]\nVAR _nd = COALESCE ( [Story | Status · MoM Net Days], 0 )\nVAR _fn = COALESCE ( [Story | Status · MoM Forecast Net], 0 )\nVAR _fna = ABS ( _fn )\nVAR _rk = [Story | Status · MoM Risks Net]\nVAR _nc = [Story | Status · MoM Not Comparable]\nRETURN\n    IF ( [Story | Status · MoM Has Previous Month] = 0,\n        \"Only one month of status reports so far (\" & _lbl & \") — nothing to compare yet.\",\n        IF ( _ch = 0, \"In \" & _lbl & \" no project changed against \" & _plb & \".\",\n            \"In \" & _lbl & \" versus \" & _plb & \": \" & FORMAT ( _w, \"0\" ) & \" project(s) got worse and \"\n                & FORMAT ( _i, \"0\" ) & \" improved; \" & FORMAT ( _dm, \"0\" ) & \" finish date(s) moved (\"\n                & FORMAT ( _nd, \"+0;-0;0\" ) & \" days net); forecast \" & IF ( _fn >= 0, \"+\", \"−\" ) & IF ( ISBLANK ( _fna ), \"–\", IF ( ABS ( _fna ) >= 1000000, \"€\" & FORMAT ( _fna / 1000000, \"#,0.0\" ) & \"M\", IF ( ABS ( _fna ) >= 1000, \"€\" & FORMAT ( _fna / 1000, \"#,0\" ) & \"K\", \"€\" & FORMAT ( _fna, \"#,0\" ) ) ) )\n                & \"; active risks \" & FORMAT ( _rk, \"+0;-0;0\" ) & \"; \" & [Story | Status · MoM New Closed KPI] & \".\" )\n            & IF ( _nc > 0, \" \" & FORMAT ( _nc, \"0\" )\n                & \" active project(s) cannot be compared (no report in one of the two months).\", \"\" ) )",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Month Label"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Previous Month Label"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Changed Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Worsened"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Improved"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Dates Moved"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Net Days"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Forecast Net"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Risks Net"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Not Comparable"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Has Previous Month"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM New Closed KPI"
+              }
+            ]
+          }
+        },
+        {
           "name": "Story | Status · Stale Days",
           "dataType": "Integer",
           "expression": "30",
@@ -5481,6 +6160,228 @@
                 "schema": "extension",
                 "entity": "_Measures",
                 "name": "Story | Status · Stale Days"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Slip · Pace Gap (pt)",
+          "dataType": "Double",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _s = MAX ( DimProject[Summary_StartDate] )\n    VAR _e = MAX ( DimProject[Summary_EndDate] )\n    VAR _d = MAX ( DimProject[Summary_PercentDone] )\n    VAR _el = IF ( NOT ISBLANK ( _s ) && NOT ISBLANK ( _e ) && _e > _s,\n        MIN ( 1, MAX ( 0, DIVIDE ( TODAY () - _s, _e - _s ) ) ) )\n    RETURN IF ( NOT ISBLANK ( _el ) && NOT ISBLANK ( _d ), ( _el - _d / 100 ) * 100 ) )",
+          "displayFolder": "Story\\Slip",
+          "formatString": "+0;-0;0",
+          "description": "Share of the plan's time already used minus % complete, in points. Positive = behind pace."
+        },
+        {
+          "name": "Story | Slip · Behind Pace",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ), IF ( [Story | Slip · Pace Gap (pt)] > 15, 1, 0 ) )",
+          "displayFolder": "Story\\Slip",
+          "formatString": "0",
+          "description": "S1: 1 when the project is more than 15 points behind pace.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Pace Gap (pt)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Slip · Milestone At Risk",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ), IF ( CALCULATE ( COUNTROWS ( DimTask ), KEEPFILTERS ( DimTask[Milestone] = TRUE () ), KEEPFILTERS ( DimTask[PercentDone] < 50 ), KEEPFILTERS ( DimTask[EndDate] >= TODAY () && DimTask[EndDate] <= TODAY () + 30 ), KEEPFILTERS ( NOT ISBLANK ( DimTask[ProjectKey] ) ) ) > 0, 1, 0 ) )",
+          "displayFolder": "Story\\Slip",
+          "formatString": "0",
+          "description": "S2: 1 when an open milestone is due within 30 days and is under 50% done."
+        },
+        {
+          "name": "Story | Slip · Milestone Text",
+          "dataType": "Text",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _t = TOPN ( 1, CALCULATETABLE ( DimTask, KEEPFILTERS ( DimTask[Milestone] = TRUE () ), KEEPFILTERS ( DimTask[PercentDone] < 50 ), KEEPFILTERS ( DimTask[EndDate] >= TODAY () && DimTask[EndDate] <= TODAY () + 30 ), KEEPFILTERS ( NOT ISBLANK ( DimTask[ProjectKey] ) ) ), DimTask[EndDate], ASC, DimTask[Name], ASC )\n    VAR _nm = MAXX ( _t, DimTask[Name] )\n    RETURN IF ( NOT ISBLANK ( _nm ),\n        \"milestone \" & _nm & \" in \" & FORMAT ( INT ( MAXX ( _t, DimTask[EndDate] ) ) - INT ( TODAY () ), \"0\" )\n            & \" d (\" & FORMAT ( MAXX ( _t, DimTask[PercentDone] ), \"0\" ) & \"% done)\" ) )",
+          "displayFolder": "Story\\Slip"
+        },
+        {
+          "name": "Story | Slip · Late Tasks Rising",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _cur = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ) )\n    VAR _prev = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _cur, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _ln = IF ( NOT ISBLANK ( _cur ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _cur ) )\n    VAR _lp = IF ( NOT ISBLANK ( _prev ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _prev ) )\n    RETURN IF ( NOT ISBLANK ( _ln ) && NOT ISBLANK ( _lp ) && _ln > _lp, 1, 0 ) )",
+          "displayFolder": "Story\\Slip",
+          "formatString": "0",
+          "description": "S3: 1 when the latest status report counts more late tasks than the report before it."
+        },
+        {
+          "name": "Story | Slip · Late Tasks Text",
+          "dataType": "Text",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ),\n    VAR _cur = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ) )\n    VAR _prev = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _cur, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _ln = IF ( NOT ISBLANK ( _cur ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _cur ) )\n    VAR _lp = IF ( NOT ISBLANK ( _prev ), CALCULATE ( MAX ( FactStatusReport[NoofLateTasks] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _prev ) )\n    RETURN IF ( NOT ISBLANK ( _ln ) && NOT ISBLANK ( _lp ),\n        \"late tasks \" & FORMAT ( _lp, \"0\" ) & \" → \" & FORMAT ( _ln, \"0\" ) ) )",
+          "displayFolder": "Story\\Slip"
+        },
+        {
+          "name": "Story | Slip · Finish Slipping",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ), IF ( [Story | Status · MoM Finish Shift (d)] >= 7, 1, 0 ) )",
+          "displayFolder": "Story\\Slip",
+          "formatString": "0",
+          "description": "S4: 1 when the finish date moved 7+ days later since last month.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Finish Shift (d)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Slip · Signals",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ), COALESCE ( [Story | Slip · Behind Pace], 0 ) + COALESCE ( [Story | Slip · Milestone At Risk], 0 )\n    + COALESCE ( [Story | Slip · Late Tasks Rising], 0 ) + COALESCE ( [Story | Slip · Finish Slipping], 0 ) )",
+          "displayFolder": "Story\\Slip",
+          "formatString": "0",
+          "description": "How many of the four slip signals are true (0-4).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Behind Pace"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Milestone At Risk"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Late Tasks Rising"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Finish Slipping"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Slip · Flag",
+          "dataType": "Integer",
+          "expression": "IF ( ( HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) ) ) && SELECTEDVALUE ( DimProject[State_Value] ) = \"Active\",\n    IF ( [Story | Slip · Signals] >= 2 || [Story | Project · Overdue Tasks] > 10, 1 ) )",
+          "displayFolder": "Story\\Slip",
+          "formatString": "0",
+          "description": "1 for an active project with 2+ slip signals or more than 10 overdue tasks; blank otherwise.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Signals"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Overdue Tasks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Slip · Flag Text",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Slip · Flag] = 1, \"✓\" )",
+          "displayFolder": "Story\\Slip",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Flag"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Slip · Reason",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Slip · Flag] = 1,\n    VAR _t =\n        IF ( [Story | Slip · Behind Pace] = 1, \", \" & FORMAT ( [Story | Slip · Pace Gap (pt)], \"0\" ) & \" pt behind pace\" )\n            & IF ( [Story | Slip · Milestone At Risk] = 1, \", \" & [Story | Slip · Milestone Text] )\n            & IF ( [Story | Slip · Late Tasks Rising] = 1, \", \" & [Story | Slip · Late Tasks Text] )\n            & IF ( [Story | Slip · Finish Slipping] = 1,\n                \", finish \" & FORMAT ( [Story | Status · MoM Finish Shift (d)], \"+0\" ) & \" d since last month\" )\n    RETURN \"May slip: \"\n        & IF ( [Story | Slip · Signals] >= 2, MID ( _t, 3, 500 ),\n            FORMAT ( [Story | Project · Overdue Tasks], \"0\" ) & \" overdue tasks\" ) )",
+          "displayFolder": "Story\\Slip",
+          "description": "Act-now reason: the slip signals that are true, or the overdue-task count when that alone flagged it.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Flag"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Behind Pace"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Pace Gap (pt)"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Milestone At Risk"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Milestone Text"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Late Tasks Rising"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Late Tasks Text"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Finish Slipping"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM Finish Shift (d)"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Signals"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project · Overdue Tasks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Slip · Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), IF ( [Story | Slip · Flag] = 1, 1 ) ) + 0",
+          "displayFolder": "Story\\Slip",
+          "formatString": "#,##0",
+          "description": "Active projects that may slip.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Slip · Flag"
               }
             ]
           }
@@ -7539,7 +8440,7 @@
         {
           "name": "Story | Home · Act Score",
           "dataType": "Integer",
-          "expression": "VAR _one = HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) )\n    && SELECTEDVALUE ( DimProject[State_Value] ) = \"Active\"\nVAR _h = SELECTEDVALUE ( DimProject[OverallHealth_Value] )\nRETURN\n    IF ( _one,\n        SWITCH ( TRUE (),\n            LEFT ( _h, 3 ) = \"(3)\", 100,\n            [Story | EAC Variance %] > 0.05, 90,\n            [Story | Baseline · Finish Slip (days)] > 10, 80,\n            [Story | Project · Overdue Tasks] > 10, 60,\n            [Story | Status · Days Since Report] > 30, 50,\n            [Story | Project · Failing Rules] > 0, 40 ) )",
+          "expression": "VAR _one = HASONEVALUE ( DimProject[Id] ) && NOT ISBLANK ( SELECTEDVALUE ( DimProject[Id] ) )\n    && SELECTEDVALUE ( DimProject[State_Value] ) = \"Active\"\nVAR _h = SELECTEDVALUE ( DimProject[OverallHealth_Value] )\nRETURN\n    IF ( _one,\n        SWITCH ( TRUE (),\n            LEFT ( _h, 3 ) = \"(3)\", 100,\n            [Story | EAC Variance %] > 0.05, 90,\n            [Story | Baseline · Finish Slip (days)] > 10, 80,\n            [Story | Slip · Flag] = 1, 70,\n            [Story | Status · Days Since Report] > 30, 50,\n            [Story | Project · Failing Rules] > 0, 40 ) )",
           "displayFolder": "Story\\Home",
           "formatString": "0",
           "description": "Impact rank of the worst reason an active project needs attention (blank = no reason).",
@@ -7558,7 +8459,7 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Project · Overdue Tasks"
+                "name": "Story | Slip · Flag"
               },
               {
                 "schema": "extension",
@@ -7576,7 +8477,7 @@
         {
           "name": "Story | Home · Act Reason",
           "dataType": "Text",
-          "expression": "VAR _s = [Story | Home · Act Score]\nRETURN\n    SWITCH ( _s,\n        100, \"Reported off track\",\n        90, \"EAC \" & FORMAT ( [Story | EAC Variance %], \"+0%\" ) & \" over budget\",\n        80, FORMAT ( [Story | Baseline · Finish Slip (days)], \"+0\" ) & \" days vs baseline\",\n        60, FORMAT ( [Story | Project · Overdue Tasks], \"0\" ) & \" overdue tasks\",\n        50, \"No status report for \" & FORMAT ( [Story | Status · Days Since Report], \"0\" ) & \" days\",\n        40, FORMAT ( [Story | Project · Failing Rules], \"0\" ) & \" Plan Insights rule(s) failing\" )",
+          "expression": "VAR _s = [Story | Home · Act Score]\nRETURN\n    SWITCH ( _s,\n        100, \"Reported off track\",\n        90, \"EAC \" & FORMAT ( [Story | EAC Variance %], \"+0%\" ) & \" over budget\",\n        80, FORMAT ( [Story | Baseline · Finish Slip (days)], \"+0\" ) & \" days vs baseline\",\n        70, [Story | Slip · Reason],\n        50, \"No status report for \" & FORMAT ( [Story | Status · Days Since Report], \"0\" ) & \" days\",\n        40, FORMAT ( [Story | Project · Failing Rules], \"0\" ) & \" Plan Insights rule(s) failing\" )",
           "displayFolder": "Story\\Home",
           "references": {
             "measures": [
@@ -7598,7 +8499,7 @@
               {
                 "schema": "extension",
                 "entity": "_Measures",
-                "name": "Story | Project · Overdue Tasks"
+                "name": "Story | Slip · Reason"
               },
               {
                 "schema": "extension",
@@ -7783,11 +8684,11 @@
           }
         },
         {
-          "name": "Story | Home · Chip Overdue Work",
+          "name": "Story | Home · Chip May Slip",
           "dataType": "Text",
-          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0, \"0\" )",
+          "expression": "FORMAT ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 70 ) ) + 0, \"0\" )",
           "displayFolder": "Story\\Home",
-          "description": "Active projects whose Act score is 60 (overdue work); 0 when none. The six chips add up to Act Count.",
+          "description": "Active projects whose Act score is 70 (may slip); 0 when none. The six chips add up to Act Count.",
           "references": {
             "measures": [
               {
@@ -7799,16 +8700,16 @@
           }
         },
         {
-          "name": "Story | Home · Chip Label Overdue Work",
+          "name": "Story | Home · Chip Label May Slip",
           "dataType": "Text",
-          "expression": "\"overdue work\"",
+          "expression": "\"may slip\"",
           "displayFolder": "Story\\Home",
-          "description": "Label of the 'overdue work' chip (its own card, so the label starts at the same x on every chip)."
+          "description": "Label of the 'may slip' chip (its own card, so the label starts at the same x on every chip)."
         },
         {
-          "name": "Story | Home · Chip Colour Overdue Work",
+          "name": "Story | Home · Chip Colour May Slip",
           "dataType": "Text",
-          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 60 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
+          "expression": "IF ( COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Home · Act Score] = 70 ) ) + 0 > 0, \"#E8ECF4\", \"#8C98B3\" )",
           "displayFolder": "Story\\Home\\Colours",
           "description": "Chip text colour: light when the count is above 0, dim when 0.",
           "references": {
@@ -7963,11 +8864,11 @@
           }
         },
         {
-          "name": "Story | Home · Tip Overdue Work",
+          "name": "Story | Home · Tip May Slip",
           "dataType": "Text",
-          "expression": "IF ( [Story | Home · Act Score] = 60, [Story | Home · Act Reason] )",
+          "expression": "IF ( [Story | Home · Act Score] = 70, [Story | Home · Act Reason] )",
           "displayFolder": "Story\\Home\\Tooltips",
-          "description": "Act-now reason of a project whose Act score is 60 (overdue work); blank for every other project, so the chip's hover list and the 'overdue work' Act-now view show only that bucket.",
+          "description": "Act-now reason of a project whose Act score is 70 (may slip); blank for every other project, so the chip's hover list and the 'may slip' Act-now view show only that bucket.",
           "references": {
             "measures": [
               {
@@ -8317,7 +9218,7 @@
         {
           "name": "Story | Home · Tip Status More",
           "dataType": "Text",
-          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Status Key] ) ) ) + 0\nRETURN IF ( _n > 12, \"+\" & FORMAT ( _n - 12, \"0\" ) & \" more · open the Status-Report Trend page\", \" \" )",
+          "expression": "VAR _n = COUNTROWS ( FILTER ( FILTER ( VALUES ( DimProject[Id] ), NOT ISBLANK ( DimProject[Id] ) ), NOT ISBLANK ( [Story | Home · Tip Status Key] ) ) ) + 0\nRETURN IF ( _n > 12, \"+\" & FORMAT ( _n - 12, \"0\" ) & \" more · open the What Changed page\", \" \" )",
           "displayFolder": "Story\\Home\\Tooltips",
           "description": "Footer of the Status hover list. When every row fits in the 12 it is a single space: it shows nothing, where a blank card would print '(Blank)'.",
           "references": {
