@@ -8,6 +8,7 @@ Timesheet Dashboard in OneDashboards - Bfusion):
 """
 from pbir import *  # noqa: F401,F403
 import pbir
+import a11y
 
 W = 1800
 TALL = 1800
@@ -760,6 +761,7 @@ def build_all():
     story = [p for p in pages_out if p.id not in {PID[k] for k, _ in HIDDEN_PAGES}]
     filter_real_projects(story)
     attach_tooltips(story)
+    a11y.apply(pages_out)
     return pages_out
 
 
