@@ -211,16 +211,14 @@ def build_exec():
     for k, m in enumerate(["Story | Exec Action Money", "Story | Exec Action People", "Story | Exec Action Risk"]):
         pg.add(1192, Y3V + k * 136, 592, 124, headline(m, bg="#FFFFFF", border=ORANGE, size=12), key=f"act{k}")
     section(pg, Y4, 4, "Where should I look next?", "Each chapter answers one question in depth.")
-    chapters = ORDER[2:]
-    per_row = (len(chapters) + 1) // 2
-    bw = (1768 - 10 * (per_row - 1)) / per_row
+    chapters = [k for k, d in PAGES if d[:1] in "2345678" and d[1:4] == " · "]   # chapters 2-8, no deep-dives
+    bw = (1768 - 10 * (len(chapters) - 1)) / len(chapters)
     for k, ck in enumerate(chapters):
-        row, col = divmod(k, per_row)
-        pg.add(round(16 + col * (bw + 10), 2), Y4V + row * 64, round(bw, 2), 56,
+        pg.add(round(16 + k * (bw + 10), 2), Y4V, round(bw, 2), 56,
                nav_button(dict(PAGES)[ck] + "  ›", PID[ck], "Open this chapter", fill=NAVY, hover=NAVY_BTN,
                           press=ORANGE, font="#FFFFFF", size=10), key=f"chap{k}")
     vpf = M("Story | EAC Variance %")
-    pg.add(16, Y4V + 136, 1768, 264, chart("pivotTable",
+    pg.add(16, Y4V + 72, 1768, 328, chart("pivotTable",
         {"Rows": [P(DP("Portfolio Name"), "Portfolio", True), P(DP("Program Name"), "Program", True)],
          "Values": [P(active, "Active projects"), P(M("Story | On Track %"), "On track"),
                     P(bac, "Budget"), P(eac, "EAC"), P(vpf, "Variance %"),
@@ -774,6 +772,7 @@ def build_all():
         if k in built and k != "home":
             layout.nav_row(built[k], k)
     LAYOUT_SKIPPED[:] = skipped
+    layout.hide_deep_dives(built)
     a11y.apply(pages_out)
     return pages_out
 

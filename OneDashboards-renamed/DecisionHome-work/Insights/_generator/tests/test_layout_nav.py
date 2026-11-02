@@ -131,3 +131,16 @@ def test_onepager_status_cards_keep_height():
     cards = [v for v in cards if v["name"] in {pbir.uid(pg.id, f"sr{i}", v["visual"]["visualType"]) for i in range(3)}]
     assert len(cards) == 3
     assert all(v["position"]["height"] >= 170 for v in cards), [v["position"]["height"] for v in cards]
+
+
+def test_nine_tabs():
+    visible = [pg.display for pg in BUILT.values() if pg.page.get("visibility") != "HiddenInViewMode"]
+    expected = [d for k, d in pages.PAGES if not (layout._code(d) and layout._code(d)[1])]
+    assert visible == expected and len(visible) == 9
+
+
+def test_exec_single_chapter_row():
+    pg = page("exec")
+    names = {pbir.uid(pg.id, f"chap{i}", "actionButton") for i in range(20)}
+    btns = [v for v in pg.visuals if v["name"] in names]
+    assert len(btns) == 7 and len({v["position"]["y"] for v in btns}) == 1

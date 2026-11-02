@@ -130,3 +130,11 @@ def nav_row(pg, key):
                                   outline=None if cur else pbir.BORDER)
             pg.add(x, NAV_Y, w, NAV_H, btn, key=f"nav_strip_{m}")
             x += w + 6
+
+
+def hide_deep_dives(built):
+    import pages as P
+    for k, d in P.PAGES:
+        c = _code(d)
+        if c and c[1] and k in built:
+            built[k].page["visibility"] = "HiddenInViewMode"
