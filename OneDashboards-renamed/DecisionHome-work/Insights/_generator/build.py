@@ -20,8 +20,10 @@ ROOT = HERE.parent
 REF = ROOT.parent / "OneDashboards - Bfusion.Report"
 BIM = Path(r"C:\Users\HassanBezzizi\repos\BFusion-Apps\SemanticModel\ModeL360Star.bim")
 NAME = "OneDashboards - Insights"
+BOARD_NAME = "OneDashboards - Board Pack"
 # INSIGHTS_OUT lets parallel workers build into their own folder (validation only)
 OUT = Path(os.environ["INSIGHTS_OUT"]) / f"{NAME}.Report" if os.environ.get("INSIGHTS_OUT") else ROOT / f"{NAME}.Report"
+BOARD_OUT = OUT.parent / f"{BOARD_NAME}.Report"
 
 sys.path.insert(0, str(HERE))
 import pbir  # noqa: E402
@@ -158,6 +160,14 @@ def build():
     return built
 
 
+def build_board_pack():
+    import board
+    built = board.build_board()
+    write_report(BOARD_NAME, built, [], OUT.parent, extra_filters=[board.period_filter()])
+    print(f"built {len(built)} board slides, {sum(len(p.visuals) for p in built)} visuals -> {BOARD_OUT}")
+    return built
+
+
 # ------------------------------------------------------------------ checks
 def layout_errors(pages_):
     """Visuals must sit inside the page and above the footer band. Child positions are stored relative to their
@@ -274,5 +284,8 @@ def check(built, out):
 
 if __name__ == "__main__":
     b = build()
+    bb = build_board_pack()
     if "--check" in sys.argv:
-        sys.exit(1 if check(b, OUT) else 0)
+        e1 = check(b, OUT)
+        e2 = check(bb, BOARD_OUT)
+        sys.exit(1 if (e1 or e2) else 0)
