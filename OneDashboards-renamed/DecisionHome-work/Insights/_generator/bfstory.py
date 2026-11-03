@@ -24,6 +24,7 @@ import layout  # noqa: E402
 import a11y  # noqa: E402
 import polish  # noqa: E402
 import consistency  # noqa: E402
+import chrome  # noqa: E402
 import story_measures  # noqa: E402
 import entry  # noqa: E402
 from entry import (back_button, home_button, _crumb_w, _crumb_label, build_welcome, build_questions,  # noqa: E402
@@ -44,7 +45,8 @@ BG = pages.BG_TALL
 LIMIT = round(H * 0.928)             # top of the footer band
 NAV_Y, NAV_H = 86, 30
 Y_HEAD = 122                         # orange headline under the navigation row
-Y_BODY = 188                         # first section label
+Y_BODY = 226                         # first section label, under the filter-context bar
+Y_BAR = 182                          # filter-context bar (chrome.py) between headline and body
 Y_NEXT = 1612                        # Next / Back row
 BODY_END = Y_NEXT - 12
 GAP = 14
@@ -776,7 +778,8 @@ def build_timesheets():
             and v.get("visual", {}).get("visualType") != "actionButton"]
     for k, vc in enumerate(sorted(body, key=lambda v: (v["position"]["y"], v["position"]["x"]))):
         p = vc["position"]
-        y = p["y"] + (Y_HEAD - 84)
+        # headline row keeps its place; the body moves below the filter-context bar
+        y = p["y"] + (Y_HEAD - 84) + (Y_BODY - 188 if p["y"] > 84 else 0)
         h = min(p["height"], BODY_END - y)
         if h < 0.6 * p["height"]:
             raise ValueError(f"timesheets: {vc['name']} loses too much height")
@@ -957,6 +960,7 @@ def build_pages():
     copy_interactions(built)
     pages.filter_real_projects(built)
     a11y.apply(built)
+    chrome.apply(built, PID, NAMES, CHAPTERS, Y_BAR)   # after a11y: the rail comes last in tab order
     consistency.apply(built)
     polish.apply(built)
     return built
@@ -988,6 +992,7 @@ def write(built):
     rep["resourcePackages"] = pkgs + rep["resourcePackages"]
     build.dump(rj, rep)
     entry.register_resources(out)
+    chrome.register(out)
     for name in used:
         shutil.copytree(SRC / "CustomVisuals" / name, out / "CustomVisuals" / name)
     return out
@@ -1008,7 +1013,7 @@ def layout_errors(built):
         limit = round(pg.page["height"] * (0.928 if banded else 1))   # top of the footer band, if the page has one
         for vc in pg.visuals:
             p = vc["position"]
-            if p["x"] < 0 or p["x"] + p["width"] > W + 0.5 or p["y"] + p["height"] > limit:
+            if p["x"] < 0 or p["x"] + p["width"] > pg.page["width"] + 0.5 or p["y"] + p["height"] > limit:
                 errs.append(f"LAYOUT {pg.display}: {vc['name']} at {p} outside page/footer")
     return errs
 
