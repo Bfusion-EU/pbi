@@ -176,7 +176,8 @@ def layout_errors(pages_):
     parent group, so they are resolved to page coordinates first."""
     out = []
     for pg in pages_:
-        limit = pg.height * 0.928 if pg.height == 1800 else pg.height
+        banded = "image" in pg.page.get("objects", {}).get("background", [{}])[0].get("properties", {})
+        limit = pg.height * 0.928 if banded else pg.height        # banded pages keep clear of the footer band
         groups = {v["name"]: v["position"] for v in pg.visuals}
         for vc in pg.visuals:
             p = dict(vc["position"])

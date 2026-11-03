@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "e0f6d216b27d812ef6a1",
   "position": {
-    "x": 96,
-    "y": 264,
-    "z": 3300,
+    "x": 318.25,
+    "y": 264.42,
+    "z": 3400,
     "width": 212.25,
-    "height": 90,
-    "tabOrder": 1900
+    "height": 108.75,
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "card",
@@ -20,15 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Timesheet · Scheduled To Date"
+                  "Property": "Timesheet | Actual Hours"
                 }
               },
-              "queryRef": "_Measures.Story | Timesheet · Scheduled To Date",
-              "nativeQueryRef": "Story | Timesheet · Scheduled To Date"
+              "queryRef": "_Measures.Timesheet | Actual Hours",
+              "nativeQueryRef": "Timesheet | Actual Hours"
             }
           ]
         }
@@ -94,7 +93,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Scheduled to date (h)'"
+                  "Value": "'Approved actuals (h)'"
                 }
               }
             },
@@ -194,7 +193,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'KPI: Scheduled to date (h)'"
+                  "Value": "'KPI: Approved actuals (h)'"
                 }
               }
             }

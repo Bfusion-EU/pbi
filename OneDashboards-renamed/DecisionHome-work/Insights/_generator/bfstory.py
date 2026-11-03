@@ -40,14 +40,16 @@ MAX_PATH = 259
 OUT = OUT_DIR / f"{NAME}.Report"
 SRC = build.REF                      # OneDashboards - Bfusion.Report (read only)
 
-W, H = 1800, 1800
-BG = pages.BG_TALL
+# 16:9 screens: 1800 x 1058 of content, 1880 x 1058 once chrome.py adds the 80 px chapter rail. A chapter or deep
+# dive whose sections do not fit on one screen continues on hidden pages "(2/2)", reached with Continue / Previous.
+W, H = 1800, 1058
+BG = pages.BG_TALL                   # chrome.py swaps in the 16:9 footer band of the widened page
 LIMIT = round(H * 0.928)             # top of the footer band
 NAV_Y, NAV_H = 86, 30
 Y_HEAD = 122                         # orange headline under the navigation row
 Y_BODY = 226                         # first section label, under the filter-context bar
 Y_BAR = 182                          # filter-context bar (chrome.py) between headline and body
-Y_NEXT = 1612                        # Next / Back row
+Y_NEXT = LIMIT - 48                  # Next / Back row
 BODY_END = Y_NEXT - 12
 GAP = 14
 SEC_H = 36                           # section label above every band
@@ -276,23 +278,47 @@ def nav_row(pg, key):
             x += w + 6
 
 
-def next_back(pg, key):
+def page_id(key, page):
+    return PID[key] if page == 1 else uid("bfstory-page", key, f"p{page}")
+
+
+KEY_OF = {}                          # page id -> story key, continuation pages included (chrome.py)
+
+
+def next_back(pg, key, page=1, of=1):
+    if of > 1:
+        pg.add(W / 2 - 120, Y_NEXT, 240, 36, textbox([[(f"Page {page} of {of}", st("Segoe UI", 11, MUTED))]],
+                                                     align="center"), key="pager")
+    back = (page_id(key, page - 1), f"‹  Page {page - 1} of {of}", "Back to the previous screen of this page")         if page > 1 else (PID["home"], "‹  Decision center", "Back to the home page")
+    pg.add(16, Y_NEXT, 220, 36, nav_button(back[1], back[0], back[2], fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE,
+                                           font=NAVY, outline=BORDER), key="back")
+    if page < of:
+        pg.add(W - 16 - 360, Y_NEXT, 360, 36, nav_button(f"Continue: page {page + 1} of {of}  ›", page_id(key, page + 1),
+                                                         "Continue on the next screen"), key="next")
+    else:
+        _story_next(pg, key)
+
+
+def _story_next(pg, key):
     idx = ORDER.index(key)
     if idx + 1 < len(ORDER):
         nxt = ORDER[idx + 1]
         label = NAMES[nxt].split("·", 1)[-1].strip()
         pg.add(W - 16 - 360, Y_NEXT, 360, 36,
                nav_button(f"Next: {label}  ›", PID[nxt], "Continue the story on the next page"), key="next")
-    pg.add(16, Y_NEXT, 220, 36, nav_button("‹  Decision center", PID["home"], "Back to the home page", fill="#FFFFFF",
-                                           hover=ORANGE_SOFT, press=ORANGE, font=NAVY, outline=BORDER), key="back")
 
 
 QUESTIONS = {}                       # page key -> its header question, for the Questions page
 
 
-def story_page(key, area, question, subtitle, slicers, headline_vc):
+def story_page(key, area, question, subtitle, slicers, headline_vc, page=1, of=1):
     QUESTIONS[key] = question
-    pg = Page(PID[key], NAMES[key], W, H, background_image=BG)
+    pid = page_id(key, page)
+    KEY_OF[pid] = key
+    pg = Page(pid, NAMES[key] if page == 1 else f"{NAMES[key]} ({page}/{of})", W, H, background_image=BG)
+    if page > 1:
+        pg.page["visibility"] = "HiddenInViewMode"
+    headline_vc = copy.deepcopy(headline_vc)
     header(pg, key, area, question, subtitle, slicers)
     nav_row(pg, key)
     put(pg, 16, Y_HEAD, 1768, 56, headline_vc, "headline")
@@ -347,21 +373,52 @@ def bands(pg, y, spec, first=1):
     return y
 
 
+SHRINK = 0.70                        # a band may drop to 70% of its designed height before it moves to the next screen
+PULSE_H = SEC_H + 90 + GAP
+
+
+def pack(spec, first_free):
+    """Split the bands over 16:9 screens, in order: a band goes to the next screen once it would have to shrink below
+    SHRINK. A band taller than a screen (the 1340 px single-visual deep dives) gets a screen to itself and is scaled to
+    fill it, below SHRINK on purpose."""
+    free = BODY_END - Y_BODY + GAP
+    out, cur, used, cap = [], [], 0, first_free
+    for b_ in spec:
+        need = SEC_H + GAP + b_[2] * SHRINK
+        if cur and used + need > cap:
+            out.append(cur)
+            cur, used, cap = [], 0, free
+        cur.append(b_)
+        used += need
+    out.append(cur)
+    return out
+
+
 def chapter(key, area, question, subtitle, slicers, ins_key, pulse_q, spec, headline_measure=None):
     hv = head(headline_measure) if headline_measure else grab(ins_key, "headline")
-    pg = story_page(key, area, question, subtitle, slicers, hv)
-    y = pulse(pg, Y_BODY, ins_key, *pulse_q)
-    bands(pg, y, spec, first=2)
-    next_back(pg, key)
-    return pg
+    screens = pack(spec, BODY_END - Y_BODY + GAP - PULSE_H)
+    out, num = [], 2
+    for i, grp in enumerate(screens, 1):
+        pg = story_page(key, area, question, subtitle, slicers, hv, i, len(screens))
+        y = pulse(pg, Y_BODY, ins_key, *pulse_q) if i == 1 else Y_BODY
+        bands(pg, y, grp, first=num)
+        num += len(grp)
+        next_back(pg, key, i, len(screens))
+        out.append(pg)
+    return out
 
 
 def deep_dive(key, area, question, subtitle, slicers, headline_measure, spec):
-    pg = story_page(key, area, question, subtitle, slicers, head(headline_measure))
-    bands(pg, Y_BODY, spec)
-    next_back(pg, key)
-    pg.page["visibility"] = "HiddenInViewMode"
-    return pg
+    screens = pack(spec, BODY_END - Y_BODY + GAP)
+    out, num = [], 1
+    for i, grp in enumerate(screens, 1):
+        pg = story_page(key, area, question, subtitle, slicers, head(headline_measure), i, len(screens))
+        bands(pg, Y_BODY, grp, first=num)
+        num += len(grp)
+        next_back(pg, key, i, len(screens))
+        pg.page["visibility"] = "HiddenInViewMode"
+        out.append(pg)
+    return out
 
 
 # ================================================================ HOME
@@ -484,6 +541,7 @@ def _chip(text, target, tip):
 
 def build_home():
     pg = Page(PID["home"], NAMES["home"], W, H, background_image=BG)
+    KEY_OF[pg.id] = "home"
     header(pg, "home", "BFUSION", "DECISION CENTER",
            "Start with the pulse, act on the list, then open the chapter that answers your question.",
            [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"), (DP("State_Value"), "State")])
@@ -492,8 +550,8 @@ def build_home():
     y = 236
     pages.section(pg, y, 1, "What needs attention now?",
                   "The PMO command center ranks projects by what needs a decision; click one to focus every page on it.")
-    put(pg, 16, y + SEC_H, 1768, 560, src("PMO | Command Center", "bfusionPMOCommandCenter"), "pmo")
-    y += SEC_H + 560 + GAP
+    put(pg, 16, y + SEC_H, 1768, BODY_END - y - SEC_H, src("PMO | Command Center", "bfusionPMOCommandCenter"), "pmo")
+    # 16:9: the eight question cards open over the command center (white backing), not below it
     # ② sits in a group that one toggle hides and shows (display-only bookmarks: slicer picks survive). The
     # "Hide" button lives inside the group, the "Show" button in its own group on the same spot, so exactly one
     # of the two is visible at any time.
@@ -501,6 +559,7 @@ def build_home():
     tx = 16 + 1768 - tw
     grp = pg.add_group(16, y, 1768, BODY_END - y, "Eight questions", "questions", hidden=True)   # hidden by default
     grp_show = pg.add_group(tx, y + 2, tw, th, "Show eight questions", "questions_show")
+    pg.add(16, y, 1768, BODY_END - y, shape("#FFFFFF"), key="q_backing", parent=grp)
     bm_hide = pbir.bookmark("Hide the eight questions", "bfstory-questions-hide", pg.id, {grp: True, grp_show: False})
     bm_show = pbir.bookmark("Show the eight questions", "bfstory-questions-show", pg.id, {grp: False, grp_show: True})
     pg.add(16, y, 1768 - tw - 12, SEC_H, textbox([[(f"{pages.CIRCLED[1]}  Eight questions, one answer each",
@@ -768,25 +827,54 @@ def build_timesheets():
     area, question = runs[0]["value"].rstrip(" |"), runs[1]["value"]
     sub = next(v for v in ins.visuals if v["name"] == uid(ins.id, "subtitle", "textbox"))
     subtitle = sub["visual"]["objects"]["general"][0]["properties"]["paragraphs"][0]["textRuns"][0]["value"]
-    pg = Page(PID["timesheets"], NAMES["timesheets"], W, H, background_image=BG)
-    QUESTIONS["timesheets"] = question
-    header(pg, "timesheets", area, question, subtitle, slicers)
-    nav_row(pg, "timesheets")
     skip = {uid(ins.id, k, t) for k in ("home", "title", "subtitle", "next", "back")
             for t in ("actionButton", "textbox")}
-    body = [v for v in ins.visuals if v["name"] not in skip and v["position"]["y"] >= 80 and not v.get("parentGroupName")
-            and v.get("visual", {}).get("visualType") != "actionButton"]
-    for k, vc in enumerate(sorted(body, key=lambda v: (v["position"]["y"], v["position"]["x"]))):
-        p = vc["position"]
-        # headline row keeps its place; the body moves below the filter-context bar
-        y = p["y"] + (Y_HEAD - 84) + (Y_BODY - 188 if p["y"] > 84 else 0)
-        h = min(p["height"], BODY_END - y)
-        if h < 0.6 * p["height"]:
-            raise ValueError(f"timesheets: {vc['name']} loses too much height")
-        put(pg, p["x"], y, p["width"], h, vc, f"ts{k}")
-    next_back(pg, "timesheets")
-    pg.page["visibility"] = "HiddenInViewMode"
-    return pg
+    body = sorted((v for v in ins.visuals if v["name"] not in skip and v["position"]["y"] >= 80
+                   and not v.get("parentGroupName") and v.get("visual", {}).get("visualType") != "actionButton"),
+                  key=lambda v: (v["position"]["y"], v["position"]["x"]))
+    head_row = [v for v in body if v["position"]["y"] < 100]          # the Insights headline (y 84)
+    # sections ① .. ④: from each section label down to the next one, moved as one block
+    starts = sorted(v["position"]["y"] for v in body if v.get("visual", {}).get("visualType") == "textbox"
+                    and any(c in json.dumps(v["visual"].get("objects", {}), ensure_ascii=False) for c in pages.CIRCLED))
+    bottom = max(v["position"]["y"] + v["position"]["height"] for v in body)
+    secs = []
+    for k, y0 in enumerate(starts):
+        y1 = starts[k + 1] if k + 1 < len(starts) else bottom + GAP
+        secs.append((y0, y1 - y0, [v for v in body if y0 <= v["position"]["y"] < y1]))
+    screens = pack([(None, None, h - SEC_H - GAP, y0) for y0, h, _ in secs], BODY_END - Y_BODY + GAP)
+    by_start = {y0: (h, vs) for y0, h, vs in secs}
+    out, k = [], 0
+    for i, grp in enumerate(screens, 1):
+        of = len(screens)
+        pid = page_id("timesheets", i)
+        KEY_OF[pid] = "timesheets"
+        pg = Page(pid, NAMES["timesheets"] if i == 1 else f"{NAMES['timesheets']} ({i}/{of})", W, H, background_image=BG)
+        QUESTIONS["timesheets"] = question
+        header(pg, "timesheets", area, question, subtitle, slicers)
+        nav_row(pg, "timesheets")
+        for v in head_row:
+            put(pg, v["position"]["x"], Y_HEAD, v["position"]["width"], v["position"]["height"], copy.deepcopy(v), "ts_head")
+        # section labels keep their height; everything under them scales to fill the screen
+        free = BODY_END - Y_BODY + GAP - SEC_H * len(grp)
+        scale = free / sum(by_start[b_[3]][0] - SEC_H for b_ in grp)
+        y = Y_BODY
+        for b_ in grp:
+            y0 = b_[3]
+            h, vs = by_start[y0]
+            for v in vs:
+                p = v["position"]
+                if p["y"] == y0:
+                    ny, nh = y, p["height"]
+                else:
+                    ny = y + SEC_H + (p["y"] - y0 - SEC_H) * scale
+                    nh = p["height"] * scale
+                put(pg, p["x"], round(ny, 2), p["width"], round(min(nh, BODY_END - ny), 2), copy.deepcopy(v), f"ts{k}")
+                k += 1
+            y += SEC_H + (h - SEC_H) * scale
+        next_back(pg, "timesheets", i, of)
+        pg.page["visibility"] = "HiddenInViewMode"
+        out.append(pg)
+    return out
 
 
 def _slicer_label(vc):
@@ -921,6 +1009,26 @@ def copy_interactions(built):
                     out.append({"source": a, "target": b_, "type": it["type"]})
         if out:
             pg.page["visualInteractions"] = out
+    # a link whose two ends landed on different 16:9 screens of the same page is lost: report it in --check
+    DROPPED.clear()
+    by_key = {}
+    for pg in built:
+        by_key.setdefault(KEY_OF.get(pg.id), []).append(pg)
+    for key, screens in by_key.items():
+        if len(screens) < 2:
+            continue
+        where = {}
+        for pg in screens:
+            for sk in pg.__dict__.get("src_names", {}):
+                where.setdefault(sk, set()).add(pg.id)
+        for (disp, _) in list(where):
+            for it in _SRC_INTERACTIONS.get(disp, []):
+                a, b_ = where.get((disp, it["source"])), where.get((disp, it["target"]))
+                if a and b_ and not a & b_:
+                    DROPPED.add(f"INTERACTION {NAMES[key]}: source link {it['source']} -> {it['target']} split over screens")
+
+
+DROPPED = set()
 
 
 STORY_BLURBS = {
@@ -956,11 +1064,13 @@ def build_pages():
     late = [k for k, _ in PAGES if k == "questions" or k.startswith("brief_")]
     done = {k: BUILDERS[k]() for k, _ in PAGES if k not in late}
     done.update({k: BUILDERS[k]() for k in late})
-    built = [done[k] for k, _ in PAGES]
+    built = [p for k, _ in PAGES for p in (done[k] if isinstance(done[k], list) else [done[k]])]
+    for p in built:
+        KEY_OF.setdefault(p.id, next((k for k, v in PID.items() if v == p.id), None))
     copy_interactions(built)
     pages.filter_real_projects(built)
     a11y.apply(built)
-    chrome.apply(built, PID, NAMES, CHAPTERS, Y_BAR)   # after a11y: the rail comes last in tab order
+    chrome.apply(built, PID, KEY_OF, NAMES, CHAPTERS, Y_BAR)   # after a11y: the rail comes last in tab order
     consistency.apply(built)
     polish.apply(built)
     return built
@@ -1063,7 +1173,7 @@ if __name__ == "__main__":
         _load = build.load_model
         build.load_model = lambda: (_load()[0], _load()[1] | inh)
         e = build.check(pages_, out) or 0
-        more = layout_errors(pages_) + reach_errors(pages_) + path_errors(out) + polish.errors(pages_) + consistency.errors(pages_)
+        more = layout_errors(pages_) + reach_errors(pages_) + path_errors(out) + polish.errors(pages_) + consistency.errors(pages_) + sorted(DROPPED)
         for m in more:
             print(m)
         tot = e + len(more)

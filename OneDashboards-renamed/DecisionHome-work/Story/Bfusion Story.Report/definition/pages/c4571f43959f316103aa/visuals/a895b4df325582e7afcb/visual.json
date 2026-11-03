@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "a895b4df325582e7afcb",
   "position": {
-    "x": 762.75,
-    "y": 264,
-    "z": 3600,
+    "x": 985,
+    "y": 264.42,
+    "z": 3700,
     "width": 212.25,
-    "height": 90,
-    "tabOrder": 2200
+    "height": 108.75,
+    "tabOrder": 2300
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Timesheet · Unplanned Share %"
+                  "Property": "Story | Timesheet · Not Approved Hours"
                 }
               },
-              "queryRef": "_Measures.Story | Timesheet · Unplanned Share %",
-              "nativeQueryRef": "Story | Timesheet · Unplanned Share %"
+              "queryRef": "_Measures.Story | Timesheet · Not Approved Hours",
+              "nativeQueryRef": "Story | Timesheet · Not Approved Hours"
             }
           ]
         }
@@ -63,7 +63,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#8E1B12'"
+                      "Value": "'#9A6B00'"
                     }
                   }
                 }
@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Booked on unplanned work'"
+                  "Value": "'Hours not yet approved'"
                 }
               }
             },
@@ -194,7 +194,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'KPI: Booked on unplanned work'"
+                  "Value": "'KPI: Hours not yet approved'"
                 }
               }
             }

@@ -15,8 +15,9 @@ from story_measures import add, T
 
 RAIL_W = 80
 BAR_H = 34
-# the 1800x1800 footer band, padded 80 px on the left (first pixel column repeated) so the band spans the wider page
-BG_WIDE = "bfv5_footer_band_1880x1800.png"
+# the 1800x1000 footer band padded 80 px on the left (first pixel column repeated) and with body rows added above the
+# band, so it fits the 1880 x 1058 (16:9) story screens without stretching the logo
+BG_WIDE = "bfv5_footer_band_1880x1058.png"
 BG_FILE = Path(__file__).resolve().parent / "assets" / BG_WIDE
 TILE, STEP, TOP = 56, 74, 16
 FILTER_MEASURE = "Story | Filter Context"
@@ -102,10 +103,10 @@ def _filter_bar(pg, y):
     pg.add(16, y, 1768, BAR_H, layout._alt(v, "Filters applied to this page"), key="filter_bar")
 
 
-def apply(built, pid, names, chapters, bar_y):
+def apply(built, pid, key_of, names, chapters, bar_y):
     """Filter bar on every chapter / deep-dive page, then shift the page right and draw the rail."""
     for pg in built:
-        key = next((k for k, v in pid.items() if v == pg.id), None)
+        key = key_of.get(pg.id)
         current = _chapter_of(key, names, chapters)
         if current is None:
             continue
@@ -118,7 +119,7 @@ def apply(built, pid, names, chapters, bar_y):
         pg.width += RAIL_W
         bg = pg.page["objects"].get("background", [{}])[0].get("properties", {})
         banded = "image" in bg
-        if banded and pg.page["height"] == 1800:
+        if banded and pg.page["height"] == 1058:
             img = bg["image"]["image"]
             img["name"] = pbir.s(BG_WIDE)
             img["url"]["expr"]["ResourcePackageItem"]["ItemName"] = BG_WIDE

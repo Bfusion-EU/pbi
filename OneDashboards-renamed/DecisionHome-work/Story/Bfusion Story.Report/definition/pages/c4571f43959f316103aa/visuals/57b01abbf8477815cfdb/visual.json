@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "57b01abbf8477815cfdb",
   "position": {
-    "x": 1207.25,
-    "y": 264,
-    "z": 3800,
+    "x": 1429.5,
+    "y": 264.42,
+    "z": 3900,
     "width": 212.25,
-    "height": 90,
-    "tabOrder": 2400
+    "height": 108.75,
+    "tabOrder": 2500
   },
   "visual": {
     "visualType": "card",
@@ -23,11 +23,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Timesheet | Reporting Compliance %"
+                  "Property": "Timesheet | Resources Missing Time"
                 }
               },
-              "queryRef": "_Measures.Timesheet | Reporting Compliance %",
-              "nativeQueryRef": "Timesheet | Reporting Compliance %"
+              "queryRef": "_Measures.Timesheet | Resources Missing Time",
+              "nativeQueryRef": "Timesheet | Resources Missing Time"
             }
           ]
         }
@@ -61,14 +61,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Timesheet · Compliance Colour"
+                    "Literal": {
+                      "Value": "'#C0392B'"
                     }
                   }
                 }
@@ -99,7 +93,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Reporting compliance'"
+                  "Value": "'People who booked no time'"
                 }
               }
             },
@@ -199,7 +193,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'KPI: Reporting compliance'"
+                  "Value": "'KPI: People who booked no time'"
                 }
               }
             }

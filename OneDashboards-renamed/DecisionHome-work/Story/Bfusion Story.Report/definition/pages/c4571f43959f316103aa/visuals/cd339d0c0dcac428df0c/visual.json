@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "cd339d0c0dcac428df0c",
   "position": {
-    "x": 96,
-    "y": 370,
-    "z": 4100,
-    "width": 1768,
-    "height": 34,
+    "x": 1064,
+    "y": 389.83,
+    "z": 4200,
+    "width": 800,
+    "height": 33.83,
     "tabOrder": 2700
   },
   "visual": {
@@ -19,23 +19,92 @@
               {
                 "textRuns": [
                   {
-                    "value": "②  Where does effort over- or under-run?",
+                    "value": "■ ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI Semibold",
-                      "fontSize": "15pt",
-                      "color": "#1F2A44",
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "12pt",
+                      "color": "#8E1B12"
+                    }
+                  },
+                  {
+                    "value": "Unplanned",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#8E1B12",
                       "fontWeight": "bold"
                     }
                   },
                   {
-                    "value": "   Projects and people, biggest over-run first.",
+                    "value": "     ■ ",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "11pt",
+                      "fontSize": "12pt",
+                      "color": "#C0392B"
+                    }
+                  },
+                  {
+                    "value": "Over-run >120%",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#C0392B",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": "     ■ ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "12pt",
+                      "color": "#1E6D6E"
+                    }
+                  },
+                  {
+                    "value": "On plan 80–120%",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#1E6D6E",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": "     ■ ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "12pt",
+                      "color": "#D9A832"
+                    }
+                  },
+                  {
+                    "value": "Under-run <80%",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#9A6B00",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": "     ■ ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "12pt",
                       "color": "#666666"
                     }
+                  },
+                  {
+                    "value": "No activity",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#666666",
+                      "fontWeight": "bold"
+                    }
                   }
-                ]
+                ],
+                "horizontalTextAlignment": "right"
               }
             ]
           }

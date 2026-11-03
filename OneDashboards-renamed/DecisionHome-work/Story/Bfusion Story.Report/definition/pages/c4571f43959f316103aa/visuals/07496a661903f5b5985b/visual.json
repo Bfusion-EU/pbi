@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "07496a661903f5b5985b",
   "position": {
-    "x": 1429.5,
-    "y": 264,
-    "z": 3900,
+    "x": 1651.75,
+    "y": 264.42,
+    "z": 4000,
     "width": 212.25,
-    "height": 90,
-    "tabOrder": 2500
+    "height": 108.75,
+    "tabOrder": 2600
   },
   "visual": {
     "visualType": "card",
@@ -23,11 +23,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Timesheet | Resources Missing Time"
+                  "Property": "Timesheet | Avg Approval Lag (days)"
                 }
               },
-              "queryRef": "_Measures.Timesheet | Resources Missing Time",
-              "nativeQueryRef": "Timesheet | Resources Missing Time"
+              "queryRef": "_Measures.Timesheet | Avg Approval Lag (days)",
+              "nativeQueryRef": "Timesheet | Avg Approval Lag (days)"
             }
           ]
         }
@@ -62,7 +62,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#C0392B'"
+                      "Value": "'#1F2A44'"
                     }
                   }
                 }
@@ -93,7 +93,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'People who booked no time'"
+                  "Value": "'Avg approval lag (days)'"
                 }
               }
             },
@@ -193,7 +193,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'KPI: People who booked no time'"
+                  "Value": "'KPI: Avg approval lag (days)'"
                 }
               }
             }

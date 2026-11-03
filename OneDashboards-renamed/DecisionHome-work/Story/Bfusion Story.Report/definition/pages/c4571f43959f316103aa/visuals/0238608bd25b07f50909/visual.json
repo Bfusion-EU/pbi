@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "0238608bd25b07f50909",
   "position": {
-    "x": 985,
-    "y": 264,
-    "z": 3700,
+    "x": 1207.25,
+    "y": 264.42,
+    "z": 3800,
     "width": 212.25,
-    "height": 90,
-    "tabOrder": 2300
+    "height": 108.75,
+    "tabOrder": 2400
   },
   "visual": {
     "visualType": "card",
@@ -20,15 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Timesheet · Not Approved Hours"
+                  "Property": "Timesheet | Reporting Compliance %"
                 }
               },
-              "queryRef": "_Measures.Story | Timesheet · Not Approved Hours",
-              "nativeQueryRef": "Story | Timesheet · Not Approved Hours"
+              "queryRef": "_Measures.Timesheet | Reporting Compliance %",
+              "nativeQueryRef": "Timesheet | Reporting Compliance %"
             }
           ]
         }
@@ -62,8 +61,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#9A6B00'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Timesheet · Compliance Colour"
                     }
                   }
                 }
@@ -94,7 +99,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Hours not yet approved'"
+                  "Value": "'Reporting compliance'"
                 }
               }
             },
@@ -194,7 +199,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'KPI: Hours not yet approved'"
+                  "Value": "'KPI: Reporting compliance'"
                 }
               }
             }

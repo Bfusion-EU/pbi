@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "8392eb0860ed6a094b7a",
   "position": {
-    "x": 540.5,
-    "y": 264,
-    "z": 3500,
+    "x": 762.75,
+    "y": 264.42,
+    "z": 3600,
     "width": 212.25,
-    "height": 90,
-    "tabOrder": 2100
+    "height": 108.75,
+    "tabOrder": 2200
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Timesheet · Plan Accuracy %"
+                  "Property": "Story | Timesheet · Unplanned Share %"
                 }
               },
-              "queryRef": "_Measures.Story | Timesheet · Plan Accuracy %",
-              "nativeQueryRef": "Story | Timesheet · Plan Accuracy %"
+              "queryRef": "_Measures.Story | Timesheet · Unplanned Share %",
+              "nativeQueryRef": "Story | Timesheet · Unplanned Share %"
             }
           ]
         }
@@ -62,14 +62,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Timesheet · Accuracy KPI Colour"
+                    "Literal": {
+                      "Value": "'#8E1B12'"
                     }
                   }
                 }
@@ -100,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Plan accuracy (overlap)'"
+                  "Value": "'Booked on unplanned work'"
                 }
               }
             },
@@ -200,7 +194,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'KPI: Plan accuracy (overlap)'"
+                  "Value": "'KPI: Booked on unplanned work'"
                 }
               }
             }
