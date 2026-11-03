@@ -1,6 +1,6 @@
 """Build 'OneDashboards - Bfusion Story': the BFusion custom-visual pack restructured as a story.
 
-    python bfstory.py            # writes ../../Bfusion Story/OneDashboards - Bfusion Story.pbip + .Report
+    python bfstory.py            # writes ../../Story/Bfusion Story.pbip + .Report
     python bfstory.py --check    # build + validate JSON schemas, model references and layout
 
 Same story grammar and navigation as the Insights pack (header AREA | QUESTION? -> orange headline -> ① pulse ->
@@ -25,8 +25,11 @@ import a11y  # noqa: E402
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, home_icon_button, slicer, headline,  # noqa: E402
                   NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
 
-NAME = "OneDashboards - Bfusion Story"
-OUT_DIR = build.ROOT.parent / "Bfusion Story"
+# Short on purpose: Desktop cannot read files over 259 characters, and the longest custom visual file adds
+# ~170 characters below the .Report folder (path_errors checks this).
+NAME = "Bfusion Story"
+OUT_DIR = build.ROOT.parent / "Story"
+MAX_PATH = 259
 OUT = OUT_DIR / f"{NAME}.Report"
 SRC = build.REF                      # OneDashboards - Bfusion.Report (read only)
 
@@ -811,6 +814,11 @@ def write(built):
     return out
 
 
+def path_errors(out):
+    """Power BI Desktop refuses files whose full path is longer than MAX_PATH characters."""
+    return [f"PATH {len(str(f))} chars > {MAX_PATH}: {f}" for f in out.rglob("*") if len(str(f)) > MAX_PATH]
+
+
 def layout_errors(built):
     errs = []
     for pg in built:
@@ -864,7 +872,7 @@ if __name__ == "__main__":
         _load = build.load_model
         build.load_model = lambda: (_load()[0], _load()[1] | inh)
         e = build.check(pages_, out) or 0
-        more = layout_errors(pages_) + reach_errors(pages_)
+        more = layout_errors(pages_) + reach_errors(pages_) + path_errors(out)
         for m in more:
             print(m)
         tot = e + len(more)
