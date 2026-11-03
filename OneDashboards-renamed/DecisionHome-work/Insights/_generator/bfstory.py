@@ -47,7 +47,7 @@ SRC = build.REF                      # OneDashboards - Bfusion.Report (read only
 # dive whose sections do not fit on one screen continues on hidden pages "(2/2)", reached with Continue / Previous.
 W, H = 1800, 1058
 BG = pages.BG_TALL                   # chrome.py swaps in the 16:9 footer band of the widened page
-LIMIT = round(H * 0.928)             # top of the footer band
+LIMIT = 958                          # top of the footer band of the 16:9 background (orange rule at ~963)
 NAV_Y, NAV_H = 86, 30
 Y_HEAD = 122                         # orange headline under the navigation row
 Y_BODY = 226                         # first section label, under the filter-context bar
@@ -1163,7 +1163,7 @@ def layout_errors(built):
         errs += [f"LAYOUT {pg.display}: two visuals share the key of {n} (one overwrites the other)"
                  for n in sorted({n for n in names if names.count(n) > 1})]
         banded = "image" in pg.page["objects"].get("background", [{}])[0].get("properties", {})
-        limit = round(pg.page["height"] * (0.928 if banded else 1))   # top of the footer band, if the page has one
+        limit = (LIMIT if pg.page["height"] == H else round(pg.page["height"] * 0.928)) if banded else pg.page["height"]
         for vc in pg.visuals:
             p = vc["position"]
             if p["x"] < 0 or p["x"] + p["width"] > pg.page["width"] + 0.5 or p["y"] + p["height"] > limit:

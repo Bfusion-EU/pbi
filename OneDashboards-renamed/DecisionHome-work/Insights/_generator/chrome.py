@@ -19,6 +19,7 @@ BAR_H = 34
 # the 1800x1000 footer band padded 80 px on the left (first pixel column repeated) and with body rows added above the
 # band, so it fits the 1880 x 1058 (16:9) story screens without stretching the logo
 BG_WIDE = "bfv5_footer_band_1880x1058.png"
+FOOTER_TOP = {1058: 958}             # page height -> top of its footer band (the rail stops above it)
 BG_FILE = Path(__file__).resolve().parent / "assets" / BG_WIDE
 TILE, STEP, TOP = 56, 74, 16
 FILTER_MEASURE = "Story | Filter Context"
@@ -103,12 +104,18 @@ NO_STRIP = {"recon"}                 # the reconciliation page shows every sourc
 BAR_W = 1000                         # filter context left, data-confidence strip right
 
 
+def _slim(v):
+    """Single-line text card: zero the card padding, which otherwise eats the 34 px and clips the text."""
+    v["visualContainerObjects"]["padding"] = [{"properties": {"top": n(0), "bottom": n(0), "left": n(0), "right": n(0)}}]
+    return v
+
+
 def _filter_bar(pg, y, chapter, no_strip=False):
-    v = headline(FILTER_MEASURE, bg="#F4F5F7", border=BORDER, size=10, colour=MUTED)
+    v = _slim(headline(FILTER_MEASURE, bg="#F4F5F7", border=BORDER, size=10, colour=MUTED))
     strip = chapter in confidence.CHAPTER_CHECKS and not no_strip
     pg.add(16, y, BAR_W if strip else 1768, BAR_H, layout._alt(v, "Filters applied to this page"), key="filter_bar")
     if strip:
-        s_ = headline(confidence.strip(chapter), bg="#FFFFFF", border=BORDER, size=10)
+        s_ = _slim(headline(confidence.strip(chapter), bg="#FFFFFF", border=BORDER, size=10))
         s_["objects"]["labels"][0]["properties"]["color"] = pbir.measure_colour(confidence.strip_colour(chapter))
         pg.add(16 + BAR_W + 10, y, 1768 - BAR_W - 10, BAR_H,
                layout._alt(s_, "Data confidence: share of active projects that have the data this chapter uses"),
@@ -135,7 +142,7 @@ def apply(built, pid, key_of, names, chapters, bar_y):
             img = bg["image"]["image"]
             img["name"] = pbir.s(BG_WIDE)
             img["url"]["expr"]["ResourcePackageItem"]["ItemName"] = BG_WIDE
-        _rail(pg, current, pid, round(pg.page["height"] * (0.928 if banded else 1)))
+        _rail(pg, current, pid, FOOTER_TOP.get(pg.page["height"], round(pg.page["height"] * (0.928 if banded else 1))))
 
 
 def register(out):
