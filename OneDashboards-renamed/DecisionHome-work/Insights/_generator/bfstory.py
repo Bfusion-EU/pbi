@@ -222,14 +222,32 @@ def put(pg, x, y, w, h, vc, key):
     return out
 
 
+def back_button(colour=ORANGE):
+    """Arrow that returns to the page the user came from (Power BI's Back action), not to a fixed page."""
+    btn = home_icon_button("", colour)
+    btn["visualContainerObjects"]["visualLink"] = [{"properties": {"show": b(True), "type": s("Back"),
+                                                                   "tooltip": s("Back to the previous page")}}]
+    return layout._alt(btn, "Back to the previous page")
+
+
+def home_button(pg, x, y, size=40):
+    """Orange house that always goes to the welcome page."""
+    pg.add(x, y, size, size, shape(ORANGE, radius=10), key="home_bg")
+    ico = round(size * 0.56)
+    pg.add(x + (size - ico) / 2, y + (size - ico) / 2, ico, ico, _logo(illustrations.HOME_FILE, "Home icon"),
+           key="home_ico")
+    pg.add(x, y, size, size, layout._alt(_ghost("", PID["welcome"], "Home: the welcome page", hover=INK),
+                                         "Home: the welcome page"), key="home")
+
+
 def header(pg, key, area, question, subtitle, slicers):
-    if key != "home":
-        pg.add(0, 4, 60, 58, home_icon_button(PID["home"]), key="home")
+    pg.add(0, 4, 60, 58, back_button(), key="go_back")       # not "back": next_back() uses that key at the foot
+    home_button(pg, 64, 13)
     tsize = 24 if len(f"{area} | {question}") <= pages.TITLE_MAX else 20
-    pg.add(62, 8, 960, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
-                                      (question, st("DIN", tsize, NAVY, True))]]), key="title")
+    pg.add(116, 8, 906, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
+                                       (question, st("DIN", tsize, NAVY, True))]]), key="title")
     ssize = 11 if len(subtitle) <= pages.SUBTITLE_MAX else 10
-    pg.add(62, 52, 975, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
+    pg.add(116, 52, 906, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
     x = W - 16 - len(slicers) * 188 + 8
     assert x >= 1030, f"{pg.display}: too many slicers ({len(slicers)})"
     for k, sl in enumerate(slicers):
@@ -259,9 +277,9 @@ def nav_row(pg, key):
     members = [k for k, d in PAGES if layout._code(d) and layout._code(d)[0] == c[0]]
     chap = members[0]
     x = 16
-    pg.add(x, NAV_Y, _crumb_w("Home"), NAV_H, layout._crumb("Home", PID["home"], "Back to the decision center"),
-           key="nav_home")
-    x += _crumb_w("Home")
+    pg.add(x, NAV_Y, _crumb_w("Decision center"), NAV_H,
+           layout._crumb("Decision center", PID["home"], "Open the decision center"), key="nav_home")
+    x += _crumb_w("Decision center")
     for k, link in ([(chap, True)] if chap != key else []) + [(key, False)]:
         pg.add(x, NAV_Y, 18, NAV_H, layout._alt(_crumb_label("›", MUTED, bold=False, size=12), "then"), key=f"nav_sep_{k}")
         x += 18
@@ -496,9 +514,6 @@ def build_home():
     header(pg, "home", "BFUSION", "DECISION CENTER",
            "Start with the pulse, act on the list, then open the chapter that answers your question.",
            [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"), (DP("State_Value"), "State")])
-    back = home_icon_button(PID["welcome"])
-    back["visualContainerObjects"]["visualLink"][0]["properties"]["tooltip"] = s("Back to the welcome page")
-    pg.add(0, 4, 60, 58, back, key="welcome")
     put(pg, 16, 86, 1768, 72, ticker(), "ticker")
     put(pg, 16, 168, 1768, 56, grab("exec", "headline"), "headline")
     y = 236
@@ -732,13 +747,12 @@ def build_questions():
     pg = Page(PID["questions"], NAMES["questions"], W, SH, background_colour=INK, display_option="FitToPage")
     pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(INK), "transparency": pbir.n(0)}}]
     pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
-    back = home_icon_button(PID["home"])
-    back["visualContainerObjects"]["visualLink"][0]["properties"]["tooltip"] = s("Back to the decision center")
-    pg.add(10, 26, 60, 58, back, key="home")
-    _text(pg, 80, 26, 600, 26, "START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
-    _text(pg, 80, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
+    pg.add(10, 26, 60, 58, back_button(), key="back")
+    home_button(pg, 76, 36)
+    _text(pg, 132, 26, 600, 26, "START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
+    _text(pg, 132, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
     n_q = len(CHAPTERS) + sum(len(_deep(ck)) for ck in CHAPTERS)
-    _text(pg, 80, 104, 1100, 28, f"{len(CHAPTERS)} chapters, {n_q} questions. Click a tile to open its chapter, "
+    _text(pg, 132, 104, 1100, 28, f"{len(CHAPTERS)} chapters, {n_q} questions. Click a tile to open its chapter, "
                                  "a row to go one level deeper.", st("Segoe UI", 11, SOFT_INK), "subtitle")
     pg.add(W - 32 - 186 - 14 - 180, 52, 180, 46,
            nav_button("‹  Welcome", PID["welcome"], "Back to the welcome page", fill=INK, hover="#1B2C42",
@@ -936,11 +950,9 @@ def build_brief(ch):
     pg.add(1000, 70, illustrations.SCENE_W, illustrations.SCENE_H,
            _logo(illustrations.scene_file(ch), f"{code[2]} illustration"), key="scene")
     # home (welcome page) + breadcrumb + all questions
-    pg.add(24, 22, 44, 44, shape(ORANGE, radius=12), key="home_bg")
-    pg.add(34, 32, 24, 24, _logo(illustrations.HOME_FILE, "Home icon"), key="home_ico")
-    pg.add(24, 22, 44, 44, layout._alt(_ghost("", PID["welcome"], "Back to the welcome page", hover=INK),
-                                       "Back to the welcome page"), key="home")
-    x = _crumb(pg, 80, "Welcome", PID["welcome"], "Back to the welcome page", "crumb_welcome")
+    pg.add(10, 14, 60, 58, back_button(), key="back")
+    home_button(pg, 76, 22, 42)
+    x = _crumb(pg, 130, "Welcome", PID["welcome"], "Back to the welcome page", "crumb_welcome")
     x = _crumb(pg, x, "›", "", "then", "crumb_sep1", size=12, w=18)
     x = _crumb(pg, x, "Questions", PID["questions"], "All questions", "crumb_questions")
     x = _crumb(pg, x, "›", "", "then", "crumb_sep2", size=12, w=18)
@@ -1436,6 +1448,9 @@ def path_errors(out):
 def layout_errors(built):
     errs = []
     for pg in built:
+        names = [vc["name"] for vc in pg.visuals]
+        errs += [f"LAYOUT {pg.display}: two visuals share the key of {n} (one overwrites the other)"
+                 for n in sorted({n for n in names if names.count(n) > 1})]
         banded = "image" in pg.page["objects"].get("background", [{}])[0].get("properties", {})
         limit = round(pg.page["height"] * (0.928 if banded else 1))   # top of the footer band, if the page has one
         for vc in pg.visuals:
