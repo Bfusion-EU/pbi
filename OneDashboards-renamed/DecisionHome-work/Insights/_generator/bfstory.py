@@ -24,7 +24,7 @@ import layout  # noqa: E402
 import a11y  # noqa: E402
 import story_measures  # noqa: E402
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, home_icon_button, slicer, headline,  # noqa: E402
-                  NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
+                  image, NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
 
 # Short on purpose: Desktop cannot read files over 259 characters, and the longest custom visual file adds
 # ~170 characters below the .Report folder (path_errors checks this).
@@ -33,6 +33,9 @@ OUT_DIR = build.ROOT.parent / "Story"
 MAX_PATH = 259
 OUT = OUT_DIR / f"{NAME}.Report"
 SRC = build.REF                      # OneDashboards - Bfusion.Report (read only)
+LOGO_FILE = Path(__file__).parent / "assets" / "bfusion_logo.png"   # 97x65, from Branding/Backgrounds/logo.png
+LOGO_RES = "bfusion_logo.png"
+LOGO_W, LOGO_H = 84, 56
 
 W, H = 1800, 1800
 BG = pages.BG_TALL
@@ -210,13 +213,18 @@ def put(pg, x, y, w, h, vc, key):
 def header(pg, key, area, question, subtitle, slicers):
     if key != "home":
         pg.add(0, 4, 60, 58, home_icon_button(PID["home"]), key="home")
+    # BFusion logo top-right: pages are FitToWidth, so the footer band's logo is only seen after scrolling
+    logo = image(LOGO_RES, "BFusion logo")
+    logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")
+    pg.add(W - 16 - LOGO_W, 10, LOGO_W, LOGO_H, logo, key="bfusion_logo")
+    x = W - 16 - LOGO_W - 12 - len(slicers) * 188 + 8
+    tw = min(960, x - 62 - 8)
+    assert tw >= 860, f"{pg.display}: too many slicers ({len(slicers)}) for the title"
     tsize = 24 if len(f"{area} | {question}") <= pages.TITLE_MAX else 20
-    pg.add(62, 8, 960, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
-                                      (question, st("DIN", tsize, NAVY, True))]]), key="title")
+    pg.add(62, 8, tw, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
+                                    (question, st("DIN", tsize, NAVY, True))]]), key="title")
     ssize = 11 if len(subtitle) <= pages.SUBTITLE_MAX else 10
-    pg.add(62, 52, 975, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
-    x = W - 16 - len(slicers) * 188 + 8
-    assert x >= 1030, f"{pg.display}: too many slicers ({len(slicers)})"
+    pg.add(62, 52, tw, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
     for k, sl in enumerate(slicers):
         if sl[0] == "src":
             vc = src_slicer(sl[1], sl[2])
@@ -937,6 +945,9 @@ def write(built):
     rj = out / "definition" / "report.json"
     rep = json.loads(rj.read_text(encoding="utf-8"))
     rep["resourcePackages"] = pkgs + rep["resourcePackages"]
+    reg = next(p for p in rep["resourcePackages"] if p["type"] == "RegisteredResources")
+    reg["items"].append({"name": LOGO_RES, "path": LOGO_RES, "type": "Image"})
+    shutil.copy(LOGO_FILE, out / "StaticResources" / "RegisteredResources" / LOGO_RES)
     build.dump(rj, rep)
     for name in used:
         shutil.copytree(SRC / "CustomVisuals" / name, out / "CustomVisuals" / name)
