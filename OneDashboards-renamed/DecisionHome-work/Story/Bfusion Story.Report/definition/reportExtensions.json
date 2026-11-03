@@ -10867,6 +10867,234 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Ticker · Governance Score Now",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nRETURN CALCULATE ( [PMO | Governance Score], FactPlanInsight[SnapshotDate] = _s )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "0",
+          "description": "PMO | Governance Score on the latest plan-insight snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Governance Score Previous",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nVAR _p = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ), FactPlanInsight[SnapshotDate] < _s )\nRETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( [PMO | Governance Score], FactPlanInsight[SnapshotDate] = _p ) )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "0",
+          "description": "PMO | Governance Score on the plan-insight snapshot before the latest one; blank with one snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Compliance % Now",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nRETURN CALCULATE ( [PMO | Compliance %], FactPlanInsight[SnapshotDate] = _s )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "0.0%",
+          "description": "PMO | Compliance % on the latest plan-insight snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Compliance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Compliance % Previous",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nVAR _p = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ), FactPlanInsight[SnapshotDate] < _s )\nRETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( [PMO | Compliance %], FactPlanInsight[SnapshotDate] = _p ) )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "0.0%",
+          "description": "PMO | Compliance % on the plan-insight snapshot before the latest one; blank with one snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Compliance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Problems Now",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nRETURN CALCULATE ( [PMO | Problems], FactPlanInsight[SnapshotDate] = _s )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "PMO | Problems on the latest plan-insight snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Problems"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Problems Previous",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nVAR _p = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ), FactPlanInsight[SnapshotDate] < _s )\nRETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( [PMO | Problems], FactPlanInsight[SnapshotDate] = _p ) )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "PMO | Problems on the plan-insight snapshot before the latest one; blank with one snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Problems"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Warnings Now",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nRETURN CALCULATE ( [PMO | Warnings], FactPlanInsight[SnapshotDate] = _s )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "PMO | Warnings on the latest plan-insight snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Warnings"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Warnings Previous",
+          "dataType": "Double",
+          "expression": "VAR _s = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )\nVAR _p = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ), FactPlanInsight[SnapshotDate] < _s )\nRETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( [PMO | Warnings], FactPlanInsight[SnapshotDate] = _p ) )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "PMO | Warnings on the plan-insight snapshot before the latest one; blank with one snapshot.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Warnings"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Reported Budget Now",
+          "dataType": "Double",
+          "expression": "VAR _te = [Story | Status · MoM This Month End]\nVAR _pe = EOMONTH ( _te, -1 )\nVAR _at = EOMONTH ( _te, -0 )\nRETURN SUMX (\n    FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _r = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _at + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Budget] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _r ) )\n)",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "Status-report budget, latest report as of this month end, like-for-like.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM This Month End"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Reported Budget Previous",
+          "dataType": "Double",
+          "expression": "VAR _te = [Story | Status · MoM This Month End]\nVAR _pe = EOMONTH ( _te, -1 )\nVAR _at = EOMONTH ( _te, -1 )\nRETURN SUMX (\n    FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _r = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _at + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Budget] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _r ) )\n)",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "Same, as of last month end.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM This Month End"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Reported Forecast Now",
+          "dataType": "Double",
+          "expression": "VAR _te = [Story | Status · MoM This Month End]\nVAR _pe = EOMONTH ( _te, -1 )\nVAR _at = EOMONTH ( _te, -0 )\nRETURN SUMX (\n    FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _r = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _at + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _r ) )\n)",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "Status-report forecast, latest report as of this month end, like-for-like.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM This Month End"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Reported Forecast Previous",
+          "dataType": "Double",
+          "expression": "VAR _te = [Story | Status · MoM This Month End]\nVAR _pe = EOMONTH ( _te, -1 )\nVAR _at = EOMONTH ( _te, -1 )\nRETURN SUMX (\n    FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    VAR _r = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] < _at + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[Forecast] ), REMOVEFILTERS ( DimDate ), FactStatusReport[Report_ReportEnd] = _r ) )\n)",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "Same, as of last month end.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · MoM This Month End"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Timesheet Hours Last Month",
+          "dataType": "Double",
+          "expression": "VAR _m = EOMONTH ( TODAY (), -1 )\nRETURN CALCULATE ( [Timesheet | Hours], REMOVEFILTERS ( DimDate ), DimDate[Date] > EOMONTH ( _m, -1 ), DimDate[Date] <= _m )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "Timesheet hours in the last full month.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Timesheet | Hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Ticker · Timesheet Hours Month Before",
+          "dataType": "Double",
+          "expression": "VAR _m = EOMONTH ( TODAY (), -2 )\nRETURN CALCULATE ( [Timesheet | Hours], REMOVEFILTERS ( DimDate ), DimDate[Date] > EOMONTH ( _m, -1 ), DimDate[Date] <= _m )",
+          "displayFolder": "Story\\Ticker",
+          "formatString": "#,##0",
+          "description": "Timesheet hours in the month before that.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Timesheet | Hours"
+              }
+            ]
+          }
         }
       ]
     }

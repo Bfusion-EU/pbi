@@ -22,6 +22,7 @@ import pbir  # noqa: E402
 import pages  # noqa: E402
 import layout  # noqa: E402
 import a11y  # noqa: E402
+import story_measures  # noqa: E402
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, home_icon_button, slicer, headline,  # noqa: E402
                   NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
 
@@ -224,25 +225,38 @@ def header(pg, key, area, question, subtitle, slicers):
             pg.add(x + k * 188, 10, 180, 62, slicer(sl[0], sl[1]), key=f"slicer{k}")
 
 
+def _crumb_w(text):
+    return round(len(text) * 7.6 + 40)       # bold Segoe UI 10 pt + the button's own margins ("Home" fits whole)
+
+
+def _crumb_label(text, colour, bold=True, size=10):
+    """A button with no action: Desktop centres button text vertically, so every breadcrumb level (links,
+    separators and the current page) sits on one line — textboxes put their text at the top instead."""
+    btn = nav_button(text, "", "", fill="#FFFFFF", hover="#FFFFFF", press="#FFFFFF", font=colour, size=size, margin=0)
+    btn["objects"]["text"][1]["properties"]["bold"] = b(bold)
+    btn["visualContainerObjects"].pop("visualLink")
+    return btn
+
+
 def nav_row(pg, key):
     """Breadcrumb (Home › chapter › page) left, chapter strip right — same look as the Insights pack."""
     c = layout._code(NAMES[key])
     members = [k for k, d in PAGES if layout._code(d) and layout._code(d)[0] == c[0]]
     chap = members[0]
     x = 16
-    pg.add(x, NAV_Y, layout._w("Home"), NAV_H, layout._crumb("Home", PID["home"], "Back to the decision center"),
+    pg.add(x, NAV_Y, _crumb_w("Home"), NAV_H, layout._crumb("Home", PID["home"], "Back to the decision center"),
            key="nav_home")
-    x += layout._w("Home")
+    x += _crumb_w("Home")
     for k, link in ([(chap, True)] if chap != key else []) + [(key, False)]:
-        pg.add(x, NAV_Y, 18, NAV_H, textbox([[("›", st("Segoe UI", 11, MUTED))]]), key=f"nav_sep_{k}")
+        pg.add(x, NAV_Y, 18, NAV_H, layout._alt(_crumb_label("›", MUTED, bold=False, size=12), "then"), key=f"nav_sep_{k}")
         x += 18
         text = layout._label(NAMES[k])
         if link:
-            pg.add(x, NAV_Y, layout._w(text), NAV_H, layout._crumb(text, PID[k], "Open this chapter"), key=f"nav_crumb_{k}")
+            pg.add(x, NAV_Y, _crumb_w(text), NAV_H, layout._crumb(text, PID[k], "Open this chapter"), key=f"nav_crumb_{k}")
         else:
-            pg.add(x, NAV_Y, layout._w(text) + 40, NAV_H, textbox([[(text, st("Segoe UI Semibold", 10, NAVY, True))]]),
+            pg.add(x, NAV_Y, _crumb_w(text), NAV_H, layout._alt(_crumb_label(text, NAVY), f"You are here: {text}"),
                    key=f"nav_here_{k}")
-        x += layout._w(text)
+        x += _crumb_w(text)
     if len(members) > 1:
         widths = [layout._w(layout._label(NAMES[m])) for m in members]
         x = W - 16 - sum(widths) - 6 * (len(members) - 1)
@@ -355,6 +369,103 @@ CARD_TEXT = {  # chapter -> (question, headline measure)
 }
 
 
+# ---------------------------------------------------------------- KPI ticker = the command center's KPIs
+# The ticker draws ▲/▼ from a "Compare to" measure paired by position with its value. Previous values come only
+# from real history with the same definition as the current value:
+#   plan-insight KPIs  -> latest SnapshotDate vs the snapshot before it (blank when only one snapshot exists)
+#   budget / forecast  -> each project's latest status report as of this month end vs as of last month end,
+#                         like-for-like (only projects that had a report last month), same rule as page 5c
+#   timesheet hours    -> last full month vs the month before
+# KPIs that are a current state with no history (late tasks, hours awaiting approval, unsubmitted status reports)
+# go last, after the compared ones, so they show without an arrow.
+TICKER = "Story\\Ticker"
+_SNAP = "CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ) )"
+_THIS_END = "[Story | Status · MoM This Month End]"
+
+
+def _tk(name, expr, fmt, desc):
+    full = f"Story | Ticker · {name}"
+    story_measures.add(full, story_measures.D, expr, fmt, TICKER, desc)
+    pbir.EXTENSION_MEASURES.add(full)
+    return full
+
+
+def _snapshot_pair(label, model_measure, fmt):
+    now = _tk(f"{label} Now", f"VAR _s = {_SNAP}\nRETURN CALCULATE ( [{model_measure}], FactPlanInsight[SnapshotDate] = _s )",
+              fmt, f"{model_measure} on the latest plan-insight snapshot.")
+    prev = _tk(f"{label} Previous",
+               f"VAR _s = {_SNAP}\n"
+               "VAR _p = CALCULATE ( MAX ( FactPlanInsight[SnapshotDate] ), FactPlanInsight[SnapshotDate] < _s )\n"
+               f"RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( [{model_measure}], FactPlanInsight[SnapshotDate] = _p ) )",
+               fmt, f"{model_measure} on the plan-insight snapshot before the latest one; blank with one snapshot.")
+    return now, prev
+
+
+def _reported(col, months_back):
+    """Sum over projects of FactStatusReport[col] in the latest report as of a month end, counting only projects
+    that also had a report as of last month end (like-for-like, so new projects do not read as growth)."""
+    return ("VAR _te = " + _THIS_END + "\n"
+            "VAR _pe = EOMONTH ( _te, -1 )\n"
+            f"VAR _at = EOMONTH ( _te, -{months_back} )\n"
+            "RETURN SUMX (\n"
+            "    FILTER ( VALUES ( DimProject[ProjectKey] ), NOT ISBLANK ( DimProject[ProjectKey] ) ),\n"
+            "    VAR _p = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), "
+            "FactStatusReport[Report_ReportEnd] < _pe + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n"
+            "    VAR _r = CALCULATE ( MAX ( FactStatusReport[Report_ReportEnd] ), REMOVEFILTERS ( DimDate ), "
+            "FactStatusReport[Report_ReportEnd] < _at + 1, FactStatusReport[Report_ReportEnd] > DATE ( 1900, 1, 1 ) )\n"
+            f"    RETURN IF ( NOT ISBLANK ( _p ), CALCULATE ( MAX ( FactStatusReport[{col}] ), REMOVEFILTERS ( DimDate ), "
+            "FactStatusReport[Report_ReportEnd] = _r ) )\n)")
+
+
+def _ts_hours(months_back):
+    return (f"VAR _m = EOMONTH ( TODAY (), -{months_back} )\n"
+            "RETURN CALCULATE ( [Timesheet | Hours], REMOVEFILTERS ( DimDate ), DimDate[Date] > EOMONTH ( _m, -1 ), "
+            "DimDate[Date] <= _m )")
+
+
+def _ticker_measures():
+    """[(label, value measure, compare measure or None, polarity)] in ticker order."""
+    gov = _snapshot_pair("Governance Score", "PMO | Governance Score", "0")
+    comp = _snapshot_pair("Compliance %", "PMO | Compliance %", "0.0%")
+    prob = _snapshot_pair("Problems", "PMO | Problems", "#,##0")
+    warn = _snapshot_pair("Warnings", "PMO | Warnings", "#,##0")
+    bud = (_tk("Reported Budget Now", _reported("Budget", 0), "#,##0", "Status-report budget, latest report as of "
+               "this month end, like-for-like."),
+           _tk("Reported Budget Previous", _reported("Budget", 1), "#,##0", "Same, as of last month end."))
+    fc = (_tk("Reported Forecast Now", _reported("Forecast", 0), "#,##0", "Status-report forecast, latest report as of "
+              "this month end, like-for-like."),
+          _tk("Reported Forecast Previous", _reported("Forecast", 1), "#,##0", "Same, as of last month end."))
+    ts = (_tk("Timesheet Hours Last Month", _ts_hours(1), "#,##0", "Timesheet hours in the last full month."),
+          _tk("Timesheet Hours Month Before", _ts_hours(2), "#,##0", "Timesheet hours in the month before that."))
+    return [("Governance score", *gov, "higherBetter"), ("Compliance", *comp, "higherBetter"),
+            ("Problems", *prob, "lowerBetter"), ("Warnings", *warn, "lowerBetter"),
+            ("Budget (reported)", *bud, "higherBetter"), ("Forecast (reported)", *fc, "lowerBetter"),
+            ("Timesheet hours last month", *ts, "higherBetter"),
+            ("Late tasks", "Task | Active Late Tasks", None, "lowerBetter"),
+            ("Hours awaiting approval", "Timesheet | Awaiting Approval Hours", None, "lowerBetter"),
+            ("Status reports not submitted", "PMO | Unsubmitted Status Reports", None, "lowerBetter")]
+
+
+_TICKER_ITEMS = None
+
+
+def ticker():
+    """The source KPI Ticker (look, license and settings kept), re-bound to the command center's KPIs."""
+    global _TICKER_ITEMS
+    if _TICKER_ITEMS is None:
+        _TICKER_ITEMS = _ticker_measures()
+    vc = src("Home — Decision View", "bfusionKpiTicker")
+    v = vc["visual"]
+    compared = [it for it in _TICKER_ITEMS if it[2]]
+    v["query"] = {"queryState": {
+        "values": {"projections": [P(M(it[1]), it[0]) for it in _TICKER_ITEMS]},
+        "comparison": {"projections": [P(M(it[2]), f"{it[0]} (previous)") for it in compared]}}}
+    v["objects"]["variance"] = ([{"properties": {"show": b(True), "polarity": s("higherBetter")}}]
+                                + [{"properties": {"polarity": s(it[3])}, "selector": {"metadata": pbir.qref(M(it[1]))}}
+                                   for it in _TICKER_ITEMS if it[3] != "higherBetter"])
+    return vc
+
+
 def _chip(text, target, tip):
     """Neutral chip: transparent, grey border, no orange (orange means a KPI state on Home)."""
     return nav_button(text, target, tip, fill="#FFFFFF", hover="#F3F4F6", press="#E5E7EB", font="#374151", size=10,
@@ -366,15 +477,32 @@ def build_home():
     header(pg, "home", "BFUSION", "DECISION CENTER",
            "Start with the pulse, act on the list, then open the chapter that answers your question.",
            [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"), (DP("State_Value"), "State")])
-    put(pg, 16, 86, 1768, 72, src("Home — Decision View", "bfusionKpiTicker"), "ticker")
+    put(pg, 16, 86, 1768, 72, ticker(), "ticker")
     put(pg, 16, 168, 1768, 56, grab("exec", "headline"), "headline")
     y = 236
     pages.section(pg, y, 1, "What needs attention now?",
                   "The PMO command center ranks projects by what needs a decision; click one to focus every page on it.")
     put(pg, 16, y + SEC_H, 1768, 560, src("PMO | Command Center", "bfusionPMOCommandCenter"), "pmo")
     y += SEC_H + 560 + GAP
-    pages.section(pg, y, 2, "Eight questions, one answer each",
-                  "Each card is the headline of its chapter, written from the data in the current filter.")
+    # ② sits in a group that one toggle hides and shows (display-only bookmarks: slicer picks survive). The
+    # "Hide" button lives inside the group, the "Show" button in its own group on the same spot, so exactly one
+    # of the two is visible at any time.
+    tw, th = 190, 30
+    tx = 16 + 1768 - tw
+    grp = pg.add_group(16, y, 1768, BODY_END - y, "Eight questions", "questions")
+    grp_show = pg.add_group(tx, y + 2, tw, th, "Show eight questions", "questions_show", hidden=True)
+    bm_hide = pbir.bookmark("Hide the eight questions", "bfstory-questions-hide", pg.id, {grp: True, grp_show: False})
+    bm_show = pbir.bookmark("Show the eight questions", "bfstory-questions-show", pg.id, {grp: False, grp_show: True})
+    pg.add(16, y, 1768 - tw - 12, SEC_H, textbox([[(f"{pages.CIRCLED[1]}  Eight questions, one answer each",
+                                                     st("Segoe UI Semibold", 15, NAVY, True)),
+                                                    ("   Each card is the headline of its chapter, written from the data "
+                                                     "in the current filter.", st("Segoe UI", 11, MUTED))]]),
+           key="sec2", parent=grp)
+    toggle = dict(fill="#FFFFFF", hover="#F3F4F6", press="#E5E7EB", font="#374151", size=10, outline="#C9CED6")
+    pg.add(tx, y + 2, tw, th, pbir.bookmark_button("Hide the questions  ▲", bm_hide, "Hide the eight chapter cards",
+                                                   **toggle), key="q_hide", parent=grp)
+    pg.add(tx, y + 2, tw, th, pbir.bookmark_button("Show the eight questions  ▼", bm_show, "Show the eight chapter cards",
+                                                   **toggle), key="q_show", parent=grp_show)
     y += SEC_H
     cols, gap = 4, 12
     cw = (1768 - gap * (cols - 1)) / cols
@@ -382,22 +510,23 @@ def build_home():
     for k, ck in enumerate(CHAPTERS):
         cx, cy = 16 + (k % cols) * (cw + gap), y + (k // cols) * (ch + gap)
         q, measure = CARD_TEXT[ck]
-        pg.add(cx, cy, cw, ch, shape("#FFFFFF", radius=8, line=BORDER), key=f"card_bg{k}")
+        pg.add(cx, cy, cw, ch, shape("#FFFFFF", radius=8, line=BORDER), key=f"card_bg{k}", parent=grp)
         code = layout._code(NAMES[ck])
         pg.add(cx + 12, cy + 10, cw - 24, 30, textbox([[(f"{code[0]} · {code[2].upper()}  ", st("DIN", 13, ORANGE, True)),
-                                                         (q, st("Segoe UI Semibold", 12, NAVY, True))]]), key=f"card_t{k}")
+                                                         (q, st("Segoe UI Semibold", 12, NAVY, True))]]), key=f"card_t{k}",
+               parent=grp)
         hl = headline(measure, bg="#FFFFFF", border="#FFFFFF", size=11)
         hl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
-        pg.add(cx + 8, cy + 44, cw - 16, ch - 44 - 50, hl, key=f"card_h{k}")
+        pg.add(cx + 8, cy + 44, cw - 16, ch - 44 - 50, hl, key=f"card_h{k}", parent=grp)
         deep = [m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == code[0] and m != ck]
         bx, by = cx + 12, cy + ch - 44
-        pg.add(bx, by, 120, 32, _chip("Open chapter ›", PID[ck], f"Open {NAMES[ck]}"), key=f"card_open{k}")
+        pg.add(bx, by, 120, 32, _chip("Open chapter ›", PID[ck], f"Open {NAMES[ck]}"), key=f"card_open{k}", parent=grp)
         bx += 128
         for m in deep:
             lbl = layout._code(NAMES[m])[0] + layout._code(NAMES[m])[1]
             if bx + 44 > cx + cw - 8:
                 break
-            pg.add(bx, by, 44, 32, _chip(lbl, PID[m], NAMES[m]), key=f"card_deep{k}_{m}")
+            pg.add(bx, by, 44, 32, _chip(lbl, PID[m], NAMES[m]), key=f"card_deep{k}_{m}", parent=grp)
             bx += 50
     return pg
 
@@ -797,7 +926,7 @@ def custom_types(built):
 
 
 def write(built):
-    out = build.write_report(NAME, built, [], OUT_DIR)
+    out = build.write_report(NAME, built, pbir.BOOKMARKS, OUT_DIR)
     # custom visual packages: report.json resource packages + the CustomVisuals folder, only those in use
     used = custom_types(built)
     ref = json.loads((SRC / "definition" / "report.json").read_text(encoding="utf-8"))

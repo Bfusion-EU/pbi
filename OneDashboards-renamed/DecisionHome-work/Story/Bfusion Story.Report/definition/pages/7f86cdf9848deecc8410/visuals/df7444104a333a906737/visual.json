@@ -20,15 +20,112 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Actual Cost"
+                  "Property": "Story | Ticker · Governance Score Now"
                 }
               },
-              "queryRef": "_Measures.Finance | Actual Cost",
-              "nativeQueryRef": "Actuals",
-              "displayName": "Actuals"
+              "queryRef": "_Measures.Story | Ticker · Governance Score Now",
+              "nativeQueryRef": "Governance score",
+              "displayName": "Governance score"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Compliance % Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Compliance % Now",
+              "nativeQueryRef": "Compliance",
+              "displayName": "Compliance"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Problems Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Problems Now",
+              "nativeQueryRef": "Problems",
+              "displayName": "Problems"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Warnings Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Warnings Now",
+              "nativeQueryRef": "Warnings",
+              "displayName": "Warnings"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Budget Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Budget Now",
+              "nativeQueryRef": "Budget (reported)",
+              "displayName": "Budget (reported)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Forecast Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Forecast Now",
+              "nativeQueryRef": "Forecast (reported)",
+              "displayName": "Forecast (reported)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Timesheet Hours Last Month"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Timesheet Hours Last Month",
+              "nativeQueryRef": "Timesheet hours last month",
+              "displayName": "Timesheet hours last month"
             },
             {
               "field": {
@@ -38,12 +135,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Forecast Cost"
+                  "Property": "Task | Active Late Tasks"
                 }
               },
-              "queryRef": "_Measures.Finance | Forecast Cost",
-              "nativeQueryRef": "Forecast Cost",
-              "displayName": "Forecast Cost"
+              "queryRef": "_Measures.Task | Active Late Tasks",
+              "nativeQueryRef": "Late tasks",
+              "displayName": "Late tasks"
             },
             {
               "field": {
@@ -53,12 +150,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Budget Remaining"
+                  "Property": "Timesheet | Awaiting Approval Hours"
                 }
               },
-              "queryRef": "_Measures.Finance | Budget Remaining",
-              "nativeQueryRef": "Budget Remaining",
-              "displayName": "Budget Remaining"
+              "queryRef": "_Measures.Timesheet | Awaiting Approval Hours",
+              "nativeQueryRef": "Hours awaiting approval",
+              "displayName": "Hours awaiting approval"
             },
             {
               "field": {
@@ -68,75 +165,12 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Capacity | Demand"
+                  "Property": "PMO | Unsubmitted Status Reports"
                 }
               },
-              "queryRef": "_Measures.Capacity | Demand",
-              "nativeQueryRef": "Capacity Demand",
-              "displayName": "Capacity Demand"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Capacity | Availability"
-                }
-              },
-              "queryRef": "_Measures.Capacity | Availability",
-              "nativeQueryRef": "Capacity Availability",
-              "displayName": "Capacity Availability"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Status Report | Status Reports - Total ActiveRisks"
-                }
-              },
-              "queryRef": "_Measures.Status Report | Status Reports - Total ActiveRisks",
-              "nativeQueryRef": "Active Risks",
-              "displayName": "Active Risks"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "EVM | Forecast Overrun"
-                }
-              },
-              "queryRef": "_Measures.EVM | Forecast Overrun",
-              "nativeQueryRef": "EVM Forecast Overrun",
-              "displayName": "EVM Forecast Overrun"
-            }
-          ]
-        },
-        "period": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "DimDate"
-                    }
-                  },
-                  "Property": "Period"
-                }
-              },
-              "queryRef": "DimDate.Period",
-              "nativeQueryRef": "Period"
+              "queryRef": "_Measures.PMO | Unsubmitted Status Reports",
+              "nativeQueryRef": "Status reports not submitted",
+              "displayName": "Status reports not submitted"
             }
           ]
         },
@@ -147,14 +181,112 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Finance | Actual Cost PM"
+                  "Property": "Story | Ticker · Governance Score Previous"
                 }
               },
-              "queryRef": "_Measures.Finance | Actual Cost PM",
-              "nativeQueryRef": "Finance | Actual Cost PM"
+              "queryRef": "_Measures.Story | Ticker · Governance Score Previous",
+              "nativeQueryRef": "Governance score (previous)",
+              "displayName": "Governance score (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Compliance % Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Compliance % Previous",
+              "nativeQueryRef": "Compliance (previous)",
+              "displayName": "Compliance (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Problems Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Problems Previous",
+              "nativeQueryRef": "Problems (previous)",
+              "displayName": "Problems (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Warnings Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Warnings Previous",
+              "nativeQueryRef": "Warnings (previous)",
+              "displayName": "Warnings (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Budget Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Budget Previous",
+              "nativeQueryRef": "Budget (reported) (previous)",
+              "displayName": "Budget (reported) (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Forecast Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Forecast Previous",
+              "nativeQueryRef": "Forecast (reported) (previous)",
+              "displayName": "Forecast (reported) (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Timesheet Hours Month Before"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Timesheet Hours Month Before",
+              "nativeQueryRef": "Timesheet hours last month (previous)",
+              "displayName": "Timesheet hours last month (previous)"
             }
           ]
         }
@@ -298,45 +430,13 @@
       "variance": [
         {
           "properties": {
-            "display": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "'both'"
+                  "Value": "true"
                 }
               }
-            }
-          }
-        },
-        {
-          "properties": {
-            "polarity": {
-              "expr": {
-                "Literal": {
-                  "Value": "'lowerBetter'"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures.Finance | Forecast Cost"
-          }
-        },
-        {
-          "properties": {
-            "polarity": {
-              "expr": {
-                "Literal": {
-                  "Value": "'lowerBetter'"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures.Finance | Actual Cost"
-          }
-        },
-        {
-          "properties": {
+            },
             "polarity": {
               "expr": {
                 "Literal": {
@@ -344,9 +444,6 @@
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "_Measures.Finance | Budget Remaining"
           }
         },
         {
@@ -360,21 +457,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Capacity | Demand"
-          }
-        },
-        {
-          "properties": {
-            "polarity": {
-              "expr": {
-                "Literal": {
-                  "Value": "'higherBetter'"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures.Capacity | Availability"
+            "metadata": "_Measures.Story | Ticker · Problems Now"
           }
         },
         {
@@ -388,7 +471,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.Status Report | Status Reports - Total ActiveRisks"
+            "metadata": "_Measures.Story | Ticker · Warnings Now"
           }
         },
         {
@@ -402,7 +485,49 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.EVM | Forecast Overrun"
+            "metadata": "_Measures.Story | Ticker · Reported Forecast Now"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Task | Active Late Tasks"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Timesheet | Awaiting Approval Hours"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.PMO | Unsubmitted Status Reports"
           }
         }
       ]
