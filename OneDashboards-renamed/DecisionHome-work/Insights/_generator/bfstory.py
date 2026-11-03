@@ -33,9 +33,10 @@ OUT_DIR = build.ROOT.parent / "Story"
 MAX_PATH = 259
 OUT = OUT_DIR / f"{NAME}.Report"
 SRC = build.REF                      # OneDashboards - Bfusion.Report (read only)
-LOGO_FILE = Path(__file__).parent / "assets" / "bfusion_logo.png"   # 97x65, from Branding/Backgrounds/logo.png
+LOGO_FILE = Path(__file__).parent / "assets" / "bfusion_logo.png"   # 300x189, Branding/Logo/logo.jpg + rounded corners
 LOGO_RES = "bfusion_logo.png"
-LOGO_W, LOGO_H = 84, 56
+ONEPLAN_RES = "OnePlan_logo_-_dark_background9901469509814106.png"   # 211x92 on #0E1C2D
+INK = "#0E1C2D"                      # the OnePlan logo's own background: the welcome page uses it so the logo blends
 
 W, H = 1800, 1800
 BG = pages.BG_TALL
@@ -56,7 +57,9 @@ GRAIN = ("src", "Capacity & Utilization", "Period Grain.Period Grain")
 RES = [(DR("Department_Value"), "Department"), (DR("Role_Value"), "Role"), (C("DimDate", "Year"), "Year")]
 
 PAGES = [  # (key, display) — story order; "Next" follows this list. "Nx" codes are deep-dives (hidden tabs).
+    ("welcome", "Welcome"),
     ("home", "Home — Decision center"),
+    ("questions", "Questions — where to start"),
     ("exec", "1 · Executive Summary"),
     ("health", "1b · Portfolio 360 & Health"),
     ("roadmap", "1c · Roadmap & Delivery"),
@@ -213,18 +216,13 @@ def put(pg, x, y, w, h, vc, key):
 def header(pg, key, area, question, subtitle, slicers):
     if key != "home":
         pg.add(0, 4, 60, 58, home_icon_button(PID["home"]), key="home")
-    # BFusion logo top-right: pages are FitToWidth, so the footer band's logo is only seen after scrolling
-    logo = image(LOGO_RES, "BFusion logo")
-    logo["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")
-    pg.add(W - 16 - LOGO_W, 10, LOGO_W, LOGO_H, logo, key="bfusion_logo")
-    x = W - 16 - LOGO_W - 12 - len(slicers) * 188 + 8
-    tw = min(960, x - 62 - 8)
-    assert tw >= 860, f"{pg.display}: too many slicers ({len(slicers)}) for the title"
     tsize = 24 if len(f"{area} | {question}") <= pages.TITLE_MAX else 20
-    pg.add(62, 8, tw, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
-                                    (question, st("DIN", tsize, NAVY, True))]]), key="title")
+    pg.add(62, 8, 960, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
+                                      (question, st("DIN", tsize, NAVY, True))]]), key="title")
     ssize = 11 if len(subtitle) <= pages.SUBTITLE_MAX else 10
-    pg.add(62, 52, tw, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
+    pg.add(62, 52, 975, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
+    x = W - 16 - len(slicers) * 188 + 8
+    assert x >= 1030, f"{pg.display}: too many slicers ({len(slicers)})"
     for k, sl in enumerate(slicers):
         if sl[0] == "src":
             vc = src_slicer(sl[1], sl[2])
@@ -291,7 +289,11 @@ def next_back(pg, key):
                                            hover=ORANGE_SOFT, press=ORANGE, font=NAVY, outline=BORDER), key="back")
 
 
+QUESTIONS = {}                       # page key -> its header question, for the Questions page
+
+
 def story_page(key, area, question, subtitle, slicers, headline_vc):
+    QUESTIONS[key] = question
     pg = Page(PID[key], NAMES[key], W, H, background_image=BG)
     header(pg, key, area, question, subtitle, slicers)
     nav_row(pg, key)
@@ -485,6 +487,9 @@ def build_home():
     header(pg, "home", "BFUSION", "DECISION CENTER",
            "Start with the pulse, act on the list, then open the chapter that answers your question.",
            [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"), (DP("State_Value"), "State")])
+    back = home_icon_button(PID["welcome"])
+    back["visualContainerObjects"]["visualLink"][0]["properties"]["tooltip"] = s("Back to the welcome page")
+    pg.add(0, 4, 60, 58, back, key="welcome")
     put(pg, 16, 86, 1768, 72, ticker(), "ticker")
     put(pg, 16, 168, 1768, 56, grab("exec", "headline"), "headline")
     y = 236
@@ -536,6 +541,99 @@ def build_home():
                 break
             pg.add(bx, by, 44, 32, _chip(lbl, PID[m], NAMES[m]), key=f"card_deep{k}_{m}", parent=grp)
             bx += 50
+    return pg
+
+
+# ================================================================ WELCOME + QUESTIONS
+# Both are one screen (1800x1000, FitToPage): the welcome page is the cover, the questions page the menu.
+SH = 1000
+BG_SHORT = "bfv5_footer_band_1800x1000.png"
+
+
+def _logo(res, name):
+    vc = image(res, name)
+    vc["objects"]["image"][0]["properties"]["sourceFile"]["image"]["scaling"] = s("Fit")
+    return vc
+
+
+def build_welcome():
+    pg = Page(PID["welcome"], NAMES["welcome"], W, SH, background_colour=INK, display_option="FitToPage")
+    pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(INK), "transparency": pbir.n(0)}}]
+    pg.add(0, 0, W, 8, shape(ORANGE), key="top_bar")
+    x = 120
+    pg.add(x, 110, 190, 120, _logo(LOGO_RES, "BFusion logo"), key="bfusion_logo")
+    pg.add(x, 270, 860, 34, textbox([[("PMO DECISION PACK", st("DIN", 15, ORANGE, True))]]), key="eyebrow")
+    pg.add(x, 306, 900, 96, textbox([[("Bfusion Decision Story", st("DIN", 50, "#FFFFFF", True))]]), key="title")
+    pg.add(x, 410, 860, 80, textbox([[("Eight questions, one answer each: from the portfolio pulse to the decision "
+                                       "you need to take today.", st("Segoe UI", 18, "#C9D2E0"))]]), key="subtitle")
+    pg.add(x, 530, 380, 64, nav_button("Open the Decision Center  ›", PID["home"], "Open the decision center",
+                                       size=16), key="go_home")
+    pg.add(x + 400, 530, 380, 64, nav_button("Browse the questions  ›", PID["questions"],
+                                             "Pick a question and open the dashboard that answers it",
+                                             fill=INK, hover="#1B2C42", press="#22344D", font="#FFFFFF", size=16,
+                                             outline="#FFFFFF"), key="go_questions")
+    pg.add(x, 680, 400, 26, textbox([[("DATA SOURCE", st("Segoe UI Semibold", 11, "#8A97AB", True))]]), key="src_label")
+    pg.add(x, 710, 211, 92, _logo(ONEPLAN_RES, "OnePlan logo"), key="oneplan_logo")
+    pg.add(x + 230, 724, 560, 70, textbox([[("Portfolio, project, resource, cost and status data, read from OnePlan.",
+                                             st("Segoe UI", 13, "#C9D2E0"))]]), key="src_text")
+    # right: how every page reads
+    px, py, pw, ph = 1080, 110, 600, 700
+    pg.add(px, py, pw, ph, shape("#15263B", radius=12, line="#22344D"), key="how_bg")
+    pg.add(px + 36, py + 32, pw - 72, 40, textbox([[("How every page reads", st("DIN", 22, "#FFFFFF", True))]]),
+           key="how_title")
+    steps = [("Pulse", "KPIs against last period, with an up or down arrow."),
+             ("Act", "The list of projects that need a decision now."),
+             ("Explain", "Charts and deep dives that show why."),
+             ("Next", "Every page ends with the next question in the story.")]
+    for k, (head_, body) in enumerate(steps):
+        sy = py + 100 + k * 140
+        pg.add(px + 36, sy, 56, 56, shape(ORANGE, radius=28), key=f"how_dot{k}")
+        pg.add(px + 36, sy + 8, 56, 40, textbox([[(str(k + 1), st("DIN", 20, "#FFFFFF", True))]], align="center"),
+               key=f"how_num{k}")
+        pg.add(px + 112, sy, pw - 148, 110, textbox([[(head_, st("Segoe UI Semibold", 16, "#FFFFFF", True))],
+                                                     [(body, st("Segoe UI", 13, "#C9D2E0"))]]), key=f"how_step{k}")
+    pg.add(0, 860, W, 1, shape("#22344D"), key="foot_rule")
+    pg.add(x, 872, 600, 30, textbox([[("bfusion.eu", st("Segoe UI", 11, "#8A97AB"))]]), key="foot_left")
+    pg.add(W - 120 - 600, 872, 600, 30, textbox([[("BFUSION · Data from OnePlan · Power BI",
+                                                   st("Segoe UI", 11, "#8A97AB"))]], align="right"), key="foot_right")
+    return pg
+
+
+def _sentence(q):
+    return (q[0] + q[1:].lower()).replace(" a instead of b", " A instead of B")
+
+
+def build_questions():
+    pg = Page(PID["questions"], NAMES["questions"], W, SH, background_image=BG_SHORT, display_option="FitToPage")
+    header(pg, "questions", "START", "WHICH QUESTION DO YOU HAVE?",
+           "Each button opens the dashboard that answers it: orange opens the chapter, white goes deeper.", [])
+    pg.add(W - 16 - 220, 20, 220, 36, nav_button("‹  Welcome", PID["welcome"], "Back to the welcome page",
+                                                 fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY,
+                                                 outline=BORDER), key="back_welcome")
+    cols, gap, y0 = 4, 12, 96
+    cw = (1768 - gap * (cols - 1)) / cols
+    ch = (SH * 0.90 - 12 - y0 - gap) / 2          # clear of the footer band's orange rule
+    for k, ck in enumerate(CHAPTERS):
+        cx, cy = 16 + (k % cols) * (cw + gap), y0 + (k // cols) * (ch + gap)
+        code = layout._code(NAMES[ck])
+        pg.add(cx, cy, cw, ch, shape("#FFFFFF", radius=8, line=BORDER), key=f"q_bg{k}")
+        pg.add(cx + 14, cy + 10, cw - 28, 28, textbox([[(f"{code[0]} · {code[2].upper()}", st("DIN", 13, ORANGE, True))]]),
+               key=f"q_t{k}")
+        pg.add(cx + 14, cy + 42, cw - 28, 46, nav_button(f"{_sentence(QUESTIONS[ck])}  ›", PID[ck], f"Open {NAMES[ck]}",
+                                                         size=13, align="left"), key=f"q_main{k}")
+        hl = headline(CARD_TEXT[ck][1], bg="#FFFFFF", border="#FFFFFF", size=10)
+        hl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
+        pg.add(cx + 8, cy + 94, cw - 16, 70, hl, key=f"q_hl{k}")
+        deep = [m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == code[0] and m != ck]
+        if deep:
+            pg.add(cx + 14, cy + 168, cw - 28, 22, textbox([[("GO DEEPER", st("Segoe UI Semibold", 9, MUTED, True))]]),
+                   key=f"q_deep_lbl{k}")
+        for j, m in enumerate(deep):
+            c = layout._code(NAMES[m])
+            pg.add(cx + 14, cy + 192 + j * 42, cw - 28, 36,
+                   nav_button(f"{c[0]}{c[1]}   {_sentence(QUESTIONS[m])}  ›", PID[m], f"Open {NAMES[m]}",
+                              fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY, size=11, align="left",
+                              outline=BORDER), key=f"q_deep{k}_{m}")
     return pg
 
 
@@ -767,6 +865,7 @@ def build_timesheets():
     sub = next(v for v in ins.visuals if v["name"] == uid(ins.id, "subtitle", "textbox"))
     subtitle = sub["visual"]["objects"]["general"][0]["properties"]["paragraphs"][0]["textRuns"][0]["value"]
     pg = Page(PID["timesheets"], NAMES["timesheets"], W, H, background_image=BG)
+    QUESTIONS["timesheets"] = question
     header(pg, "timesheets", area, question, subtitle, slicers)
     nav_row(pg, "timesheets")
     skip = {uid(ins.id, k, t) for k in ("home", "title", "subtitle", "next", "back")
@@ -894,7 +993,7 @@ def build_governance():
     ], headline_measure="PMO | Governance Headline")
 
 
-BUILDERS = {"home": build_home, "exec": build_exec, "health": build_health, "roadmap": build_roadmap,
+BUILDERS = {"welcome": build_welcome, "home": build_home, "questions": build_questions, "exec": build_exec, "health": build_health, "roadmap": build_roadmap,
             "drift": build_drift, "kpigrid": build_kpigrid, "portfolio": build_portfolio, "selection": build_selection,
             "scenarios": build_scenarios, "constraints": build_constraints, "finance": build_finance,
             "fintree": build_fintree, "budgetrisk": build_budgetrisk, "resources": build_resources, "fte": build_fte,
@@ -920,7 +1019,10 @@ def copy_interactions(built):
 
 def build_pages():
     pbir.BOOKMARKS.clear()
-    built = [BUILDERS[k]() for k, _ in PAGES]
+    # the questions page reads every page's header question, so it is built last and put back in story order
+    done = {k: BUILDERS[k]() for k, _ in PAGES if k != "questions"}
+    done["questions"] = BUILDERS["questions"]()
+    built = [done[k] for k, _ in PAGES]
     copy_interactions(built)
     pages.filter_real_projects(built)
     a11y.apply(built)
@@ -962,9 +1064,10 @@ def path_errors(out):
 def layout_errors(built):
     errs = []
     for pg in built:
+        limit = round(pg.page["height"] * 0.928)        # top of the footer band (the welcome page keeps it clear too)
         for vc in pg.visuals:
             p = vc["position"]
-            if p["x"] < 0 or p["x"] + p["width"] > W + 0.5 or p["y"] + p["height"] > LIMIT:
+            if p["x"] < 0 or p["x"] + p["width"] > W + 0.5 or p["y"] + p["height"] > limit:
                 errs.append(f"LAYOUT {pg.display}: {vc['name']} at {p} outside page/footer")
     return errs
 
@@ -983,8 +1086,9 @@ def reach_errors(built):
     for k, _ in PAGES:
         chap = k if not layout._code(NAMES[k]) else [m for m, d in PAGES if layout._code(d)
                                                      and layout._code(d)[0] == layout._code(NAMES[k])[0]][0]
-        if k != "home" and PID[k] not in links.get(PID["home"], set()) | links.get(PID[chap], set()):
-            errs.append(f"REACH {NAMES[k]}: no link from Home or its chapter")
+        hubs = links.get(PID["home"], set()) | links.get(PID["welcome"], set()) | links.get(PID[chap], set())
+        if k != "welcome" and PID[k] not in hubs:
+            errs.append(f"REACH {NAMES[k]}: no link from Welcome, Home or its chapter")
     return errs
 
 
