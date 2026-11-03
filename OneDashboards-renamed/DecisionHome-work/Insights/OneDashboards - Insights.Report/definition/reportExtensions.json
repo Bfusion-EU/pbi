@@ -10867,6 +10867,1070 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Brief · Executive Summary 1 Colour",
+          "dataType": "Text",
+          "expression": "\"#E8612A\"",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'active projects': no judgement."
+        },
+        {
+          "name": "Story | Brief · Executive Summary 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | On Track %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.6, \"#D64545\", IF ( _v < 0.8, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'of active projects on track': ('hi', 0.8, 0.6).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | On Track %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Executive Summary 3 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Late Active Projects]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'projects running late': ('lo', 1, 5).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Late Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Executive Summary Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Executive Summary 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Executive Summary 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Executive Summary 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Executive Summary 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Executive Summary 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Executive Summary 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Executive Summary 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Executive Summary 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Executive Summary Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Executive Summary 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Executive Summary 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Executive Summary 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Executive Summary 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Executive Summary 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Executive Summary 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Executive Summary 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Executive Summary 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Executive Summary 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Active Projects]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Active Projects] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Executive Summary 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | On Track %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | On Track %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | On Track %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Executive Summary 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Late Active Projects]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Late Active Projects] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Late Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 1 Colour",
+          "dataType": "Text",
+          "expression": "\"#E8612A\"",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'proposals in the pipeline': no judgement."
+        },
+        {
+          "name": "Story | Brief · Portfolio 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Aligned Budget %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.5, \"#D64545\", IF ( _v < 0.7, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'of budget on strongly aligned work': ('hi', 0.7, 0.5).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 3 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Plan Variance %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 0.05, \"#D64545\", IF ( _v >= 0.0001, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'plan forecast against plan budget': ('lo', 0.0001, 0.05).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Portfolio 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Portfolio 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Portfolio 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Portfolio 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Portfolio 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Portfolio 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Proposed Projects]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Proposed Projects] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Proposed Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Aligned Budget %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Aligned Budget %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Plan Variance %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"+0.0%;-0.0%;0.0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Plan Variance %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Financials 1 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 0.05, \"#D64545\", IF ( _v >= 0.0001, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'forecast against budget at completion': ('lo', 0.0001, 0.05).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Financials 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Projects Over Budget]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'projects over budget': ('lo', 1, 5).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects Over Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Financials 3 Colour",
+          "dataType": "Text",
+          "expression": "\"#E8612A\"",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'of the budget spent': no judgement."
+        },
+        {
+          "name": "Story | Brief · Financials Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Financials 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Financials 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Financials 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Financials 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Financials 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Financials 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Financials 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Financials 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Financials Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Financials 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Financials 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Financials 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Financials 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Financials 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Financials 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Financials 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Financials 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Financials 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"+0.0%;-0.0%;0.0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | EAC Variance %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | EAC Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Financials 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Projects Over Budget]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Projects Over Budget] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Projects Over Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Financials 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Burn %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Burn %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Burn %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Resource Management 1 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v > 1, \"#D64545\", IF ( _v < 0.5, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'utilisation of capacity': band.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Utilisation %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Resource Management 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Over-allocated People]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'people over-allocated': ('lo', 1, 5).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Over-allocated People"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Resource Management 3 Colour",
+          "dataType": "Text",
+          "expression": "\"#E8612A\"",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'hours of free capacity': no judgement."
+        },
+        {
+          "name": "Story | Brief · Resource Management Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Resource Management 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Resource Management 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Resource Management 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Resource Management 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Resource Management 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Resource Management 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Resource Management 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Resource Management 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Resource Management Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Resource Management 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Resource Management 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Resource Management 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Resource Management 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Resource Management 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Resource Management 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Resource Management 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Resource Management 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Resource Management 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Utilisation %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Utilisation %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Resource Management 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Over-allocated People]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Over-allocated People] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Over-allocated People"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Resource Management 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Free Capacity (h)]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Free Capacity (h)] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Free Capacity (h)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling 1 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | On Schedule %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.6, \"#D64545\", IF ( _v < 0.8, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'of active projects on schedule': ('hi', 0.8, 0.6).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | On Schedule %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Overdue Tasks]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 20, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'overdue tasks': ('lo', 1, 20).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Overdue Tasks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling 3 Colour",
+          "dataType": "Text",
+          "expression": "\"#E8612A\"",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'milestones in the next 30 days': no judgement."
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Planning & Scheduling 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Planning & Scheduling 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Planning & Scheduling 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Planning & Scheduling 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Planning & Scheduling 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Planning & Scheduling 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Planning & Scheduling 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Planning & Scheduling 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Planning & Scheduling 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Planning & Scheduling 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Planning & Scheduling 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Planning & Scheduling 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Planning & Scheduling 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Planning & Scheduling 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Planning & Scheduling 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Planning & Scheduling 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | On Schedule %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | On Schedule %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | On Schedule %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Overdue Tasks]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Overdue Tasks] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Overdue Tasks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Planning & Scheduling 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Milestones Next 30d]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Milestones Next 30d] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Milestones Next 30d"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management 1 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Critical High Risks]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'critical or high risks': ('lo', 1, 5).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Critical High Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Unmitigated Risk %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 0.4, \"#D64545\", IF ( _v >= 0.2, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'of risks without mitigation': ('lo', 0.2, 0.4).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Unmitigated Risk %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management 3 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Open Issues]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 10, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'open issues': ('lo', 1, 10).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Open Issues"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Risk Management 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Risk Management 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Risk Management 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Risk Management 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Risk Management 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Risk Management 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Risk Management 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Risk Management 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Risk Management 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Risk Management 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Risk Management 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Risk Management 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Risk Management 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Risk Management 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Risk Management 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Risk Management 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Risk Management 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Risk Management 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Risk Management 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Risk Management 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Risk Management 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Risk Management 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Risk Management 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Risk Management 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Critical High Risks]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Critical High Risks] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Critical High Risks"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Unmitigated Risk %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Unmitigated Risk %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Unmitigated Risk %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Management 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Open Issues]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Open Issues] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Open Issues"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Benefits & Value 1 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Benefits Realised %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.7, \"#D64545\", IF ( _v < 0.9, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'of benefits due realised': ('hi', 0.9, 0.7).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefits Realised %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Benefits & Value 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Value Ratio]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 1, \"#D64545\", IF ( _v < 2, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'value per euro of forecast cost': ('hi', 2, 1).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Value Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Benefits & Value 3 Colour",
+          "dataType": "Text",
+          "expression": "\"#E8612A\"",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'benefits planned at completion': no judgement."
+        },
+        {
+          "name": "Story | Brief · Benefits & Value Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Benefits & Value 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Benefits & Value 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Benefits & Value 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Benefits & Value 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Benefits & Value 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Benefits & Value 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Benefits & Value 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Benefits & Value 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Benefits & Value Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Benefits & Value 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Benefits & Value 2 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Benefits & Value 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Benefits & Value 2 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Benefits & Value 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Benefits & Value 2 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Benefits & Value 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Benefits & Value 2 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Benefits & Value 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Benefits Realised %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Benefits Realised %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefits Realised %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Benefits & Value 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Value Ratio]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0.00\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Value Ratio] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Value Ratio"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Benefits & Value 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Benefits At Completion]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Benefits At Completion] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefits At Completion"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust 1 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [PMO | Governance Score]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 60, \"#D64545\", IF ( _v < 80, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'governance score': ('hi', 80, 60).",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [PMO | Compliance %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.75, \"#D64545\", IF ( _v < 0.9, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'compliance': ('hi', 0.9, 0.75).",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Compliance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust 3 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [PMO | Unsubmitted Status Reports]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 10, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'status reports not submitted': ('lo', 1, 10).",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Unsubmitted Status Reports"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Governance & Data Trust 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Governance & Data Trust 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Governance & Data Trust 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Governance & Data Trust 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Governance & Data Trust 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Governance & Data Trust 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Governance & Data Trust 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Governance & Data Trust 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Governance & Data Trust 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Governance & Data Trust 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Governance & Data Trust 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Governance & Data Trust 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Governance & Data Trust 1 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Governance & Data Trust 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Governance & Data Trust 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Governance & Data Trust 1 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Governance & Data Trust 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Governance & Data Trust 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Governance & Data Trust 1 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Governance & Data Trust 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Governance & Data Trust 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Governance & Data Trust 1 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Governance & Data Trust 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Governance & Data Trust 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [PMO | Governance Score]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[PMO | Governance Score] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Governance Score"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [PMO | Compliance %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0.0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[PMO | Compliance %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Compliance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [PMO | Unsubmitted Status Reports]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[PMO | Unsubmitted Status Reports] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "PMO | Unsubmitted Status Reports"
+              }
+            ]
+          }
         }
       ]
     }

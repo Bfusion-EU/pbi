@@ -141,7 +141,10 @@ PAGE_SPOT = {"exec": "gauge", "health": "health", "roadmap": "roadmap", "drift":
              "finance": "euro", "fintree": "drivers", "budgetrisk": "landing",
              "resources": "people", "fte": "fte", "org": "org", "timesheets": "timesheet", "mywork": "checklist",
              "schedule": "calendar", "critical": "critical", "psr": "status",
-             "risk": "shield", "benefits": "trophy", "governance": "clipboard"}
+             "risk": "shield", "benefits": "trophy", "governance": "clipboard",
+             # Insights pack deep dives
+             "lifecycle": "funnel", "onepager": "status", "finance2": "drivers", "tsstatus": "checklist",
+             "resource": "fte", "gantt": "roadmap", "status": "drift", "baseline": "critical"}
 
 
 HOME_FILE = "brief-home.png"   # white house on the orange home button, full strength

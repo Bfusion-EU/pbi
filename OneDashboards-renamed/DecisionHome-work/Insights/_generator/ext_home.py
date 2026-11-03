@@ -572,6 +572,9 @@ def build_rail(pg):
         pg.add(36, y + 10, 32, 32, image(f"rail-{icon}-{'white' if on else 'grey'}.png", f"{icon} icon"), key=f"rail_img_{icon}")
         if not on:
             pg.add(26, y, 52, 52, ghost_link(target, tip), key=f"rail_btn_{icon}")
+    import entry
+    pg.add(26, 32 + len(RAIL) * 64 + 16, 52, 52, entry.back_button(), key="rail_back")
+    entry.home_button(pg, 30, 32 + len(RAIL) * 64 + 80, 44, target=pages.PID["welcome"])
     pg.add(16, 944, 72, 24, textbox([[("bfusion.eu", st("Segoe UI", 9, LABEL))]], align="center"), key="rail_site")
 
 

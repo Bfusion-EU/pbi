@@ -348,7 +348,8 @@ def test_all_pages_reachable_from_home():
         for key in ("navigationSection", "drillthroughSection"):
             if key in p:
                 targets.add(p[key]["expr"]["Literal"]["Value"].strip("'"))
-    story = [k for k, _ in pages.PAGES if k != "home"]
+    # the entry layer has its own route (welcome -> questions -> chapter brief), checked in test_entry.py
+    story = [k for k, _ in pages.PAGES if k != "home" and k not in pages.ENTRY_PAGES]
     missing = [k for k in story if pages.PID[k] not in targets]
     assert missing == [], missing
     assert pages.PID["project"] in targets  # drill-through to the One-Pager twin

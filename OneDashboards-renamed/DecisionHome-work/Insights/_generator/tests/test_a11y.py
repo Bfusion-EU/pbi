@@ -83,6 +83,8 @@ def test_titled_content_has_alt_text(built):
         v = vc["visual"]
         t = v["visualType"]
         titled = bool(a11y._title_text(v)) and t not in {"image", "textbox", "shape"}
+        if a11y._decorative(vc):              # breadcrumb separators are buttons now, but decorative
+            continue
         if t in {"slicer", "actionButton"} or titled:
             n += 1
             assert _alt(vc), (pg.display, t, vc["name"])

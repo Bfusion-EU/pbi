@@ -318,21 +318,26 @@ def build_project(drill):
     if drill:
         pg = binding_page("project", W, TALL, "FitToWidth", "Drillthrough", DP("Name"), background=BG_TALL)
         pg.add(0, 4, 60, 58, back_button(), key="back_icon")
+        import entry
+        entry.home_button(pg, 64, 13, target=PID["welcome"])
         sub = ("Drill-through page. Only the project travels with the drill (not the filters of the page you came "
                "from): money is lifetime, the monthly charts show the whole plan.")
     else:
         pg = Page(PID["onepager"], dict(pages.PAGES)["onepager"], W, TALL, background_image=BG_TALL)
-        pg.add(0, 4, 60, 58, pbir.home_icon_button(PID["home"]), key="home_icon")
+        import entry
+        pg.add(0, 4, 60, 58, entry.back_button(), key="home_icon")
+        entry.home_button(pg, 64, 13, target=PID["welcome"])
         sub = ("Pick a project at the top right, or right-click a project anywhere › Drill through. "
                "Money is lifetime; the monthly charts show the whole plan.")
         pg.add(W - 16 - 260 - 12 - 380, 10, 380, 62, project_slicer(), key="slicer_project",
                filters=[pages.REAL_PROJECTS])  # no (Blank) row for strict single select to land on
 
     # header (title and subtitle stop short of the slicer / OnePlan button on the right)
-    pg.add(62, 8, 1060, 46, textbox([[("PROJECT | ", st("DIN", 24, ORANGE, True)),
-                                       ("EVERYTHING ABOUT IT BEFORE I DECIDE", st("DIN", 24, NAVY, True))]]),
+    pages.QUESTIONS[pg.id] = "EVERYTHING ABOUT IT BEFORE I DECIDE"   # read by the questions and brief pages
+    pg.add(116, 8, 1006, 46, textbox([[("PROJECT | ", st("DIN", 24, ORANGE, True)),
+                                        ("EVERYTHING ABOUT IT BEFORE I DECIDE", st("DIN", 24, NAVY, True))]]),
            key="title")
-    pg.add(62, 52, 1060, 26, textbox([[(sub, st("Segoe UI", 10, MUTED))]]), key="subtitle")
+    pg.add(116, 52, 1006, 26, textbox([[(sub, st("Segoe UI", 10, MUTED))]]), key="subtitle")
     pg.add(W - 16 - 260, 16, 260, 44, web_button("Open in OnePlan  ↗", pm("OnePlan Url"),
                                                   "Open this plan in OnePlan (new browser tab)"), key="oneplan")
     pg.add(16, 82, 1768, 82, headline(pm("Headline"), size=11), key="headline")  # tall enough to wrap to two lines
@@ -442,7 +447,7 @@ def build_project(drill):
         pg.add(16, 1620, 180, 36, back_button(icon=False), key="back")
         pg.add(206, 1620, 220, 36, nav_button("Command center", PID["home"], "Back to the home page",
                                               fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY, outline=BORDER),
-               key="home")
+               key="foot_home")       # not "home": the header's house button uses that key
     else:
         pages.next_chapter(pg, "onepager", 1620)
     pg.add(W - 16 - 340 - 12 - 280, 1620, 280, 36, nav_button("Plan vs baseline  ›", PID["baseline"],

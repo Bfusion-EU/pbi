@@ -154,7 +154,9 @@ def build():
     assert len(ICONS) == 18, (f"expected 18 rail icons (9 icons x white/grey) in {ICON_DIR}, found {len(ICONS)}: "
                               "an icon is missing or an extra one was added")
     built = pages.build_all()
-    write_report(NAME, built, pbir.BOOKMARKS, OUT.parent)
+    out = write_report(NAME, built, pbir.BOOKMARKS, OUT.parent)
+    import entry
+    entry.register_resources(out)      # BFusion logo and the brief-page drawings
     print(f"built {len(built)} pages, {sum(len(p.visuals) for p in built)} visuals, {len(MEASURES)} story measures -> {OUT}")
     print("act_first skipped (custom layouts):", ", ".join(n.replace(" · ", " - ") for n in pages.LAYOUT_SKIPPED) or "none")
     return built

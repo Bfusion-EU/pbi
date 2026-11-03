@@ -80,6 +80,15 @@ def _w(text):
     return round(len(text) * 7.3 + 32)               # bold Segoe UI 10 pt button: ~7.3 px per character + margins
 
 
+def _crumb_text(text, colour, bold=True, size=10):
+    """A breadcrumb level with no action (separator, current page): a button, so it lines up with the links."""
+    btn = pbir.nav_button(text, "", "", fill="#FFFFFF", hover="#FFFFFF", press="#FFFFFF", font=colour, size=size,
+                          margin=0)
+    btn["objects"]["text"][1]["properties"]["bold"] = pbir.b(bold)
+    btn["visualContainerObjects"].pop("visualLink")
+    return btn
+
+
 def _alt(btn, text):
     """Alt text on a button (a11y.apply keeps an existing altText)."""
     btn["visualContainerObjects"].setdefault("general", [{"properties": {}}])[0]["properties"]["altText"] = pbir.s(text)
@@ -115,18 +124,20 @@ def nav_row(pg, key):
     names = dict(P.PAGES)
     chap, members = chapter_of(key)
     x = 16
-    pg.add(x, NAV_Y, _w("Home"), NAV_H, _crumb("Home", P.PID["home"], "Back to the command center"), key="nav_home")
-    x += _w("Home")
+    pg.add(x, NAV_Y, _w("Command center"), NAV_H, _crumb("Command center", P.PID["home"], "Open the command center"),
+           key="nav_home")
+    x += _w("Command center")
     trail = ([(chap, True)] if chap != key else []) + [(key, False)]
     for k, link in trail:
-        pg.add(x, NAV_Y, 18, NAV_H, pbir.textbox([[("›", pbir.st("Segoe UI", 11, pbir.MUTED))]]), key=f"nav_sep_{k}")
+        # every level is a button: Desktop centres button text, so the levels sit on one line (a text box would not)
+        pg.add(x, NAV_Y, 18, NAV_H, _crumb_text("›", pbir.MUTED, bold=False, size=12), key=f"nav_sep_{k}")
         x += 18
         text = _label(names[k])
         if link:
             pg.add(x, NAV_Y, _w(text), NAV_H, _crumb(text, P.PID[k], "Open this chapter"), key=f"nav_crumb_{k}")
         else:
-            pg.add(x, NAV_Y, _w(text) + 40, NAV_H,
-                   pbir.textbox([[(text, pbir.st("Segoe UI Semibold", 10, pbir.NAVY, True))]]), key=f"nav_here_{k}")
+            pg.add(x, NAV_Y, _w(text), NAV_H, _alt(_crumb_text(text, pbir.NAVY), f"You are here: {text}"),
+                   key=f"nav_here_{k}")
         x += _w(text)
     if len(members) > 1:
         widths = [_w(_label(names[m])) for m in members]

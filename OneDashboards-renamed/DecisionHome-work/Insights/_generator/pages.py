@@ -15,7 +15,9 @@ TALL = 1800
 BG_TALL = "bfv5_footer_band_1800x1800.png"
 
 PAGES = [  # (key, display name) — the story order; "Next chapter" follows this list
+    ("welcome", "Welcome"),
     ("home", "Home — Command center"),
+    ("questions", "Questions — where to start"),
     ("exec", "1 · Executive Summary"),
     ("portfolio", "2 · Portfolio"),
     ("lifecycle", "2b · Pipeline, Gates & Dependencies"),
@@ -52,12 +54,22 @@ HOME_TIPS = ([("tip_home_act", "Tooltip · Home · Act now")]
              + [(f"tip_home_{k}", f"Tooltip · Home · {nm}") for k, nm in HOME_TIP_CARDS])
 HIDDEN_PAGES += HOME_TIPS
 PID = {k: uid("insights-page", k) for k, _ in PAGES + HIDDEN_PAGES}
+# a chapter brief (entry.py: question, verdict, takeaways, a tile per page) opens every chapter
+_BRIEF_LABEL = {"exec": "Executive Summary", "portfolio": "Portfolio", "finance": "Financials",
+                "resources": "Resources", "schedule": "Schedule", "risk": "Risk", "benefits": "Benefits & Value",
+                "governance": "Governance & Data Trust"}
+for _k in list(_BRIEF_LABEL):
+    PAGES.insert(next(i for i, (k, _) in enumerate(PAGES) if k == _k), (f"brief_{_k}", f"Brief · {_BRIEF_LABEL[_k]}"))
+ENTRY_PAGES = ["welcome", "questions"] + [f"brief_{k}" for k in _BRIEF_LABEL]
+PID = {k: uid("insights-page", k) for k, _ in PAGES + HIDDEN_PAGES}
 ORDER = [k for k, _ in PAGES]
+QUESTIONS = {}   # page id -> header question; the questions and brief pages read it
+HEADLINES = {}   # page id -> headline measure
 LAYOUT_SKIPPED = []  # story pages layout.act_first left as they are (custom layouts); filled by build_all
 # pages layout.act_first must leave alone: exec: ④ is navigation; status: its list (change ledger) is already ②;
 # lifecycle: the list to act on (stuck gates/approvals) is ③ and its ④ is dependency analysis;
 # tsstatus: its ④ is a workflow audit trail, the action parts are ② and ③
-ACT_FIRST_EXCLUDED = ("home", "exec", "status", "lifecycle", "tsstatus")
+ACT_FIRST_EXCLUDED = ("home", "exec", "status", "lifecycle", "tsstatus", *ENTRY_PAGES)
 
 # ---------------------------------------------------------------- common bits
 DP = lambda p: C("DimProject", p)  # noqa: E731
@@ -72,12 +84,15 @@ SUBTITLE_MAX = 130  # Segoe UI 11 on one line in the 975px subtitle box
 
 
 def header(pg, area, question, subtitle, slicers):
-    pg.add(0, 4, 60, 58, home_icon_button(PID["home"]), key="home")
+    import entry
+    QUESTIONS[pg.id] = question
+    pg.add(0, 4, 60, 58, entry.back_button(), key="go_back")  # Back: the page the user came from
+    entry.home_button(pg, 64, 13, target=PID["welcome"])        # house: the welcome page
     tsize = 24 if len(f"{area} | {question}") <= TITLE_MAX else 20
-    pg.add(62, 8, 960, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
-                                      (question, st("DIN", tsize, NAVY, True))]]), key="title")
+    pg.add(116, 8, 906, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
+                                       (question, st("DIN", tsize, NAVY, True))]]), key="title")
     ssize = 11 if len(subtitle) <= SUBTITLE_MAX else 10
-    pg.add(62, 52, 975, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
+    pg.add(116, 52, 906, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
     x = W - 16 - len(slicers) * 188 + 8
     for k, sl in enumerate(slicers):
         # (field, label) or (field, label, sync group name) for a slicer outside the report-wide sync
@@ -122,6 +137,7 @@ def legend_note(pg, x, y, w, items, key):
 def analytic_page(key, area, question, subtitle, slicers, headline_measure):
     pg = Page(PID[key], dict(PAGES)[key], W, TALL, background_image=BG_TALL)
     header(pg, area, question, subtitle, slicers)
+    HEADLINES[pg.id] = headline_measure
     pg.add(16, 84, 1768, 56, headline(headline_measure), key="headline")
     return pg
 
@@ -753,6 +769,35 @@ def build_governance():
     return pg
 
 
+INSIGHTS_BLURBS = {
+    "exec": "Health, money, people and risk on one page", "portfolio": "Value, cost and strategic fit of the pipeline",
+    "lifecycle": "Pipeline, stage gates and dependencies", "scenarios": "Compare funding choices before you decide",
+    "onepager": "Everything about one project on one page",
+    "finance": "Budget, actuals and forecast at completion", "finance2": "Where spend concentrates, and the P&L",
+    "resources": "Capacity against demand, month by month", "timesheets": "Logged hours against the plan",
+    "tsstatus": "Which timesheets are missing or waiting", "resource": "One person's load, work and hours",
+    "schedule": "Progress, slippage and upcoming milestones", "gantt": "Every task on a timeline",
+    "status": "What changed since the last status report", "baseline": "Today's plan against the baseline",
+    "risk": "Exposure, critical risks and open issues", "benefits": "Planned against realised benefits",
+    "governance": "Data quality, compliance and reporting discipline",
+}
+_DEFAULT_HEADLINE = {"exec": "Story | Exec Headline", "portfolio": "Story | Portfolio Headline",
+                     "finance": "Story | Finance Headline", "resources": "Story | Resource Headline",
+                     "schedule": "Story | Schedule Headline", "risk": "Story | Risk Headline",
+                     "benefits": "Story | Benefits Headline", "governance": "PMO | Governance Headline"}
+
+
+def entry_context():
+    import entry
+    import layout
+    names = dict(PAGES)
+    chapters = [k for k, d in PAGES if layout._code(d) and not layout._code(d)[1]]
+    return entry.Context(pid=PID, names=names, pages=PAGES, chapters=chapters,
+                         questions={k: QUESTIONS[PID[k]] for k, _ in PAGES if PID[k] in QUESTIONS},
+                         headline={c: HEADLINES.get(PID[c], _DEFAULT_HEADLINE[c]) for c in chapters},
+                         blurbs=INSIGHTS_BLURBS, title="PPM Insights 360°", home_label="Command Center")
+
+
 def build_all():
     import extensions  # extension pages register in extensions.BUILDERS
     pbir.BOOKMARKS.clear()
@@ -762,6 +807,10 @@ def build_all():
     for builder in extensions.BUILDERS:
         for pg in builder():
             built[next(k for k, v in PID.items() if v == pg.id)] = pg
+    import entry                     # entry pages read the questions the pages above wrote in their headers
+    entry.use(entry_context())
+    built.update({"welcome": entry.build_welcome(), "questions": entry.build_questions()})
+    built.update({f"brief_{c}": entry.build_brief(c) for c in entry.BRIEF_TAKEAWAYS})
     pages_out = [built[k] for k, _ in PAGES + HIDDEN_PAGES if k in built]
     story = [p for p in pages_out if p.id not in {PID[k] for k, _ in HIDDEN_PAGES}]
     filter_real_projects(story)
@@ -771,7 +820,7 @@ def build_all():
     for k, _ in PAGES:
         if k in built and k not in ACT_FIRST_EXCLUDED and not layout.act_first(built[k]):
             skipped.append(dict(PAGES)[k])
-        if k in built and k != "home":
+        if k in built and k != "home" and k not in ENTRY_PAGES:
             layout.nav_row(built[k], k)
     LAYOUT_SKIPPED[:] = skipped
     layout.hide_deep_dives(built)

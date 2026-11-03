@@ -71,7 +71,7 @@ def _names(pg):
 
 def test_breadcrumb_on_every_story_page():
     for k, _ in pages.PAGES:
-        if k == "home":
+        if k == "home" or k in pages.ENTRY_PAGES:          # entry pages have their own navigation (entry.py)
             continue
         assert pbir.uid(pages.PID[k], "nav_home", "actionButton") in _names(page(k)), k
 
@@ -115,7 +115,7 @@ def test_passes_are_idempotent():
 
 def test_nothing_overlaps_nav_row():
     for k, _ in pages.PAGES:
-        if k == "home":
+        if k == "home" or k in pages.ENTRY_PAGES:
             continue
         pg = page(k)
         top = [v for v in pg.visuals if not v.get("parentGroupName")]
@@ -141,8 +141,9 @@ def test_onepager_status_cards_keep_height():
 
 def test_nine_tabs():
     visible = [pg.display for pg in BUILT.values() if pg.page.get("visibility") != "HiddenInViewMode"]
-    expected = [d for k, d in pages.PAGES if not (layout._code(d) and layout._code(d)[1])]
-    assert visible == expected and len(visible) == 9
+    expected = [d for k, d in pages.PAGES if not (layout._code(d) and layout._code(d)[1])
+                and not k.startswith("brief_")]                  # briefs are hidden like the deep dives
+    assert visible == expected and len(visible) == 11              # welcome + home + questions + 8 chapters
 
 
 def test_exec_single_chapter_row():
@@ -186,12 +187,13 @@ def test_current_button_and_crumb_alt():
     props = cur["visual"]["visualContainerObjects"]["general"][0]["properties"]
     assert "(current page)" in props["altText"]["expr"]["Literal"]["Value"]
     home = next(v for v in pg.visuals if v["name"] == pbir.uid(pg.id, "nav_home", "actionButton"))
-    assert "Breadcrumb: Home" in json.dumps(home["visual"]["visualContainerObjects"]["general"])
+    assert "Breadcrumb: Command center" in json.dumps(home["visual"]["visualContainerObjects"]["general"])
 
 
 def test_separators_decorative():
     pg = page("finance2")
-    seps = [v for v in pg.visuals if v["name"] in {pbir.uid(pg.id, f"nav_sep_{k}", "textbox") for k in ("finance", "finance2")}]
+    seps = [v for v in pg.visuals
+            if v["name"] in {pbir.uid(pg.id, f"nav_sep_{k}", "actionButton") for k in ("finance", "finance2")}]
     assert len(seps) == 2
     import a11y
     content_max = max(v["position"]["tabOrder"] for v in pg.visuals
