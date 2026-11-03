@@ -10869,6 +10869,1326 @@
           }
         },
         {
+          "name": "Story | Confidence · Actual Cost (lifetime)",
+          "dataType": "Double",
+          "expression": "CALCULATE ( [Story | Actual Cost], REMOVEFILTERS ( DimDate ) )",
+          "formatString": "\\€#,##0;-\\€#,##0;\\€0",
+          "description": "Actual cost of the project plan, all years.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Actual Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has Budget",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( [Story | Budget At Completion] > 0, 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: Budget.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Budget At Completion"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Budget Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has Budget] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: Budget.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Budget"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Budget Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · Budget Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: Budget, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Budget Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · Budget Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has EAC beyond actuals",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( [Story | Finance EAC] > COALESCE ( CALCULATE ( [Story | Actual Cost], REMOVEFILTERS ( DimDate ) ), 0 ), 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: EAC beyond actuals.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Finance EAC"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Actual Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · EAC beyond actuals Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has EAC beyond actuals] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: EAC beyond actuals.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has EAC beyond actuals"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · EAC beyond actuals Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · EAC beyond actuals Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: EAC beyond actuals, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · EAC beyond actuals Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · EAC beyond actuals Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has Actual cost",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( CALCULATE ( [Story | Actual Cost], REMOVEFILTERS ( DimDate ) ) > 0, 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: Actual cost.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Actual Cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Actual cost Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has Actual cost] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: Actual cost.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Actual cost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Actual cost Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · Actual cost Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: Actual cost, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Actual cost Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · Actual cost Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has Scheduled hours",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( CALCULATE ( [Story | Project Scheduled Hours], REMOVEFILTERS ( DimDate ) ) > 0, 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: Scheduled hours.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Project Scheduled Hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Scheduled hours Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has Scheduled hours] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: Scheduled hours.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Scheduled hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Scheduled hours Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · Scheduled hours Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: Scheduled hours, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Scheduled hours Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · Scheduled hours Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has Timesheet hours",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( CALCULATE ( [Timesheet | Actual Hours], REMOVEFILTERS ( DimDate ) ) > 0, 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: Timesheet hours.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Measures",
+                "name": "Timesheet | Actual Hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Timesheet hours Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has Timesheet hours] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: Timesheet hours.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Timesheet hours"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Timesheet hours Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · Timesheet hours Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: Timesheet hours, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Timesheet hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Timesheet hours Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · Timesheet hours Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Timesheet hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has Baseline",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( NOT ISBLANK ( CALCULATE ( [Story | Baseline · Baseline Finish], REMOVEFILTERS ( FactStatusReport[Summary_LastBaselineDate] ) ) ), 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: Baseline.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Baseline · Baseline Finish"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Baseline Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has Baseline] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: Baseline.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Baseline"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Baseline Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · Baseline Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: Baseline, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Baseline Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · Baseline Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has Status report ≤ 30 d",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( COALESCE ( [Story | Status · Days Since Report], 99999 ) <= [Story | Status · Stale Days], 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: Status report ≤ 30 d.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Days Since Report"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Status · Stale Days"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Status report ≤ 30 d Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has Status report ≤ 30 d] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: Status report ≤ 30 d.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Status report ≤ 30 d"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Status report ≤ 30 d Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: Status report ≤ 30 d, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Status report ≤ 30 d Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · Status report ≤ 30 d Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Has Planned benefits",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), IF ( [Story | Benefits At Completion] > 0, 1, 0 ) )",
+          "formatString": "0",
+          "description": "1 when the project has: Planned benefits.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Benefits At Completion"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Planned benefits Projects",
+          "dataType": "Integer",
+          "expression": "SUMX ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Has Planned benefits] ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects that have: Planned benefits.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Planned benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Planned benefits Coverage",
+          "dataType": "Text",
+          "expression": "VAR _c = [Story | Confidence · Planned benefits Projects]\nVAR _n = [Story | Active Projects]\nRETURN FORMAT ( _c, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n > 0, \"  (\" & FORMAT ( DIVIDE ( _c, _n ), \"0%\" ) & \")\" )",
+          "description": "Active projects that have: Planned benefits, as 'x of N (p%)'.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Planned benefits Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Planned benefits Coverage Colour",
+          "dataType": "Text",
+          "expression": "IF ( DIVIDE ( [Story | Confidence · Planned benefits Projects], [Story | Active Projects] ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Planned benefits Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Gap Count",
+          "dataType": "Integer",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ), ( 1 - [Story | Confidence · Has Budget] ) + ( 1 - [Story | Confidence · Has EAC beyond actuals] ) + ( 1 - [Story | Confidence · Has Actual cost] ) + ( 1 - [Story | Confidence · Has Scheduled hours] ) + ( 1 - [Story | Confidence · Has Timesheet hours] ) + ( 1 - [Story | Confidence · Has Baseline] ) + ( 1 - [Story | Confidence · Has Status report ≤ 30 d] ) + ( 1 - [Story | Confidence · Has Planned benefits] ) )",
+          "formatString": "0",
+          "description": "Sources missing for the project (0 = every source in place).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Budget"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has EAC beyond actuals"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Actual cost"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Scheduled hours"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Timesheet hours"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Baseline"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Status report ≤ 30 d"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Planned benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Gaps",
+          "dataType": "Text",
+          "expression": "IF ( HASONEVALUE ( DimProject[Id] ),\n    VAR _g = TRIM ( IF ( [Story | Confidence · Has Budget] = 0, \"✗ Budget  \" ) & IF ( [Story | Confidence · Has EAC beyond actuals] = 0, \"✗ EAC beyond actuals  \" ) & IF ( [Story | Confidence · Has Actual cost] = 0, \"✗ Actual cost  \" ) & IF ( [Story | Confidence · Has Scheduled hours] = 0, \"✗ Scheduled hours  \" ) & IF ( [Story | Confidence · Has Timesheet hours] = 0, \"✗ Timesheet hours  \" ) & IF ( [Story | Confidence · Has Baseline] = 0, \"✗ Baseline  \" ) & IF ( [Story | Confidence · Has Status report ≤ 30 d] = 0, \"✗ Status report ≤ 30 d  \" ) & IF ( [Story | Confidence · Has Planned benefits] = 0, \"✗ Planned benefits  \" ) )\n    RETURN IF ( _g = \"\", \"✓ every source in place\", _g )\n)",
+          "description": "The sources the project is missing, to send to its manager.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Budget"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has EAC beyond actuals"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Actual cost"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Scheduled hours"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Timesheet hours"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Baseline"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Status report ≤ 30 d"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Has Planned benefits"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Gap Colour",
+          "dataType": "Text",
+          "expression": "IF ( [Story | Confidence · Gap Count] > 0, \"#C0392B\", \"#1E6D6E\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Gap Count"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Complete Projects",
+          "dataType": "Integer",
+          "expression": "COUNTROWS ( FILTER ( FILTER ( CALCULATETABLE ( VALUES ( DimProject[Id] ), KEEPFILTERS ( DimProject[State_Value] = \"Active\" ) ), NOT ISBLANK ( DimProject[Id] ) ), [Story | Confidence · Gap Count] = 0 ) ) + 0",
+          "formatString": "#,##0",
+          "description": "Active projects with every source in place.",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Gap Count"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Headline",
+          "dataType": "Text",
+          "expression": "VAR _budget = [Story | Confidence · Budget Projects]\nVAR _eac = [Story | Confidence · EAC beyond actuals Projects]\nVAR _actuals = [Story | Confidence · Actual cost Projects]\nVAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _timesheets = [Story | Confidence · Timesheet hours Projects]\nVAR _baseline = [Story | Confidence · Baseline Projects]\nVAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _benefits = [Story | Confidence · Planned benefits Projects]\nVAR _n = [Story | Active Projects]\nVAR _ok = [Story | Confidence · Complete Projects]\nVAR _min = MIN ( MIN ( MIN ( MIN ( MIN ( MIN ( MIN ( _budget, _eac ), _actuals ), _schedule ), _timesheets ), _baseline ), _status ), _benefits )\nRETURN\n    SWITCH ( TRUE (),\n        COALESCE ( _n, 0 ) = 0, \"No active project in the current selection.\",\n        _ok = _n, \"All \" & FORMAT ( _n, \"0\" ) & \" active projects have every source in place: the story's numbers cover the whole portfolio.\",\n        FORMAT ( _ok, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & IF ( _n = 1, \" active project has\", \" active projects have\" )\n            & \" every source in place. Weakest source: \" & SWITCH ( TRUE (), _budget = _min, \"Budget\", _eac = _min, \"EAC beyond actuals\", _actuals = _min, \"Actual cost\", _schedule = _min, \"Scheduled hours\", _timesheets = _min, \"Timesheet hours\", _baseline = _min, \"Baseline\", _status = _min, \"Status report ≤ 30 d\", _benefits = _min, \"Planned benefits\" ) & \" (\" & FORMAT ( _min, \"0\" ) & \" of \" & FORMAT ( _n, \"0\" ) & \")\"\n            & IF ( DIVIDE ( _min, _n ) >= 0.8, \", still above the 80% bar. Close the remaining gaps per project below.\",\n                \" — every number built on it covers only part of the portfolio. Fix that source first.\" )\n    )",
+          "description": "Reconciliation headline: complete projects and the weakest source.",
+          "displayFolder": "Story\\Headlines",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Timesheet hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Planned benefits Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Complete Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip exec",
+          "dataType": "Text",
+          "expression": "VAR _budget = [Story | Confidence · Budget Projects]\nVAR _eac = [Story | Confidence · EAC beyond actuals Projects]\nVAR _actuals = [Story | Confidence · Actual cost Projects]\nVAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _budget, _n ) >= 0.8 && DIVIDE ( _eac, _n ) >= 0.8 && DIVIDE ( _actuals, _n ) >= 0.8 && DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _status, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _budget, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"budget \" & FORMAT ( _budget, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _eac, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"EAC \" & FORMAT ( _eac, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _actuals, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"actuals \" & FORMAT ( _actuals, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _schedule, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"schedule \" & FORMAT ( _schedule, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _status, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"status ≤30d \" & FORMAT ( _status, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the exec chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour exec",
+          "dataType": "Text",
+          "expression": "VAR _budget = [Story | Confidence · Budget Projects]\nVAR _eac = [Story | Confidence · EAC beyond actuals Projects]\nVAR _actuals = [Story | Confidence · Actual cost Projects]\nVAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _budget, _n ) >= 0.8 && DIVIDE ( _eac, _n ) >= 0.8 && DIVIDE ( _actuals, _n ) >= 0.8 && DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _status, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip portfolio",
+          "dataType": "Text",
+          "expression": "VAR _budget = [Story | Confidence · Budget Projects]\nVAR _benefits = [Story | Confidence · Planned benefits Projects]\nVAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _budget, _n ) >= 0.8 && DIVIDE ( _benefits, _n ) >= 0.8 && DIVIDE ( _status, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _budget, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"budget \" & FORMAT ( _budget, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _benefits, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"benefits \" & FORMAT ( _benefits, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _status, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"status ≤30d \" & FORMAT ( _status, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the portfolio chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Planned benefits Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour portfolio",
+          "dataType": "Text",
+          "expression": "VAR _budget = [Story | Confidence · Budget Projects]\nVAR _benefits = [Story | Confidence · Planned benefits Projects]\nVAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _budget, _n ) >= 0.8 && DIVIDE ( _benefits, _n ) >= 0.8 && DIVIDE ( _status, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Planned benefits Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip finance",
+          "dataType": "Text",
+          "expression": "VAR _budget = [Story | Confidence · Budget Projects]\nVAR _eac = [Story | Confidence · EAC beyond actuals Projects]\nVAR _actuals = [Story | Confidence · Actual cost Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _budget, _n ) >= 0.8 && DIVIDE ( _eac, _n ) >= 0.8 && DIVIDE ( _actuals, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _budget, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"budget \" & FORMAT ( _budget, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _eac, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"EAC \" & FORMAT ( _eac, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _actuals, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"actuals \" & FORMAT ( _actuals, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the finance chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour finance",
+          "dataType": "Text",
+          "expression": "VAR _budget = [Story | Confidence · Budget Projects]\nVAR _eac = [Story | Confidence · EAC beyond actuals Projects]\nVAR _actuals = [Story | Confidence · Actual cost Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _budget, _n ) >= 0.8 && DIVIDE ( _eac, _n ) >= 0.8 && DIVIDE ( _actuals, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Budget Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip resources",
+          "dataType": "Text",
+          "expression": "VAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _timesheets = [Story | Confidence · Timesheet hours Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _timesheets, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _schedule, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"schedule \" & FORMAT ( _schedule, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _timesheets, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"timesheets \" & FORMAT ( _timesheets, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the resources chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Timesheet hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour resources",
+          "dataType": "Text",
+          "expression": "VAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _timesheets = [Story | Confidence · Timesheet hours Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _timesheets, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Timesheet hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip schedule",
+          "dataType": "Text",
+          "expression": "VAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _baseline = [Story | Confidence · Baseline Projects]\nVAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _baseline, _n ) >= 0.8 && DIVIDE ( _status, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _schedule, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"schedule \" & FORMAT ( _schedule, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _baseline, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"baseline \" & FORMAT ( _baseline, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _status, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"status ≤30d \" & FORMAT ( _status, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the schedule chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour schedule",
+          "dataType": "Text",
+          "expression": "VAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _baseline = [Story | Confidence · Baseline Projects]\nVAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _baseline, _n ) >= 0.8 && DIVIDE ( _status, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip risk",
+          "dataType": "Text",
+          "expression": "VAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _baseline = [Story | Confidence · Baseline Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _status, _n ) >= 0.8 && DIVIDE ( _baseline, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _status, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"status ≤30d \" & FORMAT ( _status, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _baseline, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"baseline \" & FORMAT ( _baseline, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the risk chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour risk",
+          "dataType": "Text",
+          "expression": "VAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _baseline = [Story | Confidence · Baseline Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _status, _n ) >= 0.8 && DIVIDE ( _baseline, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip benefits",
+          "dataType": "Text",
+          "expression": "VAR _benefits = [Story | Confidence · Planned benefits Projects]\nVAR _eac = [Story | Confidence · EAC beyond actuals Projects]\nVAR _actuals = [Story | Confidence · Actual cost Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _benefits, _n ) >= 0.8 && DIVIDE ( _eac, _n ) >= 0.8 && DIVIDE ( _actuals, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _benefits, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"benefits \" & FORMAT ( _benefits, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _eac, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"EAC \" & FORMAT ( _eac, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _actuals, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"actuals \" & FORMAT ( _actuals, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the benefits chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Planned benefits Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour benefits",
+          "dataType": "Text",
+          "expression": "VAR _benefits = [Story | Confidence · Planned benefits Projects]\nVAR _eac = [Story | Confidence · EAC beyond actuals Projects]\nVAR _actuals = [Story | Confidence · Actual cost Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _benefits, _n ) >= 0.8 && DIVIDE ( _eac, _n ) >= 0.8 && DIVIDE ( _actuals, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Planned benefits Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · EAC beyond actuals Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Actual cost Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip governance",
+          "dataType": "Text",
+          "expression": "VAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _baseline = [Story | Confidence · Baseline Projects]\nVAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _timesheets = [Story | Confidence · Timesheet hours Projects]\nVAR _n = [Story | Active Projects]\nRETURN\n    IF ( COALESCE ( _n, 0 ) = 0, \"Data confidence: no active project in view\",\n        IF ( DIVIDE ( _status, _n ) >= 0.8 && DIVIDE ( _baseline, _n ) >= 0.8 && DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _timesheets, _n ) >= 0.8, \"Data confidence ✓   \", \"Data confidence ⚠   \" ) & IF ( DIVIDE ( _status, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"status ≤30d \" & FORMAT ( _status, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _baseline, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"baseline \" & FORMAT ( _baseline, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _schedule, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"schedule \" & FORMAT ( _schedule, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) & \"  ·  \" & IF ( DIVIDE ( _timesheets, _n ) >= 0.8, \"✓ \", \"⚠ \" ) & \"timesheets \" & FORMAT ( _timesheets, \"0\" ) & \"/\" & FORMAT ( _n, \"0\" ) )",
+          "description": "Coverage of the sources the governance chapter stands on (✓ when 80% of active projects have it).",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Timesheet hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Confidence · Strip Colour governance",
+          "dataType": "Text",
+          "expression": "VAR _status = [Story | Confidence · Status report ≤ 30 d Projects]\nVAR _baseline = [Story | Confidence · Baseline Projects]\nVAR _schedule = [Story | Confidence · Scheduled hours Projects]\nVAR _timesheets = [Story | Confidence · Timesheet hours Projects]\nVAR _n = [Story | Active Projects]\nRETURN IF ( DIVIDE ( _status, _n ) >= 0.8 && DIVIDE ( _baseline, _n ) >= 0.8 && DIVIDE ( _schedule, _n ) >= 0.8 && DIVIDE ( _timesheets, _n ) >= 0.8, \"#1E6D6E\", \"#854F0B\" )",
+          "displayFolder": "Story\\Confidence",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Status report ≤ 30 d Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Baseline Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Scheduled hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Confidence · Timesheet hours Projects"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Active Projects"
+              }
+            ]
+          }
+        },
+        {
           "name": "Story | Filter Context",
           "dataType": "Text",
           "expression": "VAR _f = IF ( ISFILTERED ( 'DimProject'[Portfolio Name] ) && COUNTROWS ( VALUES ( 'DimProject'[Portfolio Name] ) ) > 0, \"Portfolio: \" & IF ( COUNTROWS ( VALUES ( 'DimProject'[Portfolio Name] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProject'[Portfolio Name] ), 'DimProject'[Portfolio Name], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProject'[Portfolio Name] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimPortfolio'[Name] ) && COUNTROWS ( VALUES ( 'DimPortfolio'[Name] ) ) > 0 && COUNTROWS ( VALUES ( 'DimPortfolio'[Name] ) ) <= 3, \"Portfolio: \" & IF ( COUNTROWS ( VALUES ( 'DimPortfolio'[Name] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimPortfolio'[Name] ), 'DimPortfolio'[Name], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimPortfolio'[Name] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimProject'[Program Name] ) && COUNTROWS ( VALUES ( 'DimProject'[Program Name] ) ) > 0, \"Program: \" & IF ( COUNTROWS ( VALUES ( 'DimProject'[Program Name] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProject'[Program Name] ), 'DimProject'[Program Name], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProject'[Program Name] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimProgram'[Name] ) && COUNTROWS ( VALUES ( 'DimProgram'[Name] ) ) > 0 && COUNTROWS ( VALUES ( 'DimProgram'[Name] ) ) <= 3, \"Program: \" & IF ( COUNTROWS ( VALUES ( 'DimProgram'[Name] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProgram'[Name] ), 'DimProgram'[Name], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProgram'[Name] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimProject'[Name] ) && COUNTROWS ( VALUES ( 'DimProject'[Name] ) ) > 0 && COUNTROWS ( VALUES ( 'DimProject'[Name] ) ) <= 3, \"Project: \" & IF ( COUNTROWS ( VALUES ( 'DimProject'[Name] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProject'[Name] ), 'DimProject'[Name], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProject'[Name] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimProject'[ProjectType_Value] ) && COUNTROWS ( VALUES ( 'DimProject'[ProjectType_Value] ) ) > 0, \"Project type: \" & IF ( COUNTROWS ( VALUES ( 'DimProject'[ProjectType_Value] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProject'[ProjectType_Value] ), 'DimProject'[ProjectType_Value], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProject'[ProjectType_Value] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimPortfolio'[ProjectType_Value] ) && COUNTROWS ( VALUES ( 'DimPortfolio'[ProjectType_Value] ) ) > 0, \"Project type: \" & IF ( COUNTROWS ( VALUES ( 'DimPortfolio'[ProjectType_Value] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimPortfolio'[ProjectType_Value] ), 'DimPortfolio'[ProjectType_Value], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimPortfolio'[ProjectType_Value] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimProject'[State_Value] ) && COUNTROWS ( VALUES ( 'DimProject'[State_Value] ) ) > 0, \"State: \" & IF ( COUNTROWS ( VALUES ( 'DimProject'[State_Value] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProject'[State_Value] ), 'DimProject'[State_Value], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProject'[State_Value] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimProject'[PlanType] ) && COUNTROWS ( VALUES ( 'DimProject'[PlanType] ) ) > 0, \"Plan type: \" & IF ( COUNTROWS ( VALUES ( 'DimProject'[PlanType] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProject'[PlanType] ), 'DimProject'[PlanType], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProject'[PlanType] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimProject'[BusinessUnit_Value] ) && COUNTROWS ( VALUES ( 'DimProject'[BusinessUnit_Value] ) ) > 0, \"Business unit: \" & IF ( COUNTROWS ( VALUES ( 'DimProject'[BusinessUnit_Value] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimProject'[BusinessUnit_Value] ), 'DimProject'[BusinessUnit_Value], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimProject'[BusinessUnit_Value] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimPortfolio'[BusinessUnit_Value] ) && COUNTROWS ( VALUES ( 'DimPortfolio'[BusinessUnit_Value] ) ) > 0, \"Business unit: \" & IF ( COUNTROWS ( VALUES ( 'DimPortfolio'[BusinessUnit_Value] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimPortfolio'[BusinessUnit_Value] ), 'DimPortfolio'[BusinessUnit_Value], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimPortfolio'[BusinessUnit_Value] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimResource'[Department_Value] ) && COUNTROWS ( VALUES ( 'DimResource'[Department_Value] ) ) > 0, \"Department: \" & IF ( COUNTROWS ( VALUES ( 'DimResource'[Department_Value] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimResource'[Department_Value] ), 'DimResource'[Department_Value], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimResource'[Department_Value] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimResource'[Role_Value] ) && COUNTROWS ( VALUES ( 'DimResource'[Role_Value] ) ) > 0, \"Role: \" & IF ( COUNTROWS ( VALUES ( 'DimResource'[Role_Value] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimResource'[Role_Value] ), 'DimResource'[Role_Value], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimResource'[Role_Value] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" ) & IF ( ISFILTERED ( 'DimDate'[Year] ) && COUNTROWS ( VALUES ( 'DimDate'[Year] ) ) > 0, \"Year: \" & IF ( COUNTROWS ( VALUES ( 'DimDate'[Year] ) ) <= 3, CONCATENATEX ( VALUES ( 'DimDate'[Year] ), 'DimDate'[Year], \", \" ), FORMAT ( COUNTROWS ( VALUES ( 'DimDate'[Year] ) ), \"0\" ) & \" selected\" ) & \"  ·  \" )\nVAR _n = [Story | Active Projects]\nRETURN\n    \"Showing:  \" & IF ( _f = \"\", \"all portfolios, all years (no filter set)  ·  \", _f )\n        & FORMAT ( COALESCE ( _n, 0 ), \"0\" ) & IF ( _n = 1, \" active project\", \" active projects\" )\n        & \" in scope  ·  test plans hidden\"",

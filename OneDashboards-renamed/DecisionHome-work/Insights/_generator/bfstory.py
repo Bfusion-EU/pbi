@@ -25,12 +25,15 @@ import a11y  # noqa: E402
 import polish  # noqa: E402
 import consistency  # noqa: E402
 import chrome  # noqa: E402
+import confidence  # noqa: E402
 import story_measures  # noqa: E402
 import entry  # noqa: E402
 from entry import (back_button, home_button, _crumb_w, _crumb_label, build_welcome, build_questions,  # noqa: E402
                    build_brief, BRIEF_TAKEAWAYS)
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, slicer, headline,  # noqa: E402
                   NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
+from pbir import card, chart, table_style, cf_font  # noqa: E402
+from story_measures import ACTIVE_STATE  # noqa: E402
 
 # Short on purpose: Desktop cannot read files over 259 characters, and the longest custom visual file adds
 # ~170 characters below the .Report folder (path_errors checks this).
@@ -96,6 +99,7 @@ PAGES = [  # (key, display) — story order; "Next" follows this list. "Nx" code
     ("benefits", "7 · Benefits & Value"),
     ("brief_governance", "Brief · Governance & Data Trust"),
     ("governance", "8 · Governance & Data Trust"),
+    ("recon", "8b · Reconciliation"),
 ]
 NAMES = dict(PAGES)
 PID = {k: uid("bfstory-page", k) for k, _ in PAGES}
@@ -986,6 +990,44 @@ def build_governance():
     ], headline_measure="PMO | Governance Headline")
 
 
+def _recon_cards(pg, x, y, w, h):
+    """One card per source: active projects that have it."""
+    n = len(confidence.CHECKS)
+    cw = (w - 10 * (n - 1)) / n
+    for k, (key, label, _s, _c) in enumerate(confidence.CHECKS):
+        pg.add(round(x + k * (cw + 10), 2), y, round(cw, 2), min(h, 90),
+               card(confidence.ratio(key), label, colour_measure=confidence.ratio_colour(key), size=16), key=f"rc_card{k}")
+
+
+def _recon_table(pg, x, y, w, h):
+    gaps = M(confidence.GAPS)
+    obj = table_style()
+    obj["values"].append(cf_font(gaps, confidence.GAP_COLOUR))
+    v = chart("tableEx", {"Values": [
+        P(DP("Id"), "ID"), P(DP("Name"), "Project"), P(DP("Portfolio Name"), "Portfolio"),   # ID: one row per project
+        P(M(confidence.GAP_COUNT), "Gaps"),
+        P(gaps, "Missing sources"), P(M("Story | Budget At Completion"), "Budget"), P(M("Story | Finance EAC"), "EAC"),
+        P(M(confidence.LIFETIME_ACTUAL), "Actual (all years)"), P(M("Story | Project Scheduled Hours"), "Scheduled h"),
+        P(M("Timesheet | Actual Hours"), "Booked h"), P(M("Story | Baseline · Baseline Finish"), "Baseline finish"),
+        P(M("Story | Status · Days Since Report"), "Days since report"),
+        P(M("Story | Benefits At Completion"), "Planned benefits")]},
+        "Project by project — most gaps first", obj, sort=[(M(confidence.GAP_COUNT), "Descending")])
+    pg.add(x, y, w, h, v, filters=[pbir.f_in("DimProject", "State_Value", [ACTIVE_STATE])], key="v_recon")
+
+
+def build_recon():
+    return deep_dive("recon", "RECONCILIATION", "DO THE SOURCES AGREE?",
+                     "Every active project against each OnePlan source. A number is only as complete as the source under it.",
+                     [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program")],
+                     confidence.HEADLINE, [
+        ("How complete is each source?",
+         "Active projects that have each piece of data; under 80% the pages built on it cover only part of the portfolio.",
+         120, [_recon_cards]),
+        ("Which projects have gaps?", "One row per active project, most gaps first — send each manager the missing sources.",
+         720, [_recon_table]),
+    ])
+
+
 BUILDERS = {**{f"brief_{c}": (lambda c=c: build_brief(c)) for c in BRIEF_TAKEAWAYS},
             "welcome": build_welcome, "home": build_home, "questions": build_questions, "exec": build_exec, "health": build_health, "roadmap": build_roadmap,
             "drift": build_drift, "kpigrid": build_kpigrid, "portfolio": build_portfolio, "selection": build_selection,
@@ -993,7 +1035,7 @@ BUILDERS = {**{f"brief_{c}": (lambda c=c: build_brief(c)) for c in BRIEF_TAKEAWA
             "fintree": build_fintree, "budgetrisk": build_budgetrisk, "resources": build_resources, "fte": build_fte,
             "org": build_org, "timesheets": build_timesheets, "mywork": build_mywork, "schedule": build_schedule,
             "critical": build_critical, "psr": build_psr, "risk": build_risk, "benefits": build_benefits,
-            "governance": build_governance}
+            "governance": build_governance, "recon": build_recon}
 
 
 def copy_interactions(built):
@@ -1046,6 +1088,7 @@ STORY_BLURBS = {
     "psr": "One project's status report, month by month",
     "risk": "Exposure, critical risks and open issues", "benefits": "Planned against realised benefits",
     "governance": "Data quality, compliance and reporting discipline",
+    "recon": "Every project against every source, gaps first",
 }
 
 

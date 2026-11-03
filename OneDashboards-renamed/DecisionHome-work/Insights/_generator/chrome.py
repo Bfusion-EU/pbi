@@ -8,6 +8,7 @@ import json
 import shutil
 from pathlib import Path
 
+import confidence
 import layout
 import pbir
 from pbir import (NAVY, ORANGE, BORDER, MUTED, b, col_solid, headline, image, n, nav_button, shape, st, textbox)
@@ -98,9 +99,20 @@ def _rail(pg, current, pid, limit):
             pg.add(x, y, TILE, TILE + 14, _ghost(pid[target], f"Open {label}"), key=f"rail_btn_{icon}")
 
 
-def _filter_bar(pg, y):
+NO_STRIP = {"recon"}                 # the reconciliation page shows every source itself
+BAR_W = 1000                         # filter context left, data-confidence strip right
+
+
+def _filter_bar(pg, y, chapter, no_strip=False):
     v = headline(FILTER_MEASURE, bg="#F4F5F7", border=BORDER, size=10, colour=MUTED)
-    pg.add(16, y, 1768, BAR_H, layout._alt(v, "Filters applied to this page"), key="filter_bar")
+    strip = chapter in confidence.CHAPTER_CHECKS and not no_strip
+    pg.add(16, y, BAR_W if strip else 1768, BAR_H, layout._alt(v, "Filters applied to this page"), key="filter_bar")
+    if strip:
+        s_ = headline(confidence.strip(chapter), bg="#FFFFFF", border=BORDER, size=10)
+        s_["objects"]["labels"][0]["properties"]["color"] = pbir.measure_colour(confidence.strip_colour(chapter))
+        pg.add(16 + BAR_W + 10, y, 1768 - BAR_W - 10, BAR_H,
+               layout._alt(s_, "Data confidence: share of active projects that have the data this chapter uses"),
+               key="confidence_strip")
 
 
 def apply(built, pid, key_of, names, chapters, bar_y):
@@ -111,7 +123,7 @@ def apply(built, pid, key_of, names, chapters, bar_y):
         if current is None:
             continue
         if key != "home":
-            _filter_bar(pg, bar_y)
+            _filter_bar(pg, bar_y, current, no_strip=key in NO_STRIP)
         for vc in pg.visuals:
             if "parentGroupName" not in vc:
                 vc["position"]["x"] = round(vc["position"]["x"] + RAIL_W, 2)

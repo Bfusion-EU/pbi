@@ -275,7 +275,8 @@ def build_questions():
     home_button(pg, 76, 36)
     _text(pg, 132, 26, 600, 26, "START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
     _text(pg, 132, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
-    n_q = len(CTX.chapters) + sum(len(_deep(ck)) for ck in CTX.chapters)
+    n_q = len(CTX.chapters) + sum(len(_deep(ck)) for ck in CTX.chapters
+                                  if layout._code(CTX.names[ck])[0] not in "678")    # 6-8 are bars: no deep rows
     _text(pg, 132, 104, 1100, 28, f"{len(CTX.chapters)} chapters, {n_q} questions. Click a tile to open its chapter, "
                                  "a row to go one level deeper.", st("Segoe UI", 11, SOFT_INK), "subtitle")
     pg.add(W - 32 - 186 - 14 - 180, 52, 180, 46,
