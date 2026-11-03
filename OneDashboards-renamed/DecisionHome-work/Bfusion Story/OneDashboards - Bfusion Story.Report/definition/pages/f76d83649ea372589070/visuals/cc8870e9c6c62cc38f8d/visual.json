@@ -1,0 +1,214 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "cc8870e9c6c62cc38f8d",
+  "position": {
+    "x": 16,
+    "y": 224,
+    "z": 3000,
+    "width": 878.0,
+    "height": 518,
+    "tabOrder": 1800
+  },
+  "visual": {
+    "visualType": "bfusionTaskKPIBoard9C4F2A7E1B3D",
+    "query": {
+      "queryState": {
+        "scheduledEffort": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource | Scheduled"
+                }
+              },
+              "queryRef": "_Measures.Resplan - Scheduled Efforts",
+              "nativeQueryRef": "Resplan - Scheduled Efforts"
+            }
+          ]
+        },
+        "taskCount": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task | Task Count"
+                }
+              },
+              "queryRef": "_Measures.Task Count",
+              "nativeQueryRef": "Task Count"
+            }
+          ]
+        },
+        "inProgress": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task | In Progress"
+                }
+              },
+              "queryRef": "_Measures.Tasks - In Progress",
+              "nativeQueryRef": "Tasks - In Progress"
+            }
+          ]
+        },
+        "activeLate": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task | Active Late Tasks"
+                }
+              },
+              "queryRef": "_Measures.Tasks - Active Late Tasks",
+              "nativeQueryRef": "Tasks - Active Late Tasks"
+            }
+          ]
+        },
+        "overdue": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimTask"
+                        }
+                      },
+                      "Property": "Overdue Tasks"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.Overdue Tasks)",
+              "nativeQueryRef": "Sum of Overdue Tasks"
+            }
+          ]
+        },
+        "offTrack": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task | Off Track Tasks"
+                }
+              },
+              "queryRef": "_Measures.Tasks - Off Track Tasks",
+              "nativeQueryRef": "Tasks - Off Track Tasks"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Task | Task Count"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkxNjI3MjMyLCJleHAiOjE3OTQyNjg3OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY18yMzIyZmFiNWQzMzQiLCJ2ZXIiOjJ9.DdffMkO2bU0NVC4Z8ot208zXFo0TdWWuyOUraj-AnljXzH4ls5ytqPKSpnpmCx0AbxFGCDz4TZc8h7VdykSqyLkZIdH5CEXYflNSMPZDiLf-NFChA6xR7AwnDMnPcaRrenTaSnHghpgtSRJJ-pBFExzcJu1JEgj082Wd2MQZdNZ5mA1I7xor53ASeihfuLvNDMuOaXbAtpcIPXQF-OmJoM6SA7n7Rii865NEqSC9ln2nifFU3PTLdByWLpriBFiwwum2lLbvAL1Ie0biKRJhPWATt1C1L4j6XpbISL31udUMFTsM3jpqT56hC6MAZD_x9e6-CpyAZPN-e7aPtjDbnw'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "insightPanel": [
+        {
+          "properties": {
+            "showInsights": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showSmartInsights": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Task KPIBoar visual'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

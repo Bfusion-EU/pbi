@@ -1,0 +1,194 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "3d83439f2d5f2d6413cf",
+  "position": {
+    "x": 16,
+    "y": 224,
+    "z": 2800,
+    "width": 1768.0,
+    "height": 1376,
+    "tabOrder": 1600
+  },
+  "visual": {
+    "visualType": "bfusionPortfolioDrift7C2E94A1B05D",
+    "query": {
+      "queryState": {
+        "project": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "program": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program Name"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStatusReport"
+                    }
+                  },
+                  "Property": "Report_ReportEnd"
+                }
+              },
+              "queryRef": "FactStatusReport.Report_ReportEnd",
+              "nativeQueryRef": "Report_ReportEnd"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Cost",
+              "nativeQueryRef": "Finance | Budget Cost"
+            }
+          ]
+        },
+        "forecast": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Forecast Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Forecast Cost",
+              "nativeQueryRef": "Finance | Forecast Cost"
+            }
+          ]
+        },
+        "estimatedEnd": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Status Report | Report Estimated End"
+                }
+              },
+              "queryRef": "_Measures.Status Report | Report Estimated End",
+              "nativeQueryRef": "Status Report | Report Estimated End"
+            }
+          ]
+        },
+        "baselineEnd": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Status Report | Report Baseline End"
+                }
+              },
+              "queryRef": "_Measures.Status Report | Report Baseline End",
+              "nativeQueryRef": "Status Report | Report Baseline End"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactStatusReport"
+                  }
+                },
+                "Property": "Report_ReportEnd"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkzNjI0MTU1LCJleHAiOjE4MDY1Mzc1OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfZGY2NzU2MTY2ODZjIiwidmVyIjoyfQ.NDcGqWMsc_GpQ-NSu6g4_oqos6LWcFU-abG0rA4us0xh5cf2YAIKpAkYWzQiji6LU5Bjooi0AI_h8xOsbGPl72oi5MjUKXUQFCp8EV8cUTv4nNxwyxFgf6WoUOi-BQenRiEniCZiTIywi2Sl2L83kbG_9mPiR2-X1ZcNKwIK8t3mKlxK8MHBz_cejVY-TQ3edgrJrRhfs3ZVZSy5Op2GFOBCJyXsMU0XCTLANSfIFMK_RmavD4FVPsWf596sFKCtHkHqWklg5ztQgHd5JD813vRHLEHNT0O_IrlyJ69mgSiQL3McX96eAng7uav7HAa9g5Ksvx4D0BmlPtVZma052w'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Portfolio Drift visual'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

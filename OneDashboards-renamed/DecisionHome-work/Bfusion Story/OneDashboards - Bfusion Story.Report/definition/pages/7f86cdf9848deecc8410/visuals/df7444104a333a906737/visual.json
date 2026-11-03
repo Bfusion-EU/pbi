@@ -1,0 +1,453 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "df7444104a333a906737",
+  "position": {
+    "x": 16,
+    "y": 86,
+    "z": 1600,
+    "width": 1768,
+    "height": 72,
+    "tabOrder": 600
+  },
+  "visual": {
+    "visualType": "bfusionKpiTicker7C4A9E2B1D5F",
+    "query": {
+      "queryState": {
+        "values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Actual Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Actual Cost",
+              "nativeQueryRef": "Actuals",
+              "displayName": "Actuals"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Forecast Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Forecast Cost",
+              "nativeQueryRef": "Forecast Cost",
+              "displayName": "Forecast Cost"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Remaining"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Remaining",
+              "nativeQueryRef": "Budget Remaining",
+              "displayName": "Budget Remaining"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Demand"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Demand",
+              "nativeQueryRef": "Capacity Demand",
+              "displayName": "Capacity Demand"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Availability"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Availability",
+              "nativeQueryRef": "Capacity Availability",
+              "displayName": "Capacity Availability"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Status Report | Status Reports - Total ActiveRisks"
+                }
+              },
+              "queryRef": "_Measures.Status Report | Status Reports - Total ActiveRisks",
+              "nativeQueryRef": "Active Risks",
+              "displayName": "Active Risks"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "EVM | Forecast Overrun"
+                }
+              },
+              "queryRef": "_Measures.EVM | Forecast Overrun",
+              "nativeQueryRef": "EVM Forecast Overrun",
+              "displayName": "EVM Forecast Overrun"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        },
+        "comparison": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Actual Cost PM"
+                }
+              },
+              "queryRef": "_Measures.Finance | Actual Cost PM",
+              "nativeQueryRef": "Finance | Actual Cost PM"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkxNjI3MjMyLCJleHAiOjE3OTQyNjg3OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY18yMzIyZmFiNWQzMzQiLCJ2ZXIiOjJ9.DdffMkO2bU0NVC4Z8ot208zXFo0TdWWuyOUraj-AnljXzH4ls5ytqPKSpnpmCx0AbxFGCDz4TZc8h7VdykSqyLkZIdH5CEXYflNSMPZDiLf-NFChA6xR7AwnDMnPcaRrenTaSnHghpgtSRJJ-pBFExzcJu1JEgj082Wd2MQZdNZ5mA1I7xor53ASeihfuLvNDMuOaXbAtpcIPXQF-OmJoM6SA7n7Rii865NEqSC9ln2nifFU3PTLdByWLpriBFiwwum2lLbvAL1Ie0biKRJhPWATt1C1L4j6XpbISL31udUMFTsM3jpqT56hC6MAZD_x9e6-CpyAZPN-e7aPtjDbnw'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "ticker": [
+        {
+          "properties": {
+            "speed": {
+              "expr": {
+                "Literal": {
+                  "Value": "40D"
+                }
+              }
+            },
+            "separator": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pipe'"
+                }
+              }
+            },
+            "pauseOnHover": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gap": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "colorSettings": [
+        {
+          "properties": {
+            "backgroundTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            },
+            "valueColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#A6B3CC'"
+                    }
+                  }
+                }
+              }
+            },
+            "ruleColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "typography": [
+        {
+          "properties": {
+            "labelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            },
+            "valueFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "19D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "layout": [
+        {
+          "properties": {
+            "uppercaseLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showDots": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "variance": [
+        {
+          "properties": {
+            "display": {
+              "expr": {
+                "Literal": {
+                  "Value": "'both'"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Forecast Cost"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Actual Cost"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'higherBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Finance | Budget Remaining"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Capacity | Demand"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'higherBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Capacity | Availability"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Status Report | Status Reports - Total ActiveRisks"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.EVM | Forecast Overrun"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Kpi Ticker visual'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

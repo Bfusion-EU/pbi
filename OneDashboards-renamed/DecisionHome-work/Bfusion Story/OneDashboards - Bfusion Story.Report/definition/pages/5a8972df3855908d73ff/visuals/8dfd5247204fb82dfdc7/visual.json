@@ -1,0 +1,229 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "8dfd5247204fb82dfdc7",
+  "position": {
+    "x": 947.81,
+    "y": 224,
+    "z": 2900,
+    "width": 836.19,
+    "height": 641,
+    "tabOrder": 1700
+  },
+  "visual": {
+    "visualType": "bfusionScenarioRadarB2C3D4E5F6A1",
+    "query": {
+      "queryState": {
+        "licenseToken": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "License | BFusionLicenseKey"
+                }
+              },
+              "queryRef": "_Measures.BFusionLicenseKey",
+              "nativeQueryRef": "BFusionLicenseKey"
+            }
+          ]
+        },
+        "metricName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Modeler_Metrics"
+                    }
+                  },
+                  "Property": "MetricName"
+                }
+              },
+              "queryRef": "_Modeler_Metrics.MetricName",
+              "nativeQueryRef": "MetricName"
+            }
+          ]
+        },
+        "targetValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Scenario Target Value"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Scenario Target Value",
+              "nativeQueryRef": "Modeler | Scenario Target Value"
+            }
+          ]
+        },
+        "metricValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Modeler | Scenario Metric Value"
+                }
+              },
+              "queryRef": "_Measures.Modeler | Scenario Metric Value",
+              "nativeQueryRef": "Modeler | Scenario Metric Value"
+            }
+          ]
+        },
+        "scenarioName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimScenario"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimScenario.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Modeler | Scenario Metric Value"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkxNjI3MjMyLCJleHAiOjE3OTQyNjg3OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY18yMzIyZmFiNWQzMzQiLCJ2ZXIiOjJ9.DdffMkO2bU0NVC4Z8ot208zXFo0TdWWuyOUraj-AnljXzH4ls5ytqPKSpnpmCx0AbxFGCDz4TZc8h7VdykSqyLkZIdH5CEXYflNSMPZDiLf-NFChA6xR7AwnDMnPcaRrenTaSnHghpgtSRJJ-pBFExzcJu1JEgj082Wd2MQZdNZ5mA1I7xor53ASeihfuLvNDMuOaXbAtpcIPXQF-OmJoM6SA7n7Rii865NEqSC9ln2nifFU3PTLdByWLpriBFiwwum2lLbvAL1Ie0biKRJhPWATt1C1L4j6XpbISL31udUMFTsM3jpqT56hC6MAZD_x9e6-CpyAZPN-e7aPtjDbnw'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Scenario Radar visual'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "a0c6d25c036ae6b01ac2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "PlanType"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "p",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "p"
+                          }
+                        },
+                        "Property": "PlanType"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Project'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
+  }
+}

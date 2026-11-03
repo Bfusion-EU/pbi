@@ -1,0 +1,247 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "217cfb1d2aed8ef414c8",
+  "position": {
+    "x": 1221.42,
+    "y": 224,
+    "z": 2900,
+    "width": 562.58,
+    "height": 543,
+    "tabOrder": 1700
+  },
+  "visual": {
+    "visualType": "bfusionStatusTrendSparkline3E7A9C1D5F2B",
+    "query": {
+      "queryState": {
+        "projectName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "overallHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStatusReport"
+                    }
+                  },
+                  "Property": "OverallHealth"
+                }
+              },
+              "queryRef": "FactStatusReport.OverallHealth",
+              "nativeQueryRef": "OverallHealth"
+            }
+          ]
+        },
+        "scheduleHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStatusReport"
+                    }
+                  },
+                  "Property": "ScheduleHealth"
+                }
+              },
+              "queryRef": "FactStatusReport.ScheduleHealth",
+              "nativeQueryRef": "ScheduleHealth"
+            }
+          ]
+        },
+        "financialHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStatusReport"
+                    }
+                  },
+                  "Property": "FinancialHealth"
+                }
+              },
+              "queryRef": "FactStatusReport.FinancialHealth",
+              "nativeQueryRef": "FinancialHealth"
+            }
+          ]
+        },
+        "effortHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStatusReport"
+                    }
+                  },
+                  "Property": "EffortHealth"
+                }
+              },
+              "queryRef": "FactStatusReport.EffortHealth",
+              "nativeQueryRef": "EffortHealth"
+            }
+          ]
+        },
+        "issueHealth": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStatusReport"
+                    }
+                  },
+                  "Property": "IssueHealth"
+                }
+              },
+              "queryRef": "FactStatusReport.IssueHealth",
+              "nativeQueryRef": "IssueHealth"
+            }
+          ]
+        },
+        "statusComment": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactStatusReport"
+                    }
+                  },
+                  "Property": "AdditionalComments"
+                }
+              },
+              "queryRef": "FactStatusReport.AdditionalComments",
+              "nativeQueryRef": "AdditionalComments"
+            }
+          ]
+        },
+        "reportPeriod": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkxNjI3MjMyLCJleHAiOjE3OTQyNjg3OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY18yMzIyZmFiNWQzMzQiLCJ2ZXIiOjJ9.DdffMkO2bU0NVC4Z8ot208zXFo0TdWWuyOUraj-AnljXzH4ls5ytqPKSpnpmCx0AbxFGCDz4TZc8h7VdykSqyLkZIdH5CEXYflNSMPZDiLf-NFChA6xR7AwnDMnPcaRrenTaSnHghpgtSRJJ-pBFExzcJu1JEgj082Wd2MQZdNZ5mA1I7xor53ASeihfuLvNDMuOaXbAtpcIPXQF-OmJoM6SA7n7Rii865NEqSC9ln2nifFU3PTLdByWLpriBFiwwum2lLbvAL1Ie0biKRJhPWATt1C1L4j6XpbISL31udUMFTsM3jpqT56hC6MAZD_x9e6-CpyAZPN-e7aPtjDbnw'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "layoutSettings": [
+        {
+          "properties": {
+            "showStatusLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showDeltaLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Status Trend'"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Status Trend Sparklin visual'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

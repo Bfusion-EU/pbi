@@ -1,0 +1,528 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "3fcd4c97e3070ee090c8",
+  "position": {
+    "x": 16,
+    "y": 224,
+    "z": 3000,
+    "width": 1768.0,
+    "height": 418,
+    "tabOrder": 1800
+  },
+  "visual": {
+    "visualType": "bfusionResourceKPI9D4E2F7A1B8C",
+    "query": {
+      "queryState": {
+        "committed": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Committed"
+                }
+              },
+              "queryRef": "_Measures.ResPlan - Total Hours Committed",
+              "nativeQueryRef": "ResPlan - Total Hours Committed"
+            }
+          ]
+        },
+        "forecast": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Forecast"
+                }
+              },
+              "queryRef": "_Measures.ResPlan - Total Hours Forecast",
+              "nativeQueryRef": "ResPlan - Total Hours Forecast"
+            }
+          ]
+        },
+        "nettoCapacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Netto Capacity"
+                }
+              },
+              "queryRef": "_Measures.Netto Capacity",
+              "nativeQueryRef": "Netto Capacity"
+            }
+          ]
+        },
+        "timeOff": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource | TimeOff Hours"
+                }
+              },
+              "queryRef": "_Measures.TimeOff Hours",
+              "nativeQueryRef": "TimeOff Hours"
+            }
+          ]
+        },
+        "bucket0": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Alloc Bucket 0"
+                }
+              },
+              "queryRef": "_Measures.Alloc Bucket 0",
+              "nativeQueryRef": "Alloc Bucket 0"
+            }
+          ]
+        },
+        "bucket25": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Alloc Bucket 25"
+                }
+              },
+              "queryRef": "_Measures.Alloc Bucket 25",
+              "nativeQueryRef": "Alloc Bucket 25"
+            }
+          ]
+        },
+        "bucket50": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Alloc Bucket 50"
+                }
+              },
+              "queryRef": "_Measures.Alloc Bucket 50",
+              "nativeQueryRef": "Alloc Bucket 50"
+            }
+          ]
+        },
+        "bucket75": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Alloc Bucket 75"
+                }
+              },
+              "queryRef": "_Measures.Alloc Bucket 75",
+              "nativeQueryRef": "Alloc Bucket 75"
+            }
+          ]
+        },
+        "bucket100": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Alloc Bucket 100"
+                }
+              },
+              "queryRef": "_Measures.Alloc Bucket 100",
+              "nativeQueryRef": "Alloc Bucket 100"
+            }
+          ]
+        },
+        "bucketOver": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Alloc Bucket Over"
+                }
+              },
+              "queryRef": "_Measures.Alloc Bucket Over",
+              "nativeQueryRef": "Alloc Bucket Over"
+            }
+          ]
+        },
+        "topOverallocPeak": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Top Overalloc Peak"
+                }
+              },
+              "queryRef": "_Measures.Top Overalloc Peak",
+              "nativeQueryRef": "Top Overalloc Peak"
+            }
+          ]
+        },
+        "availability": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Availability"
+                }
+              },
+              "queryRef": "_Measures.Availability",
+              "nativeQueryRef": "Availability"
+            }
+          ]
+        },
+        "totalResources": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Total Resources"
+                }
+              },
+              "queryRef": "_Measures.Total Resources",
+              "nativeQueryRef": "Total Resources"
+            }
+          ]
+        },
+        "allocatedResources": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Allocated Resources"
+                }
+              },
+              "queryRef": "_Measures.Allocated Resources",
+              "nativeQueryRef": "Allocated Resources"
+            }
+          ]
+        },
+        "overallocatedResources": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Alloc Bucket Over"
+                }
+              },
+              "queryRef": "_Measures.Overallocated Resources",
+              "nativeQueryRef": "Overallocated Resources"
+            }
+          ]
+        },
+        "underutilizedResources": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource KPI | Under-utilized Resources"
+                }
+              },
+              "queryRef": "_Measures.Under-utilized Resources",
+              "nativeQueryRef": "Under-utilized Resources"
+            }
+          ]
+        },
+        "fte": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Resource | Capacity FTE"
+                }
+              },
+              "queryRef": "_Measures.Resources - Capacity FTE",
+              "nativeQueryRef": "Resources - Capacity FTE"
+            }
+          ]
+        },
+        "capacity": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity"
+                }
+              },
+              "queryRef": "_Measures.Resource Capacity",
+              "nativeQueryRef": "Resource Capacity"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Capacity | Resource Capacity"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzkxNjI3MjMyLCJleHAiOjE3OTQyNjg3OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOnRydWUsImxpYyI6ImxpY18yMzIyZmFiNWQzMzQiLCJ2ZXIiOjJ9.DdffMkO2bU0NVC4Z8ot208zXFo0TdWWuyOUraj-AnljXzH4ls5ytqPKSpnpmCx0AbxFGCDz4TZc8h7VdykSqyLkZIdH5CEXYflNSMPZDiLf-NFChA6xR7AwnDMnPcaRrenTaSnHghpgtSRJJ-pBFExzcJu1JEgj082Wd2MQZdNZ5mA1I7xor53ASeihfuLvNDMuOaXbAtpcIPXQF-OmJoM6SA7n7Rii865NEqSC9ln2nifFU3PTLdByWLpriBFiwwum2lLbvAL1Ie0biKRJhPWATt1C1L4j6XpbISL31udUMFTsM3jpqT56hC6MAZD_x9e6-CpyAZPN-e7aPtjDbnw'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fontSizes": [
+        {
+          "properties": {
+            "cardLabelFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "cardValueFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "26D"
+                }
+              }
+            },
+            "cardUnitFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "cardSubFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "ringFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "distribTitleFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "17D"
+                }
+              }
+            },
+            "distribSubtitleFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "insightHeadlineFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "insightDetailFs": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'OVERALL RESOURCE METRICS'"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "divider": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "spacing": [
+        {
+          "properties": {
+            "customizeSpacing": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Resource visual'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
