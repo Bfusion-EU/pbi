@@ -23,6 +23,7 @@ import pages  # noqa: E402
 import layout  # noqa: E402
 import a11y  # noqa: E402
 import story_measures  # noqa: E402
+import illustrations  # noqa: E402
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, home_icon_button, slicer, headline,  # noqa: E402
                   image, NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
 
@@ -60,28 +61,36 @@ PAGES = [  # (key, display) — story order; "Next" follows this list. "Nx" code
     ("welcome", "Welcome"),
     ("home", "Home — Decision center"),
     ("questions", "Questions — where to start"),
+    ("brief_exec", "Brief · Executive Summary"),
     ("exec", "1 · Executive Summary"),
     ("health", "1b · Portfolio 360 & Health"),
     ("roadmap", "1c · Roadmap & Delivery"),
     ("drift", "1d · Portfolio Drift"),
     ("kpigrid", "1e · Project KPI Grid"),
+    ("brief_portfolio", "Brief · Portfolio"),
     ("portfolio", "2 · Portfolio"),
     ("selection", "2b · Selection & Funding Line"),
     ("scenarios", "2c · Scenarios & Trade-offs"),
     ("constraints", "2d · Constraints & Sequencing"),
+    ("brief_finance", "Brief · Financials"),
     ("finance", "3 · Financials"),
     ("fintree", "3b · Variance Drivers"),
     ("budgetrisk", "3c · Budget Risk & Early Warning"),
+    ("brief_resources", "Brief · Resources"),
     ("resources", "4 · Resources"),
     ("fte", "4b · FTE Decisions & Efficiency"),
     ("org", "4c · Organisation & Gaps"),
     ("timesheets", "4d · Timesheets vs Plan"),
     ("mywork", "4e · My Work"),
+    ("brief_schedule", "Brief · Schedule"),
     ("schedule", "5 · Schedule"),
     ("critical", "5b · Critical Path & Chain"),
     ("psr", "5c · Project Status Report"),
+    ("brief_risk", "Brief · Risk"),
     ("risk", "6 · Risk"),
+    ("brief_benefits", "Brief · Benefits & Value"),
     ("benefits", "7 · Benefits & Value"),
+    ("brief_governance", "Brief · Governance & Data Trust"),
     ("governance", "8 · Governance & Data Trust"),
 ]
 NAMES = dict(PAGES)
@@ -502,8 +511,8 @@ def build_home():
     # of the two is visible at any time.
     tw, th = 190, 30
     tx = 16 + 1768 - tw
-    grp = pg.add_group(16, y, 1768, BODY_END - y, "Eight questions", "questions")
-    grp_show = pg.add_group(tx, y + 2, tw, th, "Show eight questions", "questions_show", hidden=True)
+    grp = pg.add_group(16, y, 1768, BODY_END - y, "Eight questions", "questions", hidden=True)   # hidden by default
+    grp_show = pg.add_group(tx, y + 2, tw, th, "Show eight questions", "questions_show")
     bm_hide = pbir.bookmark("Hide the eight questions", "bfstory-questions-hide", pg.id, {grp: True, grp_show: False})
     bm_show = pbir.bookmark("Show the eight questions", "bfstory-questions-show", pg.id, {grp: False, grp_show: True})
     pg.add(16, y, 1768 - tw - 12, SEC_H, textbox([[(f"{pages.CIRCLED[1]}  Eight questions, one answer each",
@@ -668,9 +677,15 @@ def _tile(pg, x, y, w, h, k, ck):
           f"{key}_lbl")
     _text(pg, x + 20, y + 98, w - 40, 44, _sentence(QUESTIONS[ck]), st("DIN", 17, "#FFFFFF", True), f"{key}_q")
     _headline(pg, x + 14, y + 140, w - 28, 46, ck, TILE, SOFT_INK, f"{key}_hl")
-    pg.add(x, y, w, h, layout._alt(_ghost("", PID[ck], f"Open {NAMES[ck]}"), f"Open {NAMES[ck]}"), key=f"{key}_go")
+    _brief_link(pg, x, y, w, h, ck, key)
     for j, m in enumerate(_deep(ck)):
         _deep_row(pg, x + 20, y + 196 + j * 38, w - 40, m, ROW, BADGE, ORANGE, "#E5EAF1", f"{key}_d{j}")
+
+
+def _brief_link(pg, x, y, w, h, ck, key):
+    """The whole tile opens the chapter brief, which leads on to the chapter and its deep dives."""
+    tip = f"Open the {layout._code(NAMES[ck])[2]} brief"
+    pg.add(x, y, w, h, layout._alt(_ghost("", PID[f"brief_{ck}"], tip), tip), key=f"{key}_go")
 
 
 def _start_tile(pg, x, y, w, h, ck):
@@ -684,7 +699,7 @@ def _start_tile(pg, x, y, w, h, ck):
           f"{key}_lbl")
     _text(pg, x + 20, y + 142, w - 40, 60, _sentence(QUESTIONS[ck]), st("DIN", 28, "#FFFFFF", True), f"{key}_q")
     _headline(pg, x + 14, y + 204, w - 28, 50, ck, ORANGE, "#FFFFFF", f"{key}_hl")
-    pg.add(x, y, w, h, layout._alt(_ghost("", PID[ck], f"Open {NAMES[ck]}"), f"Open {NAMES[ck]}"), key=f"{key}_go")
+    _brief_link(pg, x, y, w, h, ck, key)
     for j, m in enumerate(_deep(ck)):
         _deep_row(pg, x + 20, y + 268 + j * 40, w - 40, m, "#EC7A4A", "#F3A27C", "#FFFFFF", "#FFFFFF", f"{key}_d{j}")
     # what the chapter holds, as chips at the foot of the tile
@@ -710,7 +725,7 @@ def _bar(pg, x, y, w, h, k, ck):
     _text(pg, x + 80, y + 42, 440, 44, _sentence(QUESTIONS[ck]), st("DIN", 17, "#FFFFFF", True), f"{key}_q")
     _headline(pg, x + 520, y + 16, w - 520 - 84, h - 32, ck, TILE, SOFT_INK, f"{key}_hl")
     _arrow(pg, x + w - 64, y + (h - 40) / 2, ORANGE, "#FFFFFF", key)
-    pg.add(x, y, w, h, layout._alt(_ghost("", PID[ck], f"Open {NAMES[ck]}"), f"Open {NAMES[ck]}"), key=f"{key}_go")
+    _brief_link(pg, x, y, w, h, ck, key)
 
 
 def build_questions():
@@ -742,6 +757,246 @@ def build_questions():
     bh = (rh - 2 * G) / 3
     for j, num in enumerate("678"):
         _bar(pg, col[2], top + rh + G + j * (bh + G), 2 * cw + G, bh, 5 + j, chap[num])
+    pg.add(16, 930, 1768, 1, shape(TILE_LINE), key="foot_rule")
+    pg.add(16, 944, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
+    _text(pg, W - 16 - 600, 952, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK), "foot_right",
+          align="right")
+    return pg
+
+
+# ---------------------------------------------------------------- chapter brief pages (navy navigation pages)
+# One per chapter, between the Questions page and the chapter: the question, a verdict, three takeaways and one
+# tile per page of the chapter. The picture top-right and the drawings in the tiles are faint line art
+# (illustrations.py), so they stay behind the text.
+RED, AMBER, GREEN, GREY = "#D64545", "#E0A100", "#2E9E6A", "#8A97AB"
+BRIEF_FOLDER = "Story\\Brief"
+# chapter -> [(value measure, label, rule)]; rule: None (no judgement) | ("hi", amber, red): higher is better,
+# below red is red | ("lo", amber, red): lower is better, at or above red is red | "band": utilisation, red above
+# 100%, amber below 50%. The thresholds are defaults for the PMO to confirm.
+BRIEF_TAKEAWAYS = {
+    "exec": [("Story | Active Projects", "active projects", None),
+             ("Story | On Track %", "of active projects on track", ("hi", 0.8, 0.6)),
+             ("Story | Late Active Projects", "projects running late", ("lo", 1, 5))],
+    "portfolio": [("Story | Proposed Projects", "proposals in the pipeline", None),
+                  ("Story | Aligned Budget %", "of budget on strongly aligned work", ("hi", 0.7, 0.5)),
+                  ("Story | Plan Variance %", "plan forecast against plan budget", ("lo", 0.0001, 0.05))],
+    "finance": [("Story | EAC Variance %", "forecast against budget at completion", ("lo", 0.0001, 0.05)),
+                ("Story | Projects Over Budget", "projects over budget", ("lo", 1, 5)),
+                ("Story | Burn %", "of the budget spent", None)],
+    "resources": [("Story | Utilisation %", "utilisation of capacity", "band"),
+                  ("Story | Over-allocated People", "people over-allocated", ("lo", 1, 5)),
+                  ("Story | Free Capacity (h)", "hours of free capacity", None)],
+    "schedule": [("Story | On Schedule %", "of active projects on schedule", ("hi", 0.8, 0.6)),
+                 ("Story | Overdue Tasks", "overdue tasks", ("lo", 1, 20)),
+                 ("Story | Milestones Next 30d", "milestones in the next 30 days", None)],
+    "risk": [("Story | Critical High Risks", "critical or high risks", ("lo", 1, 5)),
+             ("Story | Unmitigated Risk %", "of risks without mitigation", ("lo", 0.2, 0.4)),
+             ("Story | Open Issues", "open issues", ("lo", 1, 10))],
+    "benefits": [("Story | Benefits Realised %", "of benefits due realised", ("hi", 0.9, 0.7)),
+                 ("Story | Value Ratio", "value per euro of forecast cost", ("hi", 2, 1)),
+                 ("Story | Benefits At Completion", "benefits planned at completion", None)],
+    "governance": [("PMO | Governance Score", "governance score", ("hi", 80, 60)),
+                   ("PMO | Compliance %", "compliance", ("hi", 0.9, 0.75)),
+                   ("PMO | Unsubmitted Status Reports", "status reports not submitted", ("lo", 1, 10))],
+}
+BRIEF_BLURB = {
+    "exec": "Health, money, people and risk on one page", "health": "Health of every portfolio side by side",
+    "roadmap": "What lands when, with its health", "drift": "How the portfolio changed over time",
+    "kpigrid": "Every project scored on the same KPIs",
+    "portfolio": "Value, cost and strategic fit of the pipeline", "selection": "Ranked projects against the funding line",
+    "scenarios": "Compare funding choices before you decide", "constraints": "Dependencies and limits that block delivery",
+    "finance": "Budget, actuals and forecast at completion", "fintree": "Which projects and cost lines cause the gap",
+    "budgetrisk": "Early warnings before the money is spent",
+    "resources": "Capacity against demand, month by month", "fte": "Where to add or reduce people",
+    "org": "Reporting lines and unfilled roles", "timesheets": "Logged hours against the plan",
+    "mywork": "Your tasks and hours in one place",
+    "schedule": "Progress, slippage and upcoming milestones", "critical": "The tasks that set the finish date",
+    "psr": "One project's status report, month by month",
+    "risk": "Exposure, critical risks and open issues", "benefits": "Planned against realised benefits",
+    "governance": "Data quality, compliance and reporting discipline",
+}
+_BRIEF_MEASURES = None
+
+
+def _colour_dax(m, rule):
+    if rule is None:
+        return f'"{ORANGE}"'
+    v = f"VAR _v = [{m}]\nRETURN IF ( ISBLANK ( _v ), \"{GREY}\", "
+    if rule == "band":
+        return v + f'IF ( _v > 1, "{RED}", IF ( _v < 0.5, "{AMBER}", "{GREEN}" ) ) )'
+    kind, amber, red = rule
+    if kind == "hi":
+        return v + f'IF ( _v < {red}, "{RED}", IF ( _v < {amber}, "{AMBER}", "{GREEN}" ) ) )'
+    return v + f'IF ( _v >= {red}, "{RED}", IF ( _v >= {amber}, "{AMBER}", "{GREEN}" ) ) )'
+
+
+_MODEL_FORMATS = {"PMO | Governance Score": "0", "PMO | Compliance %": "0.0%", "PMO | Unsubmitted Status Reports": "#,##0"}
+
+
+def _value_dax(m):
+    fmt = _MODEL_FORMATS.get(m) or next(x["formatString"] for x in story_measures.MEASURES if x["name"] == m)
+    head = f'VAR _v = [{m}]\nRETURN IF ( ISBLANK ( _v ), "–", '
+    if "%" in fmt or "." in fmt:
+        return head + f'FORMAT ( _v, "{fmt}" ) )'
+    return head + ('IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, "#,##0.0" ) & "M", '
+                   'IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, "#,##0" ) & "K", FORMAT ( _v, "#,##0" ) ) ) )')
+
+
+def _brief_measure(name, expr, fmt, desc):
+    full = f"Story | Brief · {name}"
+    story_measures.add(full, story_measures.D if fmt else story_measures.T, expr, fmt, BRIEF_FOLDER, desc)
+    pbir.EXTENSION_MEASURES.add(full)
+    return full
+
+
+def brief_measures():
+    """{chapter: ([takeaway colour measures], verdict, verdict colour, [takeaway value texts])}; registered once."""
+    global _BRIEF_MEASURES
+    if _BRIEF_MEASURES is None:
+        _BRIEF_MEASURES = {}
+        for ch, items in BRIEF_TAKEAWAYS.items():
+            label = layout._code(NAMES[ch])[2]
+            cols = [_brief_measure(f"{label} {k + 1} Colour", _colour_dax(m, rule), None,
+                                   f"Dot colour for the takeaway '{lbl}': {rule or 'no judgement'}.")
+                    for k, (m, lbl, rule) in enumerate(items)]
+            judged = [c for c, (_, _, rule) in zip(cols, items) if rule]
+            count = lambda colour: " + ".join(f'INT ( [{c}] = "{colour}" )' for c in judged)  # noqa: E731
+            head = f"VAR _r = {count(RED)}\nVAR _a = {count(AMBER)}\nVAR _g = {count(GREEN)}\nRETURN "
+            verdict = _brief_measure(f"{label} Verdict", head + 'IF ( _r > 0, "ACT", IF ( _a > 0, "WATCH", '
+                                     'IF ( _g > 0, "ON TRACK", "NO DATA" ) ) )', None,
+                                     "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.")
+            vcol = _brief_measure(f"{label} Verdict Colour", head + f'IF ( _r > 0, "{RED}", IF ( _a > 0, "{AMBER}", '
+                                  f'IF ( _g > 0, "{GREEN}", "{GREY}" ) ) )', None, "Colour of the verdict pill.")
+            texts = [_brief_measure(f"{label} {k + 1} Value", _value_dax(m), None,
+                                    f"[{m}] as text for the brief: a dash when blank, M / K for large numbers.")
+                     for k, (m, _, _) in enumerate(items)]
+            _BRIEF_MEASURES[ch] = (cols, verdict, vcol, texts)
+    return _BRIEF_MEASURES
+
+
+def _fx(measure):
+    return {"solid": {"color": {"expr": M(measure)}}}
+
+
+def _value_card(measure, size, colour, bg=None):
+    vc = headline(measure, bg=bg or INK, border=bg or INK, size=size, colour=colour)
+    vc["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
+    if bg is None:
+        vc["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
+    vc["objects"]["labels"][0]["properties"]["fontFamily"] = s("DIN")
+    return vc
+
+
+def _dot(pg, x, y, d, measure, key):
+    vc = shape(GREY, radius=d // 2)
+    vc["objects"]["fill"][0]["properties"]["fillColor"] = _fx(measure)
+    pg.add(x, y, d, d, vc, key=key)
+
+
+def _crumb(pg, x, text, target, tip, key, colour=SOFT_INK, bold=False, size=10, w=None, align="center"):
+    """One breadcrumb level. Every level, separators and the current page included, is a button: Desktop centres
+    button text vertically, so all levels sit on one line (a text box puts its text at the top instead)."""
+    w = w or _crumb_w(text) - 16
+    btn = nav_button(text, target, tip, fill=INK, hover="#1B2C42" if target else INK, press="#22344D" if target else INK,
+                     font=colour, size=size, margin=4, align=align)
+    btn["objects"]["text"][1]["properties"]["bold"] = b(bold)
+    if not target:
+        btn["visualContainerObjects"].pop("visualLink")
+    pg.add(x, 26, w, 32, layout._alt(btn, tip), key=key)
+    return x + w
+
+
+def _tile_text(m):
+    """(eyebrow, question, blurb) of a navigation tile on a brief page."""
+    if m.startswith("brief_"):
+        nxt = m[len("brief_"):]
+        return f"NEXT QUESTION · {layout._code(NAMES[nxt])[2].upper()}", _sentence(QUESTIONS[nxt]), BRIEF_BLURB[nxt]
+    if m == "home":
+        return "THE DECISION CENTER", "What needs a decision now?", "The pulse, the list to act on, every chapter"
+    if m == "questions":
+        return "ALL QUESTIONS", "Which question do you have?", "Every chapter and deep dive on one page"
+    c = layout._code(NAMES[m])
+    return ("START WITH THE CHAPTER" if not c[1] else f"DEEP DIVE {c[0]}{c[1]}"), _sentence(QUESTIONS[m]), BRIEF_BLURB[m]
+
+
+def _tile_art(m):
+    if m.startswith("brief_"):
+        return illustrations.spot_file(m[len("brief_"):])
+    return illustrations.spot_file({"home": "exec", "questions": "kpigrid"}.get(m, m))
+
+
+def build_brief(ch):
+    key = f"brief_{ch}"
+    code = layout._code(NAMES[ch])
+    cols, verdict, vcol, texts = brief_measures()[ch]
+    pg = Page(PID[key], NAMES[key], W, SH, background_colour=INK, display_option="FitToPage")
+    pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(INK), "transparency": pbir.n(0)}}]
+    pg.page["visibility"] = "HiddenInViewMode"
+    pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
+    pg.add(1000, 70, illustrations.SCENE_W, illustrations.SCENE_H,
+           _logo(illustrations.scene_file(ch), f"{code[2]} illustration"), key="scene")
+    # home (welcome page) + breadcrumb + all questions
+    pg.add(24, 22, 44, 44, shape(ORANGE, radius=12), key="home_bg")
+    pg.add(34, 32, 24, 24, _logo(illustrations.HOME_FILE, "Home icon"), key="home_ico")
+    pg.add(24, 22, 44, 44, layout._alt(_ghost("", PID["welcome"], "Back to the welcome page", hover=INK),
+                                       "Back to the welcome page"), key="home")
+    x = _crumb(pg, 80, "Welcome", PID["welcome"], "Back to the welcome page", "crumb_welcome")
+    x = _crumb(pg, x, "›", "", "then", "crumb_sep1", size=12, w=18)
+    x = _crumb(pg, x, "Questions", PID["questions"], "All questions", "crumb_questions")
+    x = _crumb(pg, x, "›", "", "then", "crumb_sep2", size=12, w=18)
+    here = f"{code[0]} · {code[2]}"
+    _crumb(pg, x, here, "", f"You are here: {here}", "crumb_here", colour="#FFFFFF", bold=True, w=_crumb_w(here),
+           align="left")
+    pg.add(W - 32 - 190, 22, 190, 44, nav_button("‹  All questions", PID["questions"], "Back to all questions",
+                                                 fill=INK, hover="#1B2C42", press="#22344D", font="#FFFFFF", size=11,
+                                                 outline="#FFFFFF", radius=22), key="all_questions")
+    # question, verdict, headline
+    q = _sentence(QUESTIONS[ch])
+    dy = 40 if len(q) * 29 <= 760 else 0               # one line of 44 pt DIN: centre it in the two-line slot
+    _text(pg, 80, 128 + dy, 900, 28, f"CHAPTER {code[0]} · {code[2].upper()}",
+          st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
+    _text(pg, 80, 158 + dy, 780, 150, q, st("DIN", 44, "#FFFFFF", True), "question")
+    pg.add(84, 310, 900, 68, shape("#15263B", radius=34, line=TILE_LINE), key="verdict_bg")
+    pill = _value_card(verdict, 10, "#FFFFFF", bg=GREY)
+    pill["visualContainerObjects"]["background"] = [{"properties": {"show": b(True), "color": _fx(vcol)}}]
+    pill["visualContainerObjects"]["border"] = [{"properties": {"show": b(True), "color": _fx(vcol), "radius": pbir.n(16)}}]
+    pill["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI Semibold")
+    pg.add(96, 320, 140, 48, pill, key="verdict")
+    pg.add(246, 314, 728, 60, _value_card(CARD_TEXT[ch][1], 11, "#E5EAF1"), key="headline")
+    # three takeaways
+    tw = (900 - 2 * 12) / 3
+    for k, (m, lbl, _rule) in enumerate(BRIEF_TAKEAWAYS[ch]):
+        tx, ty = 84 + k * (tw + 12), 392
+        pg.add(tx, ty, tw, 136, shape("#15263B", radius=14, line=TILE_LINE), key=f"take{k}_bg")
+        _dot(pg, tx + 18, ty + 20, 14, cols[k], f"take{k}_dot")
+        pg.add(tx + 36, ty + 10, tw - 72, 72, _value_card(texts[k], 24, "#FFFFFF"), key=f"take{k}_val")
+        _text(pg, tx + 12, ty + 86, tw - 24, 40, lbl, st("Segoe UI", 11, SOFT_INK), f"take{k}_lbl", align="center")
+    # one tile per page of the chapter: the chapter first, then its deep dives
+    keys = [ch] + _deep(ch)
+    if len(keys) == 1:                                  # one-page chapter: offer the next question and the list too
+        nxt = CHAPTERS[CHAPTERS.index(ch) + 1] if ch != CHAPTERS[-1] else None
+        keys += [f"brief_{nxt}" if nxt else "home", "questions"]
+    n = len(keys)
+    gap, ty, th = 18, 560, 340
+    tw = (W - 48 - gap * (n - 1)) / n
+    qsize = {1: 30, 2: 26, 3: 22, 4: 19, 5: 17}[n]
+    for k, m in enumerate(keys):
+        tx = 24 + k * (tw + gap)
+        main = m == ch
+        pg.add(tx, ty, tw, th, shape(ORANGE if main else "#15263B", radius=20, line=None if main else TILE_LINE),
+               key=f"tile{k}_bg")
+        pg.add(tx + tw - 176, ty + 8, 168, 168, _logo(_tile_art(m), "Tile drawing"), key=f"tile{k}_art")
+        eyebrow, question, blurb = _tile_text(m)
+        _text(pg, tx + 26, ty + 24, tw - 52, 26, eyebrow, st("Segoe UI Semibold", 10, "#FFFFFF" if main else ORANGE, True),
+              f"tile{k}_eyebrow")
+        _text(pg, tx + 24, ty + th - 172, tw - 48, 96, question, st("DIN", qsize, "#FFFFFF", True), f"tile{k}_q")
+        _text(pg, tx + 24, ty + th - 76, tw - 120, 56, blurb,
+              st("Segoe UI", 10, "#FFE6D8" if main else SOFT_INK), f"tile{k}_blurb")
+        pg.add(tx + tw - 80, ty + th - 80, 52, 52, shape("#FFFFFF" if main else ORANGE, radius=26), key=f"tile{k}_arrow")
+        _text(pg, tx + tw - 80, ty + th - 74, 52, 40, "→", st("Segoe UI", 16, ORANGE if main else "#FFFFFF", True),
+              f"tile{k}_arrow_t", align="center")
+        tip = f"Open {NAMES[m]}"
+        pg.add(tx, ty, tw, th, layout._alt(_ghost("", PID[m], tip), tip), key=f"tile{k}_go")
     pg.add(16, 930, 1768, 1, shape(TILE_LINE), key="foot_rule")
     pg.add(16, 944, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
     _text(pg, W - 16 - 600, 952, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK), "foot_right",
@@ -1105,7 +1360,8 @@ def build_governance():
     ], headline_measure="PMO | Governance Headline")
 
 
-BUILDERS = {"welcome": build_welcome, "home": build_home, "questions": build_questions, "exec": build_exec, "health": build_health, "roadmap": build_roadmap,
+BUILDERS = {**{f"brief_{c}": (lambda c=c: build_brief(c)) for c in BRIEF_TAKEAWAYS},
+            "welcome": build_welcome, "home": build_home, "questions": build_questions, "exec": build_exec, "health": build_health, "roadmap": build_roadmap,
             "drift": build_drift, "kpigrid": build_kpigrid, "portfolio": build_portfolio, "selection": build_selection,
             "scenarios": build_scenarios, "constraints": build_constraints, "finance": build_finance,
             "fintree": build_fintree, "budgetrisk": build_budgetrisk, "resources": build_resources, "fte": build_fte,
@@ -1131,9 +1387,10 @@ def copy_interactions(built):
 
 def build_pages():
     pbir.BOOKMARKS.clear()
-    # the questions page reads every page's header question, so it is built last and put back in story order
-    done = {k: BUILDERS[k]() for k, _ in PAGES if k != "questions"}
-    done["questions"] = BUILDERS["questions"]()
+    # the questions and brief pages read every page's header question, so they are built last, in story order
+    late = [k for k, _ in PAGES if k == "questions" or k.startswith("brief_")]
+    done = {k: BUILDERS[k]() for k, _ in PAGES if k not in late}
+    done.update({k: BUILDERS[k]() for k in late})
     built = [done[k] for k, _ in PAGES]
     copy_interactions(built)
     pages.filter_real_projects(built)
@@ -1162,6 +1419,9 @@ def write(built):
     reg = next(p for p in rep["resourcePackages"] if p["type"] == "RegisteredResources")
     reg["items"].append({"name": LOGO_RES, "path": LOGO_RES, "type": "Image"})
     shutil.copy(LOGO_FILE, out / "StaticResources" / "RegisteredResources" / LOGO_RES)
+    for f in illustrations.files():
+        reg["items"].append({"name": f, "path": f, "type": "Image"})
+        shutil.copy(illustrations.OUT / f, out / "StaticResources" / "RegisteredResources" / f)
     build.dump(rj, rep)
     for name in used:
         shutil.copytree(SRC / "CustomVisuals" / name, out / "CustomVisuals" / name)
@@ -1199,7 +1459,8 @@ def reach_errors(built):
     for k, _ in PAGES:
         chap = k if not layout._code(NAMES[k]) else [m for m, d in PAGES if layout._code(d)
                                                      and layout._code(d)[0] == layout._code(NAMES[k])[0]][0]
-        hubs = links.get(PID["home"], set()) | links.get(PID["welcome"], set()) | links.get(PID[chap], set())
+        hubs = (links.get(PID["home"], set()) | links.get(PID["welcome"], set()) | links.get(PID["questions"], set())
+                | links.get(PID[chap], set()))
         if k != "welcome" and PID[k] not in hubs:
             errs.append(f"REACH {NAMES[k]}: no link from Welcome, Home or its chapter")
     return errs
