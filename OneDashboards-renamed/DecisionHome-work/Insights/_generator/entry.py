@@ -335,7 +335,9 @@ BRIEF_TAKEAWAYS = {
                  ("Story | Benefits At Completion", "benefits planned at completion", None)],
     "governance": [("PMO | Governance Score", "governance score", ("hi", 80, 60)),
                    ("PMO | Compliance %", "compliance", ("hi", 0.9, 0.75)),
-                   ("PMO | Unsubmitted Status Reports", "status reports not submitted", ("lo", 1, 10))],
+                   # a count: PMO | Unsubmitted Status Reports is a text list of report dates, not a number
+                   ("Story | PMO · Plans With Open Status Report", "plans with a status report not submitted",
+                    ("lo", 1, 10))],
 }
 _BRIEF_MEASURES = None
 
@@ -352,10 +354,14 @@ def _colour_dax(m, rule):
     return v + f'IF ( _v >= {red}, "{RED}", IF ( _v >= {amber}, "{AMBER}", "{GREEN}" ) ) )'
 
 
-_MODEL_FORMATS = {"PMO | Governance Score": "0", "PMO | Compliance %": "0.0%", "PMO | Unsubmitted Status Reports": "#,##0"}
+_MODEL_FORMATS = {"PMO | Governance Score": "0", "PMO | Compliance %": "0.0%"}
 
 
 def _value_dax(m):
+    """Takeaways are numbers (compared with thresholds); a model measure must be listed in _MODEL_FORMATS."""
+    if m not in _MODEL_FORMATS:
+        sm = next(x for x in story_measures.MEASURES if x["name"] == m)
+        assert sm["dataType"] != story_measures.T and sm["formatString"], f"takeaway {m} is not a number"
     fmt = _MODEL_FORMATS.get(m) or next(x["formatString"] for x in story_measures.MEASURES if x["name"] == m)
     head = f'VAR _v = [{m}]\nRETURN IF ( ISBLANK ( _v ), "–", '
     if "%" in fmt or "." in fmt:

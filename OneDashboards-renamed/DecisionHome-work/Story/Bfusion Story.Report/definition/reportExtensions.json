@@ -12051,14 +12051,15 @@
         {
           "name": "Story | Brief · Governance & Data Trust 3 Colour",
           "dataType": "Text",
-          "expression": "VAR _v = [PMO | Unsubmitted Status Reports]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 10, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "expression": "VAR _v = [Story | PMO · Plans With Open Status Report]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 10, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'status reports not submitted': ('lo', 1, 10).",
+          "description": "Dot colour for the takeaway 'plans with a status report not submitted': ('lo', 1, 10).",
           "references": {
             "measures": [
               {
+                "schema": "extension",
                 "entity": "_Measures",
-                "name": "PMO | Unsubmitted Status Reports"
+                "name": "Story | PMO · Plans With Open Status Report"
               }
             ]
           }
@@ -12148,14 +12149,15 @@
         {
           "name": "Story | Brief · Governance & Data Trust 3 Value",
           "dataType": "Text",
-          "expression": "VAR _v = [PMO | Unsubmitted Status Reports]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "expression": "VAR _v = [Story | PMO · Plans With Open Status Report]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "[PMO | Unsubmitted Status Reports] as text for the brief: a dash when blank, M / K for large numbers.",
+          "description": "[Story | PMO · Plans With Open Status Report] as text for the brief: a dash when blank, M / K for large numbers.",
           "references": {
             "measures": [
               {
+                "schema": "extension",
                 "entity": "_Measures",
-                "name": "PMO | Unsubmitted Status Reports"
+                "name": "Story | PMO · Plans With Open Status Report"
               }
             ]
           }

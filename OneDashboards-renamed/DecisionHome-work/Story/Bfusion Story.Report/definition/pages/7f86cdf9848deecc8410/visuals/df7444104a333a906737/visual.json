@@ -162,15 +162,16 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "PMO | Unsubmitted Status Reports"
+                  "Property": "Story | PMO · Plans With Open Status Report"
                 }
               },
-              "queryRef": "_Measures.PMO | Unsubmitted Status Reports",
-              "nativeQueryRef": "Status reports not submitted",
-              "displayName": "Status reports not submitted"
+              "queryRef": "_Measures.Story | PMO · Plans With Open Status Report",
+              "nativeQueryRef": "Plans with a status report not submitted",
+              "displayName": "Plans with a status report not submitted"
             }
           ]
         },
@@ -527,7 +528,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.PMO | Unsubmitted Status Reports"
+            "metadata": "_Measures.Story | PMO · Plans With Open Status Report"
           }
         }
       ]

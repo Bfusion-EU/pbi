@@ -447,7 +447,9 @@ def _ticker_measures():
             ("Timesheet hours last month", *ts, "higherBetter"),
             ("Late tasks", "Task | Active Late Tasks", None, "lowerBetter"),
             ("Hours awaiting approval", "Timesheet | Awaiting Approval Hours", None, "lowerBetter"),
-            ("Status reports not submitted", "PMO | Unsubmitted Status Reports", None, "lowerBetter")]
+            # a count: PMO | Unsubmitted Status Reports is a text list of report dates and cannot be a KPI
+            ("Plans with a status report not submitted", "Story | PMO · Plans With Open Status Report", None,
+             "lowerBetter")]
 
 
 _TICKER_ITEMS = None
