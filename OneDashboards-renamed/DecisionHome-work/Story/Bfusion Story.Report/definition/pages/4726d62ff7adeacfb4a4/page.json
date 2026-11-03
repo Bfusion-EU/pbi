@@ -9,28 +9,36 @@
     "background": [
       {
         "properties": {
-          "image": {
-            "image": {
-              "name": {
+          "color": {
+            "solid": {
+              "color": {
                 "expr": {
                   "Literal": {
-                    "Value": "'bfv5_footer_band_1800x1000.png'"
+                    "Value": "'#0E1C2D'"
                   }
                 }
-              },
-              "url": {
-                "expr": {
-                  "ResourcePackageItem": {
-                    "PackageName": "RegisteredResources",
-                    "PackageType": 1,
-                    "ItemName": "bfv5_footer_band_1800x1000.png"
-                  }
-                }
-              },
-              "scaling": {
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspace": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
                 "expr": {
                   "Literal": {
-                    "Value": "'Fit'"
+                    "Value": "'#0E1C2D'"
                   }
                 }
               }

@@ -547,7 +547,6 @@ def build_home():
 # ================================================================ WELCOME + QUESTIONS
 # Both are one screen (1800x1000, FitToPage): the welcome page is the cover, the questions page the menu.
 SH = 1000
-BG_SHORT = "bfv5_footer_band_1800x1000.png"
 
 
 def _logo(res, name):
@@ -603,37 +602,150 @@ def _sentence(q):
     return (q[0] + q[1:].lower()).replace(" a instead of b", " A instead of B")
 
 
+# ---------------------------------------------------------------- questions page: dark bento grid
+# Executive summary is the tall orange "start here" tile; the chapters with deep dives are tiles that list them;
+# risk / benefits / governance (no deep dives) are wide bars. Every tile is one click to its chapter: a transparent
+# button lies over the tile's text, and the deep-dive row buttons lie over that.
+TILE, TILE_LINE, ROW, BADGE = "#15263B", "#22344D", "#1B2E46", "#2A3F5C"
+SOFT_INK, MUTED_INK = "#AEB8C7", "#8A97AB"
+ICON = {"exec": "exec", "portfolio": "portfolio", "finance": "finance", "resources": "resources",
+        "schedule": "schedule", "risk": "risk", "benefits": "benefits", "governance": "governance"}
+INSIDE = {"exec": ["KPI pulse", "Decisions this month", "Health matrix", "Status trend", "Chapter scorecard"]}
+
+
+def _ghost(text, target, tip, font="#FFFFFF", size=10, margin=12, hover="#FFFFFF"):
+    """Button with no fill of its own: the tile or row drawn under it shows through; hover lightens it."""
+    btn = nav_button(text, target, tip, fill=INK, hover=hover, press=hover, font=font, size=size, align="left",
+                     margin=margin)
+    fills = btn["objects"]["fill"]
+    fills[1]["properties"]["transparency"] = pbir.n(100)
+    fills[2]["properties"]["transparency"] = pbir.n(90)
+    fills[3]["properties"]["transparency"] = pbir.n(80)
+    return btn
+
+
+def _text(pg, x, y, w, h, text, style, key, align=None):
+    pg.add(x, y, w, h, textbox([[(text, style)]], align=align), key=key)
+
+
+def _icon(pg, x, y, ck, fill, key):
+    pg.add(x, y, 44, 44, shape(fill, radius=10), key=f"{key}_icobg")
+    pg.add(x + 9, y + 9, 26, 26, image(f"rail-{ICON[ck]}-white.png", f"{ck} icon"), key=f"{key}_ico")
+
+
+def _arrow(pg, x, y, fill, ink, key):
+    pg.add(x, y, 40, 40, shape(fill, radius=20), key=f"{key}_arrow")
+    _text(pg, x, y + 4, 40, 32, "→", st("Segoe UI", 14, ink, True), f"{key}_arrow_t", align="center")
+
+
+def _headline(pg, x, y, w, h, ck, bg, ink, key):
+    hl = headline(CARD_TEXT[ck][1], bg=bg, border=bg, size=10, colour=ink)
+    hl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
+    pg.add(x, y, w, h, hl, key=key)
+
+
+def _deep_row(pg, x, y, w, m, row, badge, badge_ink, ink, key):
+    c = layout._code(NAMES[m])
+    pg.add(x, y, w, 30, shape(row, radius=8), key=f"{key}_bg")
+    pg.add(x + 8, y + 5, 30, 20, shape(badge, radius=6), key=f"{key}_badge")
+    _text(pg, x + 8, y + 3, 30, 22, f"{c[0]}{c[1]}", st("Segoe UI", 8, badge_ink, True), f"{key}_code", align="center")
+    pg.add(x, y, w, 30, layout._alt(_ghost(_sentence(QUESTIONS[m]), PID[m], f"Open {NAMES[m]}", font=ink, size=10,
+                                           margin=46), f"Open {NAMES[m]}"), key=f"{key}_btn")
+
+
+def _deep(ck):
+    code = layout._code(NAMES[ck])[0]
+    return [m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == code and m != ck]
+
+
+def _tile(pg, x, y, w, h, k, ck):
+    code = layout._code(NAMES[ck])
+    key = f"t{k}"
+    pg.add(x, y, w, h, shape(TILE, radius=14, line=TILE_LINE), key=f"{key}_bg")
+    _icon(pg, x + 24, y + 20, ck, TILE_LINE, key)
+    _arrow(pg, x + w - 64, y + 20, ORANGE, "#FFFFFF", key)
+    _text(pg, x + 20, y + 76, w - 40, 24, f"{code[0]} · {code[2].upper()}", st("Segoe UI Semibold", 9, MUTED_INK, True),
+          f"{key}_lbl")
+    _text(pg, x + 20, y + 98, w - 40, 44, _sentence(QUESTIONS[ck]), st("DIN", 17, "#FFFFFF", True), f"{key}_q")
+    _headline(pg, x + 14, y + 140, w - 28, 46, ck, TILE, SOFT_INK, f"{key}_hl")
+    pg.add(x, y, w, h, layout._alt(_ghost("", PID[ck], f"Open {NAMES[ck]}"), f"Open {NAMES[ck]}"), key=f"{key}_go")
+    for j, m in enumerate(_deep(ck)):
+        _deep_row(pg, x + 20, y + 196 + j * 38, w - 40, m, ROW, BADGE, ORANGE, "#E5EAF1", f"{key}_d{j}")
+
+
+def _start_tile(pg, x, y, w, h, ck):
+    code = layout._code(NAMES[ck])
+    key = "t0"
+    pg.add(x, y, w, h, shape(ORANGE, radius=14), key=f"{key}_bg")
+    _text(pg, x + 20, y + 22, 220, 26, "START HERE", st("Segoe UI Semibold", 10, "#FFFFFF", True), f"{key}_start")
+    _arrow(pg, x + w - 64, y + 20, "#FFFFFF", ORANGE, key)
+    _icon(pg, x + 24, y + 60, ck, "#EE8455", key)
+    _text(pg, x + 20, y + 118, w - 40, 24, f"{code[0]} · {code[2].upper()}", st("Segoe UI Semibold", 9, "#FFFFFF", True),
+          f"{key}_lbl")
+    _text(pg, x + 20, y + 142, w - 40, 60, _sentence(QUESTIONS[ck]), st("DIN", 28, "#FFFFFF", True), f"{key}_q")
+    _headline(pg, x + 14, y + 204, w - 28, 50, ck, ORANGE, "#FFFFFF", f"{key}_hl")
+    pg.add(x, y, w, h, layout._alt(_ghost("", PID[ck], f"Open {NAMES[ck]}"), f"Open {NAMES[ck]}"), key=f"{key}_go")
+    for j, m in enumerate(_deep(ck)):
+        _deep_row(pg, x + 20, y + 268 + j * 40, w - 40, m, "#EC7A4A", "#F3A27C", "#FFFFFF", "#FFFFFF", f"{key}_d{j}")
+    # what the chapter holds, as chips at the foot of the tile
+    cy = y + h - 150
+    _text(pg, x + 20, cy, w - 40, 24, "INSIDE THIS CHAPTER", st("Segoe UI Semibold", 9, "#FFFFFF", True), f"{key}_in")
+    cx, cy = x + 24, cy + 32
+    for j, chip in enumerate(INSIDE[ck]):
+        cw_ = round(len(chip) * 7.2 + 30)
+        if cx + cw_ > x + w - 20:
+            cx, cy = x + 24, cy + 36
+        pg.add(cx, cy, cw_, 28, shape(ORANGE, radius=14, line="#F6B79A"), key=f"{key}_chip{j}")
+        _text(pg, cx, cy + 2, cw_, 24, chip, st("Segoe UI", 9, "#FFFFFF"), f"{key}_chip{j}_t", align="center")
+        cx += cw_ + 8
+
+
+def _bar(pg, x, y, w, h, k, ck):
+    code = layout._code(NAMES[ck])
+    key = f"t{k}"
+    pg.add(x, y, w, h, shape(TILE, radius=14, line=TILE_LINE), key=f"{key}_bg")
+    _icon(pg, x + 20, y + (h - 44) / 2, ck, TILE_LINE, key)
+    _text(pg, x + 80, y + 18, 420, 24, f"{code[0]} · {code[2].upper()}", st("Segoe UI Semibold", 9, MUTED_INK, True),
+          f"{key}_lbl")
+    _text(pg, x + 80, y + 42, 440, 44, _sentence(QUESTIONS[ck]), st("DIN", 17, "#FFFFFF", True), f"{key}_q")
+    _headline(pg, x + 520, y + 16, w - 520 - 84, h - 32, ck, TILE, SOFT_INK, f"{key}_hl")
+    _arrow(pg, x + w - 64, y + (h - 40) / 2, ORANGE, "#FFFFFF", key)
+    pg.add(x, y, w, h, layout._alt(_ghost("", PID[ck], f"Open {NAMES[ck]}"), f"Open {NAMES[ck]}"), key=f"{key}_go")
+
+
 def build_questions():
-    pg = Page(PID["questions"], NAMES["questions"], W, SH, background_image=BG_SHORT, display_option="FitToPage")
-    header(pg, "questions", "START", "WHICH QUESTION DO YOU HAVE?",
-           "Each button opens the dashboard that answers it: orange opens the chapter, white goes deeper.", [])
-    pg.add(W - 16 - 220, 20, 220, 36, nav_button("‹  Welcome", PID["welcome"], "Back to the welcome page",
-                                                 fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY,
-                                                 outline=BORDER), key="back_welcome")
-    cols, gap, y0 = 4, 12, 96
-    cw = (1768 - gap * (cols - 1)) / cols
-    ch = (SH * 0.90 - 12 - y0 - gap) / 2          # clear of the footer band's orange rule
-    for k, ck in enumerate(CHAPTERS):
-        cx, cy = 16 + (k % cols) * (cw + gap), y0 + (k // cols) * (ch + gap)
-        code = layout._code(NAMES[ck])
-        pg.add(cx, cy, cw, ch, shape("#FFFFFF", radius=8, line=BORDER), key=f"q_bg{k}")
-        pg.add(cx + 14, cy + 10, cw - 28, 28, textbox([[(f"{code[0]} · {code[2].upper()}", st("DIN", 13, ORANGE, True))]]),
-               key=f"q_t{k}")
-        pg.add(cx + 14, cy + 42, cw - 28, 46, nav_button(f"{_sentence(QUESTIONS[ck])}  ›", PID[ck], f"Open {NAMES[ck]}",
-                                                         size=13, align="left"), key=f"q_main{k}")
-        hl = headline(CARD_TEXT[ck][1], bg="#FFFFFF", border="#FFFFFF", size=10)
-        hl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
-        pg.add(cx + 8, cy + 94, cw - 16, 70, hl, key=f"q_hl{k}")
-        deep = [m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == code[0] and m != ck]
-        if deep:
-            pg.add(cx + 14, cy + 168, cw - 28, 22, textbox([[("GO DEEPER", st("Segoe UI Semibold", 9, MUTED, True))]]),
-                   key=f"q_deep_lbl{k}")
-        for j, m in enumerate(deep):
-            c = layout._code(NAMES[m])
-            pg.add(cx + 14, cy + 192 + j * 42, cw - 28, 36,
-                   nav_button(f"{c[0]}{c[1]}   {_sentence(QUESTIONS[m])}  ›", PID[m], f"Open {NAMES[m]}",
-                              fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY, size=11, align="left",
-                              outline=BORDER), key=f"q_deep{k}_{m}")
+    pg = Page(PID["questions"], NAMES["questions"], W, SH, background_colour=INK, display_option="FitToPage")
+    pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(INK), "transparency": pbir.n(0)}}]
+    pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
+    back = home_icon_button(PID["home"])
+    back["visualContainerObjects"]["visualLink"][0]["properties"]["tooltip"] = s("Back to the decision center")
+    pg.add(10, 26, 60, 58, back, key="home")
+    _text(pg, 80, 26, 600, 26, "START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
+    _text(pg, 80, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
+    n_q = len(CHAPTERS) + sum(len(_deep(ck)) for ck in CHAPTERS)
+    _text(pg, 80, 104, 1100, 28, f"{len(CHAPTERS)} chapters, {n_q} questions. Click a tile to open its chapter, "
+                                 "a row to go one level deeper.", st("Segoe UI", 11, SOFT_INK), "subtitle")
+    pg.add(W - 32 - 186 - 14 - 180, 52, 180, 46,
+           nav_button("‹  Welcome", PID["welcome"], "Back to the welcome page", fill=INK, hover="#1B2C42",
+                      press="#22344D", font="#FFFFFF", size=11, outline="#FFFFFF", radius=23), key="back_welcome")
+    pg.add(W - 32 - 186, 52, 186, 46, nav_button("Decision Center  ›", PID["home"], "Open the decision center",
+                                                 size=11, radius=23), key="go_home")
+    G, top, bottom = 14, 150, 900
+    cw = (1768 - 3 * G) / 4
+    rh = (bottom - top - G) / 2
+    col = [16 + c * (cw + G) for c in range(4)]
+    chap = dict(zip([layout._code(NAMES[k])[0] for k in CHAPTERS], CHAPTERS))
+    _start_tile(pg, col[0], top, cw, bottom - top, chap["1"])
+    for k, (num, cx, cy) in enumerate([("2", col[1], top), ("3", col[2], top), ("4", col[3], top),
+                                       ("5", col[1], top + rh + G)], start=1):
+        _tile(pg, cx, cy, cw, rh, k, chap[num])
+    bh = (rh - 2 * G) / 3
+    for j, num in enumerate("678"):
+        _bar(pg, col[2], top + rh + G + j * (bh + G), 2 * cw + G, bh, 5 + j, chap[num])
+    pg.add(16, 930, 1768, 1, shape(TILE_LINE), key="foot_rule")
+    pg.add(16, 944, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
+    _text(pg, W - 16 - 600, 952, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK), "foot_right",
+          align="right")
     return pg
 
 
@@ -1064,7 +1176,8 @@ def path_errors(out):
 def layout_errors(built):
     errs = []
     for pg in built:
-        limit = round(pg.page["height"] * 0.928)        # top of the footer band (the welcome page keeps it clear too)
+        banded = "image" in pg.page["objects"].get("background", [{}])[0].get("properties", {})
+        limit = round(pg.page["height"] * (0.928 if banded else 1))   # top of the footer band, if the page has one
         for vc in pg.visuals:
             p = vc["position"]
             if p["x"] < 0 or p["x"] + p["width"] > W + 0.5 or p["y"] + p["height"] > limit:
