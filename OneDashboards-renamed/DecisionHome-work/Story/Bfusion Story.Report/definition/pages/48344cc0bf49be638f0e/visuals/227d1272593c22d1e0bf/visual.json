@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "227d1272593c22d1e0bf",
   "position": {
-    "x": 16.0,
+    "x": 16,
     "y": 224,
     "z": 2900,
-    "width": 244.0,
+    "width": 244,
     "height": 90,
     "tabOrder": 1600
   },
@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'On schedule (active)'"
+                  "Value": "'Reported on schedule (active)'"
                 }
               }
             },
@@ -194,7 +194,20 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'KPI: On schedule (active)'"
+                  "Value": "'KPI: Reported on schedule (active)'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

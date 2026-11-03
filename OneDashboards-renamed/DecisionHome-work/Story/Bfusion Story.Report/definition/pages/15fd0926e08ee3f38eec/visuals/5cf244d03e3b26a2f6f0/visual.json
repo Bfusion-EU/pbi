@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "5cf244d03e3b26a2f6f0",
   "position": {
-    "x": 16.0,
+    "x": 16,
     "y": 224,
     "z": 2600,
-    "width": 244.0,
+    "width": 244,
     "height": 90,
     "tabOrder": 1300
   },
@@ -199,6 +199,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'KPI: Governance score'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

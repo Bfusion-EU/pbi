@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "4cf8266ea42044c80c30",
   "position": {
-    "x": 270.0,
+    "x": 270,
     "y": 224,
     "z": 2700,
-    "width": 244.0,
+    "width": 244,
     "height": 90,
     "tabOrder": 1400
   },
@@ -195,6 +195,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'KPI: Critical / high (heat ≥ 9)'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

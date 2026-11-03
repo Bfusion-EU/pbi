@@ -50,7 +50,7 @@ RETURN
         80, FORMAT ( [Story | Baseline · Finish Slip (days)], "+0" ) & " days vs baseline",
         70, [Story | Slip · Reason],
         50, "No status report for " & FORMAT ( [Story | Status · Days Since Report], "0" ) & " days",
-        40, FORMAT ( [Story | Project · Failing Rules], "0" ) & " Plan Insights rule(s) failing" )""")
+        40, FORMAT ( [Story | Project · Failing Rules], "0" ) & IF ( [Story | Project · Failing Rules] = 1, " Plan Insights rule failing", " Plan Insights rules failing" ) )""")
 _add("Act Colour", T, f"""
 VAR _s = [{hm("Act Score")}]
 RETURN IF ( ISBLANK ( _s ), BLANK (), IF ( _s >= 80, "{C_RED}", "{C_AMBER}" ) )""", folder=FOLDER + "\\Colours")

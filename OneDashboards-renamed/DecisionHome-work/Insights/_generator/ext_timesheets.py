@@ -199,7 +199,7 @@ RETURN
             & IF ( _u > 0, FORMAT ( _u, "0%" ) & " of booked time went to projects with no schedule. ", "" )
             & SWITCH (
                 TRUE (),
-                _miss > 0, _miss & " person(s) with committed work booked no time. Action: chase the missing timesheets.",
+                _miss > 0, _miss & IF ( _miss = 1, " person with committed work booked", " people with committed work booked" ) & " no time. Action: chase the missing timesheets.",
                 _wait > 0, FORMAT ( _wait, "#,##0" ) & " h not yet approved. Action: chase the approvers.",
                 _u > 0.2, "Action: put the unplanned work into the resource plans.",
                 "Time is in and approved."

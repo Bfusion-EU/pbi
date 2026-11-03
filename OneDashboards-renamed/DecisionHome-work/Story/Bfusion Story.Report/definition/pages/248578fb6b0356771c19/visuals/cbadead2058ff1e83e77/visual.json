@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "cbadead2058ff1e83e77",
   "position": {
-    "x": 120.0,
+    "x": 120,
     "y": 402,
     "z": 3000,
-    "width": 220.0,
+    "width": 220,
     "height": 72,
     "tabOrder": 1100
   },
@@ -121,6 +121,19 @@
         }
       ],
       "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
         {
           "properties": {
             "show": {

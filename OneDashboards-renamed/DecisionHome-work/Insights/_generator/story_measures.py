@@ -66,7 +66,15 @@ T, D, I = "Text", "Double", "Integer"
 MEASURES = []
 
 
+# Euro amounts shown on KPI cards: the € sign comes from the format string, the card picks K / M (polish.py)
+MONEY_EUR = {"Story | Finance EAC", "Story | Budget At Completion", "Story | Actual Cost", "Story | EAC Variance",
+             "Story | Budget To Date", "Story | Plan Budget", "Story | Benefits Due To Date",
+             "Story | Benefits At Completion"}
+
+
 def add(name, dtype, expr, fmt=None, folder="Story", desc=None):
+    if name in MONEY_EUR:
+        fmt = "€#,##0;-€#,##0;€0"
     MEASURES.append({"name": name, "dataType": dtype, "expression": expr.strip(), "formatString": fmt,
                      "displayFolder": folder, "description": desc})
 
@@ -188,7 +196,7 @@ RETURN
             & {pct("DIVIDE ( _v, _bac )", "+0.0%;-0.0%")} & "). To date: actuals " & {money("_a")} & " against "
             & {money("_btd")} & " budgeted (" & {pct("DIVIDE ( _a, _btd )")} & "). "
             & IF ( _n > 0,
-                FORMAT ( _n, "0" ) & " project(s) have an EAC above budget; the largest overrun is " & _tn & " (+" & {money("_tv")} & ").",
+                FORMAT ( _n, "0" ) & IF ( _n = 1, " project has", " projects have" ) & " an EAC above budget; the largest overrun is " & _tn & " (+" & {money("_tv")} & ").",
                 "No project has an EAC above its budget." )
     )""", folder="Story\\Headlines")
 
@@ -238,7 +246,7 @@ RETURN
     FORMAT ( _n, "0" ) & " active projects across " & FORMAT ( COALESCE ( _p, 0 ), "0" ) & " portfolios; the plans carry "
         & {money("_b")} & " of plan-field budget. " & {pct("_al")} & " of it sits in Strong/Extreme-aligned work; the largest share goes to "
         & _tn & " (" & {pct("DIVIDE ( _tb, _b )")} & "). " & {pct("_ot")} & " of active projects report On Track overall" & {NOT_RATED} & " and "
-        & FORMAT ( _prop, "0" ) & " proposal(s) wait in the pipeline."
+        & FORMAT ( _prop, "0" ) & IF ( _prop = 1, " proposal waits", " proposals wait" ) & " in the pipeline."
 """, folder="Story\\Headlines")
 
 # ------------------------------------------------------------------ resources (organisation-wide; D-01)
@@ -424,9 +432,9 @@ VAR _top =
             NOT ISBLANK ( DimProject[Id] ) && [@d] > 0 ),
         [@d], DESC, DimProject[Id], ASC )
 RETURN
-    {pct("_ot")} & " of active projects are on schedule; " & FORMAT ( _ar, "0" ) & " are at risk and " & FORMAT ( _sl, "0" )
-        & " are off track. " & FORMAT ( _od, "#,0" ) & " project tasks are overdue and " & FORMAT ( _ms, "0" )
-        & " milestone(s) fall due in the next 30 days. "
+    {pct("_ot")} & " of active projects are on schedule; " & FORMAT ( _ar, "0" ) & IF ( _ar = 1, " is", " are" ) & " at risk and " & FORMAT ( _sl, "0" )
+        & IF ( _sl = 1, " is", " are" ) & " off track. " & FORMAT ( _od, "#,0" ) & " project tasks are overdue and " & FORMAT ( _ms, "0" )
+        & IF ( _ms = 1, " milestone falls", " milestones fall" ) & " due in the next 30 days. "
         & IF ( COALESCE ( _b, 0 ) = 0, "No active project has a baseline, so slippage cannot be measured yet.",
             FORMAT ( _late, "0" ) & " of " & FORMAT ( _b, "0" ) & " baselined active projects finish later than their baseline"
                 & IF ( COUNTROWS ( _top ) > 0,
@@ -490,7 +498,7 @@ VAR _top =
         [@e], DESC, DimProject[Program Name], ASC )
 RETURN
     FORMAT ( _r, "0" ) & " active project risks (" & FORMAT ( _ch, "0" ) & " critical or high on impact × probability) carry an exposure score of "
-        & FORMAT ( COALESCE ( _e, 0 ), "#,0" ) & ", and " & FORMAT ( _i, "0" ) & " issue(s) are open. "
+        & FORMAT ( COALESCE ( _e, 0 ), "#,0" ) & ", and " & FORMAT ( _i, "0" ) & IF ( _i = 1, " issue is", " issues are" ) & " open. "
         & IF ( COUNTROWS ( _top ) > 0,
             "Exposure is concentrated in " & MAXX ( _top, DimProject[Program Name] ) & " ("
                 & {pct("DIVIDE ( MAXX ( _top, [@e] ), _e )")} & "). ", "" )
@@ -557,7 +565,7 @@ RETURN
                     & {pct("DIVIDE ( _a, _due )")} & ")." )
             & IF ( COUNTROWS ( _top ) > 0,
                 " Best value for money: " & MAXX ( _top, [@n] ) & " (" & FORMAT ( MAXX ( _top, [@x] ), "0.0" ) & "×).", "" )
-            & " " & FORMAT ( COALESCE ( _neg, 0 ), "0" ) & " project(s) with an EAC have no planned benefit."
+            & " " & FORMAT ( COALESCE ( _neg, 0 ), "0" ) & IF ( _neg = 1, " project with an EAC has", " projects with an EAC have" ) & " no planned benefit."
     )""", folder="Story\\Headlines")
 
 # ------------------------------------------------------------------ executive
@@ -581,7 +589,7 @@ RETURN
     FORMAT ( _n, "0" ) & " active projects, " & {pct("_ot")} & " on track" & {NOT_RATED} & ". EAC is "
         & {pct("_vp", "+0.0%;-0.0%;0.0%")} & " versus budget at completion. Organisation-wide, people are " & {pct("_u")}
         & " utilised (" & FORMAT ( _o, "0" ) & " above 100% in at least one month) and " & FORMAT ( _ch, "0" )
-        & " critical/high risks are open. This month's focus: " & _focus & "."
+        & IF ( _ch = 1, " critical/high risk is", " critical/high risks are" ) & " open. This month's focus: " & _focus & "."
 """, folder="Story\\Headlines")
 add("Story | Exec Action Money", T, f"""
 VAR _n = [Story | Projects Over Budget]
@@ -594,7 +602,7 @@ VAR _top =
         [@v], DESC, DimProject[Id], ASC )
 RETURN
     IF ( _n > 0,
-        "1 · Money — review the " & FORMAT ( _n, "0" ) & " project(s) whose EAC is above budget — start with " & MAXX ( _top, [@n] )
+        "1 · Money — review the " & FORMAT ( _n, "0" ) & IF ( _n = 1, " project whose EAC is", " projects whose EAC is" ) & " above budget — start with " & MAXX ( _top, [@n] )
             & " (+" & {money("MAXX ( _top, [@v] )")} & ").",
         "1 · Money — EAC is within budget on every project — protect the contingency and release unused budget." )
 """, folder="Story\\Actions")
@@ -612,8 +620,8 @@ VAR _ch = [Story | Critical High Risks]
 VAR _od = [Story | Overdue Tasks]
 RETURN
     IF ( _ch > 0,
-        "3 · Risk — escalate " & FORMAT ( _ch, "0" ) & " critical/high risk(s) to their owners and clear " & FORMAT ( _od, "#,0" ) & " overdue task(s).",
-        "3 · Risk — no critical or high risk is open — " & FORMAT ( _od, "#,0" ) & " overdue task(s) remain to clear." )
+        "3 · Risk — escalate " & FORMAT ( _ch, "0" ) & IF ( _ch = 1, " critical/high risk", " critical/high risks" ) & " to their owners and clear " & FORMAT ( _od, "#,0" ) & IF ( _od = 1, " overdue task.", " overdue tasks." ),
+        "3 · Risk — no critical or high risk is open — " & FORMAT ( _od, "#,0" ) & IF ( _od = 1, " overdue task remains", " overdue tasks remain" ) & " to clear." )
 """, folder="Story\\Actions")
 
 

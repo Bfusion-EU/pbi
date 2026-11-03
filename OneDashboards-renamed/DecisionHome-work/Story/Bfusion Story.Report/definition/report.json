@@ -314,6 +314,93 @@
         },
         "type": "Categorical",
         "howCreated": "User"
+      },
+      {
+        "name": "2ad1bf2cc73aed172e77",
+        "ordinal": 9,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "t",
+              "Entity": "DimProject",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "t"
+                              }
+                            },
+                            "Property": "Name"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'NIKO Test 2'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'MSP Test'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Test PSR'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Test Timesheet'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Temlate Test'"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
       }
     ]
   },
@@ -846,108 +933,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "bfv5_footer_band_1800x1800.png",
-          "path": "bfv5_footer_band_1800x1800.png",
-          "type": "Image"
-        },
-        {
-          "name": "bfv5_footer_band_1800x1000.png",
-          "path": "bfv5_footer_band_1800x1000.png",
-          "type": "Image"
-        },
-        {
-          "name": "OnePlan_logo_-_dark_background9901469509814106.png",
-          "path": "OnePlan_logo_-_dark_background9901469509814106.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-benefits-grey.png",
-          "path": "rail-benefits-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-benefits-white.png",
-          "path": "rail-benefits-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-cc-grey.png",
-          "path": "rail-cc-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-cc-white.png",
-          "path": "rail-cc-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-exec-grey.png",
-          "path": "rail-exec-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-exec-white.png",
-          "path": "rail-exec-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-finance-grey.png",
-          "path": "rail-finance-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-finance-white.png",
-          "path": "rail-finance-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-governance-grey.png",
-          "path": "rail-governance-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-governance-white.png",
-          "path": "rail-governance-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-portfolio-grey.png",
-          "path": "rail-portfolio-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-portfolio-white.png",
-          "path": "rail-portfolio-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-resources-grey.png",
-          "path": "rail-resources-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-resources-white.png",
-          "path": "rail-resources-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-risk-grey.png",
-          "path": "rail-risk-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-risk-white.png",
-          "path": "rail-risk-white.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-schedule-grey.png",
-          "path": "rail-schedule-grey.png",
-          "type": "Image"
-        },
-        {
-          "name": "rail-schedule-white.png",
-          "path": "rail-schedule-white.png",
+          "name": "bfusion_logo.png",
+          "path": "bfusion_logo.png",
           "type": "Image"
         },
         {
@@ -956,8 +943,8 @@
           "type": "CustomTheme"
         },
         {
-          "name": "bfusion_logo.png",
-          "path": "bfusion_logo.png",
+          "name": "bfv5_footer_band_1800x1800.png",
+          "path": "bfv5_footer_band_1800x1800.png",
           "type": "Image"
         },
         {
@@ -1118,6 +1105,51 @@
         {
           "name": "brief-spot-trophy.png",
           "path": "brief-spot-trophy.png",
+          "type": "Image"
+        },
+        {
+          "name": "OnePlan_logo_-_dark_background9901469509814106.png",
+          "path": "OnePlan_logo_-_dark_background9901469509814106.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-benefits-white.png",
+          "path": "rail-benefits-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-exec-white.png",
+          "path": "rail-exec-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-finance-white.png",
+          "path": "rail-finance-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-governance-white.png",
+          "path": "rail-governance-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-portfolio-white.png",
+          "path": "rail-portfolio-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-resources-white.png",
+          "path": "rail-resources-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-risk-white.png",
+          "path": "rail-risk-white.png",
+          "type": "Image"
+        },
+        {
+          "name": "rail-schedule-white.png",
+          "path": "rail-schedule-white.png",
           "type": "Image"
         }
       ]

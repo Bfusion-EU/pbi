@@ -269,13 +269,13 @@ RETURN
             & IF ( NOT ISBLANK ( _ontime ), "; " & FORMAT ( _ontime, "0%" ) & " of timesheets submitted on time", "" ) & ". "
             & SWITCH (
                 TRUE (),
-                _miss > 0, _miss & " missing resource-week(s) (committed work, no timesheet)"
+                _miss > 0, _miss & IF ( _miss = 1, " missing resource-week", " missing resource-weeks" ) & " (committed work, no timesheet)"
                     & IF ( NOT ISBLANK ( _who ), ", most for " & _who, "" ) & ". Action: chase the missing timesheets.",
-                _wait > 0, _wait & " timesheet(s) waiting on "
+                _wait > 0, _wait & IF ( _wait = 1, " timesheet waiting on ", " timesheets waiting on " )
                     & IF ( _appr = "" || ISBLANK ( _appr ), "an approver (no timesheet manager set)", _appr )
                     & IF ( NOT ISBLANK ( _oldest ), ", oldest " & _oldest & " days", "" ) & ". Action: chase the approver.",
-                _ret > 0, _ret & " timesheet(s) returned and not resubmitted. Action: get them resubmitted.",
-                _draft > 0, _draft & " timesheet(s) still in draft. Action: remind the owners to submit.",
+                _ret > 0, _ret & IF ( _ret = 1, " timesheet returned", " timesheets returned" ) & " and not resubmitted. Action: get them resubmitted.",
+                _draft > 0, _draft & IF ( _draft = 1, " timesheet still", " timesheets still" ) & " in draft. Action: remind the owners to submit.",
                 "Everything is in and approved."
             )
     )""", folder=FOLDER)

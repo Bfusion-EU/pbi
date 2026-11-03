@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "4dd70db0a586894984f0",
   "position": {
-    "x": 1032.0,
+    "x": 1032,
     "y": 224,
     "z": 3300,
-    "width": 244.0,
+    "width": 244,
     "height": 90,
     "tabOrder": 2000
   },
@@ -195,6 +195,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'KPI: Overdue tasks'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "6906c917343340b60639",
   "position": {
-    "x": 905.0,
+    "x": 905,
     "y": 224,
     "z": 3300,
     "width": 212.25,
@@ -73,6 +73,13 @@
               "expr": {
                 "Literal": {
                   "Value": "0D"
+                }
+              }
+            },
+            "labelPrecision": {
+              "expr": {
+                "Literal": {
+                  "Value": "1L"
                 }
               }
             }
@@ -195,6 +202,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'KPI: Budget to date'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

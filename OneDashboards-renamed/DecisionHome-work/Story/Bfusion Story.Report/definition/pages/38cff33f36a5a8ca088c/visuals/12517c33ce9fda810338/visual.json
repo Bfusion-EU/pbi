@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "12517c33ce9fda810338",
   "position": {
-    "x": 16.0,
+    "x": 16,
     "y": 224,
     "z": 2600,
-    "width": 244.0,
+    "width": 244,
     "height": 90,
     "tabOrder": 1300
   },
@@ -73,6 +73,13 @@
               "expr": {
                 "Literal": {
                   "Value": "0D"
+                }
+              }
+            },
+            "labelPrecision": {
+              "expr": {
+                "Literal": {
+                  "Value": "1L"
                 }
               }
             }
@@ -195,6 +202,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'KPI: Planned benefits'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

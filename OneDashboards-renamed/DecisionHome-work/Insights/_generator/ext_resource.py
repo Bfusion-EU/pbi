@@ -166,9 +166,9 @@ RETURN
                 FORMAT ( _c, "#,0" ) & " h of capacity, " & FORMAT ( COALESCE ( _s, 0 ), "#,0" )
                     & " h scheduled on project plans  →  " & {pct("_u")} & " utilised"
                     & IF ( ISBLANK ( _g ), "", " (goal " & FORMAT ( _g, "0%" ) & ")" )
-                    & "; above 100% in " & FORMAT ( _mo, "0" ) & " month(s), " & FORMAT ( COALESCE ( _f, 0 ), "#,0" )
+                    & "; above 100% in " & FORMAT ( _mo, "0" ) & IF ( _mo = 1, " month, ", " months, " ) & FORMAT ( COALESCE ( _f, 0 ), "#,0" )
                     & " h still free. " )
-            & FORMAT ( _ot, "0" ) & " open task(s) assigned, " & FORMAT ( _od, "0" ) & " overdue. "
+            & FORMAT ( _ot, "0" ) & IF ( _ot = 1, " open task assigned, ", " open tasks assigned, " ) & FORMAT ( _od, "0" ) & " overdue. "
             & IF ( ISBLANK ( _a ) && COALESCE ( _sw, 0 ) = 0, "No timesheet hours and nothing scheduled in the timesheet weeks. ",
                 FORMAT ( COALESCE ( _a, 0 ), "#,0" ) & " approved timesheet h against " & FORMAT ( COALESCE ( _sw, 0 ), "#,0" )
                     & " h scheduled in the same weeks. " )

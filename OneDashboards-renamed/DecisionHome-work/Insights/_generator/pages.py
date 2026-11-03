@@ -524,7 +524,7 @@ def build_schedule():
                        PROJ_SLICERS, "Story | Schedule Headline")
     section(pg, Y1, 1, "Delivery confidence", "Reported health of active projects first, then what the project work plans say.")
     kpi_row(pg, Y1K, [
-        ("Story | On Schedule %", "On schedule (active)"),
+        ("Story | On Schedule %", "Reported on schedule (active)"),
         ("Story | Schedule At Risk", "Schedule at risk", {"value_colour": AMBER}),
         ("Story | Schedule Off Track", "Schedule off track", {"value_colour": RED}),
         ("Story | Late vs Baseline KPI", "Late vs baseline (active)", {"value_colour": AMBER, "size": KPI_TEXT_PT}),

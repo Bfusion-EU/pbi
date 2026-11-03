@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "6bd079e4fc99477a66c6",
   "position": {
-    "x": 524.0,
+    "x": 524,
     "y": 224,
     "z": 3200,
-    "width": 244.0,
+    "width": 244,
     "height": 90,
     "tabOrder": 1900
   },
@@ -73,6 +73,13 @@
               "expr": {
                 "Literal": {
                   "Value": "0D"
+                }
+              }
+            },
+            "labelPrecision": {
+              "expr": {
+                "Literal": {
+                  "Value": "1L"
                 }
               }
             }
@@ -195,6 +202,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'KPI: Plan-field budget'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

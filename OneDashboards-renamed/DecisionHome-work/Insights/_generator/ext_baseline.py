@@ -312,8 +312,8 @@ RETURN
             & IF ( ISBLANK ( _cv ), "No baseline in view holds a cost", "Cost " & FORMAT ( _cv, "+0%;-0%;0%" ) & " against baseline" )
             & IF ( ISBLANK ( _hv ), ". ", ", hours " & FORMAT ( _hv, "+0%;-0%;0%" ) & ". " )
             & IF ( _b < _n,
-                FORMAT ( _n - _b, "0" ) & IF ( {SEL}, " project(s) had no baseline yet on that date.",
-                    " project(s) have no baseline and cannot be tracked." ), "" ) )""",
+                FORMAT ( _n - _b, "0" ) & IF ( {SEL}, IF ( _n - _b = 1, " project had", " projects had" ) & " no baseline yet on that date.",
+                    IF ( _n - _b = 1, " project has", " projects have" ) & " no baseline and cannot be tracked." ), "" ) )""",
      desc="One-sentence answer: how far the plans moved from the baseline, and the worst case.")
 
 _add("Insight Coverage", T, f"""
@@ -353,7 +353,7 @@ RETURN
             "Cost — plan " & {money(f'[{bm("Plan Cost vs Baseline")}]')} & " against a baseline of " & {money("_cb")}
                 & " (" & FORMAT ( _cp, "+0.0%;-0.0%;0.0%" ) & ")"
                 & IF ( _cp > 0.05, ": above the 5% tolerance, explain it before the next board.", IF ( _cv > 0, ": inside tolerance.", ": on or under budget." ) )
-                & IF ( _nocost > 0, " " & FORMAT ( _nocost, "0" ) & " baselined project(s) hold no cost in the baseline.", "" ) ) )""")
+                & IF ( _nocost > 0, " " & FORMAT ( _nocost, "0" ) & IF ( _nocost = 1, " baselined project holds", " baselined projects hold" ) & " no cost in the baseline.", "" ) ) )""")
 _add("Insight Effort", T, f"""
 VAR _hb = [{bm("Baseline Hours")}]
 VAR _hp = [{bm("Hours Variance %")}]
@@ -380,7 +380,7 @@ VAR _tn = CALCULATE ( SELECTEDVALUE ( DimProject[Name] ), TREATAS ( SELECTCOLUMN
 VAR _tv = MAXX ( _t, [@v] )
 RETURN
     IF ( _r = 0, "Re-baselining — no project in view has re-baselined: every deviation is measured against the original plan.",
-        "Re-baselining — " & FORMAT ( _r, "0" ) & " project(s) saved more than one baseline (" & _tn & ": " & FORMAT ( _tv, "0" )
+        "Re-baselining — " & FORMAT ( _r, "0" ) & IF ( _r = 1, " project", " projects" ) & " saved more than one baseline (" & _tn & ": " & FORMAT ( _tv, "0" )
             & "). A new baseline resets the variance to zero — pick an earlier date in the Baseline slicer to see the drift since then." )""")
 
 # ====================================================================== page

@@ -22,6 +22,8 @@ import pbir  # noqa: E402
 import pages  # noqa: E402
 import layout  # noqa: E402
 import a11y  # noqa: E402
+import polish  # noqa: E402
+import consistency  # noqa: E402
 import story_measures  # noqa: E402
 import entry  # noqa: E402
 from entry import (back_button, home_button, _crumb_w, _crumb_label, build_welcome, build_questions,  # noqa: E402
@@ -955,6 +957,8 @@ def build_pages():
     copy_interactions(built)
     pages.filter_real_projects(built)
     a11y.apply(built)
+    consistency.apply(built)
+    polish.apply(built)
     return built
 
 
@@ -964,8 +968,14 @@ def custom_types(built):
                    if vc.get("visual", {}).get("visualType", "").startswith(("bfusion", "portfolioRoadmap"))})
 
 
+# Test plans in the OnePlan demo tenant, by exact name (a substring match would also hide 'Latest...', 'Attestation...'):
+# hidden until they are archived in OnePlan
+TEST_PROJECTS = ["NIKO Test 2", "MSP Test", "Test PSR", "Test Timesheet", "Temlate Test"]
+NO_TEST_PROJECTS = {**pbir.f_in("DimProject", "Name", TEST_PROJECTS, exclude=True), "ordinal": 9, "howCreated": "User"}
+
+
 def write(built):
-    out = build.write_report(NAME, built, pbir.BOOKMARKS, OUT_DIR)
+    out = build.write_report(NAME, built, pbir.BOOKMARKS, OUT_DIR, extra_filters=[NO_TEST_PROJECTS])
     # custom visual packages: report.json resource packages + the CustomVisuals folder, only those in use
     used = custom_types(built)
     ref = json.loads((SRC / "definition" / "report.json").read_text(encoding="utf-8"))
@@ -1048,7 +1058,7 @@ if __name__ == "__main__":
         _load = build.load_model
         build.load_model = lambda: (_load()[0], _load()[1] | inh)
         e = build.check(pages_, out) or 0
-        more = layout_errors(pages_) + reach_errors(pages_) + path_errors(out)
+        more = layout_errors(pages_) + reach_errors(pages_) + path_errors(out) + polish.errors(pages_) + consistency.errors(pages_)
         for m in more:
             print(m)
         tot = e + len(more)

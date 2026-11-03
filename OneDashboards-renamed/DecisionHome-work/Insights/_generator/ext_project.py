@@ -200,9 +200,10 @@ RETURN
             & IF ( ISBLANK ( _e ), "No EAC in the financial plan yet. ",
                 "Expected to land at " & {money("_e")} & " against a budget of " & {money("_b")}
                     & IF ( ISBLANK ( _v ), "", " (" & FORMAT ( _v, "+0%;-0%;0%" ) & ")" ) & ". " )
-            & FORMAT ( _r, "0" ) & " active risk(s), " & FORMAT ( _i, "0" ) & " open issue(s) and " & FORMAT ( _od, "0" )
-            & " overdue task(s); next milestone: " & [{pm("Next Milestone")}] & ". "
-            & IF ( _f > 0, FORMAT ( _f, "0" ) & " Plan Insights rule(s) fail — fix those before trusting the numbers.",
+            & FORMAT ( _r, "0" ) & IF ( _r = 1, " active risk, ", " active risks, " ) & FORMAT ( _i, "0" )
+            & IF ( _i = 1, " open issue and ", " open issues and " ) & FORMAT ( _od, "0" )
+            & IF ( _od = 1, " overdue task", " overdue tasks" ) & "; next milestone: " & [{pm("Next Milestone")}] & ". "
+            & IF ( _f > 0, FORMAT ( _f, "0" ) & IF ( _f = 1, " Plan Insights rule fails", " Plan Insights rules fail" ) & " — fix those before trusting the numbers.",
                 "All Plan Insights checks pass." ) )""",
     folder=FOLDER, desc="One-sentence briefing on the drilled-through project.")
 

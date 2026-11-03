@@ -372,12 +372,12 @@ RETURN
     IF ( {mref("Has Previous Month")} = 0,
         "Only one month of status reports so far (" & _lbl & ") — nothing to compare yet.",
         IF ( _ch = 0, "In " & _lbl & " no project changed against " & _plb & ".",
-            "In " & _lbl & " versus " & _plb & ": " & FORMAT ( _w, "0" ) & " project(s) got worse and "
-                & FORMAT ( _i, "0" ) & " improved; " & FORMAT ( _dm, "0" ) & " finish date(s) moved ("
+            "In " & _lbl & " versus " & _plb & ": " & FORMAT ( _w, "0" ) & IF ( _w = 1, " project got worse and ", " projects got worse and " )
+                & FORMAT ( _i, "0" ) & " improved; " & FORMAT ( _dm, "0" ) & IF ( _dm = 1, " finish date moved (", " finish dates moved (" )
                 & FORMAT ( _nd, "+0;-0;0" ) & " days net); forecast " & IF ( _fn >= 0, "+", "−" ) & {money("_fna")}
                 & "; active risks " & FORMAT ( _rk, "+0;-0;0" ) & "; " & {mref("New Closed KPI")} & "." )
             & IF ( _nc > 0, " " & FORMAT ( _nc, "0" )
-                & " active project(s) have no report yet as of " & _plb & ".", "" ) )""",
+                & IF ( _nc = 1, " active project has", " active projects have" ) & " no report yet as of " & _plb & ".", "" ) )""",
     folder="Story\\Headlines")
 
 # ------------------------------------------------------------------ reporting discipline
@@ -485,8 +485,8 @@ RETURN
             & IF ( ISBLANK ( _fd ), "",
                 "Between reports the forecast moved " & IF ( _fd >= 0, "+", "−" ) & {money("_fda")} & " and active risks "
                     & FORMAT ( _rd, "+0;-0;0" ) & ". " )
-            & FORMAT ( _nr, "0" ) & " project(s) have not reported in " & FORMAT ( {ref("Stale Days")}, "0" )
-            & " days and " & FORMAT ( _os, "0" ) & " report(s) are still unsubmitted."
+            & FORMAT ( _nr, "0" ) & IF ( _nr = 1, " project has", " projects have" ) & " not reported in " & FORMAT ( {ref("Stale Days")}, "0" )
+            & " days and " & FORMAT ( _os, "0" ) & IF ( _os = 1, " report is", " reports are" ) & " still unsubmitted."
     )""", folder="Story\\Headlines")
 
 
