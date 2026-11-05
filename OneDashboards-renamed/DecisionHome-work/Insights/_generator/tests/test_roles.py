@@ -145,3 +145,23 @@ def test_pmo_report_has_home_and_no_dangling_links(tmp_path):
     r = _build(["--role", "pmo", "--check"], tmp_path)
     assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
     assert "Home — Decision center" in _report_pages(tmp_path / "Story PMO.Report")
+
+
+def test_launcher_links_every_role_and_the_full_story(tmp_path):
+    links = tmp_path / "links.json"
+    links.write_text(json.dumps({"app_id": "APP", "reports": {k: k.upper() for k in app_links.KEYS}}),
+                     encoding="utf-8")
+    env = {**__import__("os").environ, "BFSTORY_APP_LINKS": str(links)}
+    r = subprocess.run([sys.executable, "launcher.py", "--out", str(tmp_path), "--check"], cwd=GEN, env=env,
+                       capture_output=True, text=True, encoding="utf-8")
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
+    urls = []
+    for f in (tmp_path / "Story Launcher.Report").glob("definition/pages/*/visuals/*/visual.json"):
+        for vl in json.loads(f.read_text(encoding="utf-8")).get("visual", {}).get(
+                "visualContainerObjects", {}).get("visualLink", []):
+            if "webUrl" in vl["properties"]:
+                urls.append(vl["properties"]["webUrl"]["expr"]["Literal"]["Value"].strip("'"))
+    q = roles.QUESTIONS_PAGE_ID
+    assert sorted(urls) == sorted([f"https://app.powerbi.com/groups/me/apps/APP/reports/{k.upper()}/{q}"
+                                   for k in roles.ROLES] +
+                                  [f"https://app.powerbi.com/groups/me/apps/APP/reports/FULL/{roles.WELCOME_PAGE_ID}"])
