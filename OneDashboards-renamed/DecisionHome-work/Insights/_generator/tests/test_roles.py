@@ -15,31 +15,45 @@ FULL = dict(bfstory.PAGES)
 def test_modeller_pages_are_renumbered_as_chapters():
     assert roles.role_pages(roles.ROLES["modeller"], FULL) == [
         ("questions", "Questions — where to start"),
-        ("brief_selection", "Brief · Selection & Funding Line"), ("selection", "1 · Selection & Funding Line"),
-        ("brief_scenarios", "Brief · Scenarios & Trade-offs"), ("scenarios", "2 · Scenarios & Trade-offs"),
-        ("brief_constraints", "Brief · Constraints & Sequencing"), ("constraints", "3 · Constraints & Sequencing"),
-        ("brief_resources", "Brief · Resources"), ("resources", "4 · Resources"),
+        ("brief_portfolio", "Brief · Portfolio"), ("portfolio", "1 · Portfolio"),
+        ("brief_selection", "Brief · Selection & Funding Line"), ("selection", "2 · Selection & Funding Line"),
+        ("brief_scenarios", "Brief · Scenarios & Trade-offs"), ("scenarios", "3 · Scenarios & Trade-offs"),
+        ("brief_constraints", "Brief · Constraints & Sequencing"), ("constraints", "4 · Constraints & Sequencing"),
+        ("brief_resources", "Brief · Resources"), ("resources", "5 · Resources"),
     ]
 
 
 def test_deep_dives_get_letters_and_pmo_gets_home_after_questions():
     ppm = roles.role_pages(roles.ROLES["ppm"], FULL)
     assert ("health", "1b · Portfolio 360 & Health") in ppm
+    assert ("benefits", "2c · Benefits & Value") in ppm
     assert ("budgetrisk", "3c · Budget Risk & Early Warning") in ppm
+    assert ("roadmap", "1d · Roadmap & Delivery") in roles.role_pages(roles.ROLES["pm"], FULL)
     pmo = [k for k, _ in roles.role_pages(roles.ROLES["pmo"], FULL)]
     assert pmo[:2] == ["questions", "home"]
-    assert pmo[2:] == ["brief_governance", "governance", "recon", "brief_psr", "psr", "brief_timesheets", "timesheets"]
+    assert pmo[2:] == ["brief_exec", "exec", "roadmap", "brief_schedule", "schedule", "psr", "brief_risk", "risk",
+                       "brief_governance", "governance", "recon", "brief_timesheets", "timesheets"]
 
 
 def test_agreed_page_split():
     keys = {r: {k for k, _ in roles.role_pages(roles.ROLES[r], FULL) if k != "questions" and not k.startswith("brief_")}
             for r in roles.ROLES}
-    assert keys["ppm"] == {"exec", "health", "roadmap", "drift", "portfolio", "finance", "fintree", "budgetrisk",
-                           "risk", "benefits"}
-    assert keys["modeller"] == {"selection", "scenarios", "constraints", "resources"}
-    assert keys["pm"] == {"schedule", "critical", "psr", "mywork", "risk", "kpigrid"}
-    assert keys["resources"] == {"resources", "fte", "org", "timesheets", "selection"}
-    assert keys["pmo"] == {"home", "governance", "recon", "psr", "timesheets"}
+    assert keys["ppm"] == {"exec", "health", "roadmap", "drift", "portfolio", "selection", "benefits", "finance",
+                           "fintree", "budgetrisk", "schedule", "critical", "risk"}
+    assert keys["modeller"] == {"portfolio", "selection", "scenarios", "constraints", "resources"}
+    assert keys["pm"] == {"schedule", "critical", "psr", "roadmap", "finance", "mywork", "risk", "kpigrid"}
+    assert keys["resources"] == {"resources", "fte", "org", "timesheets", "mywork", "selection", "constraints"}
+    assert keys["pmo"] == {"home", "exec", "roadmap", "schedule", "psr", "risk", "governance", "recon", "timesheets"}
+
+
+def test_key_visuals_reach_the_roles_that_need_them():
+    """Gantt, roadmap, schedule risk forecast and risk radar come with the pages that carry them."""
+    gantt, roadmap, srf, radar = {"schedule", "mywork", "psr"}, {"roadmap"}, {"schedule"}, {"risk"}
+    keys = {r: {k for k, _ in roles.role_pages(roles.ROLES[r], FULL)} for r in roles.ROLES}
+    assert {r for r in keys if keys[r] & gantt} == {"ppm", "pm", "resources", "pmo"}
+    for need in (roadmap, srf, radar):
+        assert {r for r in keys if keys[r] & need} == {"ppm", "pm", "pmo"}
+    assert all(len(roles.ROLES[r].chapters) <= 5 for r in roles.ROLES)
 
 
 def test_report_names_are_short():
@@ -188,5 +202,17 @@ def test_role_chapters_are_visible_tabs(tmp_path):
         pj = json.loads(f.read_text(encoding="utf-8"))
         if pj.get("visibility") != "HiddenInViewMode":
             shown.add(pj["displayName"])
-    assert {"1 · Selection & Funding Line", "2 · Scenarios & Trade-offs", "3 · Constraints & Sequencing",
-            "4 · Resources"} <= shown
+    assert {"1 · Portfolio", "2 · Selection & Funding Line", "3 · Scenarios & Trade-offs",
+            "4 · Constraints & Sequencing", "5 · Resources"} <= shown
+
+
+def test_ppm_tabs_are_questions_and_chapters_only(tmp_path):
+    r = _build(["--role", "ppm"], tmp_path)
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
+    shown = set()
+    for f in (tmp_path / "Story PPM.Report").glob("definition/pages/*/page.json"):
+        pj = json.loads(f.read_text(encoding="utf-8"))
+        if pj.get("visibility") != "HiddenInViewMode":
+            shown.add(pj["displayName"])
+    assert shown == {"Questions — where to start", "1 · Executive Summary", "2 · Portfolio", "3 · Financials",
+                     "4 · Schedule", "5 · Risk"}

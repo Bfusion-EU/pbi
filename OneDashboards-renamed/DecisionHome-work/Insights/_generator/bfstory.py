@@ -1151,10 +1151,13 @@ def build_pages():
                  rail=roles.rail(ROLE) if ROLE else None, art=roles.ART if ROLE else None)
     consistency.apply(built)
     polish.apply(built)
-    if ROLE is not None:             # a deep dive promoted to a chapter is a visible tab in its role report
-        for p in built:
-            if p.id in {PID[c] for c in CHAPTERS}:
+    if ROLE is not None:             # in a role report the tabs are Questions, Home and the role's chapters only:
+        tabs = {PID[c] for c in CHAPTERS} | {PID[k] for k in ("questions", "home") if k in PID}
+        for p in built:              # a deep dive promoted to a chapter shows, a chapter used as deep dive hides
+            if p.id in tabs:
                 p.page.pop("visibility", None)
+            else:
+                p.page["visibility"] = "HiddenInViewMode"
     return built
 
 

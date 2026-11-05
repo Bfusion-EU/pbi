@@ -7,7 +7,7 @@
     "z": 3200,
     "width": 417.0,
     "height": 213.0,
-    "tabOrder": 600
+    "tabOrder": 700
   },
   "visual": {
     "visualType": "card",
@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
+                      "Schema": "extension",
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "PMO | Governance Headline"
+                  "Property": "Story | Exec Headline"
                 }
               },
-              "queryRef": "_Measures.PMO | Governance Headline",
-              "nativeQueryRef": "PMO | Governance Headline"
+              "queryRef": "_Measures.Story | Exec Headline",
+              "nativeQueryRef": "Story | Exec Headline"
             }
           ]
         }

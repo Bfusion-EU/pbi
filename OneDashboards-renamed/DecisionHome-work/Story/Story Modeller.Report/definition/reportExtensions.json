@@ -12205,6 +12205,135 @@
           }
         },
         {
+          "name": "Story | Brief · Portfolio 1 Colour",
+          "dataType": "Text",
+          "expression": "\"#E8612A\"",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'proposals in the pipeline': no judgement."
+        },
+        {
+          "name": "Story | Brief · Portfolio 2 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Aligned Budget %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.5, \"#D64545\", IF ( _v < 0.7, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'of budget on strongly aligned work': ('hi', 0.7, 0.5).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 3 Colour",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Plan Variance %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 0.05, \"#D64545\", IF ( _v >= 0.0001, \"#E0A100\", \"#2E9E6A\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Dot colour for the takeaway 'plan forecast against plan budget': ('lo', 0.0001, 0.05).",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Variance %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio Verdict",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Portfolio 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Portfolio 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Portfolio 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"ACT\", IF ( _a > 0, \"WATCH\", IF ( _g > 0, \"ON TRACK\", \"NO DATA\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "ACT when a takeaway is red, WATCH when one is amber, else ON TRACK.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio Verdict Colour",
+          "dataType": "Text",
+          "expression": "VAR _r = INT ( [Story | Brief · Portfolio 2 Colour] = \"#D64545\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#D64545\" )\nVAR _a = INT ( [Story | Brief · Portfolio 2 Colour] = \"#E0A100\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#E0A100\" )\nVAR _g = INT ( [Story | Brief · Portfolio 2 Colour] = \"#2E9E6A\" ) + INT ( [Story | Brief · Portfolio 3 Colour] = \"#2E9E6A\" )\nRETURN IF ( _r > 0, \"#D64545\", IF ( _a > 0, \"#E0A100\", IF ( _g > 0, \"#2E9E6A\", \"#8A97AB\" ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "Colour of the verdict pill.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 2 Colour"
+              },
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Portfolio 3 Colour"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 1 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Proposed Projects]\nRETURN IF ( ISBLANK ( _v ), \"–\", IF ( ABS ( _v ) >= 1000000, FORMAT ( _v / 1000000, \"#,##0.0\" ) & \"M\", IF ( ABS ( _v ) >= 10000, FORMAT ( _v / 1000, \"#,##0\" ) & \"K\", FORMAT ( _v, \"#,##0\" ) ) ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Proposed Projects] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Proposed Projects"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 2 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Aligned Budget %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Aligned Budget %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Aligned Budget %"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Portfolio 3 Value",
+          "dataType": "Text",
+          "expression": "VAR _v = [Story | Plan Variance %]\nRETURN IF ( ISBLANK ( _v ), \"–\", FORMAT ( _v, \"+0.0%;-0.0%;0.0%\" ) )",
+          "displayFolder": "Story\\Brief",
+          "description": "[Story | Plan Variance %] as text for the brief: a dash when blank, M / K for large numbers.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Plan Variance %"
+              }
+            ]
+          }
+        },
+        {
           "name": "Story | Brief · Resources 1 Colour",
           "dataType": "Text",
           "expression": "VAR _v = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v > 1, \"#D64545\", IF ( _v < 0.5, \"#E0A100\", \"#2E9E6A\" ) ) )",
