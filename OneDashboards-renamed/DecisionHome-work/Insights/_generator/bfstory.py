@@ -1,7 +1,9 @@
 """Build 'OneDashboards - Bfusion Story': the BFusion custom-visual pack restructured as a story.
 
-    python bfstory.py            # writes ../../Story/Bfusion Story.pbip + .Report
-    python bfstory.py --check    # build + validate JSON schemas, model references and layout
+    python bfstory.py                    # writes ../../Story/Bfusion Story.pbip + .Report (the full story)
+    python bfstory.py --role pmo         # one role report (roles.py): Story PPM / Modeller / PM / Resources / PMO
+    python bfstory.py --check            # build + validate JSON schemas, model references, layout and links
+    python story_all.py --check          # full story + the five role reports + Story Launcher, each in its own process
 
 Same story grammar and navigation as the Insights pack (header AREA | QUESTION? -> orange headline -> ① pulse ->
 ② list to act on -> ③ / ④ the picture and the drivers -> Next chapter), but the pictures are the BFusion custom

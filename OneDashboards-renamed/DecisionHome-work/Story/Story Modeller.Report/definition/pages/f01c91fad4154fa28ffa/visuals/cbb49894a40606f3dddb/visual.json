@@ -1,0 +1,182 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "cbb49894a40606f3dddb",
+  "position": {
+    "x": 96,
+    "y": 262,
+    "z": 2500,
+    "width": 1768.0,
+    "height": 636,
+    "tabOrder": 1200
+  },
+  "visual": {
+    "visualType": "bfusionConstraintSankeyD4E5F6A1B2C3",
+    "query": {
+      "queryState": {
+        "source": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "StrategicAlignment_Value"
+                }
+              },
+              "queryRef": "DimProject.StrategicAlignment_Value",
+              "nativeQueryRef": "StrategicAlignment_Value"
+            }
+          ]
+        },
+        "target": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "BusinessUnit_Value"
+                }
+              },
+              "queryRef": "DimProject.BusinessUnit_Value",
+              "nativeQueryRef": "Business Unit",
+              "active": true,
+              "displayName": "Business Unit"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio",
+              "active": true,
+              "displayName": "Portfolio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Programs",
+              "active": false,
+              "displayName": "Programs"
+            }
+          ]
+        },
+        "flowValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Project | Total EstimatedCost"
+                }
+              },
+              "queryRef": "_Measures.Project | Total EstimatedCost",
+              "nativeQueryRef": "Project | Total EstimatedCost"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Project | Total EstimatedCost"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNDc3MDQ2LCJleHAiOjE4NjE5MTk5OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfOTg1MjRlNDY2ODRhIiwidmVyIjoyfQ.aL4Ef4w5UQM43BzwtgSznYQ4KF4lYflTXpS1mjnWKKoKDdHOvDC21XANdC4xMuRZCVOmSARDH74s0VOpZ0d5CYjJq5aOy9b6irQL7lYC9VSKBfpTORC3FqzmZ00vcuJbHB-rbKpHWN7oZFNqBBw4nxJhcQN9lZCQtZQRVnZ-7iRe2_5vHPD4m2pbkYL-JQx5GZ3lD14ecaExctW1att7W4ngbODiX6bP1uxQdRCknFiOyQq9Sb2tpomv2KB8MBPnw93iaCSsfp98N2tJ-qw_9LIxzVUFZVKLh9bRmlju06y6slWeEC9cMBZFRNKPVphejp9pdZ2MzsFTh5MhFmKcng'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Constraint Sankey visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

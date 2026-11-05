@@ -1,0 +1,332 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "221f28ae915d4a9f869b",
+  "position": {
+    "x": 96,
+    "y": 262,
+    "z": 2900,
+    "width": 1768.0,
+    "height": 636,
+    "tabOrder": 1500
+  },
+  "visual": {
+    "visualType": "bfusionVarianceDriverTree7A3F9C2E1B4D",
+    "query": {
+      "queryState": {
+        "hierarchy": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Portfolio Name"
+                }
+              },
+              "queryRef": "DimProject.Portfolio Name",
+              "nativeQueryRef": "Portfolio",
+              "displayName": "Portfolio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Program Name"
+                }
+              },
+              "queryRef": "DimProject.Program Name",
+              "nativeQueryRef": "Program",
+              "displayName": "Program"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Plan",
+              "displayName": "Plan"
+            }
+          ]
+        },
+        "measures": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget vs Actuals Variance"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget vs Actuals Variance",
+              "nativeQueryRef": "Budget Variance",
+              "displayName": "Budget Variance"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Cost",
+              "nativeQueryRef": "Budget",
+              "displayName": "Budget"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Actual Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Actual Cost",
+              "nativeQueryRef": "Actual Cost",
+              "displayName": "Actual Cost"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Cost - Forecast"
+                }
+              },
+              "queryRef": "_Measures.Finance | Cost - Forecast",
+              "nativeQueryRef": "Cost Forecast",
+              "displayName": "Cost Forecast"
+            }
+          ]
+        },
+        "period": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "DimDate.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNDc3MDQ2LCJleHAiOjE4NjE5MTk5OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfOTg1MjRlNDY2ODRhIiwidmVyIjoyfQ.aL4Ef4w5UQM43BzwtgSznYQ4KF4lYflTXpS1mjnWKKoKDdHOvDC21XANdC4xMuRZCVOmSARDH74s0VOpZ0d5CYjJq5aOy9b6irQL7lYC9VSKBfpTORC3FqzmZ00vcuJbHB-rbKpHWN7oZFNqBBw4nxJhcQN9lZCQtZQRVnZ-7iRe2_5vHPD4m2pbkYL-JQx5GZ3lD14ecaExctW1att7W4ngbODiX6bP1uxQdRCknFiOyQq9Sb2tpomv2KB8MBPnw93iaCSsfp98N2tJ-qw_9LIxzVUFZVKLh9bRmlju06y6slWeEC9cMBZFRNKPVphejp9pdZ2MzsFTh5MhFmKcng'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "state": [
+        {
+          "properties": {
+            "rootKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'m:0'"
+                }
+              }
+            },
+            "expandedKeys": {
+              "expr": {
+                "Literal": {
+                  "Value": "'[\"0\",\"0\\u001fData Analytics Transformation\",\"0\\u001fData Analytics Transformation\\u001fEnterprise Data Platform\"]'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "cues": [
+        {
+          "properties": {
+            "method": {
+              "expr": {
+                "Literal": {
+                  "Value": "'momentum'"
+                }
+              }
+            },
+            "direction": {
+              "expr": {
+                "Literal": {
+                  "Value": "'auto'"
+                }
+              }
+            },
+            "icon": {
+              "expr": {
+                "Literal": {
+                  "Value": "'warning'"
+                }
+              }
+            },
+            "iconSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "colorNeutral": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 4,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "maxMarks": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "insights": [
+        {
+          "properties": {
+            "showVerdict": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "root": [
+        {
+          "properties": {
+            "badDirectionOverrides": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Finance | Budget vs Actuals Variance=negative;Budget Variance=negative'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "tree": [
+        {
+          "properties": {
+            "showMeasures": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Variance Driver Tr visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

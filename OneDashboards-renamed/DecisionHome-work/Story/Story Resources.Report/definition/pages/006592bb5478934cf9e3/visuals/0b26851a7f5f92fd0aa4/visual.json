@@ -1,0 +1,197 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "0b26851a7f5f92fd0aa4",
+  "position": {
+    "x": 986.0,
+    "y": 262,
+    "z": 3300,
+    "width": 878.0,
+    "height": 636,
+    "tabOrder": 1900
+  },
+  "visual": {
+    "visualType": "bfusionResourceEfficiencyBreakdown_2D5CAA9A6CAD4BEDAEEFABB89FC63D1C",
+    "query": {
+      "queryState": {
+        "category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimResource"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimResource.Name",
+              "nativeQueryRef": "ResourceName",
+              "displayName": "ResourceName"
+            }
+          ],
+          "fieldParameters": [
+            {
+              "parameterExpr": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Category"
+                    }
+                  },
+                  "Property": "Category"
+                }
+              },
+              "index": 0,
+              "length": 1
+            }
+          ]
+        },
+        "utilization": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Utilization%"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Utilization%",
+              "nativeQueryRef": "Resource Utilization%"
+            }
+          ]
+        },
+        "scheduledHours": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Total Hours Scheduled"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Total Hours Scheduled",
+              "nativeQueryRef": "ResPlan - Total Hours Scheduled"
+            }
+          ]
+        },
+        "capacityHours": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Capacity | Resource Capacity"
+                }
+              },
+              "queryRef": "_Measures.Capacity | Resource Capacity",
+              "nativeQueryRef": "Resource Capacity"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Capacity | Resource Utilization%"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNDc3MDQ2LCJleHAiOjE4NjE5MTk5OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfOTg1MjRlNDY2ODRhIiwidmVyIjoyfQ.aL4Ef4w5UQM43BzwtgSznYQ4KF4lYflTXpS1mjnWKKoKDdHOvDC21XANdC4xMuRZCVOmSARDH74s0VOpZ0d5CYjJq5aOy9b6irQL7lYC9VSKBfpTORC3FqzmZ00vcuJbHB-rbKpHWN7oZFNqBBw4nxJhcQN9lZCQtZQRVnZ-7iRe2_5vHPD4m2pbkYL-JQx5GZ3lD14ecaExctW1att7W4ngbODiX6bP1uxQdRCknFiOyQq9Sb2tpomv2KB8MBPnw93iaCSsfp98N2tJ-qw_9LIxzVUFZVKLh9bRmlju06y6slWeEC9cMBZFRNKPVphejp9pdZ2MzsFTh5MhFmKcng'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Resource Efficiency Breakdown'"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Resource Efficiency Breakdown visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

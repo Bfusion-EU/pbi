@@ -1,0 +1,203 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "1b5adff98a7d81907630",
+  "position": {
+    "x": 96,
+    "y": 262,
+    "z": 3000,
+    "width": 1768.0,
+    "height": 636,
+    "tabOrder": 1600
+  },
+  "visual": {
+    "visualType": "bfusionBudgetRiskForecast_CustomVisual",
+    "query": {
+      "queryState": {
+        "costCategory": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactCost"
+                    }
+                  },
+                  "Property": "CostCategory"
+                }
+              },
+              "queryRef": "FactCost.CostCategory",
+              "nativeQueryRef": "CostCategory"
+            }
+          ]
+        },
+        "cost": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Finance EAC"
+                }
+              },
+              "queryRef": "_Measures.Story | Finance EAC",
+              "nativeQueryRef": "Story | Finance EAC"
+            }
+          ]
+        },
+        "budget": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Finance | Budget Cost"
+                }
+              },
+              "queryRef": "_Measures.Finance | Budget Cost",
+              "nativeQueryRef": "Finance | Budget Cost"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Finance | Budget Cost"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNDc3MDQ2LCJleHAiOjE4NjE5MTk5OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfOTg1MjRlNDY2ODRhIiwidmVyIjoyfQ.aL4Ef4w5UQM43BzwtgSznYQ4KF4lYflTXpS1mjnWKKoKDdHOvDC21XANdC4xMuRZCVOmSARDH74s0VOpZ0d5CYjJq5aOy9b6irQL7lYC9VSKBfpTORC3FqzmZ00vcuJbHB-rbKpHWN7oZFNqBBw4nxJhcQN9lZCQtZQRVnZ-7iRe2_5vHPD4m2pbkYL-JQx5GZ3lD14ecaExctW1att7W4ngbODiX6bP1uxQdRCknFiOyQq9Sb2tpomv2KB8MBPnw93iaCSsfp98N2tJ-qw_9LIxzVUFZVKLh9bRmlju06y6slWeEC9cMBZFRNKPVphejp9pdZ2MzsFTh5MhFmKcng'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "simulationSettings": [
+        {
+          "properties": {
+            "optimisticPct": {
+              "expr": {
+                "Literal": {
+                  "Value": "23D"
+                }
+              }
+            },
+            "pessimisticPct": {
+              "expr": {
+                "Literal": {
+                  "Value": "95D"
+                }
+              }
+            },
+            "method": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lognormal'"
+                }
+              }
+            },
+            "viewMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'scurve'"
+                }
+              }
+            },
+            "distribution": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pert'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataLabelSettings": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Budget Risk Forecast visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

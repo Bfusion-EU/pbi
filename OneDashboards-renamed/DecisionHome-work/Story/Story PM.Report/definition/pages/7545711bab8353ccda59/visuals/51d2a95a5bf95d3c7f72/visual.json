@@ -1,0 +1,645 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "51d2a95a5bf95d3c7f72",
+  "position": {
+    "x": 96,
+    "y": 262,
+    "z": 2900,
+    "width": 1768.0,
+    "height": 636,
+    "tabOrder": 1500
+  },
+  "visual": {
+    "visualType": "bfusionCriticalPathDiagram3A7E5D1F9B2C4E08",
+    "query": {
+      "queryState": {
+        "planName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimProject"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Name"
+            }
+          ]
+        },
+        "taskId": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "Id"
+                }
+              },
+              "queryRef": "DimTask.Id",
+              "nativeQueryRef": "Id"
+            }
+          ]
+        },
+        "taskName": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "Name"
+                }
+              },
+              "queryRef": "DimTask.Name",
+              "nativeQueryRef": "Name1"
+            }
+          ]
+        },
+        "duration": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimTask"
+                        }
+                      },
+                      "Property": "Duration"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.Duration)",
+              "nativeQueryRef": "Sum of Duration"
+            }
+          ]
+        },
+        "predecessors": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "Predecessors"
+                }
+              },
+              "queryRef": "DimTask.Predecessors",
+              "nativeQueryRef": "Predecessors"
+            }
+          ]
+        },
+        "startDate": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "StartDate"
+                }
+              },
+              "queryRef": "DimTask.StartDate",
+              "nativeQueryRef": "StartDate"
+            }
+          ]
+        },
+        "endDate": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "EndDate"
+                }
+              },
+              "queryRef": "DimTask.EndDate",
+              "nativeQueryRef": "EndDate"
+            }
+          ]
+        },
+        "percentDone": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimTask"
+                        }
+                      },
+                      "Property": "PercentDone"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.PercentDone)",
+              "nativeQueryRef": "Sum of PercentDone"
+            }
+          ]
+        },
+        "slack": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "DimTask"
+                        }
+                      },
+                      "Property": "Slack (days)"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Tasks.Slack (days))",
+              "nativeQueryRef": "Sum of Slack (days)"
+            }
+          ]
+        },
+        "status": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "TaskStatus"
+                }
+              },
+              "queryRef": "DimTask.TaskStatus",
+              "nativeQueryRef": "TaskStatus"
+            }
+          ]
+        },
+        "baselineStart": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "BaselineStartDate"
+                }
+              },
+              "queryRef": "DimTask.BaselineStartDate",
+              "nativeQueryRef": "BaselineStartDate"
+            }
+          ]
+        },
+        "baselineEnd": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "EndDate"
+                }
+              },
+              "queryRef": "DimTask.EndDate",
+              "nativeQueryRef": "EndDate"
+            }
+          ]
+        },
+        "parentTaskId": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "ParentTaskId"
+                }
+              },
+              "queryRef": "DimTask.ParentTaskId",
+              "nativeQueryRef": "ParentTaskId"
+            }
+          ]
+        },
+        "resource": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTask"
+                    }
+                  },
+                  "Property": "AssignedResources"
+                }
+              },
+              "queryRef": "DimTask.AssignedResources",
+              "nativeQueryRef": "AssignedResources"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "StartDate"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNDc3MDQ2LCJleHAiOjE4NjE5MTk5OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfOTg1MjRlNDY2ODRhIiwidmVyIjoyfQ.aL4Ef4w5UQM43BzwtgSznYQ4KF4lYflTXpS1mjnWKKoKDdHOvDC21XANdC4xMuRZCVOmSARDH74s0VOpZ0d5CYjJq5aOy9b6irQL7lYC9VSKBfpTORC3FqzmZ00vcuJbHB-rbKpHWN7oZFNqBBw4nxJhcQN9lZCQtZQRVnZ-7iRe2_5vHPD4m2pbkYL-JQx5GZ3lD14ecaExctW1att7W4ngbODiX6bP1uxQdRCknFiOyQq9Sb2tpomv2KB8MBPnw93iaCSsfp98N2tJ-qw_9LIxzVUFZVKLh9bRmlju06y6slWeEC9cMBZFRNKPVphejp9pdZ2MzsFTh5MhFmKcng'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Critical Path Diagram visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "4befa60c2040ce90ced7",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "AssignedResources"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f1ad86421090c3a695b8",
+        "ordinal": 1,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "BaselineStartDate"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2c58e00b3c512330bdaa",
+        "ordinal": 2,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "WorkType"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "DimTask",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "WorkType"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Tasks'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "0ed8a480c65cd701b01e",
+        "ordinal": 3,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "EndDate"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "23a1b07036ec50e007bb",
+        "ordinal": 4,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Id"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "65fbb6f2b797c8a09024",
+        "ordinal": 5,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "33596bcb93bd0108002c",
+        "ordinal": 6,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "525f233c0e63c1e7e97d",
+        "ordinal": 7,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "ParentTaskId"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "99f5e11c14204322ba47",
+        "ordinal": 8,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "Predecessors"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1396dc3f223e261696b0",
+        "ordinal": 9,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "StartDate"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "99a0c6d02a08031b5084",
+        "ordinal": 10,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "Duration"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "8568f54dd700eec2a992",
+        "ordinal": 11,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "PercentDone"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "735b5378c098debb0026",
+        "ordinal": 12,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DimTask"
+                  }
+                },
+                "Property": "Slack (days)"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "7c0fd8822d9505a703ea",
+        "ordinal": 13,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTask"
+              }
+            },
+            "Property": "TaskStatus"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b55f741004490e30636d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimProject"
+              }
+            },
+            "Property": "PlanType"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      }
+    ]
+  }
+}

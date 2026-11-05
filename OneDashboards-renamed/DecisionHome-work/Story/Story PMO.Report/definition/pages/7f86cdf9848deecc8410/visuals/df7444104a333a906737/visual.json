@@ -1,0 +1,592 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "df7444104a333a906737",
+  "position": {
+    "x": 96,
+    "y": 86,
+    "z": 2000,
+    "width": 1768,
+    "height": 72,
+    "tabOrder": 800
+  },
+  "visual": {
+    "visualType": "bfusionKpiTicker7C4A9E2B1D5F",
+    "query": {
+      "queryState": {
+        "values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Governance Score Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Governance Score Now",
+              "nativeQueryRef": "Governance score",
+              "displayName": "Governance score"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Compliance % Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Compliance % Now",
+              "nativeQueryRef": "Compliance",
+              "displayName": "Compliance"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Problems Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Problems Now",
+              "nativeQueryRef": "Problems",
+              "displayName": "Problems"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Warnings Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Warnings Now",
+              "nativeQueryRef": "Warnings",
+              "displayName": "Warnings"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Budget Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Budget Now",
+              "nativeQueryRef": "Budget (reported)",
+              "displayName": "Budget (reported)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Forecast Now"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Forecast Now",
+              "nativeQueryRef": "Forecast (reported)",
+              "displayName": "Forecast (reported)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Timesheet Hours Last Month"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Timesheet Hours Last Month",
+              "nativeQueryRef": "Timesheet hours last month",
+              "displayName": "Timesheet hours last month"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task | Active Late Tasks"
+                }
+              },
+              "queryRef": "_Measures.Task | Active Late Tasks",
+              "nativeQueryRef": "Late tasks",
+              "displayName": "Late tasks"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Timesheet | Awaiting Approval Hours"
+                }
+              },
+              "queryRef": "_Measures.Timesheet | Awaiting Approval Hours",
+              "nativeQueryRef": "Hours awaiting approval",
+              "displayName": "Hours awaiting approval"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | PMO · Plans With Open Status Report"
+                }
+              },
+              "queryRef": "_Measures.Story | PMO · Plans With Open Status Report",
+              "nativeQueryRef": "Plans with a status report not submitted",
+              "displayName": "Plans with a status report not submitted"
+            }
+          ]
+        },
+        "comparison": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Governance Score Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Governance Score Previous",
+              "nativeQueryRef": "Governance score (previous)",
+              "displayName": "Governance score (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Compliance % Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Compliance % Previous",
+              "nativeQueryRef": "Compliance (previous)",
+              "displayName": "Compliance (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Problems Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Problems Previous",
+              "nativeQueryRef": "Problems (previous)",
+              "displayName": "Problems (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Warnings Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Warnings Previous",
+              "nativeQueryRef": "Warnings (previous)",
+              "displayName": "Warnings (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Budget Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Budget Previous",
+              "nativeQueryRef": "Budget (reported) (previous)",
+              "displayName": "Budget (reported) (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Reported Forecast Previous"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Reported Forecast Previous",
+              "nativeQueryRef": "Forecast (reported) (previous)",
+              "displayName": "Forecast (reported) (previous)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Schema": "extension",
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Story | Ticker · Timesheet Hours Month Before"
+                }
+              },
+              "queryRef": "_Measures.Story | Ticker · Timesheet Hours Month Before",
+              "nativeQueryRef": "Timesheet hours last month (previous)",
+              "displayName": "Timesheet hours last month (previous)"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "licenseSettings": [
+        {
+          "properties": {
+            "licenseKey": {
+              "expr": {
+                "Literal": {
+                  "Value": "'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJmdXNpb24tdjEifQ.eyJpc3MiOiJiZnVzaW9uLmV1Iiwic3ViIjoiQkZVU0lPTiIsImF1ZCI6ImJmdXNpb24tdmlzdWFsIiwiaWF0IjoxNzgwNDc3MDQ2LCJleHAiOjE4NjE5MTk5OTksInRpZXIiOiJwcmVtaXVtIiwidHJpYWwiOmZhbHNlLCJsaWMiOiJsaWNfOTg1MjRlNDY2ODRhIiwidmVyIjoyfQ.aL4Ef4w5UQM43BzwtgSznYQ4KF4lYflTXpS1mjnWKKoKDdHOvDC21XANdC4xMuRZCVOmSARDH74s0VOpZ0d5CYjJq5aOy9b6irQL7lYC9VSKBfpTORC3FqzmZ00vcuJbHB-rbKpHWN7oZFNqBBw4nxJhcQN9lZCQtZQRVnZ-7iRe2_5vHPD4m2pbkYL-JQx5GZ3lD14ecaExctW1att7W4ngbODiX6bP1uxQdRCknFiOyQq9Sb2tpomv2KB8MBPnw93iaCSsfp98N2tJ-qw_9LIxzVUFZVKLh9bRmlju06y6slWeEC9cMBZFRNKPVphejp9pdZ2MzsFTh5MhFmKcng'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "ticker": [
+        {
+          "properties": {
+            "speed": {
+              "expr": {
+                "Literal": {
+                  "Value": "40D"
+                }
+              }
+            },
+            "separator": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pipe'"
+                }
+              }
+            },
+            "pauseOnHover": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gap": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "colorSettings": [
+        {
+          "properties": {
+            "backgroundTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "100D"
+                }
+              }
+            },
+            "valueColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#A6B3CC'"
+                    }
+                  }
+                }
+              }
+            },
+            "ruleColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "typography": [
+        {
+          "properties": {
+            "labelFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            },
+            "valueFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "19D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "layout": [
+        {
+          "properties": {
+            "uppercaseLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "showDots": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "variance": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'higherBetter'"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | Ticker · Problems Now"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | Ticker · Warnings Now"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | Ticker · Reported Forecast Now"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Task | Active Late Tasks"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Timesheet | Awaiting Approval Hours"
+          }
+        },
+        {
+          "properties": {
+            "polarity": {
+              "expr": {
+                "Literal": {
+                  "Value": "'lowerBetter'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Story | PMO · Plans With Open Status Report"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BFusion Kpi Ticker visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
