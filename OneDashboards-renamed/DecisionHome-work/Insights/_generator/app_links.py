@@ -1,8 +1,9 @@
 """App links between the Story reports. Fill app_links.json once after the first app publish:
 
     app_id      the id after /apps/ in the app's address
-    reports.*   the APP-SIDE report id after /reports/ when that report is open in the app (it differs from the
-                workspace report id)
+    reports.*   the WORKSPACE report id (the id after /reports/ when the report is open in its workspace). App URLs
+                take the workspace id: an app-side copy id (Power BI REST apps/{id}/reports .id) gives "couldn't
+                find that report"; that API lists the workspace id as originalReportObjectId.
 
 Then rebuild (python story_all.py) and republish the launcher and the role reports. BFSTORY_APP_LINKS points to
 another file (tests)."""
