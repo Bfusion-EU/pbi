@@ -28,6 +28,8 @@ import chrome  # noqa: E402
 import confidence  # noqa: E402
 import story_measures  # noqa: E402
 import entry  # noqa: E402
+import roles  # noqa: E402
+import app_links  # noqa: E402
 from entry import (back_button, home_button, _crumb_w, _crumb_label, build_welcome, build_questions,  # noqa: E402
                    build_brief, BRIEF_TAKEAWAYS)
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, slicer, headline,  # noqa: E402
@@ -105,6 +107,22 @@ NAMES = dict(PAGES)
 PID = {k: uid("bfstory-page", k) for k, _ in PAGES}
 ORDER = [k for k, _ in PAGES]
 CHAPTERS = [k for k, d in PAGES if layout._code(d) and not layout._code(d)[1]]
+FULL_PAGES = list(PAGES)             # the full pack's pages; a role report renumbers a subset of them
+ROLE = None                          # roles.Role while building a role report
+HUB_KEY, HUB_LABEL = "home", "Decision center"   # where breadcrumbs and "Back" go; "questions" in most role reports
+
+
+def apply_role(role):
+    """Rebind the page globals to one role report. Call once, before build_pages(), in a fresh process."""
+    global NAME, PAGES, NAMES, PID, ORDER, CHAPTERS, ROLE, HUB_KEY, HUB_LABEL
+    ROLE = role
+    NAME = role.report
+    PAGES = roles.role_pages(role, dict(FULL_PAGES))
+    NAMES = dict(PAGES)
+    PID = {k: uid("bfstory-page", k) for k, _ in PAGES}
+    ORDER = [k for k, _ in PAGES]
+    CHAPTERS = [k for k, d in PAGES if layout._code(d) and not layout._code(d)[1]]
+    HUB_KEY, HUB_LABEL = ("home", "Decision center") if role.home else ("questions", "Questions")
 
 
 # ================================================================ source pack (custom visuals)
@@ -254,9 +272,9 @@ def nav_row(pg, key):
     members = [k for k, d in PAGES if layout._code(d) and layout._code(d)[0] == c[0]]
     chap = members[0]
     x = 16
-    pg.add(x, NAV_Y, _crumb_w("Decision center"), NAV_H,
-           layout._crumb("Decision center", PID["home"], "Open the decision center"), key="nav_home")
-    x += _crumb_w("Decision center")
+    pg.add(x, NAV_Y, _crumb_w(HUB_LABEL), NAV_H,
+           layout._crumb(HUB_LABEL, PID[HUB_KEY], f"Open the {HUB_LABEL.lower()}"), key="nav_home")
+    x += _crumb_w(HUB_LABEL)
     for k, link in ([(chap, True)] if chap != key else []) + [(key, False)]:
         pg.add(x, NAV_Y, 18, NAV_H, _crumb_label("›", MUTED, bold=False, size=12), key=f"nav_sep_{k}")
         x += 18
@@ -293,7 +311,7 @@ def next_back(pg, key, page=1, of=1):
     if of > 1:
         pg.add(W / 2 - 120, Y_NEXT, 240, 36, textbox([[(f"Page {page} of {of}", st("Segoe UI", 11, MUTED))]],
                                                      align="center"), key="pager")
-    back = (page_id(key, page - 1), f"‹  Page {page - 1} of {of}", "Back to the previous screen of this page")         if page > 1 else (PID["home"], "‹  Decision center", "Back to the home page")
+    back = (page_id(key, page - 1), f"‹  Page {page - 1} of {of}", "Back to the previous screen of this page")         if page > 1 else (PID[HUB_KEY], f"‹  {HUB_LABEL}", "Back to the home page")
     pg.add(16, Y_NEXT, 220, 36, nav_button(back[1], back[0], back[2], fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE,
                                            font=NAVY, outline=BORDER), key="back")
     if page < of:
@@ -435,6 +453,13 @@ CARD_TEXT = {  # chapter -> (question, headline measure)
     "risk": ("What could go wrong?", "Story | Risk Headline"),
     "benefits": ("Will it pay off?", "Story | Benefits Headline"),
     "governance": ("Can we trust the data?", "PMO | Governance Headline"),
+    "selection": ("Which projects make the cut?", "Story | Portfolio Headline"),
+    "scenarios": ("If we fund A instead of B, what do we gain?", "Story | Scenario · Headline"),
+    "constraints": ("What holds the portfolio back?", "Story | Scenario · Headline"),
+    "kpigrid": ("How does each project score?", "Story | Exec Headline"),
+    "mywork": ("What is on my plate?", "Story | Schedule Headline"),
+    "psr": ("Where does this project stand?", "Story | Status · Headline"),
+    "timesheets": ("Are hours logged as planned?", "Story | Schedule Headline"),
 }
 
 
@@ -543,7 +568,11 @@ def _chip(text, target, tip):
                       outline="#C9CED6")
 
 
+WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight"}
+
+
 def build_home():
+    n = WORDS[len(CHAPTERS)]
     pg = Page(PID["home"], NAMES["home"], W, H, background_image=BG)
     KEY_OF[pg.id] = "home"
     header(pg, "home", "BFUSION", "DECISION CENTER",
@@ -561,20 +590,20 @@ def build_home():
     # of the two is visible at any time.
     tw, th = 190, 30
     tx = 16 + 1768 - tw
-    grp = pg.add_group(16, y, 1768, BODY_END - y, "Eight questions", "questions", hidden=True)   # hidden by default
-    grp_show = pg.add_group(tx, y + 2, tw, th, "Show eight questions", "questions_show")
+    grp = pg.add_group(16, y, 1768, BODY_END - y, f"{n.capitalize()} questions", "questions", hidden=True)   # hidden by default
+    grp_show = pg.add_group(tx, y + 2, tw, th, f"Show {n} questions", "questions_show")
     pg.add(16, y, 1768, BODY_END - y, shape("#FFFFFF"), key="q_backing", parent=grp)
-    bm_hide = pbir.bookmark("Hide the eight questions", "bfstory-questions-hide", pg.id, {grp: True, grp_show: False})
-    bm_show = pbir.bookmark("Show the eight questions", "bfstory-questions-show", pg.id, {grp: False, grp_show: True})
-    pg.add(16, y, 1768 - tw - 12, SEC_H, textbox([[(f"{pages.CIRCLED[1]}  Eight questions, one answer each",
+    bm_hide = pbir.bookmark(f"Hide the {n} questions", "bfstory-questions-hide", pg.id, {grp: True, grp_show: False})
+    bm_show = pbir.bookmark(f"Show the {n} questions", "bfstory-questions-show", pg.id, {grp: False, grp_show: True})
+    pg.add(16, y, 1768 - tw - 12, SEC_H, textbox([[(f"{pages.CIRCLED[1]}  {n.capitalize()} questions, one answer each",
                                                      st("Segoe UI Semibold", 15, NAVY, True)),
                                                     ("   Each card is the headline of its chapter, written from the data "
                                                      "in the current filter.", st("Segoe UI", 11, MUTED))]]),
            key="sec2", parent=grp)
     toggle = dict(fill="#FFFFFF", hover="#F3F4F6", press="#E5E7EB", font="#374151", size=10, outline="#C9CED6")
-    pg.add(tx, y + 2, tw, th, pbir.bookmark_button("Hide the questions  ▲", bm_hide, "Hide the eight chapter cards",
+    pg.add(tx, y + 2, tw, th, pbir.bookmark_button("Hide the questions  ▲", bm_hide, f"Hide the {n} chapter cards",
                                                    **toggle), key="q_hide", parent=grp)
-    pg.add(tx, y + 2, tw, th, pbir.bookmark_button("Show the eight questions  ▼", bm_show, "Show the eight chapter cards",
+    pg.add(tx, y + 2, tw, th, pbir.bookmark_button(f"Show the {n} questions  ▼", bm_show, f"Show the {n} chapter cards",
                                                    **toggle), key="q_show", parent=grp_show)
     y += SEC_H
     cols, gap = 4, 12
@@ -1093,11 +1122,14 @@ STORY_BLURBS = {
 
 
 def context():
-    return entry.Context(pid=PID, names=NAMES, pages=PAGES, chapters=CHAPTERS, questions=QUESTIONS,
-                         headline={k: v[1] for k, v in CARD_TEXT.items()}, blurbs=STORY_BLURBS,
-                         title="Bfusion Decision Story", home_label="Decision Center",
-                         inside={"exec": ["KPI pulse", "Decisions this month", "Health matrix", "Status trend",
-                                          "Chapter scorecard"]})
+    common = dict(pid=PID, names=NAMES, pages=PAGES, chapters=CHAPTERS, questions=QUESTIONS,
+                  headline={k: v[1] for k, v in CARD_TEXT.items()}, blurbs=STORY_BLURBS,
+                  inside={"exec": ["KPI pulse", "Decisions this month", "Health matrix", "Status trend",
+                                   "Chapter scorecard"]})
+    if ROLE is None:
+        return entry.Context(**common, title="Bfusion Decision Story", home_label="Decision Center")
+    return entry.Context(**common, title=ROLE.title, home_label="Decision Center" if ROLE.home else "Questions",
+                         art=roles.ART, home_url=app_links.url("launcher", roles.LAUNCHER_PAGE_ID))
 
 
 def build_pages():
@@ -1113,7 +1145,8 @@ def build_pages():
     copy_interactions(built)
     pages.filter_real_projects(built)
     a11y.apply(built)
-    chrome.apply(built, PID, KEY_OF, NAMES, CHAPTERS, Y_BAR)   # after a11y: the rail comes last in tab order
+    chrome.apply(built, PID, KEY_OF, NAMES, CHAPTERS, Y_BAR,      # after a11y: the rail comes last in tab order
+                 rail=roles.rail(ROLE) if ROLE else None, art=roles.ART if ROLE else None)
     consistency.apply(built)
     polish.apply(built)
     return built
@@ -1172,7 +1205,8 @@ def layout_errors(built):
 
 
 def reach_errors(built):
-    """Every page must be reachable in one click from Home or from its chapter page."""
+    """Every page must be reachable in one click from the landing page, Home, Questions, its chapter page or its
+    chapter's brief (a role report without Home opens a chapter from its brief: Questions › Brief › chapter)."""
     links = {}
     for pg in built:
         for vc in pg.visuals:
@@ -1181,14 +1215,27 @@ def reach_errors(built):
                 tgt = vl[0]["properties"].get("navigationSection")
                 if tgt:
                     links.setdefault(pg.id, set()).add(tgt["expr"]["Literal"]["Value"].strip("'"))
+    roots = set().union(*(links.get(PID[r], set()) for r in ("welcome", "home", "questions") if r in PID))
     errs = []
-    for k, _ in PAGES:
-        chap = k if not layout._code(NAMES[k]) else [m for m, d in PAGES if layout._code(d)
-                                                     and layout._code(d)[0] == layout._code(NAMES[k])[0]][0]
-        hubs = (links.get(PID["home"], set()) | links.get(PID["welcome"], set()) | links.get(PID["questions"], set())
-                | links.get(PID[chap], set()))
-        if k != "welcome" and PID[k] not in hubs:
-            errs.append(f"REACH {NAMES[k]}: no link from Welcome, Home or its chapter")
+    for k, _ in PAGES[1:]:                               # PAGES[0] is the page the report opens on
+        c = layout._code(NAMES[k])
+        chap = k if not c else next(m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == c[0])
+        if PID[k] not in roots | links.get(PID[chap], set()) | links.get(PID.get(f"brief_{chap}"), set()):
+            errs.append(f"REACH {NAMES[k]}: no link from the landing page, Home, Questions, its chapter or its brief")
+    return errs
+
+
+def link_errors(built):
+    """Every page-navigation button must open a page of this report (a role report holds a subset of the pages)."""
+    ids = {pg.id for pg in built}
+    errs = []
+    for pg in built:
+        for vc in pg.visuals:
+            for vl in vc.get("visual", {}).get("visualContainerObjects", {}).get("visualLink", []):
+                tgt = vl["properties"].get("navigationSection")
+                v = tgt["expr"]["Literal"]["Value"].strip("'") if tgt else ""
+                if v and v not in ids:
+                    errs.append(f"LINK {pg.display}: {vc['name']} opens page {v}, which is not in this report")
     return errs
 
 
@@ -1205,18 +1252,27 @@ def inherited_measures():
 
 
 if __name__ == "__main__":
+    args = sys.argv[1:]
+    if "--out" in args:
+        OUT_DIR = Path(args[args.index("--out") + 1])
+    if "--role" in args:
+        apply_role(roles.ROLES[args[args.index("--role") + 1]])
     pages_ = build_pages()
     out = write(pages_)
     print(f"built {len(pages_)} pages, {sum(len(p.visuals) for p in pages_)} visuals, "
           f"{len(custom_types(pages_))} custom visual types -> {out}")
-    if "--check" in sys.argv:
+    if "--check" in args:
         inh = inherited_measures()
         for m in sorted(inh):
             print(f"WARN inherited from the source pack, not in the local model snapshot: {m}")
+        if ROLE is not None:
+            for k in app_links.missing():
+                print(f"WARN app_links.json: {k} not filled in (house button has no link yet)")
         _load = build.load_model
         build.load_model = lambda: (_load()[0], _load()[1] | inh)
         e = build.check(pages_, out) or 0
-        more = layout_errors(pages_) + reach_errors(pages_) + path_errors(out) + polish.errors(pages_) + consistency.errors(pages_) + sorted(DROPPED)
+        more = (layout_errors(pages_) + reach_errors(pages_) + link_errors(pages_) + path_errors(out)
+                + polish.errors(pages_) + consistency.errors(pages_) + sorted(DROPPED))
         for m in more:
             print(m)
         tot = e + len(more)

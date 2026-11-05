@@ -47,5 +47,7 @@ def test_briefs_hidden_and_one_visual_name_per_key():
 def test_brief_takeaway_measures_registered():
     import entry
     for c in entry.BRIEF_TAKEAWAYS:
+        if f"brief_{c}" not in pages.PID:      # a Story role-report chapter
+            continue
         for m in entry.brief_measures()[c][0]:
             assert m in pbir.EXTENSION_MEASURES

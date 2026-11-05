@@ -810,7 +810,8 @@ def build_all():
     import entry                     # entry pages read the questions the pages above wrote in their headers
     entry.use(entry_context())
     built.update({"welcome": entry.build_welcome(), "questions": entry.build_questions()})
-    built.update({f"brief_{c}": entry.build_brief(c) for c in entry.BRIEF_TAKEAWAYS})
+    # BRIEF_TAKEAWAYS also holds the chapters of the Story role reports: build only this pack's briefs
+    built.update({f"brief_{c}": entry.build_brief(c) for c in entry.BRIEF_TAKEAWAYS if f"brief_{c}" in PID})
     pages_out = [built[k] for k, _ in PAGES + HIDDEN_PAGES if k in built]
     story = [p for p in pages_out if p.id not in {PID[k] for k, _ in HIDDEN_PAGES}]
     filter_real_projects(story)

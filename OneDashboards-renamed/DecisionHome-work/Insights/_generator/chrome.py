@@ -90,14 +90,15 @@ def _rail(pg, current, pid, limit, rail=None):
         y = TOP + k * STEP
         x = (RAIL_W - TILE) / 2
         on = target == current
+        tag = target if rail else icon   # a role rail may show one icon twice (ART): key its visuals by chapter
         if on:
-            pg.add(x, y, TILE, TILE + 14, shape(ORANGE, radius=10), key=f"rail_on_{icon}")
+            pg.add(x, y, TILE, TILE + 14, shape(ORANGE, radius=10), key=f"rail_on_{tag}")
         pg.add(x + 13, y + 6, 30, 30, image(f"rail-{icon}-{'white' if on else 'grey'}.png", f"{label} icon"),
-               key=f"rail_img_{icon}")
+               key=f"rail_img_{tag}")
         pg.add(0, y + 40, RAIL_W, 24, textbox([[(label, st("Segoe UI", 8, "#FFFFFF" if on else RAIL_INK, on))]],
-                                              align="center"), key=f"rail_lbl_{icon}")
+                                              align="center"), key=f"rail_lbl_{tag}")
         if not on:
-            pg.add(x, y, TILE, TILE + 14, _ghost(pid[target], f"Open {label}"), key=f"rail_btn_{icon}")
+            pg.add(x, y, TILE, TILE + 14, _ghost(pid[target], f"Open {label}"), key=f"rail_btn_{tag}")
 
 
 NO_STRIP = {"recon"}                 # the reconciliation page shows every source itself

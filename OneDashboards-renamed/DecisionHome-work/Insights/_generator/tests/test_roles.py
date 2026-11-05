@@ -87,3 +87,61 @@ def test_chrome_apply_takes_a_rail():
     import inspect
     sig = inspect.signature(chrome.apply)
     assert "rail" in sig.parameters and "art" in sig.parameters
+
+
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
+import tempfile  # noqa: E402
+
+import pytest  # noqa: E402
+
+GEN = Path(__file__).resolve().parents[1]
+
+
+@pytest.fixture
+def tmp_path():
+    """A short build folder: --check fails any file over 259 characters, and pytest's own tmp_path is ~50
+    characters longer than the real Story folder, so the longest custom visual path would fail there only."""
+    d = Path(tempfile.mkdtemp(prefix="bfs"))
+    yield d
+    shutil.rmtree(d, ignore_errors=True)
+
+
+def test_every_role_chapter_has_card_text_and_takeaways():
+    for r in roles.ROLES.values():
+        for ch, _ in r.chapters:
+            assert ch in bfstory.CARD_TEXT, ch
+            assert ch in entry.BRIEF_TAKEAWAYS, ch
+            assert all(k in bfstory.BUILDERS for k, _ in roles.role_pages(r, FULL))
+
+
+def test_takeaway_measures_are_numbers():
+    import story_measures
+    names = {m["name"]: m for m in story_measures.MEASURES}
+    for ch in ("selection", "scenarios", "constraints"):
+        for m, _, _ in entry.BRIEF_TAKEAWAYS[ch]:
+            assert m in entry._MODEL_FORMATS or (m in names and names[m]["formatString"]), m
+
+
+def _build(args, out):
+    return subprocess.run([sys.executable, "bfstory.py", *args, "--out", str(out)], cwd=GEN,
+                          capture_output=True, text=True, encoding="utf-8")
+
+
+def _report_pages(rep):
+    return {json.loads(p.read_text(encoding="utf-8"))["displayName"]: p.parent.name
+            for p in rep.glob("definition/pages/*/page.json")}
+
+
+def test_modeller_report_builds_clean(tmp_path):
+    r = _build(["--role", "modeller", "--check"], tmp_path)
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
+    rep = tmp_path / "Story Modeller.Report"
+    shown = {d.split(" (")[0] for d in _report_pages(rep)}
+    assert shown == {n for _, n in roles.role_pages(roles.ROLES["modeller"], FULL)}
+
+
+def test_pmo_report_has_home_and_no_dangling_links(tmp_path):
+    r = _build(["--role", "pmo", "--check"], tmp_path)
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
+    assert "Home — Decision center" in _report_pages(tmp_path / "Story PMO.Report")

@@ -367,6 +367,21 @@ BRIEF_TAKEAWAYS = {
                    ("Story | PMO · Plans With Open Status Report", "plans with a status report not submitted",
                     ("lo", 1, 10))],
 }
+# Pages that are a chapter in a role report (deep dives in the full pack). The three modelling pages get their own
+# takeaways; the others reuse the takeaways of the chapter they belong to in the full pack.
+BRIEF_TAKEAWAYS.update({
+    "selection": [("Story | Proposed Projects", "proposals in the pipeline", None),
+                  ("Story | Aligned Budget %", "of budget on strongly aligned work", ("hi", 0.7, 0.5)),
+                  ("Story | Scenario · Plans A", "plans funded in scenario A", None)],
+    "scenarios": [("Story | Scenario · Budget Gap % A", "scenario A against its target budget", ("lo", 0.0001, 0.05)),
+                  ("Story | Scenario · Budget Gap % B", "scenario B against its target budget", ("lo", 0.0001, 0.05)),
+                  ("Story | Scenario · Benefits A", "benefits planned in scenario A", None)],
+    "constraints": [("Story | Scenario · Effort A", "hours of effort in scenario A", None),
+                    ("Story | Over-allocated People", "people over-allocated", ("lo", 1, 5)),
+                    ("Story | Utilisation %", "utilisation of capacity", "band")],
+    "kpigrid": BRIEF_TAKEAWAYS["exec"], "mywork": BRIEF_TAKEAWAYS["schedule"], "psr": BRIEF_TAKEAWAYS["schedule"],
+    "timesheets": BRIEF_TAKEAWAYS["resources"],
+})
 _BRIEF_MEASURES = None
 
 
