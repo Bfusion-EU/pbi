@@ -84,9 +84,9 @@ def _ghost(target_pid, tip):
     return layout._alt(v, tip)
 
 
-def _rail(pg, current, pid, limit):
+def _rail(pg, current, pid, limit, rail=None):
     pg.add(0, 0, RAIL_W, limit - 8, shape(RAIL_BG), key="rail_bg")
-    for k, (icon, target, label) in enumerate(RAIL):
+    for k, (icon, target, label) in enumerate(rail or RAIL):
         y = TOP + k * STEP
         x = (RAIL_W - TILE) / 2
         on = target == current
@@ -122,15 +122,16 @@ def _filter_bar(pg, y, chapter, no_strip=False):
                key="confidence_strip")
 
 
-def apply(built, pid, key_of, names, chapters, bar_y):
+def apply(built, pid, key_of, names, chapters, bar_y, rail=None, art=None):
     """Filter bar on every chapter / deep-dive page, then shift the page right and draw the rail."""
+    art = art or {}
     for pg in built:
         key = key_of.get(pg.id)
         current = _chapter_of(key, names, chapters)
         if current is None:
             continue
         if key != "home":
-            _filter_bar(pg, bar_y, current, no_strip=key in NO_STRIP)
+            _filter_bar(pg, bar_y, art.get(current, current), no_strip=key in NO_STRIP)
         for vc in pg.visuals:
             if "parentGroupName" not in vc:
                 vc["position"]["x"] = round(vc["position"]["x"] + RAIL_W, 2)
@@ -142,7 +143,8 @@ def apply(built, pid, key_of, names, chapters, bar_y):
             img = bg["image"]["image"]
             img["name"] = pbir.s(BG_WIDE)
             img["url"]["expr"]["ResourcePackageItem"]["ItemName"] = BG_WIDE
-        _rail(pg, current, pid, FOOTER_TOP.get(pg.page["height"], round(pg.page["height"] * (0.928 if banded else 1))))
+        _rail(pg, current, pid, FOOTER_TOP.get(pg.page["height"], round(pg.page["height"] * (0.928 if banded else 1))),
+              rail)
 
 
 def register(out):

@@ -63,3 +63,27 @@ def test_app_links_blank_until_filled(tmp_path, monkeypatch):
     f.write_text(json.dumps({"app_id": "APP", "reports": {"ppm": "R1"}}), encoding="utf-8")
     assert app_links.url("ppm", "abc") == "https://app.powerbi.com/groups/me/apps/APP/reports/R1/abc"
     assert app_links.url("pm", "abc") == ""
+
+
+import entry  # noqa: E402
+import chrome  # noqa: E402
+
+
+def test_web_ghost_links_or_stays_inert():
+    on = entry.web_ghost("https://x/y", "Open")
+    vl = on["visualContainerObjects"]["visualLink"][0]["properties"]
+    assert vl["type"]["expr"]["Literal"]["Value"] == "'WebUrl'"
+    assert vl["webUrl"]["expr"]["Literal"]["Value"] == "'https://x/y'"
+    off = entry.web_ghost("", "Open")
+    assert "visualLink" not in off["visualContainerObjects"]
+
+
+def test_context_defaults_keep_the_full_pack_behaviour():
+    ctx = entry.Context(pid={}, names={}, pages=[], chapters=[], questions={}, headline={}, blurbs={}, title="t")
+    assert ctx.home_url is None and ctx.art == {}
+
+
+def test_chrome_apply_takes_a_rail():
+    import inspect
+    sig = inspect.signature(chrome.apply)
+    assert "rail" in sig.parameters and "art" in sig.parameters

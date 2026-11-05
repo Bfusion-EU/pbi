@@ -34,6 +34,8 @@ class Context:
     title: str                 # big title on the welcome page
     home_label: str = "Decision Center"
     inside: dict = field(default_factory=dict)   # chapter key -> chips on the questions page start tile
+    art: dict = field(default_factory=dict)      # chapter key -> chapter whose illustration / icon it borrows
+    home_url: str = None                         # None: the pack has a welcome page; else the URL the house opens
 
 
 CTX = None
@@ -73,6 +75,10 @@ def home_button(pg, x, y, size=40, target=None):
     ico = round(size * 0.56)
     pg.add(x + (size - ico) / 2, y + (size - ico) / 2, ico, ico, _logo(illustrations.HOME_FILE, "Home icon"),
            key="home_ico")
+    if target is None and CTX.home_url is not None:
+        tip = "Back to the role overview" if CTX.home_url else "Role overview: link not set yet (app_links.json)"
+        pg.add(x, y, size, size, layout._alt(web_ghost(CTX.home_url, tip, hover=INK), tip), key="home")
+        return
     pg.add(x, y, size, size, layout._alt(_ghost("", target or CTX.pid["welcome"], "Go to the welcome page", hover=INK),
                                          "Go to the welcome page"), key="home")
 
@@ -170,13 +176,24 @@ def _ghost(text, target, tip, font="#FFFFFF", size=10, margin=12, hover="#FFFFFF
     return btn
 
 
+def web_ghost(url, tip, hover="#FFFFFF"):
+    """Transparent button that opens a web URL (another report in the app). No URL yet: no action at all."""
+    btn = _ghost("", "", tip, hover=hover)
+    if url:
+        btn["visualContainerObjects"]["visualLink"] = [{"properties": {
+            "show": b(True), "type": s("WebUrl"), "webUrl": s(url), "tooltip": s(tip)}}]
+    else:
+        btn["visualContainerObjects"].pop("visualLink")
+    return btn
+
+
 def _text(pg, x, y, w, h, text, style, key, align=None):
     pg.add(x, y, w, h, textbox([[(text, style)]], align=align), key=key)
 
 
 def _icon(pg, x, y, ck, fill, key):
     pg.add(x, y, 44, 44, shape(fill, radius=10), key=f"{key}_icobg")
-    pg.add(x + 9, y + 9, 26, 26, image(f"rail-{ICON[ck]}-white.png", f"{ck} icon"), key=f"{key}_ico")
+    pg.add(x + 9, y + 9, 26, 26, image(f"rail-{ICON[CTX.art.get(ck, ck)]}-white.png", f"{ck} icon"), key=f"{key}_ico")
 
 
 def _arrow(pg, x, y, fill, ink, key):
@@ -275,27 +292,37 @@ def build_questions():
     home_button(pg, 76, 36)
     _text(pg, 132, 26, 600, 26, "START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
     _text(pg, 132, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
+    eight = len(CTX.chapters) == 8
     n_q = len(CTX.chapters) + sum(len(_deep(ck)) for ck in CTX.chapters
-                                  if layout._code(CTX.names[ck])[0] not in "678")    # 6-8 are bars: no deep rows
+                                  if not eight or layout._code(CTX.names[ck])[0] not in "678")  # 6-8 are bars
     _text(pg, 132, 104, 1100, 28, f"{len(CTX.chapters)} chapters, {n_q} questions. Click a tile to open its chapter, "
                                  "a row to go one level deeper.", st("Segoe UI", 11, SOFT_INK), "subtitle")
-    pg.add(W - 32 - 186 - 14 - 180, 52, 180, 46,
-           nav_button("‹  Welcome", CTX.pid["welcome"], "Back to the welcome page", fill=INK, hover="#1B2C42",
-                      press="#22344D", font="#FFFFFF", size=11, outline="#FFFFFF", radius=23), key="back_welcome")
-    pg.add(W - 32 - 186, 52, 186, 46, nav_button(f"{CTX.home_label}  ›", CTX.pid["home"], "Open the decision center",
-                                                 size=11, radius=23), key="go_home")
+    if "welcome" in CTX.pid:
+        pg.add(W - 32 - 186 - 14 - 180, 52, 180, 46,
+               nav_button("‹  Welcome", CTX.pid["welcome"], "Back to the welcome page", fill=INK, hover="#1B2C42",
+                          press="#22344D", font="#FFFFFF", size=11, outline="#FFFFFF", radius=23), key="back_welcome")
+    if "home" in CTX.pid:
+        pg.add(W - 32 - 186, 52, 186, 46, nav_button(f"{CTX.home_label}  ›", CTX.pid["home"], "Open the decision center",
+                                                     size=11, radius=23), key="go_home")
     G, top, bottom = 14, 150, 900
-    cw = (1768 - 3 * G) / 4
-    rh = (bottom - top - G) / 2
-    col = [16 + c * (cw + G) for c in range(4)]
-    chap = dict(zip([layout._code(CTX.names[k])[0] for k in CTX.chapters], CTX.chapters))
-    _start_tile(pg, col[0], top, cw, bottom - top, chap["1"])
-    for k, (num, cx, cy) in enumerate([("2", col[1], top), ("3", col[2], top), ("4", col[3], top),
-                                       ("5", col[1], top + rh + G)], start=1):
-        _tile(pg, cx, cy, cw, rh, k, chap[num])
-    bh = (rh - 2 * G) / 3
-    for j, num in enumerate("678"):
-        _bar(pg, col[2], top + rh + G + j * (bh + G), 2 * cw + G, bh, 5 + j, chap[num])
+    if eight:
+        cw = (1768 - 3 * G) / 4
+        rh = (bottom - top - G) / 2
+        col = [16 + c * (cw + G) for c in range(4)]
+        chap = dict(zip([layout._code(CTX.names[k])[0] for k in CTX.chapters], CTX.chapters))
+        _start_tile(pg, col[0], top, cw, bottom - top, chap["1"])
+        for k, (num, cx, cy) in enumerate([("2", col[1], top), ("3", col[2], top), ("4", col[3], top),
+                                           ("5", col[1], top + rh + G)], start=1):
+            _tile(pg, cx, cy, cw, rh, k, chap[num])
+        bh = (rh - 2 * G) / 3
+        for j, num in enumerate("678"):
+            _bar(pg, col[2], top + rh + G + j * (bh + G), 2 * cw + G, bh, 5 + j, chap[num])
+    else:                                               # a role report: one row, the first chapter is "start here"
+        n = len(CTX.chapters)
+        cw = (1768 - G * (n - 1)) / n
+        for k, ck in enumerate(CTX.chapters):
+            x = 16 + k * (cw + G)
+            (_start_tile(pg, x, top, cw, bottom - top, ck) if k == 0 else _tile(pg, x, top, cw, bottom - top, k, ck))
     pg.add(16, 930, 1768, 1, shape(TILE_LINE), key="foot_rule")
     pg.add(16, 944, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
     _text(pg, W - 16 - 600, 952, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK), "foot_right",
@@ -384,6 +411,8 @@ def brief_measures():
     if _BRIEF_MEASURES is None:
         _BRIEF_MEASURES = {}
         for ch, items in BRIEF_TAKEAWAYS.items():
+            if ch not in CTX.chapters:
+                continue
             label = layout._code(CTX.names[ch])[2]
             cols = [_brief_measure(f"{label} {k + 1} Colour", _colour_dax(m, rule), None,
                                    f"Dot colour for the takeaway '{lbl}': {rule or 'no judgement'}.")
@@ -463,12 +492,14 @@ def build_brief(ch):
     pg.page["visibility"] = "HiddenInViewMode"
     pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
     pg.add(1000, 70, illustrations.SCENE_W, illustrations.SCENE_H,
-           _logo(illustrations.scene_file(ch), f"{code[2]} illustration"), key="scene")
+           _logo(illustrations.scene_file(CTX.art.get(ch, ch)), f"{code[2]} illustration"), key="scene")
     # home (welcome page) + breadcrumb + all questions
     pg.add(10, 14, 60, 58, back_button(), key="back")
     home_button(pg, 76, 22, 42)
-    x = _crumb(pg, 130, "Welcome", CTX.pid["welcome"], "Back to the welcome page", "crumb_welcome")
-    x = _crumb(pg, x, "›", "", "then", "crumb_sep1", size=12, w=18)
+    x = 130
+    if "welcome" in CTX.pid:
+        x = _crumb(pg, x, "Welcome", CTX.pid["welcome"], "Back to the welcome page", "crumb_welcome")
+        x = _crumb(pg, x, "›", "", "then", "crumb_sep1", size=12, w=18)
     x = _crumb(pg, x, "Questions", CTX.pid["questions"], "All questions", "crumb_questions")
     x = _crumb(pg, x, "›", "", "then", "crumb_sep2", size=12, w=18)
     here = f"{code[0]} · {code[2]}"
@@ -502,7 +533,7 @@ def build_brief(ch):
     keys = [ch] + _deep(ch)
     if len(keys) == 1:                                  # one-page chapter: offer the next question and the list too
         nxt = CTX.chapters[CTX.chapters.index(ch) + 1] if ch != CTX.chapters[-1] else None
-        keys += [f"brief_{nxt}" if nxt else "home", "questions"]
+        keys += [k for k in [f"brief_{nxt}" if nxt else ("home" if "home" in CTX.pid else None), "questions"] if k]
     n = len(keys)
     gap, ty, th = 18, 560, 340
     tw = (W - 48 - gap * (n - 1)) / n
