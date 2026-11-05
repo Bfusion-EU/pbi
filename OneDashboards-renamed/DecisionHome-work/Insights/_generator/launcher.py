@@ -66,7 +66,7 @@ def build_launcher():
 
 
 def write(pages_, out_dir):
-    out = build.write_report(NAME, pages_, [], out_dir)
+    out = build.write_report(NAME, pages_, [], out_dir, extra_filters=[bfstory.NO_TEST_PROJECTS])
     entry.register_resources(out)
     return out
 

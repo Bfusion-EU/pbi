@@ -63,7 +63,7 @@ def role_pages(role, full_names):
     for n, (ch, deep) in enumerate(role.chapters, 1):
         label = layout._code(full_names[ch])[2]
         out += [(f"brief_{ch}", f"Brief · {label}"), (ch, f"{n} · {label}")]
-        out += [(k, f"{n}{letter} · {layout._code(full_names[k])[2]}") for letter, k in zip("bcdefg", deep)]
+        out += [(k, f"{n}{letter} · {layout._code(full_names[k])[2]}") for letter, k in zip("bcdefg"[:len(deep)], deep, strict=True)]
     return out
 
 

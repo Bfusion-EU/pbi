@@ -1,4 +1,5 @@
 import json
+import pytest
 import sys
 from pathlib import Path
 
@@ -137,6 +138,9 @@ def test_modeller_report_builds_clean(tmp_path):
     r = _build(["--role", "modeller", "--check"], tmp_path)
     assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
     rep = tmp_path / "Story Modeller.Report"
+    q = roles.QUESTIONS_PAGE_ID
+    assert any("MODELLER · START HERE" in f.read_text(encoding="utf-8")
+               for f in rep.glob(f"definition/pages/{q}/visuals/*/visual.json"))
     shown = {d.split(" (")[0] for d in _report_pages(rep)}
     assert shown == {n for _, n in roles.role_pages(roles.ROLES["modeller"], FULL)}
 
@@ -161,7 +165,16 @@ def test_launcher_links_every_role_and_the_full_story(tmp_path):
                 "visualContainerObjects", {}).get("visualLink", []):
             if "webUrl" in vl["properties"]:
                 urls.append(vl["properties"]["webUrl"]["expr"]["Literal"]["Value"].strip("'"))
+    rj = (tmp_path / "Story Launcher.Report" / "definition" / "report.json").read_text(encoding="utf-8")
+    assert bfstory.NO_TEST_PROJECTS["name"] in rj and "NIKO Test 2" in rj
     q = roles.QUESTIONS_PAGE_ID
     assert sorted(urls) == sorted([f"https://app.powerbi.com/groups/me/apps/APP/reports/{k.upper()}/{q}"
                                    for k in roles.ROLES] +
                                   [f"https://app.powerbi.com/groups/me/apps/APP/reports/FULL/{roles.WELCOME_PAGE_ID}"])
+
+
+def test_seventh_deep_dive_raises_instead_of_vanishing():
+    names = {**FULL, **{f"x{i}": FULL["health"] for i in range(7)}}
+    role = roles.Role("t", "Story T", "T", "p", "h", [("exec", [f"x{i}" for i in range(7)])])
+    with pytest.raises(ValueError):
+        roles.role_pages(role, names)

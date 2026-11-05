@@ -290,7 +290,7 @@ def build_questions():
     pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
     pg.add(10, 26, 60, 58, back_button(), key="back")
     home_button(pg, 76, 36)
-    _text(pg, 132, 26, 600, 26, "START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
+    _text(pg, 132, 26, 600, 26, "START HERE" if CTX.home_url is None else f"{CTX.title.upper()} · START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
     _text(pg, 132, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
     eight = len(CTX.chapters) == 8
     n_q = len(CTX.chapters) + sum(len(_deep(ck)) for ck in CTX.chapters
