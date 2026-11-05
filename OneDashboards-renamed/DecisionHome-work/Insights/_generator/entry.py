@@ -251,7 +251,9 @@ def _start_tile(pg, x, y, w, h, ck):
     _icon(pg, x + 24, y + 60, ck, "#EE8455", key)
     _text(pg, x + 20, y + 118, w - 40, 24, f"{code[0]} · {code[2].upper()}", st("Segoe UI Semibold", 9, "#FFFFFF", True),
           f"{key}_lbl")
-    _text(pg, x + 20, y + 142, w - 40, 60, _sentence(CTX.questions[ck]), st("DIN", 28, "#FFFFFF", True), f"{key}_q")
+    q = _sentence(CTX.questions[ck])
+    qsize = 28 if len(q) * 15 <= w - 40 else 20        # 28 pt fits one line only; two lines need 20 pt in 60 px
+    _text(pg, x + 20, y + 142, w - 40, 60, q, st("DIN", qsize, "#FFFFFF", True), f"{key}_q")
     _headline(pg, x + 14, y + 204, w - 28, 50, ck, ORANGE, "#FFFFFF", f"{key}_hl")
     _brief_link(pg, x, y, w, h, ck, key)
     for j, m in enumerate(_deep(ck)):

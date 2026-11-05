@@ -178,3 +178,15 @@ def test_seventh_deep_dive_raises_instead_of_vanishing():
     role = roles.Role("t", "Story T", "T", "p", "h", [("exec", [f"x{i}" for i in range(7)])])
     with pytest.raises(ValueError):
         roles.role_pages(role, names)
+
+
+def test_role_chapters_are_visible_tabs(tmp_path):
+    r = _build(["--role", "modeller"], tmp_path)
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
+    shown = set()
+    for f in (tmp_path / "Story Modeller.Report").glob("definition/pages/*/page.json"):
+        pj = json.loads(f.read_text(encoding="utf-8"))
+        if pj.get("visibility") != "HiddenInViewMode":
+            shown.add(pj["displayName"])
+    assert {"1 · Selection & Funding Line", "2 · Scenarios & Trade-offs", "3 · Constraints & Sequencing",
+            "4 · Resources"} <= shown
