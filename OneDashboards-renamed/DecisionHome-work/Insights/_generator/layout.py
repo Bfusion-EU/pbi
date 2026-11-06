@@ -76,8 +76,20 @@ def _label(display):
     return f"{num}{letter} {name}"
 
 
-def _w(text):
-    return round(len(text) * 7.3 + 32)               # bold Segoe UI 10 pt button: ~7.3 px per character + margins
+def _w(text, size=10):
+    # bold Segoe UI 10 pt button: ~7.3 px per character + margins; wider with the type bump (pbir.fscale)
+    return round(len(text) * 7.3 * pbir.fscale(10) + 32) if size == 10 else round(len(text) * 0.73 * pbir.fs(size) + 32)
+
+
+def strip_layout(labels, crumb_end, right):
+    """Chapter strip, right-aligned so it ends at `right`: (base size, widths, first x). 10 pt (12 with the type bump),
+    smaller only when the strip would run into the breadcrumb that ends at `crumb_end`."""
+    for size in (10, 9, 8):
+        widths = [_w(t, size) for t in labels]
+        x = right - sum(widths) - 6 * (len(labels) - 1)
+        if x >= crumb_end + 8:
+            break
+    return size, widths, x
 
 
 def _crumb_text(text, colour, bold=True, size=10):
@@ -140,15 +152,14 @@ def nav_row(pg, key):
                    key=f"nav_here_{k}")
         x += _w(text)
     if len(members) > 1:
-        widths = [_w(_label(names[m])) for m in members]
-        x = P.W - 16 - sum(widths) - 6 * (len(members) - 1)
+        size, widths, x = strip_layout([_label(names[m]) for m in members], x, P.W - 16)
         for m, w in zip(members, widths):
             cur = m == key
             btn = pbir.nav_button(_label(names[m]), P.PID[m], "You are here" if cur else "Open this page",
                                   fill=pbir.ORANGE if cur else "#FFFFFF",
                                   hover=pbir.ORANGE_DK if cur else pbir.ORANGE_SOFT,
                                   press=pbir.ORANGE_DK if cur else pbir.ORANGE_SOFT,
-                                  font="#FFFFFF" if cur else pbir.NAVY, size=10,
+                                  font="#FFFFFF" if cur else pbir.NAVY, size=size,
                                   outline=None if cur else pbir.BORDER)
             if cur:
                 _alt(btn, f"{_label(names[m])} (current page)")

@@ -4,6 +4,7 @@ Only native Power BI visuals. Every helper returns plain dicts that are
 serialised as-is into definition/pages/<page>/visuals/<visual>/visual.json.
 """
 import hashlib
+from contextlib import contextmanager
 
 VC_SCHEMA = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json"
 PAGE_SCHEMA = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json"
@@ -33,6 +34,53 @@ SLATE = "#A6B3CC"
 TEXT_SAFE = {AMBER: AMBER_TEXT, GREY: GREY_TEXT}  # fill colour -> readable text colour
 KPI_VALUE_PT, KPI_TEXT_PT = 24, 20  # one KPI tile spec: numbers / text values (e.g. "Not recorded")
 
+# Native text is read at 40-55 % (1800-1880 px pages fitted to the Service canvas), so the Story and Insights packs set
+# small text 2 pt larger than the size their builders ask for: fs(8) = 10 ... fs(11) = 13; 12 pt and up unchanged.
+# The helpers below apply fs() themselves, so builders keep passing the base size. The Board Pack (board.py) builds
+# inside font_bump(False) and stays as it was.
+FONT_BUMP = True
+_BUMP = {8: 10, 9: 11, 10: 12, 11: 13}
+
+
+def fs(size):
+    """Point size actually written for a builder's base size."""
+    return _BUMP.get(size, size) if FONT_BUMP else size
+
+
+def fscale(size):
+    """Width factor for text set at base size `size` (1.0 with the bump off): scale every len(text) * k width by it."""
+    return fs(size) / size
+
+
+def text_px(text, size, bold=True):
+    """Estimated width of `text` in Segoe UI at base size `size` (written at fs(size)): ~0.58 em per character bold,
+    0.51 em regular (130 characters of 11 pt fill the 906 px subtitle box), 0.3 em per space."""
+    em = fs(size) * 4 / 3
+    return sum(0.3 * em if c == " " else (0.58 if bold else 0.51) * em for c in text)
+
+
+def button_w(text, size, pad=32):
+    """Width a bold button needs for `text` at base size `size`: text plus the button's margins."""
+    return round(text_px(text, size) + pad)
+
+
+def fit_size(texts, width, sizes, pad=32, bold=True):
+    """First base size in `sizes` (largest first) at which every text fits `width` (text + pad); else the last."""
+    texts = [texts] if isinstance(texts, str) else list(texts)
+    return next((sz for sz in sizes if all(text_px(t, sz, bold) + pad <= width for t in texts)), sizes[-1])
+
+
+@contextmanager
+def font_bump(on):
+    """with font_bump(False): build at the base sizes (the Board Pack)."""
+    global FONT_BUMP
+    old, FONT_BUMP = FONT_BUMP, on
+    try:
+        yield
+    finally:
+        FONT_BUMP = old
+
+
 HEALTH_COLOURS = {"(1) On Track": TEAL, "(2) At Risk": AMBER, "(3) Off Track": RED}
 
 THEME_FILE = "BFusionInsightsTheme.json"
@@ -54,7 +102,7 @@ def theme():
             "callout": {"fontSize": KPI_VALUE_PT, "fontFace": "Segoe UI Semibold", "color": NAVY},
             "title": {"fontSize": 12, "fontFace": "Segoe UI Semibold", "color": NAVY},
             "header": {"fontSize": 12, "fontFace": "Segoe UI Semibold", "color": NAVY},
-            "label": {"fontSize": 10, "fontFace": "Segoe UI", "color": INK},
+            "label": {"fontSize": fs(10), "fontFace": "Segoe UI", "color": INK},
         },
         "visualStyles": {v: _NO_HEADER for v in ("shape", "textbox", "image", "actionButton")},
     }
@@ -140,7 +188,7 @@ def scope_selector(field, value):
 # ---------- container objects ----------
 def title(text, size=12, colour=NAVY, show=True):
     return [{"properties": {"show": b(show), "text": s(text), "fontColor": col_solid(colour),
-                            "fontSize": n(size), "fontFamily": s("Segoe UI Semibold")}}]
+                            "fontSize": n(fs(size)), "fontFamily": s("Segoe UI Semibold")}}]
 
 
 def panel(radius=6, bg="#FFFFFF", border=BORDER, show_bg=True, show_border=True):
@@ -286,8 +334,9 @@ def textbox(runs, align=None):
             "visualContainerObjects": no_chrome(), "drillFilterOtherVisuals": True}
 
 
-def st(font="Segoe UI", size=11, colour=MUTED, bold=False):
-    d = {"fontFamily": font, "fontSize": f"{size}pt", "color": colour}
+def st(font="Segoe UI", size=11, colour=MUTED, bold=False, bump=True):
+    """Text-run style. bump=False writes `size` as given (a deliberate exception to fs(), e.g. the chapter rail)."""
+    d = {"fontFamily": font, "fontSize": f"{fs(size) if bump else size}pt", "color": colour}
     if bold:
         d["fontWeight"] = "bold"
     return d
@@ -322,7 +371,7 @@ def nav_button(text, target_page, tooltip="", fill=ORANGE, hover=ORANGE_DK, pres
                              {"properties": {"lineColor": col_solid(outline), "weight": i(1), "transparency": n(0)},
                               "selector": {"id": "default"}}] if outline else [{"properties": {"show": b(False)}}]),
                 "text": [{"properties": {"show": b(True)}},
-                         {"properties": {"text": s(text), "fontColor": col_solid(font), "fontSize": s(str(size)),
+                         {"properties": {"text": s(text), "fontColor": col_solid(font), "fontSize": s(str(fs(size))),
                                          "fontFamily": s("Segoe UI"), "bold": b(True),
                                          "horizontalAlignment": s(align), "leftMargin": n(margin)},
                           "selector": {"id": "default"}}],
@@ -398,9 +447,9 @@ def slicer(field, label, sync=True, dark=False, group=None):
          "query": {"queryState": {"Values": {"projections": [P(field, label, active=True)]}}},
          "objects": {
              "data": [{"properties": {"mode": s("Dropdown")}}],
-             "header": [{"properties": {"fontFamily": s("Segoe UI Semibold"), "textSize": n(10),
+             "header": [{"properties": {"fontFamily": s("Segoe UI Semibold"), "textSize": n(fs(10)),
                                         "fontColor": col_solid("#FFFFFF" if dark else NAVY)}}],
-             "items": [{"properties": {"fontFamily": s("Segoe UI"), "textSize": n(10)}}],
+             "items": [{"properties": {"fontFamily": s("Segoe UI"), "textSize": n(fs(10))}}],
              "selection": [{"properties": {"strictSingleSelect": b(False), "selectAllCheckboxEnabled": b(True)}}]},
          "visualContainerObjects": {"background": [{"properties": {"show": b(False)}}],
                                     "border": [{"properties": {"show": b(False)}}]},
@@ -412,12 +461,12 @@ def slicer(field, label, sync=True, dark=False, group=None):
     return v
 
 
-def card(measure, label, value_colour=NAVY, colour_measure=None, size=None, units=0, dark=False):
+def card(measure, label, value_colour=NAVY, colour_measure=None, size=None, units=0, dark=False, title_size=11):
     size = KPI_VALUE_PT if size is None else size
     value_colour = TEXT_SAFE.get(value_colour, value_colour)
     labels = {"fontSize": n(size), "color": measure_colour(colour_measure) if colour_measure else col_solid(value_colour),
               "labelDisplayUnits": n(units)}
-    vco = {"title": title(label, 11, "#FFFFFF" if dark else NAVY)}
+    vco = {"title": title(label, title_size, "#FFFFFF" if dark else NAVY)}
     if dark:
         vco.update(panel(8, NAVY_TILE, NAVY_LINE))
     else:
@@ -432,7 +481,7 @@ def headline(measure, bg=ORANGE_SOFT, border=ORANGE, size=13, colour=NAVY):
     return {"visualType": "card",
             "query": {"queryState": {"Values": {"projections": [P(M(measure))]}}},
             "objects": {"categoryLabels": [{"properties": {"show": b(False)}}],
-                        "labels": [{"properties": {"fontSize": n(size), "color": col_solid(colour),
+                        "labels": [{"properties": {"fontSize": n(fs(size)), "color": col_solid(colour),
                                                    "fontFamily": s("Segoe UI")}}],
                         "wordWrap": [{"properties": {"show": b(True)}}]},
             "visualContainerObjects": {"title": [{"properties": {"show": b(False)}}],
@@ -454,15 +503,50 @@ def chart(vtype, roles, ttl, objects=None, sort=None, extra_vco=None):
     v = {"visualType": vtype, "query": q, "visualContainerObjects": vco, "drillFilterOtherVisuals": True}
     if objects:
         v["objects"] = objects
+    if FONT_BUMP:
+        _bump_defaults(v)
     return v
 
 
+AXIS_CHARTS = {"areaChart", "barChart", "clusteredBarChart", "clusteredColumnChart", "columnChart",
+               "hundredPercentStackedBarChart", "lineChart", "lineClusteredColumnComboChart",
+               "lineStackedColumnComboChart", "scatterChart", "waterfallChart"}
+
+
+def _base_props(objs, name):
+    """Properties of the object's first unselected entry (created when missing)."""
+    lst = objs.setdefault(name, [])
+    entry = next((e for e in lst if "selector" not in e), None)
+    if entry is None:
+        entry = {"properties": {}}
+        lst.insert(0, entry)
+    return entry["properties"]
+
+
+def _bump_defaults(v):
+    """Text a chart leaves at Power BI's default size (axes 9 pt, donut labels 9 pt, matrix row headers 9 pt) is
+    written at fs(9), like the text the builders set."""
+    vtype, objs = v["visualType"], v.setdefault("objects", {})
+    if vtype in AXIS_CHARTS:
+        for ax in ("categoryAxis", "valueAxis"):
+            _base_props(objs, ax).setdefault("fontSize", n(fs(9)))
+    elif vtype == "donutChart" and "labels" in objs:
+        _base_props(objs, "labels").setdefault("fontSize", n(fs(9)))
+    elif vtype == "pivotTable" and "values" in objs and "rowHeaders" not in objs:
+        size = next((e["properties"]["fontSize"] for e in objs["values"]
+                     if "selector" not in e and "fontSize" in e["properties"]), None)
+        if size:
+            objs["rowHeaders"] = [{"properties": {"fontSize": size}}]
+    if not objs:
+        del v["objects"]
+
+
 def legend(pos="Top", show=True):
-    return [{"properties": {"show": b(show), "position": s(pos), "fontSize": n(9)}}]
+    return [{"properties": {"show": b(show), "position": s(pos), "fontSize": n(fs(9))}}]
 
 
 def labels_on(show=True, units=0, size=9):
-    return [{"properties": {"show": b(show), "labelDisplayUnits": n(units), "fontSize": n(size)}}]
+    return [{"properties": {"show": b(show), "labelDisplayUnits": n(units), "fontSize": n(fs(size))}}]
 
 
 def series_colours(series_field, mapping):
@@ -474,6 +558,7 @@ def measure_fill(measure_field, hexv):
 
 
 def table_style(font=10, header_bg=NAVY):
+    font = fs(font)
     return {"columnHeaders": [{"properties": {"backColor": col_solid(header_bg), "fontColor": col_solid("#FFFFFF"),
                                               "bold": b(True), "fontSize": n(font), "wordWrap": b(True)}}],
             "values": [{"properties": {"fontSize": n(font),

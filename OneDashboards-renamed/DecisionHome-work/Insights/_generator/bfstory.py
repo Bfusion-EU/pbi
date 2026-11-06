@@ -256,8 +256,8 @@ def header(pg, key, area, question, subtitle, slicers):
     tsize = 24 if len(f"{area} | {question}") <= pages.TITLE_MAX else 20
     pg.add(116, 8, 906, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
                                        (question, st("DIN", tsize, NAVY, True))]]), key="title")
-    ssize = 11 if len(subtitle) <= pages.SUBTITLE_MAX else 10
-    pg.add(116, 52, 906, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
+    ssize = pages.subtitle_size(subtitle)
+    pg.add(116, 52, 906, pages.SUBTITLE_H, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
     x = W - 16 - len(slicers) * 188 + 8
     assert x >= 1030, f"{pg.display}: too many slicers ({len(slicers)})"
     for k, sl in enumerate(slicers):
@@ -288,13 +288,12 @@ def nav_row(pg, key):
                    key=f"nav_here_{k}")
         x += _crumb_w(text)
     if len(members) > 1:
-        widths = [layout._w(layout._label(NAMES[m])) for m in members]
-        x = W - 16 - sum(widths) - 6 * (len(members) - 1)
+        size, widths, x = layout.strip_layout([layout._label(NAMES[m]) for m in members], x, W - 16)
         for m, w in zip(members, widths):
             cur = m == key
             btn = nav_button(layout._label(NAMES[m]), PID[m], "You are here" if cur else "Open this page",
                              fill=ORANGE if cur else "#FFFFFF", hover=ORANGE_DK if cur else ORANGE_SOFT,
-                             press=ORANGE_DK if cur else ORANGE_SOFT, font="#FFFFFF" if cur else NAVY, size=10,
+                             press=ORANGE_DK if cur else ORANGE_SOFT, font="#FFFFFF" if cur else NAVY, size=size,
                              outline=None if cur else BORDER)
             if cur:
                 layout._alt(btn, f"{layout._label(NAMES[m])} (current page)")
@@ -328,8 +327,10 @@ def _story_next(pg, key):
     if idx + 1 < len(ORDER):
         nxt = ORDER[idx + 1]
         label = NAMES[nxt].split("·", 1)[-1].strip()
+        text = f"Next: {label}  ›"
         pg.add(W - 16 - 360, Y_NEXT, 360, 36,
-               nav_button(f"Next: {label}  ›", PID[nxt], "Continue the story on the next page"), key="next")
+               nav_button(text, PID[nxt], "Continue the story on the next page",
+                          size=pbir.fit_size(text, 360, (11, 10, 9))), key="next")
 
 
 QUESTIONS = {}                       # page key -> its header question, for the Questions page
@@ -590,7 +591,8 @@ def build_home():
     # ② sits in a group that one toggle hides and shows (display-only bookmarks: slicer picks survive). The
     # "Hide" button lives inside the group, the "Show" button in its own group on the same spot, so exactly one
     # of the two is visible at any time.
-    tw, th = 190, 30
+    tw = max(190, *(pbir.button_w(t, 10) for t in (f"Show the {n} questions  ▼", "Hide the questions  ▲")))
+    th = 30
     tx = 16 + 1768 - tw
     grp = pg.add_group(16, y, 1768, BODY_END - y, f"{n.capitalize()} questions", "questions", hidden=True)   # hidden by default
     grp_show = pg.add_group(tx, y + 2, tw, th, f"Show {n} questions", "questions_show")
@@ -624,14 +626,16 @@ def build_home():
         pg.add(cx + 8, cy + 44, cw - 16, ch - 44 - 50, hl, key=f"card_h{k}", parent=grp)
         deep = [m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == code[0] and m != ck]
         bx, by = cx + 12, cy + ch - 44
-        pg.add(bx, by, 120, 32, _chip("Open chapter ›", PID[ck], f"Open {NAMES[ck]}"), key=f"card_open{k}", parent=grp)
-        bx += 128
+        ow = max(120, pbir.button_w("Open chapter ›", 10))            # chips as wide as their text (type bump)
+        pg.add(bx, by, ow, 32, _chip("Open chapter ›", PID[ck], f"Open {NAMES[ck]}"), key=f"card_open{k}", parent=grp)
+        bx += ow + 8
         for m in deep:
             lbl = layout._code(NAMES[m])[0] + layout._code(NAMES[m])[1]
-            if bx + 44 > cx + cw - 8:
+            dw = max(44, pbir.button_w(lbl, 10))
+            if bx + dw > cx + cw - 8:
                 break
-            pg.add(bx, by, 44, 32, _chip(lbl, PID[m], NAMES[m]), key=f"card_deep{k}_{m}", parent=grp)
-            bx += 50
+            pg.add(bx, by, dw, 32, _chip(lbl, PID[m], NAMES[m]), key=f"card_deep{k}_{m}", parent=grp)
+            bx += dw + 6
     return pg
 
 
@@ -639,10 +643,11 @@ def build_home():
 def _exec_where_next(pg, x, y, w, h):
     chaps = [k for k in CHAPTERS if k != "exec"]
     bw = (w - 10 * (len(chaps) - 1)) / len(chaps)
+    size = pbir.fit_size([NAMES[ck] + "  ›" for ck in chaps], bw, (10, 9, 8))   # one size for the row
     for k, ck in enumerate(chaps):
         pg.add(round(x + k * (bw + 10), 2), y, round(bw, 2), 48,
                nav_button(NAMES[ck] + "  ›", PID[ck], "Open this chapter", fill=NAVY, hover=NAVY_BTN, press=ORANGE,
-                          font="#FFFFFF", size=10), key=f"chap{k}")
+                          font="#FFFFFF", size=size), key=f"chap{k}")
     put(pg, x, y + 60, w, h - 60, grab("exec", "v_scorecard"), "v_scorecard")
 
 
@@ -1210,7 +1215,19 @@ def layout_errors(built):
             p = vc["position"]
             if p["x"] < 0 or p["x"] + p["width"] > pg.page["width"] + 0.5 or p["y"] + p["height"] > limit:
                 errs.append(f"LAYOUT {pg.display}: {vc['name']} at {p} outside page/footer")
+        errs += nav_overlap_errors(pg)
     return errs
+
+
+def nav_overlap_errors(pg):
+    """The navigation row (breadcrumb left, chapter strip right) must not collide: no two top-level visuals that sit
+    inside the row (NAV_Y .. NAV_Y + NAV_H) may overlap horizontally. The chapter rail (x < RAIL_W) is left out."""
+    row = sorted((vc["position"] for vc in pg.visuals
+                  if not vc.get("parentGroupName") and vc["position"]["x"] >= chrome.RAIL_W - 0.5
+                  and NAV_Y <= vc["position"]["y"] and vc["position"]["y"] + vc["position"]["height"] <= NAV_Y + NAV_H + 0.5),
+                 key=lambda p: p["x"])
+    return [f"NAV {pg.display}: visual at x={b['x']} overlaps the one at x={a['x']} (ends {a['x'] + a['width']:.1f})"
+            for k, a in enumerate(row) for b in row[k + 1:] if b["x"] < a["x"] + a["width"] - 0.5]
 
 
 def reach_errors(built):

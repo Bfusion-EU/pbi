@@ -165,7 +165,8 @@ def build():
 def build_board_pack():
     import board
     built = board.build_board()
-    write_report(BOARD_NAME, built, [], OUT.parent, extra_filters=[board.period_filter()])
+    with pbir.font_bump(False):                 # its theme too: the Board Pack keeps its type sizes
+        write_report(BOARD_NAME, built, [], OUT.parent, extra_filters=[board.period_filter()])
     print(f"built {len(built)} board slides, {sum(len(p.visuals) for p in built)} visuals -> {BOARD_OUT}")
     return built
 

@@ -294,7 +294,7 @@ def build():
         {"Values": [P(DP("Name"), "Project"), P(DP("Manager_Value"), "Manager"), P(step, "Step"),
                     P(DP("ProcessStepStart"), "Since"), P(sd, "Days")]},
         "Stuck projects — over 90 days in the current step", obj, sort=[(sd, "Descending")]), key="v_stuck")
-    pg.add(906, Y3V, 878, 40, headline(L("Approvals Note"), bg="#FFFFFF", border=ORANGE, size=11), key="appr_note")
+    pg.add(906, Y3V, 878, 44, headline(L("Approvals Note"), bg="#FFFFFF", border=ORANGE, size=11), key="appr_note")
     fs = lambda p: C("FactPlanProcessStep", p)  # noqa: E731
     gs = M(L("Gate Steps"))
     pg.add(906, Y3V + 48, 434, 160, chart("barChart",

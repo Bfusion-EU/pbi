@@ -16,6 +16,14 @@ from story_measures import add, T
 
 RAIL_W = 80
 BAR_H = 34
+# Rail labels: 9 pt with the type bump, not the 10 pt fs(8) would give: the current chapter's label is bold, and
+# "Governance" in bold Segoe UI 10 pt (~75 px) does not fit the 80 px rail with the text box's own padding.
+RAIL_PT = 9 if pbir.FONT_BUMP else 8
+
+
+def bar_h():
+    """Filter bar / confidence strip height: ~2.5x the text (34 px at 10 pt, 40 px at 12 pt with the type bump)."""
+    return max(BAR_H, round(2.5 * pbir.fs(10) * 4 / 3))
 # the 1800x1000 footer band padded 80 px on the left (first pixel column repeated) and with body rows added above the
 # band, so it fits the 1880 x 1058 (16:9) story screens without stretching the logo
 BG_WIDE = "bfv5_footer_band_1880x1058.png"
@@ -95,7 +103,7 @@ def _rail(pg, current, pid, limit, rail=None):
             pg.add(x, y, TILE, TILE + 14, shape(ORANGE, radius=10), key=f"rail_on_{tag}")
         pg.add(x + 13, y + 6, 30, 30, image(f"rail-{icon}-{'white' if on else 'grey'}.png", f"{label} icon"),
                key=f"rail_img_{tag}")
-        pg.add(0, y + 40, RAIL_W, 24, textbox([[(label, st("Segoe UI", 8, "#FFFFFF" if on else RAIL_INK, on))]],
+        pg.add(0, y + 40, RAIL_W, 24, textbox([[(label, st("Segoe UI", RAIL_PT, "#FFFFFF" if on else RAIL_INK, on, bump=False))]],
                                               align="center"), key=f"rail_lbl_{tag}")
         if not on:
             pg.add(x, y, TILE, TILE + 14, _ghost(pid[target], f"Open {label}"), key=f"rail_btn_{tag}")
@@ -114,11 +122,11 @@ def _slim(v):
 def _filter_bar(pg, y, chapter, no_strip=False):
     v = _slim(headline(FILTER_MEASURE, bg="#F4F5F7", border=BORDER, size=10, colour=MUTED))
     strip = chapter in confidence.CHAPTER_CHECKS and not no_strip
-    pg.add(16, y, BAR_W if strip else 1768, BAR_H, layout._alt(v, "Filters applied to this page"), key="filter_bar")
+    pg.add(16, y, BAR_W if strip else 1768, bar_h(), layout._alt(v, "Filters applied to this page"), key="filter_bar")
     if strip:
         s_ = _slim(headline(confidence.strip(chapter), bg="#FFFFFF", border=BORDER, size=10))
         s_["objects"]["labels"][0]["properties"]["color"] = pbir.measure_colour(confidence.strip_colour(chapter))
-        pg.add(16 + BAR_W + 10, y, 1768 - BAR_W - 10, BAR_H,
+        pg.add(16 + BAR_W + 10, y, 1768 - BAR_W - 10, bar_h(),
                layout._alt(s_, "Data confidence: share of active projects that have the data this chapter uses"),
                key="confidence_strip")
 

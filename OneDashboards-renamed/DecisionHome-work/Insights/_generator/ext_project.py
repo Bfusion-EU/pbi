@@ -338,7 +338,8 @@ def build_project(drill):
     pg.add(116, 8, 1006, 46, textbox([[("PROJECT | ", st("DIN", 24, ORANGE, True)),
                                         ("EVERYTHING ABOUT IT BEFORE I DECIDE", st("DIN", 24, NAVY, True))]]),
            key="title")
-    pg.add(116, 52, 1006, 26, textbox([[(sub, st("Segoe UI", 10, MUTED))]]), key="subtitle")
+    ssize = pbir.fit_size(sub, 1006, (10, 9, 8), pad=10, bold=False)      # one line, 12 pt or less (type bump)
+    pg.add(116, 52, 1006, pages.SUBTITLE_H, textbox([[(sub, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
     pg.add(W - 16 - 260, 16, 260, 44, web_button("Open in OnePlan  ↗", pm("OnePlan Url"),
                                                   "Open this plan in OnePlan (new browser tab)"), key="oneplan")
     pg.add(16, 82, 1768, 82, headline(pm("Headline"), size=11), key="headline")  # tall enough to wrap to two lines
@@ -463,6 +464,11 @@ TIP_W, TIP_H = 320, 240
 
 
 def build_tip_project():
+    with pbir.font_bump(False):     # tooltip pages show at actual size (not fitted to the canvas): base type sizes
+        return _build_tip_project()
+
+
+def _build_tip_project():
     pg = binding_page("tip_project", TIP_W, TIP_H, "ActualSize", "Tooltip", DP("Name"), page_type="Tooltip")
     pg.add(6, 4, 308, 36, headline(pm("Name"), bg=ORANGE_SOFT, border=ORANGE, size=11), key="name")
     pg.add(6, 46, 151, 58, small_card(pm("Overall Health"), "Overall health", colour_measure=pm("Overall Health Colour"),
@@ -479,6 +485,11 @@ def build_tip_project():
 
 # ====================================================================== 3 TOOLTIP · RESOURCE
 def build_tip_resource():
+    with pbir.font_bump(False):     # tooltip pages show at actual size (not fitted to the canvas): base type sizes
+        return _build_tip_resource()
+
+
+def _build_tip_resource():
     pg = binding_page("tip_resource", TIP_W, TIP_H, "ActualSize", "Tooltip", DR("Name"), page_type="Tooltip")
     pg.add(6, 4, 308, 36, headline(pm("Resource Name"), bg=ORANGE_SOFT, border=ORANGE, size=11), key="name")
     pg.add(6, 42, 308, 22, headline(pm("Resource Role"), bg="#FFFFFF", border="#FFFFFF", size=9, colour=MUTED), key="role")

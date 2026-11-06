@@ -196,6 +196,11 @@ def build_changes():
 
 
 def build_board():
+    with pbir.font_bump(False):                 # the Board Pack keeps its type sizes (pbir.FONT_BUMP)
+        return _build_board()
+
+
+def _build_board():
     built = [build_summary(), build_course(), build_money(), build_people(), build_risk(), build_changes()]
     pages.filter_real_projects(built)
     a11y.apply(built)

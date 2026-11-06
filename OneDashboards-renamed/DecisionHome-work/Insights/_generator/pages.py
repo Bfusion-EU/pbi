@@ -81,6 +81,14 @@ CIRCLED = "①②③④⑤"
 
 TITLE_MAX = 45      # "AREA | QUESTION?" in DIN 24 fits the 960px title box up to ~45 characters
 SUBTITLE_MAX = 130  # Segoe UI 11 on one line in the 975px subtitle box
+SUBTITLE_H = 30 if pbir.FONT_BUMP else 26      # one line of 13 pt (11 pt + the type bump) needs 30 px
+
+
+def subtitle_size(subtitle):
+    """Base size of a header subtitle: the largest that keeps it on one line in the 906 px box."""
+    if not pbir.FONT_BUMP:
+        return 11 if len(subtitle) <= SUBTITLE_MAX else 10
+    return pbir.fit_size(subtitle, 906, (11, 10, 9, 8), pad=10, bold=False)
 
 
 def header(pg, area, question, subtitle, slicers):
@@ -91,8 +99,8 @@ def header(pg, area, question, subtitle, slicers):
     tsize = 24 if len(f"{area} | {question}") <= TITLE_MAX else 20
     pg.add(116, 8, 906, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
                                        (question, st("DIN", tsize, NAVY, True))]]), key="title")
-    ssize = 11 if len(subtitle) <= SUBTITLE_MAX else 10
-    pg.add(116, 52, 906, 26, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
+    ssize = subtitle_size(subtitle)
+    pg.add(116, 52, 906, SUBTITLE_H, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
     x = W - 16 - len(slicers) * 188 + 8
     for k, sl in enumerate(slicers):
         # (field, label) or (field, label, sync group name) for a slicer outside the report-wide sync
@@ -111,6 +119,8 @@ def kpi_row(pg, y, items, h=90, x0=16, width=1768, gap=10):
     for k, it in enumerate(items):
         measure, label = it[0], it[1]
         opts = it[2] if len(it) > 2 else {}
+        if pbir.FONT_BUMP and "title_size" not in opts:     # the title on one line: 13 pt, smaller for long labels
+            opts = dict(opts, title_size=pbir.fit_size(label, w, (11, 10, 9), pad=20))
         pg.add(round(x0 + k * (w + gap), 2), y, round(w, 2), h, card(measure, label, **opts), key=f"kpi{y}_{k}")
 
 
@@ -119,8 +129,10 @@ def next_chapter(pg, key, y):
     if idx + 1 < len(ORDER):
         nxt = ORDER[idx + 1]
         label = dict(PAGES)[nxt].split("·", 1)[-1].strip()
-        pg.add(W - 16 - 340, y, 340, 36, nav_button((f"Next chapter: {label}  ›" if len(label) <= 26 else f"Next: {label}  ›"), PID[nxt],
-                                                     "Continue the story on the next page"), key="next")
+        texts = [f"Next chapter: {label}  ›", f"Next: {label}  ›"]
+        text = (texts[0] if len(label) <= 26 else texts[1]) if not pbir.FONT_BUMP else             next((t for t in texts if pbir.button_w(t, 11) <= 340), texts[1])
+        pg.add(W - 16 - 340, y, 340, 36, nav_button(text, PID[nxt], "Continue the story on the next page",
+                                                     size=pbir.fit_size(text, 340, (11, 10, 9))), key="next")
     pg.add(16, y, 220, 36, nav_button("‹  Command center", PID["home"], "Back to the home page",
                                       fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE, font=NAVY, outline=BORDER),
            key="back")
@@ -230,10 +242,11 @@ def build_exec():
     import layout
     chapters = [k for k, d in PAGES if layout._code(d) and layout._code(d)[0] in "2345678" and not layout._code(d)[1]]  # chapters 2-8, no deep-dives
     bw = (1768 - 10 * (len(chapters) - 1)) / len(chapters)
+    size = pbir.fit_size([dict(PAGES)[ck] + "  ›" for ck in chapters], bw, (10, 9, 8))   # one size for the row
     for k, ck in enumerate(chapters):
         pg.add(round(16 + k * (bw + 10), 2), Y4V, round(bw, 2), 56,
                nav_button(dict(PAGES)[ck] + "  ›", PID[ck], "Open this chapter", fill=NAVY, hover=NAVY_BTN,
-                          press=ORANGE, font="#FFFFFF", size=10), key=f"chap{k}")
+                          press=ORANGE, font="#FFFFFF", size=size), key=f"chap{k}")
     vpf = M("Story | EAC Variance %")
     pg.add(16, Y4V + 72, 1768, 328, chart("pivotTable",
         {"Rows": [P(DP("Portfolio Name"), "Portfolio", True), P(DP("Program Name"), "Program", True)],
@@ -295,7 +308,7 @@ def build_portfolio():
          "Size": [P(M("Story | Plan Forecast"), "Plan-field forecast")]},
         "Priority score vs plan-field budget — size = plan forecast, colour = health",
         {"dataPoint": series_colours(health, HEALTH_COLOURS), "legend": legend("Top"),
-         "categoryLabels": [{"properties": {"show": b(True), "fontSize": n(8)}}]}), key="v_scatter")
+         "categoryLabels": [{"properties": {"show": b(True), "fontSize": n(fs(8))}}]}), key="v_scatter")
     pg.add(1092, Y3V, 692, H3, chart("hundredPercentStackedBarChart",
         {"Category": [P(DP("Program Name"), "Program")], "Series": [P(health, "Health")],
          "Y": [P(M("Story | Active Projects"), "Active projects")]},
@@ -391,7 +404,7 @@ def pareto(ttl, cat_field, bar, line, bar_label, colour):
         {"dataPoint": [measure_fill(bar, colour), measure_fill(line, NAVY)], "legend": legend("Top"),
          "lineStyles": [{"properties": {"strokeWidth": n(3), "showMarker": b(True)}}],
          "valueAxis": [{"properties": {"secShow": b(True), "secStart": n(0), "secEnd": n(1)}}],
-         "categoryAxis": [{"properties": {"fontSize": n(8)}}]},
+         "categoryAxis": [{"properties": {"fontSize": n(fs(8))}}]},
         sort=[(bar, "Descending")])
 
 
@@ -688,7 +701,7 @@ def build_benefits():
         "Benefits versus EAC — size = benefits due to date",
         {"dataPoint": series_colours(align, {"Extreme": NAVY, "Strong": TEAL, "Moderate": "#7FB7B7", "Low": AMBER,
                                              "Not Rated": "#C9CED8"}),
-         "legend": legend("Top"), "categoryLabels": [{"properties": {"show": b(True), "fontSize": n(8)}}]}),
+         "legend": legend("Top"), "categoryLabels": [{"properties": {"show": b(True), "fontSize": n(fs(8))}}]}),
         key="v_ben_scatter")
     ratio = M("Story | Value Ratio")
     pg.add(1192, Y3V, 592, H3, chart("clusteredBarChart",

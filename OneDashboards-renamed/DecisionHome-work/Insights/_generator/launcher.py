@@ -26,7 +26,7 @@ def _role_tile(pg, x, y, w, h, k, role):
     key = f"r{k}"
     url = app_links.url(role.key, roles.QUESTIONS_PAGE_ID)
     pg.add(x, y, w, h, shape(TILE, radius=16, line=TILE_LINE), key=f"{key}_bg")
-    _text(pg, x + 24, y + 26, w - 48, 24, "YOUR ROLE", st("Segoe UI Semibold", 10, ORANGE, True), f"{key}_eyebrow")
+    _text(pg, x + 24, y + 24, w - 48, 28, "YOUR ROLE", st("Segoe UI Semibold", 10, ORANGE, True), f"{key}_eyebrow")
     _text(pg, x + 24, y + 54, w - 48, 72, role.title, st("DIN", 24, "#FFFFFF", True), f"{key}_title")
     _text(pg, x + 24, y + 128, w - 48, 64, role.purpose, st("Segoe UI", 12, SOFT_INK), f"{key}_purpose")
     hl = headline(role.headline, bg=TILE, border=TILE, size=10, colour="#E5EAF1")

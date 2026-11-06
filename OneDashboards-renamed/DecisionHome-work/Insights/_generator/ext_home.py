@@ -1227,6 +1227,13 @@ def build_tips():
 
 
 def build():
+    # The command center is laid out to measured text widths (CH_LABEL_PX, FACT_LABEL_PX, FOOT_TEXT_PX ...): it keeps
+    # its own sizes until those are re-measured at the larger type (pbir.FONT_BUMP)
+    with pbir.font_bump(False):
+        return _build()
+
+
+def _build():
     pg = Page(pages.PID["home"], dict(pages.PAGES)["home"], pages.W, 1000, background_colour=CANVAS,
               display_option="FitToPage")
     build_rail(pg)

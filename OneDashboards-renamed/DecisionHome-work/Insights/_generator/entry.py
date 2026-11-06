@@ -84,7 +84,8 @@ def home_button(pg, x, y, size=40, target=None):
 
 
 def _crumb_w(text):
-    return round(len(text) * 7.6 + 40)       # bold Segoe UI 10 pt + the button's own margins ("Home" fits whole)
+    # bold Segoe UI 10 pt + the button's own margins ("Home" fits whole); wider with the type bump (pbir.fscale)
+    return round(len(text) * 7.6 * pbir.fscale(10) + 40)
 
 
 def _crumb_label(text, colour, bold=True, size=10):
@@ -123,7 +124,7 @@ def build_welcome():
                                              "Pick a question and open the dashboard that answers it",
                                              fill=INK, hover="#1B2C42", press="#22344D", font="#FFFFFF", size=16,
                                              outline="#FFFFFF"), key="go_questions")
-    pg.add(x, 680, 400, 26, textbox([[("DATA SOURCE", st("Segoe UI Semibold", 11, "#8A97AB", True))]]), key="src_label")
+    pg.add(x, 680, 400, 30, textbox([[("DATA SOURCE", st("Segoe UI Semibold", 11, "#8A97AB", True))]]), key="src_label")
     pg.add(x, 710, 211, 92, _logo(ONEPLAN_RES, "OnePlan logo"), key="oneplan_logo")
     pg.add(x + 230, 724, 560, 70, textbox([[("Portfolio, project, resource, cost and status data, read from OnePlan.",
                                              st("Segoe UI", 13, "#C9D2E0"))]]), key="src_text")
@@ -212,7 +213,9 @@ def _deep_row(pg, x, y, w, m, row, badge, badge_ink, ink, key):
     pg.add(x, y, w, 30, shape(row, radius=8), key=f"{key}_bg")
     pg.add(x + 8, y + 5, 30, 20, shape(badge, radius=6), key=f"{key}_badge")
     _text(pg, x + 8, y + 3, 30, 22, f"{c[0]}{c[1]}", st("Segoe UI", 8, badge_ink, True), f"{key}_code", align="center")
-    pg.add(x, y, w, 30, layout._alt(_ghost(_sentence(CTX.questions[m]), CTX.pid[m], f"Open {CTX.names[m]}", font=ink, size=10,
+    q = _sentence(CTX.questions[m])
+    size = pbir.fit_size(q, w, (10, 9, 8), pad=46 + 8)     # 12 pt with the type bump, smaller when the row is narrow
+    pg.add(x, y, w, 30, layout._alt(_ghost(q, CTX.pid[m], f"Open {CTX.names[m]}", font=ink, size=size,
                                            margin=46), f"Open {CTX.names[m]}"), key=f"{key}_btn")
 
 
@@ -246,7 +249,7 @@ def _start_tile(pg, x, y, w, h, ck):
     code = layout._code(CTX.names[ck])
     key = "t0"
     pg.add(x, y, w, h, shape(ORANGE, radius=14), key=f"{key}_bg")
-    _text(pg, x + 20, y + 22, 220, 26, "START HERE", st("Segoe UI Semibold", 10, "#FFFFFF", True), f"{key}_start")
+    _text(pg, x + 20, y + 22, 220, 28, "START HERE", st("Segoe UI Semibold", 10, "#FFFFFF", True), f"{key}_start")
     _arrow(pg, x + w - 64, y + 20, "#FFFFFF", ORANGE, key)
     _icon(pg, x + 24, y + 60, ck, "#EE8455", key)
     _text(pg, x + 20, y + 118, w - 40, 24, f"{code[0]} · {code[2].upper()}", st("Segoe UI Semibold", 9, "#FFFFFF", True),
@@ -261,16 +264,19 @@ def _start_tile(pg, x, y, w, h, ck):
     # what the chapter holds, as chips at the foot of the tile
     if not CTX.inside.get(ck):
         return
-    cy = y + h - 150
-    _text(pg, x + 20, cy, w - 40, 24, "INSIDE THIS CHAPTER", st("Segoe UI Semibold", 9, "#FFFFFF", True), f"{key}_in")
-    cx, cy = x + 24, cy + 32
-    for j, chip in enumerate(CTX.inside[ck]):
-        cw_ = round(len(chip) * 7.2 + 30)
-        if cx + cw_ > x + w - 20:
-            cx, cy = x + 24, cy + 36
-        pg.add(cx, cy, cw_, 28, shape(ORANGE, radius=14, line="#F6B79A"), key=f"{key}_chip{j}")
-        _text(pg, cx, cy + 2, cw_, 24, chip, st("Segoe UI", 9, "#FFFFFF"), f"{key}_chip{j}_t", align="center")
+    place, cx, row = [], x + 24, 0                    # (chip, x, row, width): wrap at the tile's right edge
+    for chip in CTX.inside[ck]:
+        cw_ = round(len(chip) * 7.2 * pbir.fscale(9) + 30)
+        if cx + cw_ > x + w - 20 and cx > x + 24:
+            cx, row = x + 24, row + 1
+        place.append((chip, cx, row, cw_))
         cx += cw_ + 8
+    cy = y + h - 150 - 36 * max(0, row - 2)            # three rows fit under the label; more rows lift the block
+    _text(pg, x + 20, cy, w - 40, 24, "INSIDE THIS CHAPTER", st("Segoe UI Semibold", 9, "#FFFFFF", True), f"{key}_in")
+    for j, (chip, cx, row, cw_) in enumerate(place):
+        ry = cy + 32 + 36 * row
+        pg.add(cx, ry, cw_, 28, shape(ORANGE, radius=14, line="#F6B79A"), key=f"{key}_chip{j}")
+        _text(pg, cx, ry + 2, cw_, 24, chip, st("Segoe UI", 9, "#FFFFFF"), f"{key}_chip{j}_t", align="center")
 
 
 def _bar(pg, x, y, w, h, k, ck):
@@ -292,19 +298,20 @@ def build_questions():
     pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
     pg.add(10, 26, 60, 58, back_button(), key="back")
     home_button(pg, 76, 36)
-    _text(pg, 132, 26, 600, 26, "START HERE" if CTX.home_url is None else f"{CTX.title.upper()} · START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
+    _text(pg, 132, 24, 600, 28, "START HERE" if CTX.home_url is None else f"{CTX.title.upper()} · START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
     _text(pg, 132, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
     eight = len(CTX.chapters) == 8
     n_q = len(CTX.chapters) + sum(len(_deep(ck)) for ck in CTX.chapters
                                   if not eight or layout._code(CTX.names[ck])[0] not in "678")  # 6-8 are bars
     _text(pg, 132, 104, 1100, 28, f"{len(CTX.chapters)} chapters, {n_q} questions. Click a tile to open its chapter, "
                                  "a row to go one level deeper.", st("Segoe UI", 11, SOFT_INK), "subtitle")
+    home_w = max(186, pbir.button_w(f"{CTX.home_label}  ›", 11, pad=40))
     if "welcome" in CTX.pid:
-        pg.add(W - 32 - 186 - 14 - 180, 52, 180, 46,
+        pg.add(W - 32 - home_w - 14 - 180, 52, 180, 46,
                nav_button("‹  Welcome", CTX.pid["welcome"], "Back to the welcome page", fill=INK, hover="#1B2C42",
                           press="#22344D", font="#FFFFFF", size=11, outline="#FFFFFF", radius=23), key="back_welcome")
     if "home" in CTX.pid:
-        pg.add(W - 32 - 186, 52, 186, 46, nav_button(f"{CTX.home_label}  ›", CTX.pid["home"], "Open the decision center",
+        pg.add(W - 32 - home_w, 52, home_w, 46, nav_button(f"{CTX.home_label}  ›", CTX.pid["home"], "Open the decision center",
                                                      size=11, radius=23), key="go_home")
     G, top, bottom = 14, 150, 900
     if eight:
@@ -522,7 +529,8 @@ def build_brief(ch):
     here = f"{code[0]} · {code[2]}"
     _crumb(pg, x, here, "", f"You are here: {here}", "crumb_here", colour="#FFFFFF", bold=True, w=_crumb_w(here),
            align="left")
-    pg.add(W - 32 - 190, 22, 190, 44, nav_button("‹  All questions", CTX.pid["questions"], "Back to all questions",
+    aq_w = max(190, pbir.button_w("‹  All questions", 11, pad=40))
+    pg.add(W - 32 - aq_w, 22, aq_w, 44, nav_button("‹  All questions", CTX.pid["questions"], "Back to all questions",
                                                  fill=INK, hover="#1B2C42", press="#22344D", font="#FFFFFF", size=11,
                                                  outline="#FFFFFF", radius=22), key="all_questions")
     # question, verdict, headline
@@ -545,7 +553,7 @@ def build_brief(ch):
         pg.add(tx, ty, tw, 136, shape("#15263B", radius=14, line=TILE_LINE), key=f"take{k}_bg")
         _dot(pg, tx + 18, ty + 20, 14, cols[k], f"take{k}_dot")
         pg.add(tx + 36, ty + 10, tw - 72, 72, _value_card(texts[k], 24, "#FFFFFF"), key=f"take{k}_val")
-        _text(pg, tx + 12, ty + 86, tw - 24, 40, lbl, st("Segoe UI", 11, SOFT_INK), f"take{k}_lbl", align="center")
+        _text(pg, tx + 12, ty + 82, tw - 24, 50, lbl, st("Segoe UI", 11, SOFT_INK), f"take{k}_lbl", align="center")
     # one tile per page of the chapter: the chapter first, then its deep dives
     keys = [ch] + _deep(ch)
     if len(keys) == 1:                                  # one-page chapter: offer the next question and the list too

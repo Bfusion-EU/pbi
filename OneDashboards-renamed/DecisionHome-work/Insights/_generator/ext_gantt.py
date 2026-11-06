@@ -214,16 +214,16 @@ def _expanded_rows(fields):
 
 def _gantt_objects(bar, row_header_field):
     obj = table_style(9)
-    obj["values"] = [{"properties": {"fontSize": n(9), "fontColorPrimary": col_solid(INK),
+    obj["values"] = [{"properties": {"fontSize": n(pbir.fs(9)), "fontColorPrimary": col_solid(INK),
                                      "backColorPrimary": col_solid("#FFFFFF"), "fontColorSecondary": col_solid(INK),
                                      "backColorSecondary": col_solid("#FFFFFF")}},
                      # matchingOption 0 (values and totals): project / programme / portfolio rows are subtotal
                      # rows in the stepped layout and need the bar colours too
                      cf_back(bar, m("Bar Colour"), matching=0), cf_font(bar, m("Bar Font"), matching=0)]
     obj["columnHeaders"] = [{"properties": {"backColor": col_solid(NAVY), "fontColor": col_solid("#FFFFFF"),
-                                            "bold": b(True), "fontSize": n(9), "alignment": s("Center"),
+                                            "bold": b(True), "fontSize": n(pbir.fs(9)), "alignment": s("Center"),
                                             "wordWrap": b(False)}}]
-    obj["rowHeaders"] = [{"properties": {"fontColor": col_solid(NAVY), "fontSize": n(9), "wordWrap": b(False),
+    obj["rowHeaders"] = [{"properties": {"fontColor": col_solid(NAVY), "fontSize": n(pbir.fs(9)), "wordWrap": b(False),
                                          "steppedLayoutIndentation": n(14), "showExpandCollapseButtons": b(True),
                                          "expandCollapseButtonsColor": col_solid(ORANGE)}}]
     obj["grid"] = [{"properties": {"gridHorizontal": b(True), "gridHorizontalColor": col_solid("#EEF0F4"),
