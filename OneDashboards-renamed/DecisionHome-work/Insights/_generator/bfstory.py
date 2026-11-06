@@ -982,6 +982,48 @@ def build_psr():
 
 
 # ================================================================ 6 RISK / 7 BENEFITS / 8 GOVERNANCE
+# ---------------------------------------------------------------- cross-report drill-through
+# One hidden page, hosted only in roles.DRILL_HOST (Story PM): right-click a project in any Story report (all in one
+# workspace / app) › Drill through › "Project Status (Story PM)". Every Story report turns on
+# settings.useCrossReportDrillthrough so its visuals list the target. One tall page, not the two screens of 5c: a drill
+# filter does not travel with a "Continue" click to a second screen.
+DRILL_KEY = "psr_drill"
+DRILL_PID = uid("bfstory-page", DRILL_KEY)
+DRILL_NAME = "Project Status"
+
+
+def build_psr_drill():
+    KEY_OF[DRILL_PID] = "psr"                       # chrome: filter bar + rail of the Schedule chapter
+    pg = Page(DRILL_PID, DRILL_NAME, W, pages.TALL, display_option="FitToWidth", background_image=BG)
+    header(pg, "psr", "STATUS REPORT", "WHERE DOES THIS PROJECT STAND?",
+           "Drill-through: the project you right-clicked, in any Story report. Back returns you there.", [])
+    put(pg, 16, Y_HEAD, 1768, 56, head(CARD_TEXT["psr"][1]), "headline")
+    y = Y_BODY
+    for num, (q, e, h, items, wts) in enumerate([
+        ("Status, risks and trend", "The latest status report, the project's risk matrix and how its health trends.", 520,
+         [("src", "Project Status Report (PSR)", "bfusionProjectStatusCard"),
+          ("src", "Project Status Report (PSR)", "bfusionPortfolioRiskMatrix"),
+          ("src", "Project Status Report (PSR)", "bfusionStatusTrendSparkline")], [0.9, 1.2, 1]),
+        ("Lifecycle", "Where the project is in its gates.", 260,
+         [("src", "Project Status Report (PSR)", "bfusionProjectLifecycle")], None),
+        ("Timeline and people", "Gantt of the project and the load of the people on it.", 440,
+         [("src", "Project Status Report (PSR)", "bfusionHierarchicalGantt"),
+          ("src", "Project Status Report (PSR)", "bfusionResourceHeatmap")], [1.5, 1])], 1):
+        y = band(pg, y, num, q, e, h, items, wts)
+    field = DP("Name")
+    fname = uid("bind-filter", DRILL_KEY, "DimProject", "Name")
+    pg.page["filterConfig"] = {"filters": [{"name": fname, "field": field, "type": "Categorical",
+                                            "howCreated": "Drillthrough"}]}
+    # only the project travels (Keep all filters off): the source page's year / slicer context must not narrow a
+    # status report that lives in another report
+    pg.page["pageBinding"] = {"name": uid("bind", DRILL_KEY), "type": "Drillthrough", "referenceScope": "CrossReport",
+                              "acceptsFilterContext": "None",
+                              "parameters": [{"name": uid("bind-param", DRILL_KEY), "boundFilter": fname,
+                                              "fieldExpr": field}]}
+    pg.page["visibility"] = "HiddenInViewMode"
+    return pg
+
+
 def build_risk():
     return chapter("risk", "RISK", "WHAT COULD GO WRONG?",
                    "Risks and issues logged on the project work plans: how likely, how bad, where the exposure sits, what to escalate.",
@@ -1147,6 +1189,8 @@ def build_pages():
     done = {k: BUILDERS[k]() for k, _ in PAGES if k not in late}
     done.update({k: BUILDERS[k]() for k in late})
     built = [p for k, _ in PAGES for p in (done[k] if isinstance(done[k], list) else [done[k]])]
+    if ROLE is not None and ROLE.key == roles.DRILL_HOST:
+        built.append(build_psr_drill())          # outside PAGES: no Next link, no tab, reached by drill-through only
     for p in built:
         KEY_OF.setdefault(p.id, next((k for k, v in PID.items() if v == p.id), None))
     copy_interactions(built)
@@ -1190,6 +1234,8 @@ def write(built):
     rj = out / "definition" / "report.json"
     rep = json.loads(rj.read_text(encoding="utf-8"))
     rep["resourcePackages"] = pkgs + rep["resourcePackages"]
+    # Report settings › "Allow visuals in this report to use drill-through targets from other reports"
+    rep.setdefault("settings", {})["useCrossReportDrillthrough"] = True
     build.dump(rj, rep)
     entry.register_resources(out)
     chrome.register(out)

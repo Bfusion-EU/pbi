@@ -229,3 +229,21 @@ def test_ppm_tabs_are_questions_and_chapters_only(tmp_path):
             shown.add(pj["displayName"])
     assert shown == {"Questions — where to start", "1 · Executive Summary", "2 · Portfolio", "3 · Financials",
                      "4 · Schedule", "5 · Risk"}
+
+
+STORY = Path(__file__).resolve().parents[3] / "Story"
+
+
+def test_cross_report_drillthrough_host_and_sources():
+    """Story PM alone holds the cross-report Project Status drill page; every Story report may drill into it."""
+    for name in ["Bfusion Story"] + [r.report for r in roles.ROLES.values()]:
+        rep = json.loads((STORY / f"{name}.Report" / "definition" / "report.json").read_text(encoding="utf-8"))
+        assert rep["settings"]["useCrossReportDrillthrough"] is True, name
+        hosts = [p for p in (STORY / f"{name}.Report" / "definition" / "pages").glob("*/page.json")
+                 if json.loads(p.read_text(encoding="utf-8")).get("pageBinding", {}).get("referenceScope") == "CrossReport"]
+        assert len(hosts) == (1 if name == roles.ROLES[roles.DRILL_HOST].report else 0), name
+    page = json.loads(next((STORY / "Story PM.Report" / "definition" / "pages").glob(
+        f"{bfstory.DRILL_PID}/page.json")).read_text(encoding="utf-8"))
+    assert page["visibility"] == "HiddenInViewMode"
+    assert page["pageBinding"]["acceptsFilterContext"] == "None"
+    assert page["pageBinding"]["parameters"][0]["fieldExpr"]["Column"]["Property"] == "Name"
