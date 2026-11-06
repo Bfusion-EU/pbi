@@ -1051,8 +1051,10 @@ DRILLS = [
         ("When is it due?", "Hierarchical Gantt of the assigned work.", 440, [("src", "My Work", "bfusionHierarchicalGantt")], None)]),
     Drill("gov_drill", "Project Data Quality", "pmo", DP("Name"), "recon", "DATA QUALITY", "CAN WE TRUST THIS PROJECT'S DATA?",
           "the project", CARD_TEXT["governance"][1], [
-        ("Which sources does it have?", "One card per source the project reports through.", 300, [lambda *a: _recon_cards(*a)], None),
-        ("Reconciliation", "The project's line in each source, side by side.", 900, [lambda *a: _recon_table(*a)], None)]),
+        # one band: the source-coverage cards count active projects across the portfolio, meaningless for one project
+        ("Which sources are missing?", "The project's line in each source, side by side: gaps, budget, EAC, actuals, "
+         "hours, baseline, last report, benefits. Any state, not only active.", 1200,
+         [lambda *a: _recon_table(*a, active_only=False)], None)]),
 ]
 DRILL_PIDS = {uid("bfstory-page", d.key) for d in DRILLS}
 TALL_END = round(pages.TALL * 0.928) - 12   # footer band of the tall background
@@ -1135,7 +1137,7 @@ def _recon_cards(pg, x, y, w, h):
                card(confidence.ratio(key), label, colour_measure=confidence.ratio_colour(key), size=16), key=f"rc_card{k}")
 
 
-def _recon_table(pg, x, y, w, h):
+def _recon_table(pg, x, y, w, h, active_only=True):
     gaps = M(confidence.GAPS)
     obj = table_style()
     obj["values"].append(cf_font(gaps, confidence.GAP_COLOUR))
@@ -1148,7 +1150,9 @@ def _recon_table(pg, x, y, w, h):
         P(M("Story | Status · Days Since Report"), "Days since report"),
         P(M("Story | Benefits At Completion"), "Planned benefits")]},
         "Project by project — most gaps first", obj, sort=[(M(confidence.GAP_COUNT), "Descending")])
-    pg.add(x, y, w, h, v, filters=[pbir.f_in("DimProject", "State_Value", [ACTIVE_STATE])], key="v_recon")
+    # the drill page shows the drilled project whatever its state (an On Hold project has gaps too)
+    pg.add(x, y, w, h, v, filters=[pbir.f_in("DimProject", "State_Value", [ACTIVE_STATE])] if active_only else [],
+           key="v_recon")
 
 
 def build_recon():

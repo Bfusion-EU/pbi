@@ -3,11 +3,11 @@
   "name": "343e75f1aa651cbd971e",
   "position": {
     "x": 96,
-    "y": 648,
-    "z": 2800,
+    "y": 262,
+    "z": 1900,
     "width": 1768.0,
-    "height": 1009,
-    "tabOrder": 1600
+    "height": 1396,
+    "tabOrder": 700
   },
   "visual": {
     "visualType": "tableEx",
@@ -551,60 +551,6 @@
   },
   "filterConfig": {
     "filters": [
-      {
-        "name": "e62c957d9005d48a02be",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "DimProject"
-              }
-            },
-            "Property": "State_Value"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "t",
-              "Entity": "DimProject",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "t"
-                          }
-                        },
-                        "Property": "State_Value"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'Active'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        },
-        "howCreated": "User"
-      },
       {
         "name": "ce26c83046d49410027b",
         "field": {
