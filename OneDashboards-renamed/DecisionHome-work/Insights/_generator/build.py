@@ -36,7 +36,22 @@ pbir.EXTENSION_MEASURES.update(m["name"] for m in MEASURES)
 RESOURCES = ["bfv5_footer_band_1800x1800.png", "bfv5_footer_band_1800x1000.png",
              "OnePlan_logo_-_dark_background9901469509814106.png"]
 ICON_DIR = HERE / "assets" / "icons"
-ICONS = sorted(p.name for p in ICON_DIR.glob("rail-*.png"))
+# the nine rail icons every report registers (Tabler, assets/make_icons.mjs) ...
+BASE_ICON_KEYS = ["cc", "exec", "portfolio", "finance", "resources", "schedule", "risk", "benefits", "governance"]
+ICONS = sorted(f"rail-{k}-{c}.png" for k in BASE_ICON_KEYS for c in ("grey", "white"))
+# ... and the icons of chapters only a role report has (illustrations.RAIL_ICONS), registered where a page uses them
+EXTRA_ICONS = sorted(p.name for p in ICON_DIR.glob("rail-*.png") if p.name not in ICONS)
+
+
+def used_icons(pages_):
+    """rail-*.png files the pages show, in RegisteredResources order: the nine base icons, then any extra ones."""
+    used = set()
+    for pg in pages_:
+        for vc in pg.visuals:
+            used.update(re.findall(r"rail-[\w-]+?-(?:grey|white)\.png", json.dumps(vc)))
+    unknown = used - set(ICONS) - set(EXTRA_ICONS)
+    assert not unknown, f"rail icon(s) used but not in {ICON_DIR}: {sorted(unknown)}"
+    return ICONS + [i for i in EXTRA_ICONS if i in used]
 
 
 def dump(path: Path, obj):
@@ -79,7 +94,7 @@ def extension_json(model_measures):
             "name": "extension", "entities": [{"name": "_Measures", "measures": out}]}
 
 
-def report_json(extra_filters=None):
+def report_json(extra_filters=None, icons=ICONS):
     ref = json.loads((REF / "definition" / "report.json").read_text(encoding="utf-8"))
     keep = []
     seen = set()
@@ -93,7 +108,7 @@ def report_json(extra_filters=None):
         keep.append(f)
     rp = [p for p in ref["resourcePackages"] if p["type"] == "SharedResources"]
     rp.append({"name": "RegisteredResources", "type": "RegisteredResources",
-               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES + ICONS]})
+               "items": [{"name": r, "path": r, "type": "Image"} for r in RESOURCES + icons]})
     rp[-1]["items"].append({"name": pbir.THEME_FILE, "path": pbir.THEME_FILE, "type": "CustomTheme"})
     themes = dict(ref["themeCollection"])
     themes["customTheme"] = {"name": pbir.THEME_FILE, "reportVersionAtImport": themes["baseTheme"]["reportVersionAtImport"],
@@ -125,12 +140,13 @@ def write_report(name, pages_, bookmarks, out_dir, extra_filters=None):
         dst = out / "StaticResources" / "RegisteredResources" / r
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(REF / "StaticResources" / "RegisteredResources" / r, dst)
-    for r in ICONS:
+    icons = used_icons(pages_)
+    for r in icons:
         dst = out / "StaticResources" / "RegisteredResources" / r
         shutil.copy(ICON_DIR / r, dst)
     dump(out / "StaticResources" / "RegisteredResources" / pbir.THEME_FILE, pbir.theme())
     _, model_measures = load_model()
-    dump(out / "definition" / "report.json", report_json(extra_filters))
+    dump(out / "definition" / "report.json", report_json(extra_filters, icons))
     dump(out / "definition" / "reportExtensions.json", extension_json(model_measures))
     for pg in pages_:
         base = out / "definition" / "pages" / pg.id
@@ -151,8 +167,9 @@ def write_report(name, pages_, bookmarks, out_dir, extra_filters=None):
 
 
 def build():
-    assert len(ICONS) == 18, (f"expected 18 rail icons (9 icons x white/grey) in {ICON_DIR}, found {len(ICONS)}: "
-                              "an icon is missing or an extra one was added")
+    missing = [i for i in ICONS if not (ICON_DIR / i).exists()]
+    assert not missing and len(EXTRA_ICONS) == 16, (f"expected the 9 base rail icons and 8 role-chapter icons "
+                                                    f"(white/grey) in {ICON_DIR}: missing {missing}, extra {EXTRA_ICONS}")
     built = pages.build_all()
     out = write_report(NAME, built, pbir.BOOKMARKS, OUT.parent)
     import entry
@@ -191,7 +208,31 @@ def layout_errors(pages_):
     return out
 
 
-def check(built, out):
+CARD_TYPES = {"card", "cardVisual", "multiRowCard"}
+
+
+card_need_px = pbir.card_need_px      # value_pt * 2.5 + label_pt * 1.6, pt -> px
+card_fonts = pbir.card_fonts          # (value pt, label pt) of a card visual
+
+
+def card_errors(pages_):
+    """Every card visual must be tall enough for its value and label at their font sizes (card_need_px)."""
+    out = []
+    for pg in pages_:
+        for vc in pg.visuals:
+            v = vc.get("visual", {})
+            if v.get("visualType") not in CARD_TYPES:
+                continue
+            value, label = card_fonts(v)
+            need = card_need_px(value, label)
+            if vc["position"]["height"] + 0.5 < need:
+                out.append(f"CARD {pg.display}: {v['visualType']} {vc['name']} is {vc['position']['height']} px tall, "
+                           f"needs {need:.0f} px ({value:g} pt value + {label:g} pt label)")
+    return out
+
+
+def check(built, out, cards=True):
+    """cards=False: skip the card-height rule (the Board Pack keeps its frozen layout)."""
     import jsonschema
     from referencing import Registry, Resource
     import urllib.request
@@ -279,7 +320,7 @@ def check(built, out):
     for kind, nm in sorted(missing):
         errors += 1
         print(f"REF {kind}: {nm}")
-    for msg in layout_errors(built):
+    for msg in layout_errors(built) + (card_errors(built) if cards else []):
         errors += 1
         print(msg)
     print("OK" if errors == 0 else f"{errors} problem(s)")
@@ -291,7 +332,7 @@ if __name__ == "__main__":
     bb = build_board_pack()
     if "--check" in sys.argv:
         e1 = check(b, OUT)
-        e2 = check(bb, BOARD_OUT)
+        e2 = check(bb, BOARD_OUT, cards=False)
         tot = (e1 or 0) + (e2 or 0)
         print("OK" if tot == 0 else f"FAILED ({tot} problem(s))")
         sys.exit(1 if tot else 0)

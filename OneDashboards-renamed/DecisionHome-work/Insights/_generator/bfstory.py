@@ -381,8 +381,8 @@ def pulse(pg, y, ins_key, question, explain):
     n = len(cards)
     w = (1768 - 10 * (n - 1)) / n
     for k, vc in enumerate(cards):
-        put(pg, 16 + k * (w + 10), y + SEC_H, w, 90, vc, f"kpi_{k}")
-    return y + SEC_H + 90 + GAP
+        put(pg, 16 + k * (w + 10), y + SEC_H, w, pages.KPI_H, vc, f"kpi_{k}")
+    return y + SEC_H + pages.KPI_H + GAP
 
 
 def bands(pg, y, spec, first=1):
@@ -399,7 +399,7 @@ def bands(pg, y, spec, first=1):
 
 
 SHRINK = 0.70                        # a band may drop to 70% of its designed height before it moves to the next screen
-PULSE_H = SEC_H + 90 + GAP
+PULSE_H = SEC_H + pages.KPI_H + GAP     # the pulse row: pbir.kpi_h() tall cards (was 90 before the type bump)
 
 
 def pack(spec, first_free):
@@ -1136,7 +1136,7 @@ def context():
     if ROLE is None:
         return entry.Context(**common, title="Bfusion Decision Story", home_label="Decision Center")
     return entry.Context(**common, title=ROLE.title, home_label="Decision Center" if ROLE.home else "Questions",
-                         art=roles.ART, home_url=app_links.url("launcher", roles.LAUNCHER_PAGE_ID))
+                         art=roles.SCENE_OF, home_url=app_links.url("launcher", roles.LAUNCHER_PAGE_ID))
 
 
 def build_pages():
@@ -1153,7 +1153,7 @@ def build_pages():
     pages.filter_real_projects(built)
     a11y.apply(built)
     chrome.apply(built, PID, KEY_OF, NAMES, CHAPTERS, Y_BAR,      # after a11y: the rail comes last in tab order
-                 rail=roles.rail(ROLE) if ROLE else None, art=roles.ART if ROLE else None)
+                 rail=roles.rail(ROLE) if ROLE else None, art=roles.SCENE_OF if ROLE else None)
     consistency.apply(built)
     polish.apply(built)
     if ROLE is not None:             # in a role report the tabs are Questions, Home and the role's chapters only:

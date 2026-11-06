@@ -34,7 +34,7 @@ class Context:
     title: str                 # big title on the welcome page
     home_label: str = "Decision Center"
     inside: dict = field(default_factory=dict)   # chapter key -> chips on the questions page start tile
-    art: dict = field(default_factory=dict)      # chapter key -> chapter whose illustration / icon it borrows
+    art: dict = field(default_factory=dict)      # chapter key -> chapter whose brief scene illustration it borrows
     home_url: str = None                         # None: the pack has a welcome page; else the URL the house opens
 
 
@@ -162,8 +162,6 @@ def _sentence(q):
 # button lies over the tile's text, and the deep-dive row buttons lie over that.
 TILE, TILE_LINE, ROW, BADGE = "#15263B", "#22344D", "#1B2E46", "#2A3F5C"
 SOFT_INK, MUTED_INK = "#AEB8C7", "#8A97AB"
-ICON = {"exec": "exec", "portfolio": "portfolio", "finance": "finance", "resources": "resources",
-        "schedule": "schedule", "risk": "risk", "benefits": "benefits", "governance": "governance"}
 
 
 def _ghost(text, target, tip, font="#FFFFFF", size=10, margin=12, hover="#FFFFFF"):
@@ -194,7 +192,7 @@ def _text(pg, x, y, w, h, text, style, key, align=None):
 
 def _icon(pg, x, y, ck, fill, key):
     pg.add(x, y, 44, 44, shape(fill, radius=10), key=f"{key}_icobg")
-    pg.add(x + 9, y + 9, 26, 26, image(f"rail-{ICON[CTX.art.get(ck, ck)]}-white.png", f"{ck} icon"), key=f"{key}_ico")
+    pg.add(x + 9, y + 9, 26, 26, image(f"rail-{ck}-white.png", f"{ck} icon"), key=f"{key}_ico")
 
 
 def _arrow(pg, x, y, fill, ink, key):
@@ -552,8 +550,10 @@ def build_brief(ch):
         tx, ty = 84 + k * (tw + 12), 392
         pg.add(tx, ty, tw, 136, shape("#15263B", radius=14, line=TILE_LINE), key=f"take{k}_bg")
         _dot(pg, tx + 18, ty + 20, 14, cols[k], f"take{k}_dot")
-        pg.add(tx + 36, ty + 10, tw - 72, 72, _value_card(texts[k], 24, "#FFFFFF"), key=f"take{k}_val")
-        _text(pg, tx + 12, ty + 82, tw - 24, 50, lbl, st("Segoe UI", 11, SOFT_INK), f"take{k}_lbl", align="center")
+        vh = pbir.card_h(24)                            # 80 px: 24 pt value (pbir.card_need_px)
+        pg.add(tx + 36, ty + 6, tw - 72, vh, _value_card(texts[k], 24, "#FFFFFF"), key=f"take{k}_val")
+        _text(pg, tx + 12, ty + 6 + vh, tw - 24, 130 - vh, lbl, st("Segoe UI", 11, SOFT_INK), f"take{k}_lbl",
+              align="center")
     # one tile per page of the chapter: the chapter first, then its deep dives
     keys = [ch] + _deep(ch)
     if len(keys) == 1:                                  # one-page chapter: offer the next question and the list too

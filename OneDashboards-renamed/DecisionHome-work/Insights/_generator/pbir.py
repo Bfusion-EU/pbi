@@ -4,6 +4,7 @@ Only native Power BI visuals. Every helper returns plain dicts that are
 serialised as-is into definition/pages/<page>/visuals/<visual>/visual.json.
 """
 import hashlib
+import math
 from contextlib import contextmanager
 
 VC_SCHEMA = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json"
@@ -50,6 +51,52 @@ def fs(size):
 def fscale(size):
     """Width factor for text set at base size `size` (1.0 with the bump off): scale every len(text) * k width by it."""
     return fs(size) / size
+
+
+def card_need_px(value_pt, label_pt=0):
+    """Height a card needs (px) for its value and its label, both in written pt: ~2.5x the value font plus ~1.6x the
+    label font. build.card_errors fails the --check of any card shorter than this."""
+    return (value_pt * 2.5 + label_pt * 1.6) * 4 / 3
+
+
+def card_h(value_pt, label_pt=0):
+    """card_need_px rounded up to whole pixels."""
+    return math.ceil(card_need_px(value_pt, label_pt) - 1e-9)
+
+
+def kpi_h():
+    """Height of a KPI card row: a KPI_VALUE_PT value under a one-line title at fs(11) (108 px with the type bump)."""
+    return card_h(KPI_VALUE_PT, fs(11))
+
+
+def _pt(prop):
+    try:
+        return float(prop["expr"]["Literal"]["Value"].rstrip("DL"))
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return None
+
+
+def _base(objs, name):
+    return next((e["properties"] for e in objs.get(name, []) if "selector" not in e), {})
+
+
+def card_fonts(v):
+    """(value pt, label pt) of a card visual; label 0 when it shows none. Unset sizes take Power BI's defaults."""
+    t, objs, vco = v["visualType"], v.get("objects", {}), v.get("visualContainerObjects", {})
+    tt = _base(vco, "title")
+    label = (_pt(tt.get("fontSize")) or 14) if _base(vco, "title").get("show", {}).get("expr", {}).get(
+        "Literal", {}).get("Value") == "true" else 0
+    if t == "card":
+        value = _pt(_base(objs, "labels").get("fontSize")) or 27
+        if _base(objs, "categoryLabels").get("show", {}).get("expr", {}).get("Literal", {}).get("Value") != "false":
+            label += _pt(_base(objs, "categoryLabels").get("fontSize")) or 12
+    elif t == "cardVisual":
+        value = _pt(_base(objs, "value").get("fontSize")) or 28
+        label += _pt(_base(objs, "label").get("fontSize")) or 12
+    else:                                   # multiRowCard
+        value = _pt(_base(objs, "dataLabels").get("fontSize")) or 20
+        label += _pt(_base(objs, "categoryLabels").get("fontSize")) or 12
+    return value, label
 
 
 def text_px(text, size, bold=True):

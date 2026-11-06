@@ -61,12 +61,25 @@ def test_report_names_are_short():
 
 
 def test_rail_starts_at_the_hub_and_uses_known_icons():
-    icons = {i for i, _, _ in __import__("chrome").RAIL}
+    import illustrations
+    icons = {i for i, _, _ in __import__("chrome").RAIL} | set(illustrations.RAIL_ICONS)
     for r in roles.ROLES.values():
         rl = roles.rail(r)
-        assert rl[0] == (("cc", "home", "Decision") if r.home else ("cc", "questions", "Questions"))
+        assert rl[0] == (("cc", "home", "Decision") if r.home else ("questions", "questions", "Questions"))
         assert [t for _, t, _ in rl[1:]] == [c for c, _ in r.chapters]
         assert all(i in icons for i, _, _ in rl)
+
+
+def test_one_icon_per_meaning():
+    """Every rail entry shows its own chapter's icon: no icon stands for two chapters in any report."""
+    for r in roles.ROLES.values():
+        assert all(icon == target for icon, target, _ in roles.rail(r)[1:])
+    meaning = {}
+    for r in roles.ROLES.values():
+        for icon, target, _ in roles.rail(r):
+            assert meaning.setdefault(icon, target) == target, (r.key, icon, target, meaning[icon])
+    for icon, target, _ in __import__("chrome").RAIL:
+        assert meaning.setdefault(icon, target) == target, (icon, target, meaning[icon])
 
 
 def test_app_links_blank_until_filled(tmp_path, monkeypatch):

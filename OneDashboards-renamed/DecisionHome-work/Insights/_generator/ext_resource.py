@@ -239,9 +239,10 @@ def _build_page(key, drill):
         pg.page["visibility"] = "HiddenInViewMode"
 
     # vertical rhythm: the standard 1800×1800 grid, shifted down by DY for the identity strip in ①
-    DY = 64
+    ih = pbir.card_h(16, pbir.fs(11))   # identity cards: 16 pt name + 13 pt title = 81 px (was 62, cut off)
+    DY = 64 + ih - 62
     y2, y2v, h2 = pages.Y2 + DY, pages.Y2V + DY, pages.H2
-    y3, y3v, h3 = pages.Y3 + DY, pages.Y3V + DY, pages.H3 - 44
+    y3, y3v, h3 = pages.Y3 + DY, pages.Y3V + DY, pages.H3 - 44 - (ih - 62)     # 3 gives the growth back
     y4, y4v = pages.Y4 + 20, pages.Y4V + 20
     h4 = pages.YNEXT - 16 - y4v
 
@@ -249,7 +250,7 @@ def _build_page(key, drill):
     pages.section(pg, pages.Y1, 1, "Who is this, and how loaded?",
                   "Utilisation = scheduled hours on project plans ÷ capacity, across all projects. "
                   "Approved hours exclude time off; time off = business days × hours per day.")
-    iy, ih = pages.Y1K, 62
+    iy = pages.Y1K
     pg.add(16, iy, 360, ih, card(rm("Name"), "Resource", size=16), key="id_name")
     ident_cards = [("Role", "Role"), ("Department", "Department"), ("Manager", "Resource manager"),
                    ("Timesheet Manager", "Timesheet manager"), ("Type", "Generic / named"), ("Status", "Active / inactive"),

@@ -46,7 +46,9 @@ def test_bookmark_and_drill_buttons():
 
 
 
-ICON_KEYS = ["cc", "exec", "portfolio", "finance", "resources", "schedule", "risk", "benefits", "governance"]
+ICON_KEYS = ["cc", "exec", "portfolio", "finance", "resources", "schedule", "risk", "benefits", "governance",
+             # the chapters only a role report has (illustrations.RAIL_ICONS)
+             "questions", "selection", "scenarios", "constraints", "kpigrid", "mywork", "psr", "timesheets"]
 
 
 def test_icons_present():
@@ -78,3 +80,13 @@ def test_layout_errors_resolves_group_relative_positions():
     g2 = pg2.add_group(100, 100, 400, 300, "G", key="g")
     pg2.add(120, 120, 100, 50, pbir.textbox([[("x", pbir.st())]]), key="in", parent=g2)
     assert build.layout_errors([pg2]) == []
+
+
+def test_card_height_rule_flags_short_cards():
+    import build
+    pg = pbir.Page("pgCards", "1 · Cards", 1800, 1000)
+    pg.add(0, 0, 200, 90, pbir.card("Story | Budget", "Budget", title_size=11), key="short")
+    pg.add(0, 100, 200, pbir.kpi_h(), pbir.card("Story | Budget", "Budget", title_size=11), key="tall")
+    errs = build.card_errors([pg])
+    assert len(errs) == 1 and "90 px tall, needs 108 px" in errs[0]
+    assert pbir.kpi_h() == pbir.card_h(24, 13) == 108

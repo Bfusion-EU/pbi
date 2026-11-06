@@ -189,7 +189,11 @@ def test_card_elements_sit_at_the_same_offsets_in_each_row():
                              "cap0", "cap1", "cap2", "mark", "rule", "f1l", "f1v", "f2l", "f2v", "ft0", "go"):
                     if vc["name"] in {_name(pg, f"card_{c}_{part}", t) for t in ("shape", "image", "textbox", "card", "tableEx",
                                                                                   "areaChart", "barChart", "actionButton")}:
-                        out[part] = round(vc["position"]["y"] - bg["y"], 2)
+                        # captions and chip text: compare centres. A sparkline's month captions and a measure
+                        # chip are cards grown about their centre to the height their font needs
+                        # (ext_home.add_centred); a bar's captions and a text chip are textboxes.
+                        mid = vc["position"]["height"] / 2 if part in ("cap0", "cap2", "chip") else 0
+                        out[part] = round(vc["position"]["y"] + mid - bg["y"], 2)
             rel.append(out)
         for part in {p for r in rel for p in r} - {"cap1"}:          # cap1 sits above the bar on target cards
             ys = {r[part] for r in rel if part in r}
@@ -728,8 +732,11 @@ def test_chips_form_an_aligned_grid():
     # capsule and button: inside the chip, vertically centred, covering dot + count and not the label text
     for k in range(6):
         c, go, dot, cnt, lbl = (pos[k][p] for p in ("chip_bg", "chip_go", "chip_dot", "chip_n", "chip"))
-        for part in (go, dot, cnt, lbl):
+        for part in (go, dot):
             assert _inside(part, c), k
+        for part in (cnt, lbl):          # text cards are as tall as their font needs (ext_home.add_centred), so taller
+            assert c["x"] <= part["x"] and part["x"] + part["width"] <= c["x"] + c["width"], k     # than the chip:
+            assert abs((part["y"] + part["height"] / 2) - (c["y"] + c["height"] / 2)) < 0.01, k   # centred on it
         assert abs((go["y"] + go["height"] / 2) - (c["y"] + c["height"] / 2)) < 0.01, k
         assert _inside(dot, go) and go["x"] <= cnt["x"] and cnt["x"] + cnt["width"] <= go["x"] + go["width"], k
         assert go["x"] + go["width"] <= lbl["x"] + ext_home.CH_LBL_PAD + 0.01, k

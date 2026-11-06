@@ -46,9 +46,10 @@ ROLES = {r.key: r for r in [
           ("timesheets", [])], home=True),
 ]}
 
-# A page promoted to a chapter borrows the illustration, Questions icon, rail icon and data-confidence strip of the
-# chapter it belongs to in the full pack.
-ART = {"selection": "portfolio", "scenarios": "portfolio", "constraints": "schedule", "kpigrid": "exec",
+# A page promoted to a chapter has its own rail / Questions icon (rail-<key>-white|grey.png, one icon per meaning in
+# every pack) but borrows the brief scene illustration and the data-confidence strip of the chapter it belongs to in
+# the full pack: there is no scene or confidence check of its own.
+SCENE_OF = {"selection": "portfolio", "scenarios": "portfolio", "constraints": "schedule", "kpigrid": "exec",
        "mywork": "schedule", "psr": "schedule", "timesheets": "resources"}
 
 RAIL_LABEL = {"exec": "Executive", "portfolio": "Portfolio", "finance": "Financials", "resources": "Resources",
@@ -71,5 +72,5 @@ def role_pages(role, full_names):
 
 def rail(role):
     """Chapter rail of a role report: the hub first, then the role's chapters."""
-    first = ("cc", "home", "Decision") if role.home else ("cc", "questions", "Questions")
-    return [first] + [(ART.get(ch, ch), ch, RAIL_LABEL[ch]) for ch, _ in role.chapters]
+    first = ("cc", "home", "Decision") if role.home else ("questions", "questions", "Questions")
+    return [first] + [(ch, ch, RAIL_LABEL[ch]) for ch, _ in role.chapters]

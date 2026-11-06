@@ -426,12 +426,13 @@ def build():
     ])
 
     # ② per-project comparison
-    section(pg, 290, 2, "Where did it move: dates, money, hours, people?",
+    dy = pages.KPI_DY                    # the KPI row is pages.KPI_H tall: band 2 starts lower and is as much shorter
+    section(pg, 290 + dy, 2, "Where did it move: dates, money, hours, people?",
             "Money, hours and FTE: baseline grey, plan in colour. Projects without the compared baseline are left out.")
     cw = (1768 - 3 * 10) / 4
     name = P(DP("Name"), "Project")
     ss, fs, dc = M(bm("Start Shift (days)")), M(bm("Finish Slip (days)")), M(bm("Duration Change (wd)"))
-    pg.add(16, 328, round(cw, 2), 300, chart("clusteredBarChart",
+    pg.add(16, 328 + dy, round(cw, 2), 300 - dy, chart("clusteredBarChart",
         {"Category": [name], "Y": [P(ss, "Start shift (d)"), P(fs, "Finish shift (d)"), P(dc, "Duration change (wd)")]},
         "Schedule deviation (days)",
         {"dataPoint": [measure_fill(ss, GREY), measure_fill(fs, ORANGE), measure_fill(dc, NAVY)],
@@ -441,7 +442,7 @@ def build():
              ("FTE", "Baseline FTE", "Plan FTE", "Average FTE: baseline vs plan")]
     for k, (lbl, bmeas, pmeas, ttl) in enumerate(pairs, start=1):
         bf, pf = M(bm(bmeas)), M(bm(pmeas))
-        pg.add(round(16 + k * (cw + 10), 2), 328, round(cw, 2), 300, chart("clusteredBarChart",
+        pg.add(round(16 + k * (cw + 10), 2), 328 + dy, round(cw, 2), 300 - dy, chart("clusteredBarChart",
             {"Category": [name], "Y": [P(bf, f"Baseline {lbl.lower() if lbl != 'FTE' else 'FTE'}"),
                                         P(pf, f"Plan {lbl.lower() if lbl != 'FTE' else 'FTE'}")]},
             ttl, {"dataPoint": [measure_fill(bf, "#C3C9D2"), measure_fill(pf, NAVY if lbl != "FTE" else TEAL)],

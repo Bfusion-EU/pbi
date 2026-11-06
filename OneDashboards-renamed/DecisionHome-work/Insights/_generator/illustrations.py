@@ -6,6 +6,7 @@ They are drawn here as SVG and rendered once to transparent PNGs in assets/brief
 the drawings sit behind the text on the navy pages instead of competing with it.
 
 Run again after changing a drawing:  python illustrations.py
+Rail icons only (assets/icons/rail-<key>-white|grey.png, see RAIL_ICONS):  python illustrations.py --rail
 """
 import shutil
 import subprocess
@@ -147,6 +148,43 @@ PAGE_SPOT = {"exec": "gauge", "health": "health", "roadmap": "roadmap", "drift":
              "resource": "fte", "gantt": "roadmap", "status": "drift", "baseline": "critical"}
 
 
+# ---------------------------------------------------------------- chapter rail icons (viewBox 0 0 120 120)
+# The nine first rail icons (cc, exec, portfolio, finance, resources, schedule, risk, benefits, governance) are
+# Tabler outline icons rendered by assets/make_icons.mjs. The chapters a role report promotes from deep dives get
+# their own icon here, drawn from the spot shapes above and rendered in the same style: 96 px square, solid stroke
+# 10/120 (= Tabler's 2/24), round caps, white for the current chapter and rail grey for the others.
+ICON_DIR = HERE / "assets" / "icons"
+ICON_PX = 96
+ICON_COLOURS = {"white": "#FFFFFF", "grey": "#8C98B3"}
+RAIL_ICONS = {
+    "questions": '<path d="M30 16 h60 a16 16 0 0 1 16 16 v38 a16 16 0 0 1 -16 16 h-30 l-24 20 v-20 h-6 '
+                 'a16 16 0 0 1 -16 -16 v-38 a16 16 0 0 1 16 -16 z"/>'
+                 '<path d="M49 38 a11 11 0 1 1 15 10 c-3 1.5 -4 3.5 -4 7"/><path d="M60 70 v0.5"/>',
+    "selection": '<path d="M16 22 h88 l-34 42 v30 l-20 12 v-42 z"/>',
+    "scenarios": SPOTS["scales"],
+    "constraints": SPOTS["lock"],
+    "kpigrid": SPOTS["grid"],
+    "mywork": '<rect x="22" y="14" width="76" height="94" rx="10"/>'
+              '<path d="M36 40 l6 6 l12 -12 M66 40 h18 M36 74 l6 6 l12 -12 M66 74 h18"/>',
+    "psr": '<rect x="22" y="14" width="76" height="94" rx="10"/><path d="M42 38 v0.5 M42 61 v0.5 M42 84 v0.5" '
+           'stroke-width="16"/><path d="M60 38 h22 M60 61 h22 M60 84 h14"/>',
+    "timesheets": '<circle cx="60" cy="62" r="44"/><path d="M60 36 v26 l18 12"/><path d="M48 12 h24"/>',
+}
+
+
+def rail_icon_files():
+    return sorted(f"rail-{k}-{c}.png" for k in RAIL_ICONS for c in ICON_COLOURS)
+
+
+def render_rail_icons():
+    """Render only the rail icons drawn here; the Tabler ones and the brief drawings are left as they are."""
+    for k, body in RAIL_ICONS.items():
+        for cname, hex_ in ICON_COLOURS.items():
+            svg = _svg(ICON_PX, ICON_PX, "0 0 120 120", body, 1, 10).replace('stroke="#FFFFFF"', f'stroke="{hex_}"')
+            _render(svg, ICON_PX, ICON_PX, ICON_DIR / f"rail-{k}-{cname}.png")
+    print(f"rendered {len(RAIL_ICONS)} rail icons x {len(ICON_COLOURS)} colours -> {ICON_DIR}")
+
+
 HOME_FILE = "brief-home.png"   # white house on the orange home button, full strength
 HOME = '<path d="M14 54 L60 16 L106 54 M26 44 V104 H50 V74 H70 V104 H94 V44"/>'
 
@@ -185,5 +223,8 @@ def render():
 
 
 if __name__ == "__main__":
-    render()
+    if "--rail" in sys.argv:
+        render_rail_icons()
+    else:
+        render()
     sys.exit(0)

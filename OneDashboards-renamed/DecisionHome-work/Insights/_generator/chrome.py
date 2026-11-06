@@ -98,7 +98,7 @@ def _rail(pg, current, pid, limit, rail=None):
         y = TOP + k * STEP
         x = (RAIL_W - TILE) / 2
         on = target == current
-        tag = target if rail else icon   # a role rail may show one icon twice (ART): key its visuals by chapter
+        tag = target if rail else icon   # role rails key their visuals by chapter
         if on:
             pg.add(x, y, TILE, TILE + 14, shape(ORANGE, radius=10), key=f"rail_on_{tag}")
         pg.add(x + 13, y + 6, 30, 30, image(f"rail-{icon}-{'white' if on else 'grey'}.png", f"{label} icon"),
@@ -132,7 +132,8 @@ def _filter_bar(pg, y, chapter, no_strip=False):
 
 
 def apply(built, pid, key_of, names, chapters, bar_y, rail=None, art=None):
-    """Filter bar on every chapter / deep-dive page, then shift the page right and draw the rail."""
+    """Filter bar on every chapter / deep-dive page, then shift the page right and draw the rail.
+    art: chapter key -> full-pack chapter whose data-confidence strip it borrows (roles.SCENE_OF)."""
     art = art or {}
     for pg in built:
         key = key_of.get(pg.id)

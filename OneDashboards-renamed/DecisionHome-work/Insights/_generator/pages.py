@@ -114,13 +114,20 @@ def section(pg, y, num, question, explain, width=1768, x=16):
                                       (f"   {explain}", st("Segoe UI", 11, MUTED))]]), key=f"sec{num}")
 
 
-def kpi_row(pg, y, items, h=90, x0=16, width=1768, gap=10):
+def kpi_row(pg, y, items, h=None, x0=16, width=1768, gap=10):
+    """One row of KPI cards. h=None: KPI_H, or taller when a card's value / title font needs it (pbir.card_h)."""
     w = (width - gap * (len(items) - 1)) / len(items)
-    for k, it in enumerate(items):
+    rows = []
+    for it in items:
         measure, label = it[0], it[1]
         opts = it[2] if len(it) > 2 else {}
         if pbir.FONT_BUMP and "title_size" not in opts:     # the title on one line: 13 pt, smaller for long labels
             opts = dict(opts, title_size=pbir.fit_size(label, w, (11, 10, 9), pad=20))
+        rows.append((measure, label, opts))
+    if h is None:
+        h = max([KPI_H] + [pbir.card_h(o.get("size") or pbir.KPI_VALUE_PT, pbir.fs(o.get("title_size", 11)))
+                           for _m, _l, o in rows])
+    for k, (measure, label, opts) in enumerate(rows):
         pg.add(round(x0 + k * (w + gap), 2), y, round(w, 2), h, card(measure, label, **opts), key=f"kpi{y}_{k}")
 
 
@@ -172,10 +179,14 @@ def one_axis():
     """Combo charts comparing like with like (hours vs hours) share one value axis."""
     return [{"properties": {"secShow": b(False)}}]
 
+# The KPI row is pbir.kpi_h() tall (108 px with the type bump: 24 pt value + 13 pt title, was 90): the bands below
+# move down by KPI_DY and band ④ gives that height back, so the Next row stays where it was.
+KPI_H = pbir.kpi_h()
+KPI_DY = KPI_H - 90
 Y1, Y1K = 150, 188           # ① section + KPI row
-Y2, Y2V, H2 = 294, 334, 340  # ② section + visuals
-Y3, Y3V, H3 = 690, 730, 400  # ③
-Y4, Y4V, H4 = 1146, 1186, 400  # ④
+Y2, Y2V, H2 = 294 + KPI_DY, 334 + KPI_DY, 340  # ② section + visuals
+Y3, Y3V, H3 = 690 + KPI_DY, 730 + KPI_DY, 400  # ③
+Y4, Y4V, H4 = 1146 + KPI_DY, 1186 + KPI_DY, 400 - KPI_DY  # ④
 YNEXT = 1606
 
 
@@ -764,9 +775,9 @@ def build_governance():
            ("PMO | Plans With Unsubmitted Timesheets", "Unsubmitted timesheets")]
     w = (1768 - 7 * 10) / 8
     for k, (m, label) in enumerate(hyg):
-        pg.add(round(16 + k * (w + 10), 2), Y3V, round(w, 2), 90, card(m, label, value_colour=NAVY),
+        pg.add(round(16 + k * (w + 10), 2), Y3V, round(w, 2), KPI_H, card(m, label, value_colour=NAVY),
                key=f"hyg{k}")
-    pg.add(16, Y3V + 106, 1768, H3 - 106, chart("tableEx",
+    pg.add(16, Y3V + KPI_H + 16, 1768, H3 - KPI_H - 16, chart("tableEx",
         {"Values": [P(C("DimInsightRule", "RuleName"), "Rule"), P(C("DimInsightRule", "RuleArea"), "Area"),
                     P(C("DimInsightRule", "Severity"), "Severity"), P(pf, "Plans failing"),
                     P(C("DimInsightRule", "RecommendedAction"), "Recommended action")]},

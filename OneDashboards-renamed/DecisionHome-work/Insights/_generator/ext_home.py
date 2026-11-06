@@ -669,6 +669,15 @@ def build_band_links(pg, bm_all, bm_bucket):
                key=f"chip_go{k}")
 
 
+def add_centred(pg, x, y, w, h, v, key, **kw):
+    """Add a transparent single-line text card, grown about its centre to the height its font needs (pbir.card_h):
+    a card centres its text vertically, so the text stays where the layout put it and is no longer cut off."""
+    need = pbir.card_h(*pbir.card_fonts(v)) if v.get("visualType") == "card" else h
+    if need > h:
+        y, h = round(y - (need - h) / 2, 2), need
+    return pg.add(x, y, w, h, v, key=key, **kw)
+
+
 def band_text(measure, size, colour=INK2, colour_measure=None):
     """Single-line card on a transparent ground (no header row, no scroll), text centred."""
     v = text_line(measure, size=size, colour=colour)
@@ -684,17 +693,17 @@ def build_band(pg):
     build_brand(pg)
     # decision pill: orange shape, white text on top
     pg.add(PILL_X, PILL_Y, PILL_W, PILL_H, shape(ORANGE, radius=10), key="pill_bg")
-    pg.add(PILL_X + 8, PILL_Y + 4, PILL_W - 16, PILL_H - 8,
-           with_tip(band_text(hm("Briefing Pill"), 15, "#FFFFFF"), "tip_home_act"), key="pill")
+    add_centred(pg, PILL_X + 8, PILL_Y + 4, PILL_W - 16, PILL_H - 8,
+                with_tip(band_text(hm("Briefing Pill"), 15, "#FFFFFF"), "tip_home_act"), key="pill")
     for k, x, y, w in chip_geometry():
         nm = CHIPS[k][2]
         pg.add(x, y, w, CH_H, chip_outline(), key=f"chip_bg{k}")
         pg.add(x + CH_DOT_X, y + (CH_H - CH_DOT) / 2, CH_DOT, CH_DOT, shape(CHIPS[k][3], radius=50), key=f"chip_dot{k}")
-        pg.add(x + CH_CNT_X, y + CH_TXT_Y, CH_CNT_W, CH_TXT_H,
-               band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")), key=f"chip_n{k}")
-        pg.add(x + CH_LBL_X - CH_LBL_PAD, y + CH_TXT_Y, chip_label_w(CHIPS[k][1]), CH_TXT_H,
-               with_tip(band_text(hm(f"Chip Label {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")),
-                        f"tip_home_{CHIP_SLUG[k]}"), key=f"chip{k}")
+        add_centred(pg, x + CH_CNT_X, y + CH_TXT_Y, CH_CNT_W, CH_TXT_H,
+                    band_text(hm(f"Chip {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")), key=f"chip_n{k}")
+        add_centred(pg, x + CH_LBL_X - CH_LBL_PAD, y + CH_TXT_Y, chip_label_w(CHIPS[k][1]), CH_TXT_H,
+                    with_tip(band_text(hm(f"Chip Label {nm}"), CH_FONT, colour_measure=hm(f"Chip Colour {nm}")),
+                             f"tip_home_{CHIP_SLUG[k]}"), key=f"chip{k}")
     pg.add(1220, 15, 160, 62, dark_slicer(pages.DP("Portfolio Name"), "Portfolio"), key="sl_portfolio")
     pg.add(1390, 15, 160, 62, dark_slicer(pages.DP("Program Name"), "Program"), key="sl_program")
 
@@ -930,7 +939,8 @@ def subject_card(pg, x, y, spec):
     sx, sy = x + W - PAD - SP_W, y + R_HEAD + (TILE - SP_H) / 2
     pg.add(sx, sy, SP_W, SP_H, fx_shape(hm(f"Pill Fill {sub}"), SP_R), key=f"{p}_pillbg")
     pg.add(sx + 12, sy + (SP_H - SP_DOT) / 2, SP_DOT, SP_DOT, fx_shape(colour, 50), key=f"{p}_dot")
-    pg.add(sx + 20, sy, SP_W - 26, SP_H, card_text(hm(f"Pill {sub}"), 10, colour_measure=colour), key=f"{p}_pill")
+    add_centred(pg, sx + 20, sy, SP_W - 26, SP_H, card_text(hm(f"Pill {sub}"), 10, colour_measure=colour),
+                key=f"{p}_pill")
     # 2 hero line: unit (padded measure, right of the number), chip right-aligned at the top of the digits
     unit_x = x + PAD + NUM_MIN_PX[key] + UNIT_GAP - TBL_PADL
     pg.add(round(unit_x, 2), y + R_NUM + NUM_BASE - UNIT_BASE, W - (unit_x - x) - PAD, 66,
@@ -947,16 +957,18 @@ def subject_card(pg, x, y, spec):
     else:
         pg.add(cx, y + R_CHIP, cw, CHIP_TH, shape(RULE2, radius=CHIP_R), key=f"{p}_chipbg")
         txt = textbox([[(arg, st("Segoe UI", CHIP_PT, LABEL))]], align="center")
-    pg.add(cx, y + R_CHIP - 3, cw, CHIP_TH + 6, txt, key=f"{p}_chip")
+    add_centred(pg, cx, y + R_CHIP - 3, cw, CHIP_TH + 6, txt, key=f"{p}_chip")
     # 3 visual row: area sparkline + month captions, progress bar + marker + captions, or an explicit empty slot
     vis = spec["visual"]
     tw = W - 2 * PAD
     if vis and vis[0] == "area":
         _k, measure, cap = vis
         # captions first: the chart (transparent) is drawn on top of them
-        pg.add(x + PAD - 6, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark From {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap0")
+        add_centred(pg, x + PAD - 6, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark From {sub}"), CAP_PT, colour=MUTED2),
+                    key=f"{p}_cap0")
         pg.add(x + PAD + 40, y + R_CAP, tw - 80, CAP_H, caption(cap, "center"), key=f"{p}_cap1")
-        pg.add(x + W - PAD - 38, y + R_CAP, 44, CAP_H, card_text(hm(f"Spark To {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap2")
+        add_centred(pg, x + W - PAD - 38, y + R_CAP, 44, CAP_H,
+                    card_text(hm(f"Spark To {sub}"), CAP_PT, colour=MUTED2), key=f"{p}_cap2")
         spark = area_spark(measure, colour)
         spark["visualContainerObjects"]["general"] = [{"properties": {"altText": pbir.s(f"Trend: {name}, {cap}")}}]
         pg.add(x + PAD - 4, y + R_VIS, tw + 8, VIS_H, spark, key=f"{p}_spark")
@@ -1166,7 +1178,7 @@ def tip_page(key, title, subtitle, columns, sort, filters=(), long_list=None):
     pg.add(6, top, TIP_W - 12, h - top - 6 - foot, tbl, key="tip_tbl", filters=list(filters))
     if long_list:
         more = band_text(long_list[1], 9, colour=pbir.MUTED)       # centred, transparent card; blank = nothing shown
-        pg.add(10, h - 32, TIP_W - 20, 26, more, key="tip_more")
+        add_centred(pg, 10, h - 32, TIP_W - 20, 26, more, key="tip_more")
     return pg
 
 

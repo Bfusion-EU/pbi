@@ -366,13 +366,14 @@ def build_project(drill):
     # ① money
     section(pg, 352, 1, "Money — where will it land?",
             "Budget, actuals and estimate at completion over the whole life of the plan; the line shows the monthly profile.")
-    vy, vh = 390, 300
+    ch = pbir.card_h(22, pbir.fs(11))           # 101 px: 22 pt value + 13 pt title (was 93, cut off)
+    vy, vh = 390, 3 * ch + 2 * 10
     money_cards = [(pm("Budget"), "Budget", {}), (pm("Actual"), "Actual cost", {}),
                    (pm("EAC"), "EAC at completion", {"value_colour": ORANGE}),
                    (pm("EAC Variance"), "EAC − budget", {"colour_measure": pm("EAC Colour")}),
                    (pm("EAC Variance %"), "EAC variance %", {"colour_measure": pm("EAC Colour")}),
                    (pm("Burn %"), "Budget burned", {})]
-    cw, ch = 285, 93
+    cw = 285
     for k, (m, label, o) in enumerate(money_cards):
         pg.add(16 + (k % 2) * (cw + 10), vy + (k // 2) * (ch + 10), cw, ch, wrap_card(m, label, size=22, **o), key=f"money{k}")
     bud, act, fc = M("Story | Budget In Period"), M("Story | Actual Cost"), M("Story | Forecast Cost")
@@ -384,9 +385,10 @@ def build_project(drill):
         sort=[(MONTH, "Ascending")]), key="v_money")
 
     # ② people
-    section(pg, 700, 2, "People — is the work staffed?",
+    py = vy + vh + 10                            # 2 moves down as far as the money cards grew; its band gives it back
+    section(pg, py, 2, "People — is the work staffed?",
             "Scheduled hours (the work plan) against committed hours (what resource managers signed off), and who carries it.")
-    vy, vh = 738, 250
+    vy, vh = py + 38, 988 - (py + 38)
     sch, com = M("Story | Project Scheduled Hours"), M("Story | Project Committed Hours")
     pg.add(16, vy, 1160, vh, chart("clusteredColumnChart",
         {"Category": [P(MONTH, "Month")], "Y": [P(sch, "Scheduled (h)"), P(com, "Committed (h)")]},
@@ -470,16 +472,17 @@ def build_tip_project():
 
 def _build_tip_project():
     pg = binding_page("tip_project", TIP_W, TIP_H, "ActualSize", "Tooltip", DP("Name"), page_type="Tooltip")
-    pg.add(6, 4, 308, 36, headline(pm("Name"), bg=ORANGE_SOFT, border=ORANGE, size=11), key="name")
-    pg.add(6, 46, 151, 58, small_card(pm("Overall Health"), "Overall health", colour_measure=pm("Overall Health Colour"),
+    # card heights from their fonts (pbir.card_h): name 37, 14 pt value + 9 pt title 66, milestone 53 (of 240)
+    pg.add(6, 4, 308, 37, headline(pm("Name"), bg=ORANGE_SOFT, border=ORANGE, size=11), key="name")
+    pg.add(6, 44, 151, 66, small_card(pm("Overall Health"), "Overall health", colour_measure=pm("Overall Health Colour"),
                                       size=12), key="health")
-    pg.add(163, 46, 151, 58, small_card(pm("EAC Variance %"), "EAC vs budget", colour_measure=pm("EAC Colour")),
+    pg.add(163, 44, 151, 66, small_card(pm("EAC Variance %"), "EAC vs budget", colour_measure=pm("EAC Colour")),
            key="eac")
-    pg.add(6, 110, 151, 58, small_card(pm("Risks And Issues"), "Active risks · issues", value_colour=ORANGE, size=11),
+    pg.add(6, 114, 151, 66, small_card(pm("Risks And Issues"), "Active risks · issues", value_colour=ORANGE, size=11),
            key="risks")
-    pg.add(163, 110, 151, 58, small_card(pm("Overdue Tasks"), "Overdue tasks", colour_measure=pm("Overdue Colour")),
+    pg.add(163, 114, 151, 66, small_card(pm("Overdue Tasks"), "Overdue tasks", colour_measure=pm("Overdue Colour")),
            key="overdue")
-    pg.add(6, 174, 308, 60, small_card(pm("Next Milestone"), "Next milestone", size=10), key="milestone")
+    pg.add(6, 184, 308, 53, small_card(pm("Next Milestone"), "Next milestone", size=10), key="milestone")
     return pg
 
 
@@ -491,15 +494,16 @@ def build_tip_resource():
 
 def _build_tip_resource():
     pg = binding_page("tip_resource", TIP_W, TIP_H, "ActualSize", "Tooltip", DR("Name"), page_type="Tooltip")
-    pg.add(6, 4, 308, 36, headline(pm("Resource Name"), bg=ORANGE_SOFT, border=ORANGE, size=11), key="name")
-    pg.add(6, 42, 308, 22, headline(pm("Resource Role"), bg="#FFFFFF", border="#FFFFFF", size=9, colour=MUTED), key="role")
+    # card heights from their fonts (pbir.card_h): name 37, role 30, 14 pt value + 9 pt title 66
+    pg.add(6, 4, 308, 37, headline(pm("Resource Name"), bg=ORANGE_SOFT, border=ORANGE, size=11), key="name")
+    pg.add(6, 42, 308, 30, headline(pm("Resource Role"), bg="#FFFFFF", border="#FFFFFF", size=9, colour=MUTED), key="role")
     third = (308 - 2 * 6) / 3
     for k, (m, label, o) in enumerate([(pm("Resource Capacity"), "Capacity h", {}),
                                        (pm("Resource Scheduled"), "Scheduled h", {}),
                                        (pm("Resource Utilisation"), "Utilisation",
                                         {"colour_measure": pm("Resource Util Colour")})]):
-        pg.add(round(6 + k * (third + 6), 2), 70, round(third, 2), 60, small_card(m, label, **o), key=f"k{k}")
-    pg.add(6, 136, 308, 98, text_card(pm("Resource Top Projects"), "Top 3 projects by scheduled hours", size=9),
+        pg.add(round(6 + k * (third + 6), 2), 74, round(third, 2), 66, small_card(m, label, **o), key=f"k{k}")
+    pg.add(6, 144, 308, 90, text_card(pm("Resource Top Projects"), "Top 3 projects by scheduled hours", size=9),
            key="top3")
     return pg
 
