@@ -12,6 +12,7 @@ native KPI cards, registers and headlines of the Insights pack (same measures, s
 The source pack is read only; it is never written.
 """
 import copy
+from dataclasses import dataclass
 import json
 import shutil
 import sys
@@ -983,43 +984,100 @@ def build_psr():
 
 # ================================================================ 6 RISK / 7 BENEFITS / 8 GOVERNANCE
 # ---------------------------------------------------------------- cross-report drill-through
-# One hidden page, hosted only in roles.DRILL_HOST (Story PM): right-click a project in any Story report (all in one
-# workspace / app) › Drill through › "Project Status (Story PM)". Every Story report turns on
-# settings.useCrossReportDrillthrough so its visuals list the target. One tall page, not the two screens of 5c: a drill
-# filter does not travel with a "Continue" click to a second screen.
-DRILL_KEY = "psr_drill"
-DRILL_PID = uid("bfstory-page", DRILL_KEY)
-DRILL_NAME = "Project Status"
+# Hidden drill pages, each hosted by the role report that owns its topic. All Story reports live in one workspace /
+# app and turn on settings.useCrossReportDrillthrough, so right-click a project, portfolio or person in ANY Story
+# report › Drill through › "<page> [<host report>]" opens the host report on that one item; Back returns.
+# Every page is one tall FitToWidth page, not a story page with "(2/2)" screens: a drill filter does not travel with a
+# "Continue" click to a second screen. Only the bound field travels (Keep all filters off): the source page's year and
+# slicers must not narrow a page that lives in another report.
+@dataclass
+class Drill:
+    key: str          # page key; page id uid("bfstory-page", key) is stable across rebuilds
+    name: str         # menu text: "<name> [<host report>]"
+    host: str         # roles.ROLES key of the report that holds the page
+    field: dict       # the drill-through field (table + column must match the source visual's field)
+    chrome_key: str   # story page whose chapter rail / filter bar the page shows (must be in the host report)
+    area: str
+    question: str
+    what: str         # "the project" / "the portfolio" / "the person", for the subtitle
+    headline: str     # headline measure
+    spec: list        # [(question, explain, relative height, items, weights | None)]
 
 
-def build_psr_drill():
-    KEY_OF[DRILL_PID] = "psr"                       # chrome: filter bar + rail of the Schedule chapter
-    pg = Page(DRILL_PID, DRILL_NAME, W, pages.TALL, display_option="FitToWidth", background_image=BG)
-    header(pg, "psr", "STATUS REPORT", "WHERE DOES THIS PROJECT STAND?",
-           "Drill-through: the project you right-clicked, in any Story report. Back returns you there.", [])
-    put(pg, 16, Y_HEAD, 1768, 56, head(CARD_TEXT["psr"][1]), "headline")
-    y = Y_BODY
-    for num, (q, e, h, items, wts) in enumerate([
+PSR = "Project Status Report (PSR)"
+DRILLS = [
+    Drill("psr_drill", "Project Status", "pm", DP("Name"), "psr", "STATUS REPORT", "WHERE DOES THIS PROJECT STAND?",
+          "the project", "Story | Status · Headline", [
         ("Status, risks and trend", "The latest status report, the project's risk matrix and how its health trends.", 520,
-         [("src", "Project Status Report (PSR)", "bfusionProjectStatusCard"),
-          ("src", "Project Status Report (PSR)", "bfusionPortfolioRiskMatrix"),
-          ("src", "Project Status Report (PSR)", "bfusionStatusTrendSparkline")], [0.9, 1.2, 1]),
-        ("Lifecycle", "Where the project is in its gates.", 260,
-         [("src", "Project Status Report (PSR)", "bfusionProjectLifecycle")], None),
+         [("src", PSR, "bfusionProjectStatusCard"), ("src", PSR, "bfusionPortfolioRiskMatrix"),
+          ("src", PSR, "bfusionStatusTrendSparkline")], [0.9, 1.2, 1]),
+        ("Lifecycle", "Where the project is in its gates.", 260, [("src", PSR, "bfusionProjectLifecycle")], None),
         ("Timeline and people", "Gantt of the project and the load of the people on it.", 440,
-         [("src", "Project Status Report (PSR)", "bfusionHierarchicalGantt"),
-          ("src", "Project Status Report (PSR)", "bfusionResourceHeatmap")], [1.5, 1])], 1):
-        y = band(pg, y, num, q, e, h, items, wts)
-    field = DP("Name")
-    fname = uid("bind-filter", DRILL_KEY, "DimProject", "Name")
-    pg.page["filterConfig"] = {"filters": [{"name": fname, "field": field, "type": "Categorical",
+         [("src", PSR, "bfusionHierarchicalGantt"), ("src", PSR, "bfusionResourceHeatmap")], [1.5, 1])]),
+    Drill("sched_drill", "Project Schedule", "pm", DP("Name"), "critical", "SCHEDULE", "WHAT SETS THIS PROJECT'S FINISH?",
+          "the project", "Story | Schedule Headline", [
+        ("Critical path", "Tasks with zero float; any slip here moves the finish date.", 520,
+         [("src", "Critical Path & Chain", "bfusionCriticalPathDiagram")], None),
+        ("Critical chain and buffer", "Buffer burn against chain completion.", 400,
+         [("src", "Critical Path & Chain", "bfusionCriticalChain")], None),
+        ("Tasks and where they stand", "Task KPIs and the board by status.", 380,
+         [("src", "My Work", "bfusionTaskKPIBoard"), ("src", "My Work", "bfusionKanbanBoard")], [1, 1.4])]),
+    Drill("fin_drill", "Project Financials", "ppm", DP("Name"), "finance", "FINANCIALS", "IS THIS PROJECT ON BUDGET?",
+          "the project", "Story | Finance Headline", [
+        ("How is spend tracking over time?", "S-curve of budget, actual and forecast, and the financial story in words.", 420,
+         [("src", "Project Financials Insights", "bfusionFinancialSCurve"),
+          ("src", "Project Financials Insights", "bfusionFinancialKPINarrative")], [2, 1]),
+        ("Where is the variance coming from?", "Financial overview per cost type.", 380,
+         [("src", "Project Financials Insights", "bfusionFinancialOverview")], None),
+        ("Where will the budget land?", "Cost at completion with its confidence band, and stop / rescue / continue.", 480,
+         [("src", "Budget Risk Forecast", "bfusionBudgetRiskForecast"),
+          ("src", "Project Early Warning Tracker", "bfusionSunkCostDecisionBoard")], [1.3, 1])]),
+    Drill("pf_drill", "Portfolio Overview", "ppm", DP("Portfolio Name"), "health", "PORTFOLIO", "HOW IS THIS PORTFOLIO DOING?",
+          "the portfolio", "Story | Exec Headline", [
+        ("Health on every dimension", "Schedule, cost, scope, resources and risk side by side.", 520,
+         [("src", "360° Dashboard", "bfusionPortfolio360"), ("src", "Health Dashboard", "bfusionPortfolioSummaryKPI")],
+         [1, 1.1]),
+        ("Where do health and risk meet?", "Projects in the red corner of both are the board conversation.", 440,
+         [("src", "Health Dashboard", "bfusionPortfolioHealthMatrix"),
+          ("src", "Health Dashboard", "bfusionPortfolioRiskMatrix")], [1.5, 1]),
+        ("What lands when?", "Bars are the planned window of each project; colour is health.", 400,
+         [("src", "Roadmap", "portfolioRoadmap")], None)]),
+    Drill("person_drill", "Person Workload", "resources", DR("Name"), "resources", "PEOPLE", "WHAT IS ON THIS PERSON'S PLATE?",
+          "the person", "Story | Resource Headline", [
+        ("Who, and when?", "Allocation per period; hot cells are overload.", 420,
+         [("src", "Capacity & Utilization", "bfusionResourceHeatmap")], None),
+        ("Tasks and status", "Task KPIs and the board by status.", 400,
+         [("src", "My Work", "bfusionTaskKPIBoard"), ("src", "My Work", "bfusionKanbanBoard")], [1, 1.4]),
+        ("When is it due?", "Hierarchical Gantt of the assigned work.", 440, [("src", "My Work", "bfusionHierarchicalGantt")], None)]),
+    Drill("gov_drill", "Project Data Quality", "pmo", DP("Name"), "recon", "DATA QUALITY", "CAN WE TRUST THIS PROJECT'S DATA?",
+          "the project", CARD_TEXT["governance"][1], [
+        ("Which sources does it have?", "One card per source the project reports through.", 300, [lambda *a: _recon_cards(*a)], None),
+        ("Reconciliation", "The project's line in each source, side by side.", 900, [lambda *a: _recon_table(*a)], None)]),
+]
+DRILL_PIDS = {uid("bfstory-page", d.key) for d in DRILLS}
+TALL_END = round(pages.TALL * 0.928) - 12   # footer band of the tall background
+
+
+def build_drill(d):
+    pid = uid("bfstory-page", d.key)
+    KEY_OF[pid] = d.chrome_key
+    pg = Page(pid, d.name, W, pages.TALL, display_option="FitToWidth", background_image=BG)
+    header(pg, d.chrome_key, d.area, d.question,
+           f"Drill-through: {d.what} you right-clicked, in any Story report. Back returns you there.", [])
+    put(pg, 16, Y_HEAD, 1768, 56, head(d.headline), "headline")
+    free = TALL_END - Y_BODY - len(d.spec) * (SEC_H + GAP) + GAP
+    scale = free / sum(b_[2] for b_ in d.spec)
+    y = Y_BODY
+    for num, (q, e, h, items, wts) in enumerate(d.spec, 1):
+        y = band(pg, y, num, q, e, int(h * scale), items, wts)
+    ent, prop = d.field["Column"]["Expression"]["SourceRef"]["Entity"], d.field["Column"]["Property"]
+    fname = uid("bind-filter", d.key, ent, prop)
+    pg.page["filterConfig"] = {"filters": [{"name": fname, "field": d.field, "type": "Categorical",
                                             "howCreated": "Drillthrough"}]}
-    # only the project travels (Keep all filters off): the source page's year / slicer context must not narrow a
-    # status report that lives in another report
-    pg.page["pageBinding"] = {"name": uid("bind", DRILL_KEY), "type": "Drillthrough", "referenceScope": "CrossReport",
+    pg.page["pageBinding"] = {"name": uid("bind", d.key), "type": "Drillthrough", "referenceScope": "CrossReport",
                               "acceptsFilterContext": "None",
-                              "parameters": [{"name": uid("bind-param", DRILL_KEY), "boundFilter": fname,
-                                              "fieldExpr": field}]}
+                              "parameters": [{"name": uid("bind-param", d.key), "boundFilter": fname,
+                                              "fieldExpr": d.field}]}
     pg.page["visibility"] = "HiddenInViewMode"
     return pg
 
@@ -1189,8 +1247,8 @@ def build_pages():
     done = {k: BUILDERS[k]() for k, _ in PAGES if k not in late}
     done.update({k: BUILDERS[k]() for k in late})
     built = [p for k, _ in PAGES for p in (done[k] if isinstance(done[k], list) else [done[k]])]
-    if ROLE is not None and ROLE.key == roles.DRILL_HOST:
-        built.append(build_psr_drill())          # outside PAGES: no Next link, no tab, reached by drill-through only
+    if ROLE is not None:                         # outside PAGES: no Next link, no tab, reached by drill-through only
+        built += [build_drill(d) for d in DRILLS if d.host == ROLE.key]
     for p in built:
         KEY_OF.setdefault(p.id, next((k for k, v in PID.items() if v == p.id), None))
     copy_interactions(built)

@@ -235,15 +235,21 @@ STORY = Path(__file__).resolve().parents[3] / "Story"
 
 
 def test_cross_report_drillthrough_host_and_sources():
-    """Story PM alone holds the cross-report Project Status drill page; every Story report may drill into it."""
+    """Each drill page sits in its host role report only; every Story report may drill into all of them."""
     for name in ["Bfusion Story"] + [r.report for r in roles.ROLES.values()]:
         rep = json.loads((STORY / f"{name}.Report" / "definition" / "report.json").read_text(encoding="utf-8"))
         assert rep["settings"]["useCrossReportDrillthrough"] is True, name
-        hosts = [p for p in (STORY / f"{name}.Report" / "definition" / "pages").glob("*/page.json")
-                 if json.loads(p.read_text(encoding="utf-8")).get("pageBinding", {}).get("referenceScope") == "CrossReport"]
-        assert len(hosts) == (1 if name == roles.ROLES[roles.DRILL_HOST].report else 0), name
-    page = json.loads(next((STORY / "Story PM.Report" / "definition" / "pages").glob(
-        f"{bfstory.DRILL_PID}/page.json")).read_text(encoding="utf-8"))
-    assert page["visibility"] == "HiddenInViewMode"
-    assert page["pageBinding"]["acceptsFilterContext"] == "None"
-    assert page["pageBinding"]["parameters"][0]["fieldExpr"]["Column"]["Property"] == "Name"
+        got = {p.parent.name: json.loads(p.read_text(encoding="utf-8"))
+               for p in (STORY / f"{name}.Report" / "definition" / "pages").glob("*/page.json")}
+        got = {k: v for k, v in got.items() if v.get("pageBinding", {}).get("referenceScope") == "CrossReport"}
+        want = {bfstory.uid("bfstory-page", d.key) for d in bfstory.DRILLS if roles.ROLES[d.host].report == name}
+        assert set(got) == want, name
+        for page in got.values():
+            assert page["visibility"] == "HiddenInViewMode"
+            assert page["pageBinding"]["type"] == "Drillthrough"
+            assert page["pageBinding"]["acceptsFilterContext"] == "None"
+
+
+def test_every_role_but_modeller_hosts_a_drill_page():
+    assert {d.host for d in bfstory.DRILLS} == set(roles.ROLES) - {"modeller"}
+    assert len({d.key for d in bfstory.DRILLS}) == len(bfstory.DRILLS)

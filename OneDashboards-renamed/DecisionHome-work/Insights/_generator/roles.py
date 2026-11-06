@@ -12,8 +12,6 @@ from pbir import uid
 QUESTIONS_PAGE_ID = uid("bfstory-page", "questions")
 WELCOME_PAGE_ID = uid("bfstory-page", "welcome")
 LAUNCHER_PAGE_ID = uid("bfstory-launcher", "launcher")
-DRILL_HOST = "pm"   # the only report holding the cross-report "Project Status" drill-through page (bfstory.DRILL_KEY)
-
 
 @dataclass
 class Role:
