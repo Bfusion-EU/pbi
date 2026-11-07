@@ -1059,6 +1059,63 @@ DRILLS = [
          "hours, baseline, last report, benefits. Any state, not only active.", 1200,
          [lambda *a: _recon_table(*a, active_only=False)], None)]),
 ]
+
+
+def _group_spec(what):
+    """Bands for a group of projects (programme, business unit, project type)."""
+    return [
+        ("How healthy is it?", f"Every project of this {what} against its peers, and how status reports trend.", 460,
+         [("src", "Health Dashboard", "bfusionPortfolioHealthMatrix"), ("src", PSR, "bfusionStatusTrendSparkline")],
+         [1.6, 1]),
+        ("Is the money on track?", "S-curve of budget, actual and forecast, and the financial story in words.", 420,
+         [("src", "Project Financials Insights", "bfusionFinancialSCurve"),
+          ("src", "Project Financials Insights", "bfusionFinancialKPINarrative")], [2, 1]),
+        ("What lands when?", "Bars are the planned window of each project; colour is health.", 400,
+         [("src", "Roadmap", "portfolioRoadmap")], None)]
+
+
+def _people_spec(what):
+    """Bands for a group of people (department, role)."""
+    return [
+        ("Who, and when?", f"Allocation per person of this {what} and period; hot cells are overload.", 420,
+         [("src", "Capacity & Utilization", "bfusionResourceHeatmap")], None),
+        ("Will supply cover demand?", "Capacity against the hours planned, per period.", 400,
+         [("src", "Capacity & Allocation", "bfusionCapacityPlanning")], None),
+        ("Add, move or release people?", "The FTE gap and where the hours go.", 420,
+         [("src", "Resource Decision Board", "bfusionFTEDecisionBoard"),
+          ("src", "Efficiency Dashboard", "bfusionResourceGapAnalysis")], None)]
+
+
+DRILLS += [
+    Drill("prog_drill", "Program Overview", "ppm", DP("Program Name"), "portfolio", "PROGRAM",
+          "HOW IS THIS PROGRAM DOING?", "the program", "Story | Portfolio Headline", _group_spec("program")),
+    Drill("bu_drill", "Business Unit Overview", "ppm", DP("BusinessUnit_Value"), "portfolio", "BUSINESS UNIT",
+          "HOW IS THIS BUSINESS UNIT DOING?", "the business unit", "Story | Portfolio Headline",
+          _group_spec("business unit")),
+    Drill("ptype_drill", "Project Type Overview", "ppm", DP("ProjectType_Value"), "portfolio", "PROJECT TYPE",
+          "HOW ARE PROJECTS OF THIS TYPE DOING?", "the project type", "Story | Portfolio Headline",
+          _group_spec("project type")),
+    Drill("align_drill", "Strategic Alignment", "modeller", DP("StrategicAlignment_Value"), "selection", "ALIGNMENT",
+          "WHAT DOES THIS ALIGNMENT BAND HOLD?", "the alignment band", "Story | Portfolio Headline", [
+        ("Where does the money go?", "Budget by goal, and the Pareto of value across these projects.", 460,
+         [("src", "Strategic Sunburst", "bfusionStrategicSunburst"), ("src", "Pareto Analysis", "bfusionParetoAnalysis")],
+         None),
+        ("Does it make the cut?", "Selection waterfall and the funding waterline for these projects.", 520,
+         [("src", "Selection Waterfall", "bfusionSelectionWaterfall"),
+          ("src", "Waterline Modeler & Resource Align", "bfusionWaterlineModeler")], None)]),
+    Drill("dept_drill", "Department Capacity", "resources", DR("Department_Value"), "fte", "DEPARTMENT",
+          "DOES THIS DEPARTMENT HAVE THE PEOPLE?", "the department", "Story | Resource Headline",
+          _people_spec("department")),
+    Drill("role_drill", "Role Capacity", "resources", DR("Role_Value"), "fte", "ROLE",
+          "DO WE HAVE ENOUGH PEOPLE IN THIS ROLE?", "the role", "Story | Resource Headline", _people_spec("role")),
+    Drill("mgr_drill", "Manager's Projects", "pmo", DP("Manager_Value"), "psr", "PROJECT MANAGER",
+          "HOW ARE THIS MANAGER'S PROJECTS DOING?", "the project manager", "Story | Status · Headline", [
+        ("How healthy are they?", "Every project this manager runs, against its peers, and the status trend.", 460,
+         [("src", "Health Dashboard", "bfusionPortfolioHealthMatrix"), ("src", PSR, "bfusionStatusTrendSparkline")],
+         [1.6, 1]),
+        ("Is the data complete?", "Each project's line in each source: what is missing.", 520,
+         [lambda *a: _recon_table(*a, active_only=False)], None)]),
+]
 DRILL_PIDS = {uid("bfstory-page", d.key) for d in DRILLS}
 
 

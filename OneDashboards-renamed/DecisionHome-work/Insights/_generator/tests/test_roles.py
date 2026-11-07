@@ -169,7 +169,8 @@ def test_modeller_report_builds_clean(tmp_path):
     assert any("MODELLER · START HERE" in f.read_text(encoding="utf-8")
                for f in rep.glob(f"definition/pages/{q}/visuals/*/visual.json"))
     shown = {d.split(" (")[0] for d in _report_pages(rep)}
-    assert shown == {n for _, n in roles.role_pages(roles.ROLES["modeller"], FULL)}
+    assert shown == ({n for _, n in roles.role_pages(roles.ROLES["modeller"], FULL)}
+                     | {d.name for d in bfstory.DRILLS if d.host == "modeller"})
 
 
 def test_pmo_report_has_home_and_no_dangling_links(tmp_path):
@@ -250,6 +251,6 @@ def test_cross_report_drillthrough_host_and_sources():
             assert page["pageBinding"]["acceptsFilterContext"] == "None"
 
 
-def test_every_role_but_modeller_hosts_a_drill_page():
-    assert {d.host for d in bfstory.DRILLS} == set(roles.ROLES) - {"modeller"}
+def test_every_role_hosts_a_drill_page():
+    assert {d.host for d in bfstory.DRILLS} == set(roles.ROLES)
     assert len({d.key for d in bfstory.DRILLS}) == len(bfstory.DRILLS)
