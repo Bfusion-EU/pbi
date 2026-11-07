@@ -1046,9 +1046,12 @@ DRILLS = [
           "the person", "Story | Resource Headline", [
         ("Who, and when?", "Allocation per period; hot cells are overload.", 420,
          [("src", "Capacity & Utilization", "bfusionResourceHeatmap")], None),
-        ("Tasks and status", "Task KPIs and the board by status.", 400,
-         [("src", "My Work", "bfusionTaskKPIBoard"), ("src", "My Work", "bfusionKanbanBoard")], [1, 1.4]),
-        ("When is it due?", "Hierarchical Gantt of the assigned work.", 440, [("src", "My Work", "bfusionHierarchicalGantt")], None)]),
+        # No task board / Kanban / Gantt here: DimTask and DimResource meet only through FactAssignment (single
+        # direction), so a person filter never reaches DimTask and those visuals would show every task.
+        ("Will supply cover demand?", "This person's capacity against the hours planned on them, per period.", 400,
+         [("src", "Capacity & Allocation", "bfusionCapacityPlanning")], None),
+        ("What is assigned?", "Every task this person is assigned to, by project; units from the assignments.", 440,
+         [lambda *a: _person_tasks(*a)], None)]),
     Drill("gov_drill", "Project Data Quality", "pmo", DP("Name"), "recon", "DATA QUALITY", "CAN WE TRUST THIS PROJECT'S DATA?",
           "the project", CARD_TEXT["governance"][1], [
         # one band: the source-coverage cards count active projects across the portfolio, meaningless for one project
@@ -1057,6 +1060,17 @@ DRILLS = [
          [lambda *a: _recon_table(*a, active_only=False)], None)]),
 ]
 DRILL_PIDS = {uid("bfstory-page", d.key) for d in DRILLS}
+
+
+def _person_tasks(pg, x, y, w, h):
+    """Tasks of the drilled person. The FactAssignment measure is what carries the DimResource filter to the task
+    rows: rows without an assignment for the person have a blank measure and drop out of the table."""
+    units = M("Resource | Assignments - Total Units")
+    v = chart("tableEx", {"Values": [
+        P(DP("Name"), "Project"), P(C("DimTask", "Name"), "Task"), P(C("DimTask", "Status"), "Status"),
+        P(C("DimTask", "StartDate"), "Start"), P(C("DimTask", "EndDate"), "Finish"), P(units, "Assigned units")]},
+        "Assigned tasks — latest finish last", table_style(), sort=[(C("DimTask", "EndDate"), "Ascending")])
+    pg.add(x, y, w, h, v, key="v_person_tasks")
 TALL_END = round(pages.TALL * 0.928) - 12   # footer band of the tall background
 
 
