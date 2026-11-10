@@ -200,21 +200,30 @@ def _arrow(pg, x, y, fill, ink, key):
     _text(pg, x, y + 4, 40, 32, "→", st("Segoe UI", 14, ink, True), f"{key}_arrow_t", align="center")
 
 
-def _headline(pg, x, y, w, h, ck, bg, ink, key):
-    hl = headline(CTX.headline[ck], bg=bg, border=bg, size=10, colour=ink)
+def _headline(pg, x, y, w, h, ck, bg, ink, key, size=10):
+    hl = headline(CTX.headline[ck], bg=bg, border=bg, size=size, colour=ink)
     hl["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
     pg.add(x, y, w, h, hl, key=key)
 
 
-def _deep_row(pg, x, y, w, m, row, badge, badge_ink, ink, key):
+# Role reports show the chapters as one row of tiles. There the tiles are only as tall as what they hold (HUG) and
+# the type is larger: taller deep-dive rows, and a headline box with room for three lines so it is not cut off.
+HUG_ROW, HUG_PITCH, HUG_HEAD = 38, 46, 110             # 110 px: four lines of the 13 pt headline
+
+
+def _deep_row(pg, x, y, w, m, row, badge, badge_ink, ink, key, hug=False):
     c = layout._code(CTX.names[m])
-    pg.add(x, y, w, 30, shape(row, radius=8), key=f"{key}_bg")
-    pg.add(x + 8, y + 5, 30, 20, shape(badge, radius=6), key=f"{key}_badge")
-    _text(pg, x + 8, y + 3, 30, 22, f"{c[0]}{c[1]}", st("Segoe UI", 8, badge_ink, True), f"{key}_code", align="center")
+    h = HUG_ROW if hug else 30
+    o = (h - 30) / 2
+    pg.add(x, y, w, h, shape(row, radius=8), key=f"{key}_bg")
+    pg.add(x + 8, y + 5 + o, 30, 20, shape(badge, radius=6), key=f"{key}_badge")
+    _text(pg, x + 8, y + 3 + o, 30, 22, f"{c[0]}{c[1]}", st("Segoe UI", 8, badge_ink, True), f"{key}_code",
+          align="center")
     q = _sentence(CTX.questions[m])
-    size = pbir.fit_size(q, w, (10, 9, 8), pad=46 + 8)     # 12 pt with the type bump, smaller when the row is narrow
-    pg.add(x, y, w, 30, layout._alt(_ghost(q, CTX.pid[m], f"Open {CTX.names[m]}", font=ink, size=size,
-                                           margin=46), f"Open {CTX.names[m]}"), key=f"{key}_btn")
+    # 12 pt with the type bump (13 pt in a hug tile), smaller when the row is narrow
+    size = pbir.fit_size(q, w, (11, 10, 9) if hug else (10, 9, 8), pad=46 + 8)
+    pg.add(x, y, w, h, layout._alt(_ghost(q, CTX.pid[m], f"Open {CTX.names[m]}", font=ink, size=size,
+                                          margin=46), f"Open {CTX.names[m]}"), key=f"{key}_btn")
 
 
 def _deep(ck):
@@ -222,7 +231,15 @@ def _deep(ck):
     return [m for m, d in CTX.pages if layout._code(d) and layout._code(d)[0] == code and m != ck]
 
 
-def _tile(pg, x, y, w, h, k, ck):
+TILE_ROWS_Y, START_ROWS_Y = 292, 338               # where the deep-dive rows start in a hug tile / hug start tile
+
+
+def _hug_h(rows, chips):
+    """Height of the tiles of a role report's one row: down to the last deep-dive row, plus the chips if any."""
+    return START_ROWS_Y + rows * HUG_PITCH + (176 if chips else 12)
+
+
+def _tile(pg, x, y, w, h, k, ck, hug=False):
     code = layout._code(CTX.names[ck])
     key = f"t{k}"
     pg.add(x, y, w, h, shape(TILE, radius=14, line=TILE_LINE), key=f"{key}_bg")
@@ -230,11 +247,18 @@ def _tile(pg, x, y, w, h, k, ck):
     _arrow(pg, x + w - 64, y + 20, ORANGE, "#FFFFFF", key)
     _text(pg, x + 20, y + 76, w - 40, 24, f"{code[0]} · {code[2].upper()}", st("Segoe UI Semibold", 9, MUTED_INK, True),
           f"{key}_lbl")
-    _text(pg, x + 20, y + 98, w - 40, 44, _sentence(CTX.questions[ck]), st("DIN", 17, "#FFFFFF", True), f"{key}_q")
-    _headline(pg, x + 14, y + 140, w - 28, 46, ck, TILE, SOFT_INK, f"{key}_hl")
+    if hug:
+        _text(pg, x + 20, y + 100, w - 40, 68, _sentence(CTX.questions[ck]), st("DIN", 20, "#FFFFFF", True), f"{key}_q")
+        # a tile without deep-dive rows gives their room to the headline, so the whole sentence shows
+        hh = HUG_HEAD if _deep(ck) else min(170, h - 172 - 16)
+        _headline(pg, x + 14, y + 172, w - 28, hh, ck, TILE, SOFT_INK, f"{key}_hl", size=11)
+    else:
+        _text(pg, x + 20, y + 98, w - 40, 44, _sentence(CTX.questions[ck]), st("DIN", 17, "#FFFFFF", True), f"{key}_q")
+        _headline(pg, x + 14, y + 140, w - 28, 46, ck, TILE, SOFT_INK, f"{key}_hl")
     _brief_link(pg, x, y, w, h, ck, key)
     for j, m in enumerate(_deep(ck)):
-        _deep_row(pg, x + 20, y + 196 + j * 38, w - 40, m, ROW, BADGE, ORANGE, "#E5EAF1", f"{key}_d{j}")
+        ry = y + TILE_ROWS_Y + j * HUG_PITCH if hug else y + 196 + j * 38
+        _deep_row(pg, x + 20, ry, w - 40, m, ROW, BADGE, ORANGE, "#E5EAF1", f"{key}_d{j}", hug)
 
 
 def _brief_link(pg, x, y, w, h, ck, key):
@@ -243,7 +267,7 @@ def _brief_link(pg, x, y, w, h, ck, key):
     pg.add(x, y, w, h, layout._alt(_ghost("", CTX.pid[f"brief_{ck}"], tip), tip), key=f"{key}_go")
 
 
-def _start_tile(pg, x, y, w, h, ck):
+def _start_tile(pg, x, y, w, h, ck, hug=False):
     code = layout._code(CTX.names[ck])
     key = "t0"
     pg.add(x, y, w, h, shape(ORANGE, radius=14), key=f"{key}_bg")
@@ -255,10 +279,12 @@ def _start_tile(pg, x, y, w, h, ck):
     q = _sentence(CTX.questions[ck])
     qsize = 28 if len(q) * 15 <= w - 40 else 20        # 28 pt fits one line only; two lines need 20 pt in 60 px
     _text(pg, x + 20, y + 142, w - 40, 60, q, st("DIN", qsize, "#FFFFFF", True), f"{key}_q")
-    _headline(pg, x + 14, y + 204, w - 28, 50, ck, ORANGE, "#FFFFFF", f"{key}_hl")
+    _headline(pg, x + 14, y + 204, w - 28, HUG_HEAD if hug else 50, ck, ORANGE, "#FFFFFF", f"{key}_hl",
+              size=11 if hug else 10)
     _brief_link(pg, x, y, w, h, ck, key)
     for j, m in enumerate(_deep(ck)):
-        _deep_row(pg, x + 20, y + 268 + j * 40, w - 40, m, "#EC7A4A", "#F3A27C", "#FFFFFF", "#FFFFFF", f"{key}_d{j}")
+        ry = y + START_ROWS_Y + j * HUG_PITCH if hug else y + 268 + j * 40
+        _deep_row(pg, x + 20, ry, w - 40, m, "#EC7A4A", "#F3A27C", "#FFFFFF", "#FFFFFF", f"{key}_d{j}", hug)
     # what the chapter holds, as chips at the foot of the tile
     if not CTX.inside.get(ck):
         return
@@ -291,14 +317,19 @@ def _bar(pg, x, y, w, h, k, ck):
 
 
 def build_questions():
-    pg = Page(CTX.pid["questions"], CTX.names["questions"], W, SH, background_colour=INK, display_option="FitToPage")
+    eight = len(CTX.chapters) == 8
+    G, top, bottom = 14, 150, 900
+    if not eight:                    # one row of tiles as tall as their content; the page ends right under them
+        bottom = top + _hug_h(max(len(_deep(ck)) for ck in CTX.chapters), bool(CTX.inside.get(CTX.chapters[0])))
+    foot = bottom + 30
+    pg = Page(CTX.pid["questions"], CTX.names["questions"], W, foot + 70, background_colour=INK,
+              display_option="FitToPage")
     pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(INK), "transparency": pbir.n(0)}}]
     pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
     pg.add(10, 26, 60, 58, back_button(), key="back")
     home_button(pg, 76, 36)
     _text(pg, 132, 24, 600, 28, "START HERE" if CTX.home_url is None else f"{CTX.title.upper()} · START HERE", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
     _text(pg, 132, 50, 1100, 56, "Which question do you have?", st("DIN", 30, "#FFFFFF", True), "title")
-    eight = len(CTX.chapters) == 8
     n_q = len(CTX.chapters) + sum(len(_deep(ck)) for ck in CTX.chapters
                                   if not eight or layout._code(CTX.names[ck])[0] not in "678")  # 6-8 are bars
     _text(pg, 132, 104, 1100, 28, f"{len(CTX.chapters)} chapters, {n_q} questions. Click a tile to open its chapter, "
@@ -311,7 +342,6 @@ def build_questions():
     if "home" in CTX.pid:
         pg.add(W - 32 - home_w, 52, home_w, 46, nav_button(f"{CTX.home_label}  ›", CTX.pid["home"], "Open the decision center",
                                                      size=11, radius=23), key="go_home")
-    G, top, bottom = 14, 150, 900
     if eight:
         cw = (1768 - 3 * G) / 4
         rh = (bottom - top - G) / 2
@@ -329,11 +359,12 @@ def build_questions():
         cw = (1768 - G * (n - 1)) / n
         for k, ck in enumerate(CTX.chapters):
             x = 16 + k * (cw + G)
-            (_start_tile(pg, x, top, cw, bottom - top, ck) if k == 0 else _tile(pg, x, top, cw, bottom - top, k, ck))
-    pg.add(16, 930, 1768, 1, shape(TILE_LINE), key="foot_rule")
-    pg.add(16, 944, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
-    _text(pg, W - 16 - 600, 952, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK), "foot_right",
-          align="right")
+            (_start_tile(pg, x, top, cw, bottom - top, ck, hug=True) if k == 0
+             else _tile(pg, x, top, cw, bottom - top, k, ck, hug=True))
+    pg.add(16, foot, 1768, 1, shape(TILE_LINE), key="foot_rule")
+    pg.add(16, foot + 14, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
+    _text(pg, W - 16 - 600, foot + 22, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK),
+          "foot_right", align="right")
     return pg
 
 
@@ -463,7 +494,8 @@ def _value_card(measure, size, colour, bg=None):
     vc["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
     if bg is None:
         vc["visualContainerObjects"]["background"] = [{"properties": {"show": b(False)}}]
-    vc["objects"]["labels"][0]["properties"]["fontFamily"] = s("DIN")
+    # Power BI's own name for DIN in a card: plain "DIN" is not found there and the card falls back to a serif face
+    vc["objects"]["labels"][0]["properties"]["fontFamily"] = s("wf_standard-font, helvetica, arial, sans-serif")
     return vc
 
 
@@ -499,12 +531,6 @@ def _tile_text(m):
     return ("START WITH THE CHAPTER" if not c[1] else f"DEEP DIVE {c[0]}{c[1]}"), _sentence(CTX.questions[m]), CTX.blurbs[m]
 
 
-def _tile_art(m):
-    if m.startswith("brief_"):
-        return illustrations.spot_file(m[len("brief_"):])
-    return illustrations.spot_file({"home": "exec", "questions": "kpigrid"}.get(m, m))
-
-
 def build_brief(ch):
     key = f"brief_{ch}"
     code = layout._code(CTX.names[ch])
@@ -534,47 +560,52 @@ def build_brief(ch):
     # question, verdict, headline
     q = _sentence(CTX.questions[ch])
     dy = 40 if len(q) * 29 <= 760 else 0               # one line of 44 pt DIN: centre it in the two-line slot
-    _text(pg, 80, 128 + dy, 900, 28, f"CHAPTER {code[0]} · {code[2].upper()}",
-          st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
+    _text(pg, 80, 124 + dy, 900, 32, f"CHAPTER {code[0]} · {code[2].upper()}",
+          st("Segoe UI Semibold", 14, ORANGE, True), "eyebrow")
     _text(pg, 80, 158 + dy, 780, 150, q, st("DIN", 44, "#FFFFFF", True), "question")
-    pg.add(84, 310, 900, 68, shape("#15263B", radius=34, line=TILE_LINE), key="verdict_bg")
-    pill = _value_card(verdict, 10, "#FFFFFF", bg=GREY)
+    # verdict + headline: 14 pt in a box tall enough for three lines (a card only wraps when the lines fit its height)
+    pg.add(84, 308, 900, 98, shape("#15263B", radius=24, line=TILE_LINE), key="verdict_bg")
+    pill = _value_card(verdict, 14, "#FFFFFF", bg=GREY)
     pill["visualContainerObjects"]["background"] = [{"properties": {"show": b(True), "color": _fx(vcol)}}]
     pill["visualContainerObjects"]["border"] = [{"properties": {"show": b(True), "color": _fx(vcol), "radius": pbir.n(16)}}]
     pill["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI Semibold")
-    pg.add(96, 320, 140, 48, pill, key="verdict")
-    pg.add(246, 314, 728, 60, _value_card(CTX.headline[ch], 11, "#E5EAF1"), key="headline")
-    # three takeaways
+    pg.add(98, 331, 150, 52, pill, key="verdict")
+    hl = _value_card(CTX.headline[ch], 14, "#E5EAF1")
+    hl["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI")
+    pg.add(258, 311, 716, 92, hl, key="headline")
+    # three takeaways: 30 pt value, 15 pt label
     tw = (900 - 2 * 12) / 3
     for k, (m, lbl, _rule) in enumerate(BRIEF_TAKEAWAYS[ch]):
-        tx, ty = 84 + k * (tw + 12), 392
-        pg.add(tx, ty, tw, 136, shape("#15263B", radius=14, line=TILE_LINE), key=f"take{k}_bg")
-        _dot(pg, tx + 18, ty + 20, 14, cols[k], f"take{k}_dot")
-        vh = pbir.card_h(24)                            # 80 px: 24 pt value (pbir.card_need_px)
-        pg.add(tx + 36, ty + 6, tw - 72, vh, _value_card(texts[k], 24, "#FFFFFF"), key=f"take{k}_val")
-        _text(pg, tx + 12, ty + 6 + vh, tw - 24, 130 - vh, lbl, st("Segoe UI", 11, SOFT_INK), f"take{k}_lbl",
+        tx, ty = 84 + k * (tw + 12), 414
+        pg.add(tx, ty, tw, 176, shape("#15263B", radius=14, line=TILE_LINE), key=f"take{k}_bg")
+        _dot(pg, tx + 18, ty + 20, 16, cols[k], f"take{k}_dot")
+        vh = pbir.card_h(30)                            # 100 px: 30 pt value (pbir.card_need_px)
+        pg.add(tx + 36, ty + 4, tw - 72, vh, _value_card(texts[k], 30, "#FFFFFF"), key=f"take{k}_val")
+        _text(pg, tx + 12, ty + 4 + vh, tw - 24, 168 - vh, lbl, st("Segoe UI", 15, SOFT_INK), f"take{k}_lbl",
               align="center")
-    # one tile per page of the chapter: the chapter first, then its deep dives
+    # one tile per page of the chapter: the chapter first, then its deep dives. Tiles hold text only (no drawing) and
+    # are as tall as that text. The chapter tile names the dashboard: the question is already the page title.
     keys = [ch] + _deep(ch)
-    if len(keys) == 1:                                  # one-page chapter: offer the next question and the list too
+    if len(keys) == 1:                  # one-page chapter: offer the next question too ("All questions" is top right)
         nxt = CTX.chapters[CTX.chapters.index(ch) + 1] if ch != CTX.chapters[-1] else None
-        keys += [k for k in [f"brief_{nxt}" if nxt else ("home" if "home" in CTX.pid else None), "questions"] if k]
+        keys += [k for k in [f"brief_{nxt}" if nxt else ("home" if "home" in CTX.pid else None)] if k]
     n = len(keys)
-    gap, ty, th = 18, 560, 340
+    gap, ty, th = 18, 612, 260
     tw = (W - 48 - gap * (n - 1)) / n
-    qsize = {1: 30, 2: 26, 3: 22, 4: 19, 5: 17}[n]
+    qsize = {1: 32, 2: 30, 3: 26, 4: 22, 5: 19}[n]
     for k, m in enumerate(keys):
         tx = 24 + k * (tw + gap)
         main = m == ch
         pg.add(tx, ty, tw, th, shape(ORANGE if main else "#15263B", radius=20, line=None if main else TILE_LINE),
                key=f"tile{k}_bg")
-        pg.add(tx + tw - 176, ty + 8, 168, 168, _logo(_tile_art(m), "Tile drawing"), key=f"tile{k}_art")
         eyebrow, question, blurb = _tile_text(m)
-        _text(pg, tx + 26, ty + 24, tw - 52, 26, eyebrow, st("Segoe UI Semibold", 10, "#FFFFFF" if main else ORANGE, True),
+        if main:
+            question = f"Open the {code[2]} dashboard"
+        _text(pg, tx + 26, ty + 22, tw - 52, 30, eyebrow, st("Segoe UI Semibold", 12, "#FFFFFF" if main else ORANGE, True),
               f"tile{k}_eyebrow")
-        _text(pg, tx + 24, ty + th - 172, tw - 48, 96, question, st("DIN", qsize, "#FFFFFF", True), f"tile{k}_q")
-        _text(pg, tx + 24, ty + th - 76, tw - 120, 56, blurb,
-              st("Segoe UI", 10, "#FFE6D8" if main else SOFT_INK), f"tile{k}_blurb")
+        _text(pg, tx + 24, ty + 60, tw - 48, 104, question, st("DIN", qsize, "#FFFFFF", True), f"tile{k}_q")
+        _text(pg, tx + 24, ty + th - 84, tw - 120, 64, blurb,
+              st("Segoe UI", 14, "#FFE6D8" if main else SOFT_INK), f"tile{k}_blurb")
         pg.add(tx + tw - 80, ty + th - 80, 52, 52, shape("#FFFFFF" if main else ORANGE, radius=26), key=f"tile{k}_arrow")
         _text(pg, tx + tw - 80, ty + th - 74, 52, 40, "→", st("Segoe UI", 16, ORANGE if main else "#FFFFFF", True),
               f"tile{k}_arrow_t", align="center")
