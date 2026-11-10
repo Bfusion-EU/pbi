@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "1d791d91b90c8f31f647",
   "position": {
-    "x": 1496,
+    "x": 1416,
     "y": 10,
     "z": 1900,
-    "width": 180,
+    "width": 144,
     "height": 62,
     "tabOrder": 500
   },
@@ -20,15 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimTask"
+                      "Entity": "DimResource"
                     }
                   },
-                  "Property": "Status"
+                  "Property": "Role_Value"
                 }
               },
-              "queryRef": "DimTask.Status",
-              "nativeQueryRef": "Task status",
-              "displayName": "Task status",
+              "queryRef": "DimResource.Role_Value",
+              "nativeQueryRef": "Role",
+              "displayName": "Role",
               "active": true
             }
           ]
@@ -154,7 +154,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Filter: Task status'"
+                  "Value": "'Filter: Role'"
                 }
               }
             }
@@ -164,7 +164,7 @@
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "DimTask.Status",
+      "groupName": "DimResource.Role_Value",
       "fieldChanges": true,
       "filterChanges": true
     }

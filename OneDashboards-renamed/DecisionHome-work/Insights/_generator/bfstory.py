@@ -259,14 +259,49 @@ def header(pg, key, area, question, subtitle, slicers):
                                        (question, st("DIN", tsize, NAVY, True))]]), key="title")
     ssize = pages.subtitle_size(subtitle)
     pg.add(116, 52, 906, pages.SUBTITLE_H, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
-    x = W - 16 - len(slicers) * 188 + 8
-    assert x >= 1030, f"{pg.display}: too many slicers ({len(slicers)})"
+    add_slicers(pg, slicers)
+
+
+SLICER_X0 = 1030                     # the title box ends at 1022
+
+
+def add_slicers(pg, slicers):
+    """Header slicers, right-aligned. Up to four are 180 wide; a fifth makes all of them narrower (144)."""
+    if not slicers:
+        return
+    pitch = min(188, (W - 16 + 8 - SLICER_X0) // len(slicers))
+    assert pitch >= 150, f"{pg.display}: too many slicers ({len(slicers)})"
+    x = W - 16 - len(slicers) * pitch + 8
     for k, sl in enumerate(slicers):
         if sl[0] == "src":
             vc = src_slicer(sl[1], sl[2])
-            put(pg, x + k * 188, 10, 180, 62, vc, f"slicer{k}")
+            put(pg, x + k * pitch, 10, pitch - 8, 62, vc, f"slicer{k}")
         else:
-            pg.add(x + k * 188, 10, 180, 62, slicer(sl[0], sl[1]), key=f"slicer{k}")
+            pg.add(x + k * pitch, 10, pitch - 8, 62, slicer(sl[0], sl[1]), key=f"slicer{k}")
+
+
+# The Category field parameter picks what the resource visuals group by (Role, Department, Resource ...). Without a
+# Category slicer on the page nothing is picked, every option lands in the visual at once and it does not render right.
+CAT_ENTITY = '"Entity": "Category"'
+
+
+def category_state(pg):
+    """(visual types that query the Category field parameter, page has a Category slicer)."""
+    users, has = [], False
+    for vc in pg.visuals:
+        v = vc.get("visual", {})
+        if CAT_ENTITY not in json.dumps(v.get("query", {})):
+            continue
+        if v.get("visualType") == "slicer":
+            has = True
+        else:
+            users.append(v.get("visualType", ""))
+    return users, has
+
+
+def category_errors(built):
+    return [f"CATEGORY {pg.display}: {_custom_name(u[0])} uses the Category field parameter, but the page has no "
+            f"Category slicer" for pg in built for u, has in [category_state(pg)] if u and not has]
 
 
 def nav_row(pg, key):
@@ -926,7 +961,7 @@ def _slicer_label(vc):
 def build_mywork():
     return deep_dive("mywork", "MY WORK", "WHAT IS ON MY PLATE?",
                      "Pick a project and a role: tasks by status, the load per person, the timeline and the board.",
-                     [(DP("Name"), "Project"), (DR("Role_Value"), "Role"), (C("DimTask", "Status"), "Task status"),
+                     [CAT, (DP("Name"), "Project"), (DR("Role_Value"), "Role"), (C("DimTask", "Status"), "Task status"),
                       (C("DimTask", "WorkType"), "Work type")],
                      "Story | Schedule Headline", [
         ("Tasks and load", "Task KPIs on the left; the heat map shows who carries the hours.", 500,
@@ -1143,6 +1178,8 @@ def build_drill(d):
     y = Y_BODY
     for num, (q, e, h, items, wts) in enumerate(d.spec, 1):
         y = band(pg, y, num, q, e, int(h * scale), items, wts)
+    if category_state(pg)[0]:        # a page slicer, not a drill filter: the reader still picks the grouping here
+        add_slicers(pg, [CAT])
     ent, prop = d.field["Column"]["Expression"]["SourceRef"]["Entity"], d.field["Column"]["Property"]
     fname = uid("bind-filter", d.key, ent, prop)
     pg.page["filterConfig"] = {"filters": [{"name": fname, "field": d.field, "type": "Categorical",
@@ -1477,6 +1514,7 @@ if __name__ == "__main__":
         build.load_model = lambda: (_load()[0], _load()[1] | inh)
         e = build.check(pages_, out) or 0
         more = (layout_errors(pages_) + reach_errors(pages_) + link_errors(pages_) + path_errors(out)
+                + category_errors(pages_)
                 + polish.errors(pages_) + consistency.errors(pages_) + sorted(DROPPED))
         for m in more:
             print(m)

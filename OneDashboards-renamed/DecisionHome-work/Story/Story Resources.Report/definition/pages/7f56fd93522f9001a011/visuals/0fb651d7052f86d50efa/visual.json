@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "0fb651d7052f86d50efa",
   "position": {
-    "x": 1684,
+    "x": 1568,
     "y": 10,
     "z": 2000,
-    "width": 180,
+    "width": 144,
     "height": 62,
     "tabOrder": 600
   },
@@ -23,12 +23,12 @@
                       "Entity": "DimTask"
                     }
                   },
-                  "Property": "WorkType"
+                  "Property": "Status"
                 }
               },
-              "queryRef": "DimTask.WorkType",
-              "nativeQueryRef": "Work type",
-              "displayName": "Work type",
+              "queryRef": "DimTask.Status",
+              "nativeQueryRef": "Task status",
+              "displayName": "Task status",
               "active": true
             }
           ]
@@ -154,7 +154,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Filter: Work type'"
+                  "Value": "'Filter: Task status'"
                 }
               }
             }
@@ -164,7 +164,7 @@
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "DimTask.WorkType",
+      "groupName": "DimTask.Status",
       "fieldChanges": true,
       "filterChanges": true
     }

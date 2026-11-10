@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "cd46381be7e38c637f48",
   "position": {
-    "x": 1308,
+    "x": 1264,
     "y": 10,
     "z": 1800,
-    "width": 180,
+    "width": 144,
     "height": 62,
     "tabOrder": 400
   },
@@ -20,15 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "DimResource"
+                      "Entity": "DimProject"
                     }
                   },
-                  "Property": "Role_Value"
+                  "Property": "Name"
                 }
               },
-              "queryRef": "DimResource.Role_Value",
-              "nativeQueryRef": "Role",
-              "displayName": "Role",
+              "queryRef": "DimProject.Name",
+              "nativeQueryRef": "Project",
+              "displayName": "Project",
               "active": true
             }
           ]
@@ -154,7 +154,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Filter: Role'"
+                  "Value": "'Filter: Project'"
                 }
               }
             }
@@ -164,7 +164,7 @@
     },
     "drillFilterOtherVisuals": true,
     "syncGroup": {
-      "groupName": "DimResource.Role_Value",
+      "groupName": "DimProject.Name",
       "fieldChanges": true,
       "filterChanges": true
     }
