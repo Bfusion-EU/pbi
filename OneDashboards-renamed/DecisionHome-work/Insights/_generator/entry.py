@@ -375,53 +375,57 @@ def build_questions():
 # Replaces Welcome, Questions and the chapter briefs (2026-11-10): one card per chapter with its verdict pill and
 # headline, then one row per page of the chapter, so every page is one click from the page the report opens on.
 MAP_BG, MAP_CARD, MAP_LINE, MAP_INK, MAP_MUTED = "#F8F9FB", "#FFFFFF", "#E5E7EB", "#16233A", "#6C757D"
-MAP_ROW, MAP_PITCH = 30, 36
-MAP_HEAD = 110                        # number, name, pill and headline above the rows
+# The Service shows the 1800 px page at about 70 %, so nothing on it is under 13 pt (same rule as the briefs).
+MAP_ROW, MAP_PITCH = 40, 46
+MAP_HEAD = 212                        # badge + name, verdict pill, three-line headline, above the rows
 
 
 def _map_card_h(ch):
-    return MAP_HEAD + (1 + len(_deep(ch))) * MAP_PITCH + 8
+    return MAP_HEAD + (1 + len(_deep(ch))) * MAP_PITCH + 12
 
 
 def _map_card(pg, x, y, w, h, k, ch):
-    """One chapter: number, name, verdict pill, headline, then the dashboard row (orange) and a row per deep dive."""
+    """One chapter: number and name, verdict pill, headline, then the dashboard row (orange) and a row per deep dive."""
     code = layout._code(CTX.names[ch])
     _cols, verdict, vcol, _texts = brief_measures()[ch]
     key = f"c{k}"
     pg.add(x, y, w, h, shape(MAP_CARD, radius=10, line=MAP_LINE), key=f"{key}_bg")
-    pg.add(x + 16, y + 14, 28, 28, shape(MAP_INK, radius=7), key=f"{key}_num_bg")
-    _text(pg, x + 16, y + 16, 28, 24, code[0], st("Segoe UI Semibold", 12, "#FFFFFF", True), f"{key}_num",
+    pg.add(x + 16, y + 16, 34, 34, shape(MAP_INK, radius=8), key=f"{key}_num_bg")
+    _text(pg, x + 16, y + 19, 34, 30, code[0], st("Segoe UI Semibold", 14, "#FFFFFF", True), f"{key}_num",
           align="center")
-    _text(pg, x + 52, y + 13, w - 52 - 124, 30, code[2], st("Segoe UI Semibold", 15, MAP_INK, True), f"{key}_name")
-    pill = _value_card(verdict, 9, "#FFFFFF", bg=GREY)
+    _text(pg, x + 58, y + 14, w - 58 - 12, 40, code[2], st("Segoe UI Semibold", 20, MAP_INK, True), f"{key}_name")
+    pill = _value_card(verdict, 12, "#FFFFFF", bg=GREY)
     pill["visualContainerObjects"]["background"] = [{"properties": {"show": b(True), "color": _fx(vcol)}}]
     pill["visualContainerObjects"]["border"] = [{"properties": {"show": b(True), "color": _fx(vcol),
-                                                                "radius": pbir.n(12)}}]
+                                                                "radius": pbir.n(20)}}]
+    pill["visualContainerObjects"]["padding"] = [{"properties": {"top": pbir.n(0), "bottom": pbir.n(0),
+                                                                 "left": pbir.n(0), "right": pbir.n(0)}}]
     pill["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI Semibold")
-    ph = pbir.card_h(pbir.fs(9))                          # a card clips its text when it is shorter than this
-    pg.add(x + w - 16 - 104, y + 28 - ph / 2, 104, ph, layout._alt(pill, "Verdict of this chapter"), key=f"{key}_verdict")
-    hl = _value_card(CTX.headline[ch], 10, "#4B5563", bg=MAP_CARD)
+    ph = max(40, pbir.card_h(pbir.fs(12)))
+    pg.add(x + 16, y + 62, 130, ph, layout._alt(pill, "Verdict of this chapter"), key=f"{key}_verdict")
+    hl = _value_card(CTX.headline[ch], 14, "#4B5563", bg=MAP_CARD)
     hl["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI")
-    pg.add(x + 12, y + 50, w - 24, 52, layout._alt(hl, "Headline of this chapter"), key=f"{key}_hl")
+    pg.add(x + 12, y + 112, w - 24, 92, layout._alt(hl, "Headline of this chapter"), key=f"{key}_hl")
     ry = y + MAP_HEAD
     tip = f"Open {CTX.names[ch]}"
     pg.add(x + 16, ry, w - 32, MAP_ROW,
-           layout._alt(nav_button(f"{code[0]}  {code[2]}  ·  dashboard", CTX.pid[ch], tip, size=10, align="left"), tip),
+           layout._alt(nav_button(f"{code[0]}   {code[2]}", CTX.pid[ch], tip, size=13, align="left", margin=16), tip),
            key=f"{key}_main")
     for j, m in enumerate(_deep(ch)):
         c = layout._code(CTX.names[m])
         tip = f"Open {CTX.names[m]}"
         pg.add(x + 16, ry + (j + 1) * MAP_PITCH, w - 32, MAP_ROW,
-               layout._alt(nav_button(f"{c[0]}{c[1]}  {c[2]}", CTX.pid[m], tip, fill="#FFFFFF", hover="#FFF1EA",
-                                      press="#FFE3D6", font=MAP_INK, size=10, align="left", outline=MAP_LINE), tip),
+               layout._alt(nav_button(f"{c[0]}{c[1]}   {c[2]}", CTX.pid[m], tip, fill="#FFFFFF", hover="#FFF1EA",
+                                      press="#FFE3D6", font=MAP_INK, size=13, align="left", outline=MAP_LINE,
+                                      margin=16), tip),
                key=f"{key}_d{j}")
 
 
 def build_map():
     """The page the Story opens on: one card per chapter, every page of the chapter one click away."""
-    G, top = 14, 140
+    G, top = 16, 150
     chaps = CTX.chapters
-    cols = 4 if len(chaps) > 5 else len(chaps)
+    cols = 4 if len(chaps) > 6 else min(3, len(chaps))     # full pack 4 x 2; a role report 3 + 2 (or one row)
     rows = [chaps[i:i + cols] for i in range(0, len(chaps), cols)]
     hs = [max(_map_card_h(c) for c in r) for r in rows]
     bottom = top + sum(hs) + G * (len(rows) - 1)
@@ -429,21 +433,21 @@ def build_map():
     pg = Page(CTX.pid["map"], CTX.names["map"], W, foot + 70, background_colour=MAP_BG, display_option="FitToPage")
     pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(MAP_BG), "transparency": pbir.n(0)}}]
     pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
-    pg.add(16, 30, 76, 48, _logo(LOGO_RES, "BFusion logo"), key="logo")
-    _text(pg, 112, 24, 900, 28, f"{CTX.title.upper()} · MAP", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
-    _text(pg, 112, 50, 1100, 56, "Where do you want to go?", st("DIN", 30, MAP_INK, True), "title")
+    pg.add(16, 30, 84, 53, _logo(LOGO_RES, "BFusion logo"), key="logo")
+    _text(pg, 120, 22, 900, 30, f"{CTX.title.upper()} · MAP", st("Segoe UI Semibold", 13, ORANGE, True), "eyebrow")
+    _text(pg, 120, 50, 1100, 64, "Where do you want to go?", st("DIN", 40, MAP_INK, True), "title")
     n_pages = len(chaps) + sum(len(_deep(c)) for c in chaps)
-    _text(pg, 112, 104, 1200, 28,
+    _text(pg, 120, 112, 1300, 30,
           f"{len(chaps)} chapters, {n_pages} pages. Orange opens the chapter dashboard; the rows under it are its "
-          "pictures and deep dives. The pill is the chapter's verdict now.", st("Segoe UI", 11, MAP_MUTED), "subtitle")
+          "pictures and deep dives. The pill is the chapter's verdict now.", st("Segoe UI", 14, MAP_MUTED), "subtitle")
     x_r = W - 16
     if "home" in CTX.pid:
-        hw = max(200, pbir.button_w("Decision center  ›", 11, pad=40))
-        pg.add(x_r - hw, 52, hw, 46, nav_button("Decision center  ›", CTX.pid["home"], "Open the decision center",
-                                                size=11, radius=23), key="go_home")
-        x_r -= hw + 14
+        hw = max(240, pbir.button_w("Decision center  ›", 14, pad=48))
+        pg.add(x_r - hw, 52, hw, 54, nav_button("Decision center  ›", CTX.pid["home"], "Open the decision center",
+                                                size=14, radius=27), key="go_home")
+        x_r -= hw + 16
     if CTX.home_url is not None:                       # a role report: the house opens the Launcher
-        home_button(pg, x_r - 46, 55, size=40)
+        home_button(pg, x_r - 54, 52, size=54)
     y = top
     cw = (1768 - G * (cols - 1)) / cols
     for r, h in zip(rows, hs):
@@ -451,9 +455,9 @@ def build_map():
             _map_card(pg, round(16 + k * (cw + G), 2), y, round(cw, 2), h, chaps.index(ch), ch)
         y += h + G
     pg.add(16, foot, 1768, 1, shape(MAP_LINE), key="foot_rule")
-    _text(pg, 16, foot + 14, 700, 26, "Every page of the story, one click away.", st("Segoe UI", 9, MAP_MUTED),
+    _text(pg, 16, foot + 14, 700, 30, "Every page of the story, one click away.", st("Segoe UI", 13, MAP_MUTED),
           "foot_left")
-    _text(pg, W - 16 - 600, foot + 14, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MAP_MUTED),
+    _text(pg, W - 16 - 600, foot + 14, 600, 30, "BFUSION · Data from OnePlan", st("Segoe UI", 13, MAP_MUTED),
           "foot_right", align="right")
     return pg
 
