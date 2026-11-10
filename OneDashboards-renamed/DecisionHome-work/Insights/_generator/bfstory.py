@@ -33,8 +33,7 @@ import story_measures  # noqa: E402
 import entry  # noqa: E402
 import roles  # noqa: E402
 import app_links  # noqa: E402
-from entry import (back_button, home_button, _crumb_w, _crumb_label, build_welcome, build_questions,  # noqa: E402
-                   build_brief, BRIEF_TAKEAWAYS)
+from entry import back_button, home_button, _crumb_w, _crumb_label, build_map  # noqa: E402
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, slicer, headline,  # noqa: E402
                   NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
 from pbir import card, chart, table_style, cf_font  # noqa: E402
@@ -70,41 +69,40 @@ GRAIN = ("src", "Capacity & Utilization", "Period Grain.Period Grain")
 RES = [(DR("Department_Value"), "Department"), (DR("Role_Value"), "Role"), (C("DimDate", "Year"), "Year")]
 
 PAGES = [  # (key, display) — story order; "Next" follows this list. "Nx" codes are deep-dives (hidden tabs).
-    ("welcome", "Welcome"),
+    ("map", "Map — every page"),
     ("home", "Home — Decision center"),
-    ("questions", "Questions — where to start"),
-    ("brief_exec", "Brief · Executive Summary"),
     ("exec", "1 · Executive Summary"),
     ("health", "1b · Portfolio 360 & Health"),
     ("roadmap", "1c · Roadmap & Delivery"),
     ("drift", "1d · Portfolio Drift"),
     ("kpigrid", "1e · Project KPI Grid"),
-    ("brief_portfolio", "Brief · Portfolio"),
+    ("trend", "1f · Health & Status Trend"),
     ("portfolio", "2 · Portfolio"),
     ("selection", "2b · Selection & Funding Line"),
     ("scenarios", "2c · Scenarios & Trade-offs"),
     ("constraints", "2d · Constraints & Sequencing"),
-    ("brief_finance", "Brief · Financials"),
+    ("strategy", "2e · Strategy & Value"),
     ("finance", "3 · Financials"),
     ("fintree", "3b · Variance Drivers"),
     ("budgetrisk", "3c · Budget Risk & Early Warning"),
-    ("brief_resources", "Brief · Resources"),
+    ("projfin", "3d · Project Financials"),
     ("resources", "4 · Resources"),
     ("fte", "4b · FTE Decisions & Efficiency"),
     ("org", "4c · Organisation & Gaps"),
     ("timesheets", "4d · Timesheets vs Plan"),
     ("mywork", "4e · My Work"),
-    ("brief_schedule", "Brief · Schedule"),
+    ("capacity", "4f · Capacity & Allocation"),
     ("schedule", "5 · Schedule"),
     ("critical", "5b · Critical Path & Chain"),
     ("psr", "5c · Project Status Report"),
-    ("brief_risk", "Brief · Risk"),
+    ("timeline", "5d · Timeline & Forecast"),
     ("risk", "6 · Risk"),
-    ("brief_benefits", "Brief · Benefits & Value"),
+    ("riskmap", "6b · Risk Matrix & Radar"),
     ("benefits", "7 · Benefits & Value"),
-    ("brief_governance", "Brief · Governance & Data Trust"),
+    ("realised", "7b · Benefits Realisation"),
     ("governance", "8 · Governance & Data Trust"),
     ("recon", "8b · Reconciliation"),
+    ("hygiene", "8c · Rules & Hygiene"),
 ]
 NAMES = dict(PAGES)
 PID = {k: uid("bfstory-page", k) for k, _ in PAGES}
@@ -112,7 +110,7 @@ ORDER = [k for k, _ in PAGES]
 CHAPTERS = [k for k, d in PAGES if layout._code(d) and not layout._code(d)[1]]
 FULL_PAGES = list(PAGES)             # the full pack's pages; a role report renumbers a subset of them
 ROLE = None                          # roles.Role while building a role report
-HUB_KEY, HUB_LABEL = "home", "Decision center"   # where breadcrumbs and "Back" go; "questions" in most role reports
+HUB_KEY, HUB_LABEL = "map", "Map"              # where breadcrumbs and "Back" go: the Map the report opens on
 
 
 def apply_role(role):
@@ -125,7 +123,6 @@ def apply_role(role):
     PID = {k: uid("bfstory-page", k) for k, _ in PAGES}
     ORDER = [k for k, _ in PAGES]
     CHAPTERS = [k for k, d in PAGES if layout._code(d) and not layout._code(d)[1]]
-    HUB_KEY, HUB_LABEL = ("home", "Decision center") if role.home else ("questions", "Questions")
 
 
 # ================================================================ source pack (custom visuals)
@@ -324,15 +321,20 @@ def nav_row(pg, key):
                    key=f"nav_here_{k}")
         x += _crumb_w(text)
     if len(members) > 1:
-        size, widths, x = layout.strip_layout([layout._label(NAMES[m]) for m in members], x, W - 16)
-        for m, w in zip(members, widths):
+        labels = [layout._label(NAMES[m]) for m in members]
+        size, widths, sx = layout.strip_layout(labels, x, W - 16)
+        if sx < x + 8:               # six pages in the chapter: codes only ("1b"), the name stays in the tooltip
+            labels = ["".join(layout._code(NAMES[m])[:2]) for m in members]
+            size, widths, sx = layout.strip_layout(labels, x, W - 16)
+        x = sx
+        for m, w, text in zip(members, widths, labels):
             cur = m == key
-            btn = nav_button(layout._label(NAMES[m]), PID[m], "You are here" if cur else "Open this page",
+            full = layout._label(NAMES[m])
+            btn = nav_button(text, PID[m], "You are here" if cur else f"Open {full}",
                              fill=ORANGE if cur else "#FFFFFF", hover=ORANGE_DK if cur else ORANGE_SOFT,
                              press=ORANGE_DK if cur else ORANGE_SOFT, font="#FFFFFF" if cur else NAVY, size=size,
                              outline=None if cur else BORDER)
-            if cur:
-                layout._alt(btn, f"{layout._label(NAMES[m])} (current page)")
+            layout._alt(btn, f"{full} (current page)" if cur else f"Open {full}")
             pg.add(x, NAV_Y, w, NAV_H, btn, key=f"nav_strip_{m}")
             x += w + 6
 
@@ -344,27 +346,29 @@ def page_id(key, page):
 KEY_OF = {}                          # page id -> story key, continuation pages included (chrome.py)
 
 
-def next_back(pg, key, page=1, of=1):
+def next_back(pg, key, page=1, of=1, y=None):
+    y = Y_NEXT if y is None else y
     if of > 1:
-        pg.add(W / 2 - 120, Y_NEXT, 240, 36, textbox([[(f"Page {page} of {of}", st("Segoe UI", 11, MUTED))]],
-                                                     align="center"), key="pager")
+        pg.add(W / 2 - 120, y, 240, 36, textbox([[(f"Page {page} of {of}", st("Segoe UI", 11, MUTED))]],
+                                                align="center"), key="pager")
     back = (page_id(key, page - 1), f"‹  Page {page - 1} of {of}", "Back to the previous screen of this page")         if page > 1 else (PID[HUB_KEY], f"‹  {HUB_LABEL}", "Back to the home page")
-    pg.add(16, Y_NEXT, 220, 36, nav_button(back[1], back[0], back[2], fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE,
-                                           font=NAVY, outline=BORDER), key="back")
+    pg.add(16, y, 220, 36, nav_button(back[1], back[0], back[2], fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE,
+                                      font=NAVY, outline=BORDER), key="back")
     if page < of:
-        pg.add(W - 16 - 360, Y_NEXT, 360, 36, nav_button(f"Continue: page {page + 1} of {of}  ›", page_id(key, page + 1),
-                                                         "Continue on the next screen"), key="next")
+        pg.add(W - 16 - 360, y, 360, 36, nav_button(f"Continue: page {page + 1} of {of}  ›", page_id(key, page + 1),
+                                                    "Continue on the next screen"), key="next")
     else:
-        _story_next(pg, key)
+        _story_next(pg, key, y)
 
 
-def _story_next(pg, key):
+def _story_next(pg, key, y=None):
+    y = Y_NEXT if y is None else y
     idx = ORDER.index(key)
     if idx + 1 < len(ORDER):
         nxt = ORDER[idx + 1]
         label = NAMES[nxt].split("·", 1)[-1].strip()
         text = f"Next: {label}  ›"
-        pg.add(W - 16 - 360, Y_NEXT, 360, 36,
+        pg.add(W - 16 - 360, y, 360, 36,
                nav_button(text, PID[nxt], "Continue the story on the next page",
                           size=pbir.fit_size(text, 360, (11, 10, 9))), key="next")
 
@@ -372,11 +376,12 @@ def _story_next(pg, key):
 QUESTIONS = {}                       # page key -> its header question, for the Questions page
 
 
-def story_page(key, area, question, subtitle, slicers, headline_vc, page=1, of=1):
+def story_page(key, area, question, subtitle, slicers, headline_vc, page=1, of=1, tall=False):
     QUESTIONS[key] = question
     pid = page_id(key, page)
     KEY_OF[pid] = key
-    pg = Page(pid, NAMES[key] if page == 1 else f"{NAMES[key]} ({page}/{of})", W, H, background_image=BG)
+    pg = Page(pid, NAMES[key] if page == 1 else f"{NAMES[key]} ({page}/{of})", W, pages.TALL if tall else H,
+              background_image=BG)
     if page > 1:
         pg.page["visibility"] = "HiddenInViewMode"
     headline_vc = copy.deepcopy(headline_vc)
@@ -421,16 +426,17 @@ def pulse(pg, y, ins_key, question, explain):
     return y + SEC_H + pages.KPI_H + GAP
 
 
-def bands(pg, y, spec, first=1):
+def bands(pg, y, spec, first=1, end=None):
     """spec: [(question, explain, height, items[, weights])]. Heights are relative: the bands are scaled so the
     page fills down to the Next row exactly."""
-    free = BODY_END - y - len(spec) * (SEC_H + GAP) + GAP
+    end = BODY_END if end is None else end
+    free = end - y - len(spec) * (SEC_H + GAP) + GAP
     scale = free / sum(b_[2] for b_ in spec)
     for k, b_ in enumerate(spec):
         q, e, h, items = b_[:4]
         y = band(pg, y, first + k, q, e, int(h * scale), items, b_[4] if len(b_) > 4 else None)
-    if y - GAP > BODY_END:
-        raise ValueError(f"{pg.display}: content ends at {y - GAP}, below {BODY_END}")
+    if y - GAP > end:
+        raise ValueError(f"{pg.display}: content ends at {y - GAP}, below {end}")
     return y
 
 
@@ -470,7 +476,15 @@ def chapter(key, area, question, subtitle, slicers, ins_key, pulse_q, spec, head
 
 
 def deep_dive(key, area, question, subtitle, slicers, headline_measure, spec):
+    """One page. A deep dive whose bands do not fit one 16:9 screen is one tall page that scrolls (like the drill
+    pages), not two screens joined by "Continue": every picture sits on a page the Map lists (2026-11-10)."""
     screens = pack(spec, BODY_END - Y_BODY + GAP)
+    if len(screens) > 1:
+        pg = story_page(key, area, question, subtitle, slicers, head(headline_measure), tall=True)
+        bands(pg, Y_BODY, spec, first=1, end=TALL_NEXT - 12)
+        next_back(pg, key, y=TALL_NEXT)
+        pg.page["visibility"] = "HiddenInViewMode"
+        return [pg]
     out, num = [], 1
     for i, grp in enumerate(screens, 1):
         pg = story_page(key, area, question, subtitle, slicers, head(headline_measure), i, len(screens))
@@ -701,6 +715,16 @@ def build_exec():
                                  "Green is fine, amber needs a look, red needs a decision. Money is at completion."), [
         ("What needs a decision this month?", "Projects ranked by € overrun at completion, with the three actions the data points to.",
          340, [_exec_actions]),
+    ])
+
+
+# Every chapter's pictures (③ / ④) are a deep dive of their own, named and listed in the chapter strip, the brief and
+# the Questions page. Before 2026-11-10 they were the hidden "(2/2)" screen of the chapter, reached only through
+# "Continue", and readers took the visuals on it for missing.
+def build_trend():
+    return deep_dive("trend", "EXECUTIVE", "WHERE IS THE PORTFOLIO HEADING?",
+                     "Health of every project against its peers, how status reports trend, and the scorecard that says where to look next.",
+                     STD, "Story | Exec Headline", [
         ("Where is the portfolio heading?", "Health of every project against its peers, and how status reports trend.",
          420, [("src", "Health Dashboard", "bfusionPortfolioHealthMatrix"),
                ("src", "Project Status Report (PSR)", "bfusionStatusTrendSparkline")], [2, 1]),
@@ -766,6 +790,13 @@ def build_portfolio():
                                        "Size, pipeline and strategic fit. Budget here = the lifetime Budget field on each plan."), [
         ("The portfolio register", "Portfolio › programme › project. Red variance = plan forecast more than 5% over plan budget.",
          350, [("ins", "portfolio", "v_register")]),
+    ])
+
+
+def build_strategy():
+    return deep_dive("strategy", "PORTFOLIO", "DOES THE MONEY FOLLOW THE STRATEGY?",
+                     "Budget by goal and alignment, where value concentrates, and priority against budget per project.",
+                     PROJ, "Story | Portfolio Headline", [
         ("Does the money follow the strategy?", "Budget by goal and alignment — the outer rings should be the strongly aligned work.",
          420, [("src", "Strategic Sunburst", "bfusionStrategicSunburst"), ("ins", "portfolio", "v_bud_align")]),
         ("Where does value concentrate?", "Pareto of value across projects, and priority against budget per project.",
@@ -821,6 +852,13 @@ def build_finance():
                                     "EAC against budget at completion is the number the board asks for; budget to date checks the pace."), [
         ("Project financial register", "Sorted by overrun at completion. Red = EAC more than 5% over budget.", 350,
          [("ins", "finance", "v_fin_table")]),
+    ])
+
+
+def build_projfin():
+    return deep_dive("projfin", "PROJECT FINANCIALS", "HOW IS SPEND TRACKING?",
+                     "S-curve of budget, actual and forecast, the financial story in words, the overview per cost type and the variance bridge.",
+                     STD, "Story | Finance Headline", [
         ("How is spend tracking over time?", "S-curve of budget, actual and forecast, and the financial story in words.", 420,
          [("src", "Project Financials Insights", "bfusionFinancialSCurve"),
           ("src", "Project Financials Insights", "bfusionFinancialKPINarrative")], [2, 1]),
@@ -860,6 +898,13 @@ def build_resources():
                                               "Utilisation = scheduled hours on project plans ÷ capacity. Above 100% is overload."), [
         ("Who is over- or under-loaded?", "Bench and overload list (lowest utilisation first) and utilisation by role.", 350,
          [("ins", "resources", "v_bench"), ("ins", "resources", "v_role")], [2, 1]),
+    ])
+
+
+def build_capacity():
+    return deep_dive("capacity", "CAPACITY", "WILL SUPPLY COVER DEMAND?",
+                     "Capacity against demand per period, and the allocation heat map per person; hot cells are overload.",
+                     [CAT] + RES, "Story | Resource Headline", [
         ("Will supply cover demand?", "Capacity against demand per period; switch the grain and the grouping in the slicers.", 420,
          [("src", "Capacity & Allocation", "bfusionCapacityPlanning")]),
         ("Who, and when?", "Allocation heat map per person and period; hot cells are overload.", 380,
@@ -918,20 +963,25 @@ def build_timesheets():
         y1 = starts[k + 1] if k + 1 < len(starts) else bottom + GAP
         secs.append((y0, y1 - y0, [v for v in body if y0 <= v["position"]["y"] < y1]))
     screens = pack([(None, None, h - SEC_H - GAP, y0) for y0, h, _ in secs], BODY_END - Y_BODY + GAP)
+    tall = len(screens) > 1               # one tall scrolling page rather than "(2/2)" screens
+    if tall:
+        screens = [[b_ for grp in screens for b_ in grp]]
+    end, y_next = (TALL_NEXT - 12, TALL_NEXT) if tall else (BODY_END, Y_NEXT)
     by_start = {y0: (h, vs) for y0, h, vs in secs}
     out, k = [], 0
     for i, grp in enumerate(screens, 1):
         of = len(screens)
         pid = page_id("timesheets", i)
         KEY_OF[pid] = "timesheets"
-        pg = Page(pid, NAMES["timesheets"] if i == 1 else f"{NAMES['timesheets']} ({i}/{of})", W, H, background_image=BG)
+        pg = Page(pid, NAMES["timesheets"] if i == 1 else f"{NAMES['timesheets']} ({i}/{of})", W,
+                  pages.TALL if tall else H, background_image=BG)
         QUESTIONS["timesheets"] = question
         header(pg, "timesheets", area, question, subtitle, slicers)
         nav_row(pg, "timesheets")
         for v in head_row:
             put(pg, v["position"]["x"], Y_HEAD, v["position"]["width"], v["position"]["height"], copy.deepcopy(v), "ts_head")
         # section labels keep their height; everything under them scales to fill the screen
-        free = BODY_END - Y_BODY + GAP - SEC_H * len(grp)
+        free = end - Y_BODY + GAP - SEC_H * len(grp)
         scale = free / sum(by_start[b_[3]][0] - SEC_H for b_ in grp)
         y = Y_BODY
         for b_ in grp:
@@ -943,11 +993,11 @@ def build_timesheets():
                     ny, nh = y, p["height"]
                 else:
                     ny = y + SEC_H + (p["y"] - y0 - SEC_H) * scale
-                    nh = p["height"] * scale
-                put(pg, p["x"], round(ny, 2), p["width"], round(min(nh, BODY_END - ny), 2), copy.deepcopy(v), f"ts{k}")
+                    nh = p["height"] if p["height"] <= 120 else p["height"] * scale   # KPI cards keep their height
+                put(pg, p["x"], round(ny, 2), p["width"], round(min(nh, end - ny), 2), copy.deepcopy(v), f"ts{k}")
                 k += 1
             y += SEC_H + (h - SEC_H) * scale
-        next_back(pg, "timesheets", i, of)
+        next_back(pg, "timesheets", i, of, y=y_next)
         pg.page["visibility"] = "HiddenInViewMode"
         out.append(pg)
     return out
@@ -981,6 +1031,13 @@ def build_schedule():
                                       "Reported health of active projects first, then what the project work plans say."), [
         ("Late-work register", "Open project tasks past their baseline finish — longest slip first.", 350,
          [("ins", "schedule", "v_late")]),
+    ])
+
+
+def build_timeline():
+    return deep_dive("timeline", "TIMELINE", "WHAT RUNS WHEN, AND WHERE WILL IT LAND?",
+                     "Hierarchical Gantt with baselines, the forecast finish against plan, and open milestones soonest first.",
+                     PROJ, "Story | Schedule Headline", [
         ("What runs when?", "Hierarchical Gantt with baselines; expand a project to see its late tasks.", 430,
          [("src", "Schedule Insights", "bfusionHierarchicalGantt")]),
         ("Where will finish dates land, and what is next?", "Forecast finish against plan, and open milestones soonest first.",
@@ -1164,6 +1221,7 @@ def _person_tasks(pg, x, y, w, h):
         "Assigned tasks — latest finish last", table_style(), sort=[(C("DimTask", "EndDate"), "Ascending")])
     pg.add(x, y, w, h, v, key="v_person_tasks")
 TALL_END = round(pages.TALL * 0.928) - 12   # footer band of the tall background
+TALL_NEXT = TALL_END - 48                   # Back / Next row of a tall deep dive
 
 
 def build_drill(d):
@@ -1199,6 +1257,13 @@ def build_risk():
                                   "Active risks on project plans. Exposure is OnePlan's score (probability % × impact weight), not money."), [
         ("Top-risk register", "Highest exposure score first — every critical or high risk needs an owner and a mitigation.",
          350, [("ins", "risk", "v_risk_table")]),
+    ])
+
+
+def build_riskmap():
+    return deep_dive("riskmap", "RISK", "HOW LIKELY, HOW BAD, AND WHAT KIND?",
+                     "Risk matrix per risk and per project, the radar by category and the risk board by response stage.",
+                     PROJ, "Story | Risk Headline", [
         ("How likely, how bad?", "Risk matrix per risk, and per project across the portfolio.", 430,
          [("src", "Risk Matrix", "bfusionRiskMatrixExt"), ("src", "Risk Dashboard", "bfusionPortfolioRiskMatrix")]),
         ("What kind of risk, and where is it in the response cycle?", "Radar by category and the risk board by stage.", 390,
@@ -1213,6 +1278,13 @@ def build_benefits():
                                       "Planned benefits at completion, what is due to date and what is actually realised."), [
         ("Benefits register", "Every project with its benefit case, largest first.", 350,
          [("ins", "benefits", "v_ben_table")]),
+    ])
+
+
+def build_realised():
+    return deep_dive("realised", "BENEFITS", "IS THE VALUE LANDING?",
+                     "Planned against realised benefits over time, benefits per quarter and value for money per project.",
+                     PROJ, "Story | Benefits Headline", [
         ("Is the value landing?", "Planned against realised benefits over time, per benefit type.", 430,
          [("src", "Realizations", "bfusionBenefitsRealization")]),
         ("When does it land, and where is the best return?", "Benefits per quarter and value for money per project.", 390,
@@ -1229,11 +1301,22 @@ def build_governance():
                                   "Share of assessed plans passing every rule; problems block decisions, warnings weaken them."), [
         ("Plan-by-plan action list", "The plans to fix, worst first, with the rule they fail.", 350,
          [("ins", "governance", "v_plans")]),
+    ], headline_measure="PMO | Governance Headline")
+
+
+GOV_SLICERS = [(C("DimPortfolio", "Name"), "Portfolio"), (C("DimProgram", "Name"), "Program"),
+               (C("FactPlanInsight", "PlanType"), "Plan type"), (C("DimInsightRule", "Severity"), "Severity")]
+
+
+def build_hygiene():
+    return deep_dive("hygiene", "GOVERNANCE", "WHICH RULES FAIL, AND WHERE?",
+                     "Which rules fail most, the Pareto of failing plans and the drivers of the hygiene gap.",
+                     GOV_SLICERS, "PMO | Governance Headline", [
         ("Which rules fail most?", "Fix the rule that fails on most plans first — it moves the score fastest.", 400,
          [("ins", "governance", "v_rules"), ("ins", "governance", "v_area")], [1.5, 1]),
         ("Where does it concentrate?", "Pareto of failing plans and the drivers of the hygiene gap.", 400,
          [("src", "PMO Overview", "bfusionParetoAnalysis"), ("src", "PMO Hygiene", "bfusionVarianceDriverTree")]),
-    ], headline_measure="PMO | Governance Headline")
+    ])
 
 
 def _recon_cards(pg, x, y, w, h):
@@ -1276,14 +1359,15 @@ def build_recon():
     ])
 
 
-BUILDERS = {**{f"brief_{c}": (lambda c=c: build_brief(c)) for c in BRIEF_TAKEAWAYS},
-            "welcome": build_welcome, "home": build_home, "questions": build_questions, "exec": build_exec, "health": build_health, "roadmap": build_roadmap,
+BUILDERS = {"map": build_map, "home": build_home, "exec": build_exec, "health": build_health, "roadmap": build_roadmap,
             "drift": build_drift, "kpigrid": build_kpigrid, "portfolio": build_portfolio, "selection": build_selection,
             "scenarios": build_scenarios, "constraints": build_constraints, "finance": build_finance,
             "fintree": build_fintree, "budgetrisk": build_budgetrisk, "resources": build_resources, "fte": build_fte,
             "org": build_org, "timesheets": build_timesheets, "mywork": build_mywork, "schedule": build_schedule,
             "critical": build_critical, "psr": build_psr, "risk": build_risk, "benefits": build_benefits,
-            "governance": build_governance, "recon": build_recon}
+            "governance": build_governance, "recon": build_recon,
+            "trend": build_trend, "strategy": build_strategy, "projfin": build_projfin, "capacity": build_capacity,
+            "timeline": build_timeline, "riskmap": build_riskmap, "realised": build_realised, "hygiene": build_hygiene}
 
 
 def copy_interactions(built):
@@ -1337,14 +1421,17 @@ STORY_BLURBS = {
     "risk": "Exposure, critical risks and open issues", "benefits": "Planned against realised benefits",
     "governance": "Data quality, compliance and reporting discipline",
     "recon": "Every project against every source, gaps first",
+    "trend": "Health of every project and how status trends", "strategy": "Budget against strategy, where value sits",
+    "projfin": "S-curve, financial story and cost-type overview", "capacity": "Capacity against demand, who and when",
+    "timeline": "Gantt, forecast finish and milestones", "riskmap": "Risk matrix, radar and the risk board",
+    "realised": "Planned against realised benefits over time", "hygiene": "Failing rules and the hygiene gap",
 }
 
 
 def context():
     common = dict(pid=PID, names=NAMES, pages=PAGES, chapters=CHAPTERS, questions=QUESTIONS,
                   headline={k: v[1] for k, v in CARD_TEXT.items()}, blurbs=STORY_BLURBS,
-                  inside={"exec": ["KPI pulse", "Decisions this month", "Health matrix", "Status trend",
-                                   "Chapter scorecard"]})
+                  inside={"exec": ["KPI pulse", "Decisions this month"]})
     if ROLE is None:
         return entry.Context(**common, title="Bfusion Decision Story", home_label="Decision Center")
     return entry.Context(**common, title=ROLE.title, home_label="Decision Center" if ROLE.home else "Questions",
@@ -1354,8 +1441,8 @@ def context():
 def build_pages():
     pbir.BOOKMARKS.clear()
     entry.use(context())
-    # the questions and brief pages read every page's header question, so they are built last, in story order
-    late = [k for k, _ in PAGES if k == "questions" or k.startswith("brief_")]
+    # the Map reads every chapter's header question and headline, so it is built last
+    late = ["map"]
     done = {k: BUILDERS[k]() for k, _ in PAGES if k not in late}
     done.update({k: BUILDERS[k]() for k in late})
     built = [p for k, _ in PAGES for p in (done[k] if isinstance(done[k], list) else [done[k]])]
@@ -1370,8 +1457,8 @@ def build_pages():
                  rail=roles.rail(ROLE) if ROLE else None, art=roles.SCENE_OF if ROLE else None)
     consistency.apply(built)
     polish.apply(built)
-    if ROLE is not None:             # in a role report the tabs are Questions, Home and the role's chapters only:
-        tabs = {PID[c] for c in CHAPTERS} | {PID[k] for k in ("questions", "home") if k in PID}
+    if ROLE is not None:             # in a role report the tabs are Map, Home and the role's chapters only:
+        tabs = {PID[c] for c in CHAPTERS} | {PID[k] for k in ("map", "home") if k in PID}
         for p in built:              # a deep dive promoted to a chapter shows, a chapter used as deep dive hides
             if p.id in tabs:
                 p.page.pop("visibility", None)
@@ -1447,8 +1534,7 @@ def nav_overlap_errors(pg):
 
 
 def reach_errors(built):
-    """Every page must be reachable in one click from the landing page, Home, Questions, its chapter page or its
-    chapter's brief (a role report without Home opens a chapter from its brief: Questions › Brief › chapter)."""
+    """Every page must be reachable in one click from the Map (the page the report opens on), Home or its chapter."""
     links = {}
     for pg in built:
         for vc in pg.visuals:
@@ -1457,13 +1543,13 @@ def reach_errors(built):
                 tgt = vl[0]["properties"].get("navigationSection")
                 if tgt:
                     links.setdefault(pg.id, set()).add(tgt["expr"]["Literal"]["Value"].strip("'"))
-    roots = set().union(*(links.get(PID[r], set()) for r in ("welcome", "home", "questions") if r in PID))
+    roots = set().union(*(links.get(PID[r], set()) for r in ("map", "home") if r in PID))
     errs = []
     for k, _ in PAGES[1:]:                               # PAGES[0] is the page the report opens on
         c = layout._code(NAMES[k])
         chap = k if not c else next(m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == c[0])
-        if PID[k] not in roots | links.get(PID[chap], set()) | links.get(PID.get(f"brief_{chap}"), set()):
-            errs.append(f"REACH {NAMES[k]}: no link from the landing page, Home, Questions, its chapter or its brief")
+        if PID[k] not in roots | links.get(PID[chap], set()):
+            errs.append(f"REACH {NAMES[k]}: no link from the Map, Home or its chapter")
     return errs
 
 

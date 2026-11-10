@@ -33,7 +33,7 @@ TILE, STEP, TOP = 56, 74, 16
 FILTER_MEASURE = "Story | Filter Context"
 RAIL_BG, RAIL_INK = "#141C2F", "#8C98B3"
 # icon, chapter key (None = decision center), short label
-RAIL = [("cc", "home", "Decision"), ("exec", "exec", "Executive"), ("portfolio", "portfolio", "Portfolio"),
+RAIL = [("questions", "map", "Map"), ("cc", "home", "Decision"), ("exec", "exec", "Executive"), ("portfolio", "portfolio", "Portfolio"),
         ("finance", "finance", "Financials"), ("resources", "resources", "Resources"),
         ("schedule", "schedule", "Schedule"), ("risk", "risk", "Risk"), ("benefits", "benefits", "Benefits"),
         ("governance", "governance", "Governance")]

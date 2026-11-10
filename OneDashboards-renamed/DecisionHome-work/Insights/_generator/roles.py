@@ -9,8 +9,7 @@ from dataclasses import dataclass
 import layout
 from pbir import uid
 
-QUESTIONS_PAGE_ID = uid("bfstory-page", "questions")
-WELCOME_PAGE_ID = uid("bfstory-page", "welcome")
+MAP_PAGE_ID = uid("bfstory-page", "map")          # every Story report opens on its Map (the Launcher links here)
 LAUNCHER_PAGE_ID = uid("bfstory-launcher", "launcher")
 
 @dataclass
@@ -27,22 +26,22 @@ class Role:
 ROLES = {r.key: r for r in [
     Role("ppm", "Story PPM", "Portfolio & Program", "Health, money, value and risk across the portfolio",
          "Story | Exec Headline",
-         [("exec", ["health", "roadmap", "drift"]), ("portfolio", ["selection", "benefits"]),
-          ("finance", ["fintree", "budgetrisk"]), ("schedule", ["critical"]), ("risk", [])]),
+         [("exec", ["health", "roadmap", "drift", "trend"]), ("portfolio", ["selection", "benefits", "realised", "strategy"]),
+          ("finance", ["fintree", "budgetrisk", "projfin"]), ("schedule", ["critical", "timeline"]), ("risk", ["riskmap"])]),
     Role("modeller", "Story Modeller", "Modeller", "Compare scenarios and funding choices before you decide",
          "Story | Scenario · Headline",
-         [("portfolio", []), ("selection", []), ("scenarios", []), ("constraints", []), ("resources", [])]),
+         [("portfolio", ["strategy"]), ("selection", []), ("scenarios", []), ("constraints", []), ("resources", ["capacity"])]),
     Role("pm", "Story PM", "Project Manager", "Schedule, status, money, tasks and risks of your projects",
          "Story | Schedule Headline",
-         [("schedule", ["critical", "psr", "roadmap"]), ("finance", []), ("mywork", []), ("risk", []),
-          ("kpigrid", [])]),
+         [("schedule", ["critical", "psr", "roadmap", "timeline"]), ("finance", ["projfin"]), ("mywork", []),
+          ("risk", ["riskmap"]), ("kpigrid", [])]),
     Role("resources", "Story Resources", "Resource Manager", "Capacity, demand, people and timesheets",
          "Story | Resource Headline",
-         [("resources", ["fte", "org", "timesheets", "mywork"]), ("selection", []), ("constraints", [])]),
+         [("resources", ["fte", "org", "timesheets", "mywork", "capacity"]), ("selection", []), ("constraints", [])]),
     Role("pmo", "Story PMO", "PMO", "Data quality, compliance and what needs a decision now",
          "PMO | Governance Headline",
-         [("exec", ["roadmap"]), ("schedule", ["psr"]), ("risk", []), ("governance", ["recon"]),
-          ("timesheets", [])], home=True),
+         [("exec", ["roadmap", "trend"]), ("schedule", ["psr", "timeline"]), ("risk", ["riskmap"]),
+          ("governance", ["recon", "hygiene"]), ("timesheets", [])], home=True),
 ]}
 
 # A page promoted to a chapter has its own rail / Questions icon (rail-<key>-white|grey.png, one icon per meaning in
@@ -58,18 +57,18 @@ RAIL_LABEL = {"exec": "Executive", "portfolio": "Portfolio", "finance": "Financi
 
 
 def role_pages(role, full_names):
-    """[(key, display)] in story order: Questions, (Home), then per chapter its brief, the chapter, its deep dives."""
-    out = [("questions", full_names["questions"])]
+    """[(key, display)] in story order: Map, (Home), then per chapter the chapter and its deep dives."""
+    out = [("map", full_names["map"])]
     if role.home:
         out.append(("home", full_names["home"]))
     for n, (ch, deep) in enumerate(role.chapters, 1):
         label = layout._code(full_names[ch])[2]
-        out += [(f"brief_{ch}", f"Brief · {label}"), (ch, f"{n} · {label}")]
+        out += [(ch, f"{n} · {label}")]
         out += [(k, f"{n}{letter} · {layout._code(full_names[k])[2]}") for letter, k in zip("bcdefg"[:len(deep)], deep, strict=True)]
     return out
 
 
 def rail(role):
-    """Chapter rail of a role report: the hub first, then the role's chapters."""
-    first = ("cc", "home", "Decision") if role.home else ("questions", "questions", "Questions")
-    return [first] + [(ch, ch, RAIL_LABEL[ch]) for ch, _ in role.chapters]
+    """Chapter rail of a role report: the Map first, the Decision center where the role has it, then its chapters."""
+    first = [("questions", "map", "Map")] + ([("cc", "home", "Decision")] if role.home else [])
+    return first + [(ch, ch, RAIL_LABEL[ch]) for ch, _ in role.chapters]

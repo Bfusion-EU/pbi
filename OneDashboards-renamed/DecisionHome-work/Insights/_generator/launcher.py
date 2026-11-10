@@ -24,7 +24,7 @@ NAME = "Story Launcher"
 
 def _role_tile(pg, x, y, w, h, k, role):
     key = f"r{k}"
-    url = app_links.url(role.key, roles.QUESTIONS_PAGE_ID)
+    url = app_links.url(role.key, roles.MAP_PAGE_ID)
     pg.add(x, y, w, h, shape(TILE, radius=16, line=TILE_LINE), key=f"{key}_bg")
     _text(pg, x + 24, y + 24, w - 48, 28, "YOUR ROLE", st("Segoe UI Semibold", 10, ORANGE, True), f"{key}_eyebrow")
     _text(pg, x + 24, y + 54, w - 48, 72, role.title, st("DIN", 24, "#FFFFFF", True), f"{key}_title")
@@ -53,7 +53,7 @@ def build_launcher():
     tw = (1768 - gap * (len(roles.ROLES) - 1)) / len(roles.ROLES)
     for k, role in enumerate(roles.ROLES.values()):
         _role_tile(pg, 16 + k * (tw + gap), top, tw, h, k, role)
-    full = app_links.url("full", roles.WELCOME_PAGE_ID)
+    full = app_links.url("full", roles.MAP_PAGE_ID)
     tip = "Open the full story: every chapter in one report" if full else "Full story: app link not set yet"
     pg.add(16, 862, 520, 48, shape(INK, radius=24, line="#FFFFFF"), key="full_bg")
     _text(pg, 16, 868, 520, 36, "Full story: every chapter in one report  ›", st("Segoe UI Semibold", 12, "#FFFFFF", True),

@@ -79,8 +79,9 @@ def home_button(pg, x, y, size=40, target=None):
         tip = "Back to the role overview" if CTX.home_url else "Role overview: link not set yet (app_links.json)"
         pg.add(x, y, size, size, layout._alt(web_ghost(CTX.home_url, tip, hover=INK), tip), key="home")
         return
-    pg.add(x, y, size, size, layout._alt(_ghost("", target or CTX.pid["welcome"], "Go to the welcome page", hover=INK),
-                                         "Go to the welcome page"), key="home")
+    start = target or CTX.pid.get("welcome") or CTX.pid["map"]       # the Story packs open on the Map
+    pg.add(x, y, size, size, layout._alt(_ghost("", start, "Go to the start page", hover=INK),
+                                         "Go to the start page"), key="home")
 
 
 def _crumb_w(text):
@@ -368,6 +369,95 @@ def build_questions():
     return pg
 
 
+
+
+# ---------------------------------------------------------------- Map page (Story packs): the whole story on one screen
+# Replaces Welcome, Questions and the chapter briefs (2026-11-10): one card per chapter with its verdict pill and
+# headline, then one row per page of the chapter, so every page is one click from the page the report opens on.
+MAP_BG, MAP_CARD, MAP_LINE, MAP_INK, MAP_MUTED = "#F8F9FB", "#FFFFFF", "#E5E7EB", "#16233A", "#6C757D"
+MAP_ROW, MAP_PITCH = 30, 36
+MAP_HEAD = 110                        # number, name, pill and headline above the rows
+
+
+def _map_card_h(ch):
+    return MAP_HEAD + (1 + len(_deep(ch))) * MAP_PITCH + 8
+
+
+def _map_card(pg, x, y, w, h, k, ch):
+    """One chapter: number, name, verdict pill, headline, then the dashboard row (orange) and a row per deep dive."""
+    code = layout._code(CTX.names[ch])
+    _cols, verdict, vcol, _texts = brief_measures()[ch]
+    key = f"c{k}"
+    pg.add(x, y, w, h, shape(MAP_CARD, radius=10, line=MAP_LINE), key=f"{key}_bg")
+    pg.add(x + 16, y + 14, 28, 28, shape(MAP_INK, radius=7), key=f"{key}_num_bg")
+    _text(pg, x + 16, y + 16, 28, 24, code[0], st("Segoe UI Semibold", 12, "#FFFFFF", True), f"{key}_num",
+          align="center")
+    _text(pg, x + 52, y + 13, w - 52 - 124, 30, code[2], st("Segoe UI Semibold", 15, MAP_INK, True), f"{key}_name")
+    pill = _value_card(verdict, 9, "#FFFFFF", bg=GREY)
+    pill["visualContainerObjects"]["background"] = [{"properties": {"show": b(True), "color": _fx(vcol)}}]
+    pill["visualContainerObjects"]["border"] = [{"properties": {"show": b(True), "color": _fx(vcol),
+                                                                "radius": pbir.n(12)}}]
+    pill["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI Semibold")
+    ph = pbir.card_h(pbir.fs(9))                          # a card clips its text when it is shorter than this
+    pg.add(x + w - 16 - 104, y + 28 - ph / 2, 104, ph, layout._alt(pill, "Verdict of this chapter"), key=f"{key}_verdict")
+    hl = _value_card(CTX.headline[ch], 10, "#4B5563", bg=MAP_CARD)
+    hl["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI")
+    pg.add(x + 12, y + 50, w - 24, 52, layout._alt(hl, "Headline of this chapter"), key=f"{key}_hl")
+    ry = y + MAP_HEAD
+    tip = f"Open {CTX.names[ch]}"
+    pg.add(x + 16, ry, w - 32, MAP_ROW,
+           layout._alt(nav_button(f"{code[0]}  {code[2]}  ·  dashboard", CTX.pid[ch], tip, size=10, align="left"), tip),
+           key=f"{key}_main")
+    for j, m in enumerate(_deep(ch)):
+        c = layout._code(CTX.names[m])
+        tip = f"Open {CTX.names[m]}"
+        pg.add(x + 16, ry + (j + 1) * MAP_PITCH, w - 32, MAP_ROW,
+               layout._alt(nav_button(f"{c[0]}{c[1]}  {c[2]}", CTX.pid[m], tip, fill="#FFFFFF", hover="#FFF1EA",
+                                      press="#FFE3D6", font=MAP_INK, size=10, align="left", outline=MAP_LINE), tip),
+               key=f"{key}_d{j}")
+
+
+def build_map():
+    """The page the Story opens on: one card per chapter, every page of the chapter one click away."""
+    G, top = 14, 140
+    chaps = CTX.chapters
+    cols = 4 if len(chaps) > 5 else len(chaps)
+    rows = [chaps[i:i + cols] for i in range(0, len(chaps), cols)]
+    hs = [max(_map_card_h(c) for c in r) for r in rows]
+    bottom = top + sum(hs) + G * (len(rows) - 1)
+    foot = bottom + 30
+    pg = Page(CTX.pid["map"], CTX.names["map"], W, foot + 70, background_colour=MAP_BG, display_option="FitToPage")
+    pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(MAP_BG), "transparency": pbir.n(0)}}]
+    pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
+    pg.add(16, 30, 76, 48, _logo(LOGO_RES, "BFusion logo"), key="logo")
+    _text(pg, 112, 24, 900, 28, f"{CTX.title.upper()} · MAP", st("Segoe UI Semibold", 11, ORANGE, True), "eyebrow")
+    _text(pg, 112, 50, 1100, 56, "Where do you want to go?", st("DIN", 30, MAP_INK, True), "title")
+    n_pages = len(chaps) + sum(len(_deep(c)) for c in chaps)
+    _text(pg, 112, 104, 1200, 28,
+          f"{len(chaps)} chapters, {n_pages} pages. Orange opens the chapter dashboard; the rows under it are its "
+          "pictures and deep dives. The pill is the chapter's verdict now.", st("Segoe UI", 11, MAP_MUTED), "subtitle")
+    x_r = W - 16
+    if "home" in CTX.pid:
+        hw = max(200, pbir.button_w("Decision center  ›", 11, pad=40))
+        pg.add(x_r - hw, 52, hw, 46, nav_button("Decision center  ›", CTX.pid["home"], "Open the decision center",
+                                                size=11, radius=23), key="go_home")
+        x_r -= hw + 14
+    if CTX.home_url is not None:                       # a role report: the house opens the Launcher
+        home_button(pg, x_r - 46, 55, size=40)
+    y = top
+    cw = (1768 - G * (cols - 1)) / cols
+    for r, h in zip(rows, hs):
+        for k, ch in enumerate(r):
+            _map_card(pg, round(16 + k * (cw + G), 2), y, round(cw, 2), h, chaps.index(ch), ch)
+        y += h + G
+    pg.add(16, foot, 1768, 1, shape(MAP_LINE), key="foot_rule")
+    _text(pg, 16, foot + 14, 700, 26, "Every page of the story, one click away.", st("Segoe UI", 9, MAP_MUTED),
+          "foot_left")
+    _text(pg, W - 16 - 600, foot + 14, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MAP_MUTED),
+          "foot_right", align="right")
+    return pg
+
+
 # ---------------------------------------------------------------- chapter brief pages (navy navigation pages)
 # One per chapter, between the Questions page and the chapter: the question, a verdict, three takeaways and one
 # tile per page of the chapter. The picture top-right and the drawings in the tiles are faint line art
@@ -594,7 +684,11 @@ def build_brief(ch):
     # ---- right: click. One orange button (the dashboard), outlined rows (deep dives), a quiet link (what is next).
     deep = _deep(ch)
     nxt = CTX.chapters[CTX.chapters.index(ch) + 1] if ch != CTX.chapters[-1] else None
-    need = 58 + 76 + ((18 + 32 + len(deep) * 62) if deep else 0) + 14 + 10 + 56 + 18
+    fixed = 58 + 76 + (18 + 32 if deep else 0) + 14 + 10 + 56 + 18
+    # rows are 62 apart (54 tall) up to four deep dives; with more, they close up so the panel still fits the page
+    pitch = min(62, int((BRIEF_H - 90 - top - fixed) / len(deep))) if deep else 62
+    assert pitch >= 46, f"{CTX.names[key]}: too many deep dives for the panel ({len(deep)})"
+    need = fixed + len(deep) * pitch
     ph = max(need, left_bottom - top)
     assert top + ph <= BRIEF_H - 90, f"{CTX.names[key]}: the panel does not fit ({len(deep)} deep dives)"
     px, pw = PANEL_X + PANEL_PAD, PANEL_W - 2 * PANEL_PAD
@@ -612,8 +706,8 @@ def build_brief(ch):
         y += 18 + 32
         for j, m in enumerate(deep):
             c = layout._code(CTX.names[m])
-            _panel_row(pg, y + j * 62, _sentence(CTX.questions[m]), CTX.pid[m], f"Open {CTX.names[m]}", f"deep{j}",
-                       code=f"{c[0]}{c[1]}")
+            _panel_row(pg, y + j * pitch, _sentence(CTX.questions[m]), CTX.pid[m], f"Open {CTX.names[m]}", f"deep{j}",
+                       code=f"{c[0]}{c[1]}", h=pitch - 8)
     ny = top + ph - 18 - 56                             # the link to what comes next sits at the foot of the panel
     pg.add(px, ny - 10, pw, 1, shape(TILE_LINE), key="next_rule")
     if nxt:
