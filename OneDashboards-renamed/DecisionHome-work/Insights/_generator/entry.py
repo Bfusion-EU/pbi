@@ -425,7 +425,7 @@ _BRIEF_MEASURES = None
 
 def _colour_dax(m, rule):
     if rule is None:
-        return f'"{ORANGE}"'
+        return '"#FFFFFF"'                 # no judgement: the number stays white
     v = f"VAR _v = [{m}]\nRETURN IF ( ISBLANK ( _v ), \"{GREY}\", "
     if rule == "band":
         return v + f'IF ( _v > 1, "{RED}", IF ( _v < 0.5, "{AMBER}", "{GREEN}" ) ) )'
@@ -468,7 +468,7 @@ def brief_measures():
                 continue
             label = layout._code(CTX.names[ch])[2]
             cols = [_brief_measure(f"{label} {k + 1} Colour", _colour_dax(m, rule), None,
-                                   f"Dot colour for the takeaway '{lbl}': {rule or 'no judgement'}.")
+                                   f"Colour of the takeaway number '{lbl}': {rule or 'no judgement (white)'}.")
                     for k, (m, lbl, rule) in enumerate(items)]
             judged = [c for c, (_, _, rule) in zip(cols, items) if rule]
             count = lambda colour: " + ".join(f'INT ( [{c}] = "{colour}" )' for c in judged)  # noqa: E731
@@ -518,30 +518,36 @@ def _crumb(pg, x, text, target, tip, key, colour=SOFT_INK, bold=False, size=10, 
     return x + w
 
 
-def _tile_text(m):
-    """(eyebrow, question, blurb) of a navigation tile on a brief page."""
-    if m.startswith("brief_"):
-        nxt = m[len("brief_"):]
-        return f"NEXT QUESTION · {layout._code(CTX.names[nxt])[2].upper()}", _sentence(CTX.questions[nxt]), CTX.blurbs[nxt]
-    if m == "home":
-        return f"THE {CTX.home_label.upper()}", "What needs a decision now?", "The pulse, the list to act on, every chapter"
-    if m == "questions":
-        return "ALL QUESTIONS", "Which question do you have?", "Every chapter and deep dive on one page"
-    c = layout._code(CTX.names[m])
-    return ("START WITH THE CHAPTER" if not c[1] else f"DEEP DIVE {c[0]}{c[1]}"), _sentence(CTX.questions[m]), CTX.blurbs[m]
+BRIEF_H = 800                         # every brief is the same height, so the page does not jump between chapters
+BRIEF_X, BRIEF_W = 80, 900            # left column: what to read
+PANEL_X, PANEL_W, PANEL_PAD = 1060, 660, 28   # right panel: everything that can be clicked
+
+
+def _panel_row(pg, y, text, target, tip, key, code=None, ink="#FFFFFF", outline=True, h=54):
+    """One clickable row of the "Where to go" panel: optional page code, text, chevron; the whole row is the button."""
+    x, w = PANEL_X + PANEL_PAD, PANEL_W - 2 * PANEL_PAD
+    if outline:
+        pg.add(x, y, w, h, shape(TILE, radius=10, line=BADGE), key=f"{key}_bg")
+    left = 16
+    if code:
+        _text(pg, x + 12, y + (h - 30) / 2, 48, 30, code, st("Segoe UI Semibold", 13, ORANGE, True), f"{key}_code")
+        left = 64
+    _text(pg, x + w - 44, y + (h - 34) / 2, 32, 34, "›", st("Segoe UI", 16, SOFT_INK, True), f"{key}_chev", align="center")
+    size = pbir.fit_size(text, w, (14, 13, 12), pad=left + 56)
+    pg.add(x, y, w, h, layout._alt(_ghost(text, target, tip, font=ink, size=size, margin=left), tip), key=f"{key}_btn")
 
 
 def build_brief(ch):
+    """Two columns with one job each. Left: read — the question, the verdict with its sentence, three numbers.
+    Right: click — one panel that holds every way on: the dashboard, its deep dives, the next question."""
     key = f"brief_{ch}"
     code = layout._code(CTX.names[ch])
     cols, verdict, vcol, texts = brief_measures()[ch]
-    pg = Page(CTX.pid[key], CTX.names[key], W, SH, background_colour=INK, display_option="FitToPage")
+    pg = Page(CTX.pid[key], CTX.names[key], W, BRIEF_H, background_colour=INK, display_option="FitToPage")
     pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(INK), "transparency": pbir.n(0)}}]
     pg.page["visibility"] = "HiddenInViewMode"
     pg.add(0, 0, W, 6, shape(ORANGE), key="top_bar")
-    pg.add(1000, 70, illustrations.SCENE_W, illustrations.SCENE_H,
-           _logo(illustrations.scene_file(CTX.art.get(ch, ch)), f"{code[2]} illustration"), key="scene")
-    # home (welcome page) + breadcrumb + all questions
+    # back, home (welcome page) and the breadcrumb; "Questions" in the breadcrumb is the way back to all questions
     pg.add(10, 14, 60, 58, back_button(), key="back")
     home_button(pg, 76, 22, 42)
     x = 130
@@ -553,66 +559,73 @@ def build_brief(ch):
     here = f"{code[0]} · {code[2]}"
     _crumb(pg, x, here, "", f"You are here: {here}", "crumb_here", colour="#FFFFFF", bold=True, w=_crumb_w(here),
            align="left")
-    aq_w = max(190, pbir.button_w("‹  All questions", 11, pad=40))
-    pg.add(W - 32 - aq_w, 22, aq_w, 44, nav_button("‹  All questions", CTX.pid["questions"], "Back to all questions",
-                                                 fill=INK, hover="#1B2C42", press="#22344D", font="#FFFFFF", size=11,
-                                                 outline="#FFFFFF", radius=22), key="all_questions")
-    # question, verdict, headline
-    q = _sentence(CTX.questions[ch])
-    dy = 40 if len(q) * 29 <= 760 else 0               # one line of 44 pt DIN: centre it in the two-line slot
-    _text(pg, 80, 124 + dy, 900, 32, f"CHAPTER {code[0]} · {code[2].upper()}",
+    # ---- left: read. No boxes: the question, the verdict pill with its sentence, a rule, three numbers.
+    top = y = 140
+    _text(pg, BRIEF_X, y, BRIEF_W, 32, f"CHAPTER {code[0]} · {code[2].upper()}",
           st("Segoe UI Semibold", 14, ORANGE, True), "eyebrow")
-    _text(pg, 80, 158 + dy, 780, 150, q, st("DIN", 44, "#FFFFFF", True), "question")
-    # verdict + headline: 14 pt in a box tall enough for three lines (a card only wraps when the lines fit its height)
-    pg.add(84, 308, 900, 98, shape("#15263B", radius=24, line=TILE_LINE), key="verdict_bg")
+    y += 36
+    q = _sentence(CTX.questions[ch])
+    qh = 80 if len(q) * 29 <= BRIEF_W - 40 else 150    # one or two lines of 44 pt DIN
+    _text(pg, BRIEF_X - 4, y, BRIEF_W, qh, q, st("DIN", 44, "#FFFFFF", True), "question")
+    y += qh + 20
     pill = _value_card(verdict, 14, "#FFFFFF", bg=GREY)
     pill["visualContainerObjects"]["background"] = [{"properties": {"show": b(True), "color": _fx(vcol)}}]
     pill["visualContainerObjects"]["border"] = [{"properties": {"show": b(True), "color": _fx(vcol), "radius": pbir.n(16)}}]
     pill["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI Semibold")
-    pg.add(98, 331, 150, 52, pill, key="verdict")
+    pg.add(BRIEF_X, y + 52, 150, 52, pill, key="verdict")
+    # 14 pt in a box with room for four lines: a card only wraps when the lines fit its height, and in
+    # the Service a box that is only just tall enough still cuts the last line off
     hl = _value_card(CTX.headline[ch], 14, "#E5EAF1")
     hl["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI")
-    pg.add(258, 311, 716, 92, hl, key="headline")
-    # three takeaways: 30 pt value, 15 pt label
-    tw = (900 - 2 * 12) / 3
+    pg.add(BRIEF_X + 166, y, BRIEF_W - 166, 156, hl, key="headline")
+    y += 156 + 20
+    pg.add(BRIEF_X, y, BRIEF_W, 1, shape(TILE_LINE), key="take_rule")
+    y += 20
+    cw, vh = BRIEF_W / 3, pbir.card_h(32)               # the number itself carries the status colour
     for k, (m, lbl, _rule) in enumerate(BRIEF_TAKEAWAYS[ch]):
-        tx, ty = 84 + k * (tw + 12), 414
-        pg.add(tx, ty, tw, 176, shape("#15263B", radius=14, line=TILE_LINE), key=f"take{k}_bg")
-        _dot(pg, tx + 18, ty + 20, 16, cols[k], f"take{k}_dot")
-        vh = pbir.card_h(30)                            # 100 px: 30 pt value (pbir.card_need_px)
-        pg.add(tx + 36, ty + 4, tw - 72, vh, _value_card(texts[k], 30, "#FFFFFF"), key=f"take{k}_val")
-        _text(pg, tx + 12, ty + 4 + vh, tw - 24, 168 - vh, lbl, st("Segoe UI", 15, SOFT_INK), f"take{k}_lbl",
-              align="center")
-    # one tile per page of the chapter: the chapter first, then its deep dives. Tiles hold text only (no drawing) and
-    # are as tall as that text. The chapter tile names the dashboard: the question is already the page title.
-    keys = [ch] + _deep(ch)
-    if len(keys) == 1:                  # one-page chapter: offer the next question too ("All questions" is top right)
-        nxt = CTX.chapters[CTX.chapters.index(ch) + 1] if ch != CTX.chapters[-1] else None
-        keys += [k for k in [f"brief_{nxt}" if nxt else ("home" if "home" in CTX.pid else None)] if k]
-    n = len(keys)
-    gap, ty, th = 18, 612, 260
-    tw = (W - 48 - gap * (n - 1)) / n
-    qsize = {1: 32, 2: 30, 3: 26, 4: 22, 5: 19}[n]
-    for k, m in enumerate(keys):
-        tx = 24 + k * (tw + gap)
-        main = m == ch
-        pg.add(tx, ty, tw, th, shape(ORANGE if main else "#15263B", radius=20, line=None if main else TILE_LINE),
-               key=f"tile{k}_bg")
-        eyebrow, question, blurb = _tile_text(m)
-        if main:
-            question = f"Open the {code[2]} dashboard"
-        _text(pg, tx + 26, ty + 22, tw - 52, 30, eyebrow, st("Segoe UI Semibold", 12, "#FFFFFF" if main else ORANGE, True),
-              f"tile{k}_eyebrow")
-        _text(pg, tx + 24, ty + 60, tw - 48, 104, question, st("DIN", qsize, "#FFFFFF", True), f"tile{k}_q")
-        _text(pg, tx + 24, ty + th - 84, tw - 120, 64, blurb,
-              st("Segoe UI", 14, "#FFE6D8" if main else SOFT_INK), f"tile{k}_blurb")
-        pg.add(tx + tw - 80, ty + th - 80, 52, 52, shape("#FFFFFF" if main else ORANGE, radius=26), key=f"tile{k}_arrow")
-        _text(pg, tx + tw - 80, ty + th - 74, 52, 40, "→", st("Segoe UI", 16, ORANGE if main else "#FFFFFF", True),
-              f"tile{k}_arrow_t", align="center")
-        tip = f"Open {CTX.names[m]}"
-        pg.add(tx, ty, tw, th, layout._alt(_ghost("", CTX.pid[m], tip), tip), key=f"tile{k}_go")
-    pg.add(16, 930, 1768, 1, shape(TILE_LINE), key="foot_rule")
-    pg.add(16, 944, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
-    _text(pg, W - 16 - 600, 952, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK), "foot_right",
-          align="right")
+        cx = BRIEF_X + k * cw
+        if k:
+            pg.add(cx, y + 8, 1, vh + 48, shape(TILE_LINE), key=f"take{k}_sep")
+        val = _value_card(texts[k], 32, "#FFFFFF")
+        val["objects"]["labels"][0]["properties"]["color"] = _fx(cols[k])
+        pg.add(cx + 10, y, cw - 20, vh, val, key=f"take{k}_val")
+        _text(pg, cx + 16, y + vh, cw - 32, 56, lbl, st("Segoe UI", 15, SOFT_INK), f"take{k}_lbl", align="center")
+    left_bottom = y + vh + 56
+    # ---- right: click. One orange button (the dashboard), outlined rows (deep dives), a quiet link (what is next).
+    deep = _deep(ch)
+    nxt = CTX.chapters[CTX.chapters.index(ch) + 1] if ch != CTX.chapters[-1] else None
+    need = 58 + 76 + ((18 + 32 + len(deep) * 62) if deep else 0) + 14 + 10 + 56 + 18
+    ph = max(need, left_bottom - top)
+    assert top + ph <= BRIEF_H - 90, f"{CTX.names[key]}: the panel does not fit ({len(deep)} deep dives)"
+    px, pw = PANEL_X + PANEL_PAD, PANEL_W - 2 * PANEL_PAD
+    pg.add(PANEL_X, top, PANEL_W, ph, shape(TILE, radius=16, line=TILE_LINE), key="panel_bg")
+    _text(pg, px, top + 22, pw, 28, "WHERE TO GO", st("Segoe UI Semibold", 12, SOFT_INK, True), "panel_title")
+    y = top + 58
+    tip = f"Open {CTX.names[ch]}"
+    pg.add(px, y, pw, 76, shape(ORANGE, radius=10), key="open_bg")
+    _text(pg, px + pw - 64, y + 16, 44, 44, "→", st("Segoe UI", 20, "#FFFFFF", True), "open_arrow", align="center")
+    pg.add(px, y, pw, 76, layout._alt(_ghost("Open the dashboard", CTX.pid[ch], tip, size=18, margin=24), tip),
+           key="open_btn")
+    y += 76
+    if deep:
+        _text(pg, px, y + 18, pw, 26, "Go deeper", st("Segoe UI", 12, MUTED_INK), "deep_label")
+        y += 18 + 32
+        for j, m in enumerate(deep):
+            c = layout._code(CTX.names[m])
+            _panel_row(pg, y + j * 62, _sentence(CTX.questions[m]), CTX.pid[m], f"Open {CTX.names[m]}", f"deep{j}",
+                       code=f"{c[0]}{c[1]}")
+    ny = top + ph - 18 - 56                             # the link to what comes next sits at the foot of the panel
+    pg.add(px, ny - 10, pw, 1, shape(TILE_LINE), key="next_rule")
+    if nxt:
+        text, target = f"Next question: {_sentence(CTX.questions[nxt])}", CTX.pid[f"brief_{nxt}"]
+        tip = f"Open the {layout._code(CTX.names[nxt])[2]} brief"
+    elif "home" in CTX.pid:
+        text, target, tip = f"Open the {CTX.home_label}", CTX.pid["home"], f"Open the {CTX.home_label}"
+    else:
+        text, target, tip = "Back to all questions", CTX.pid["questions"], "All questions"
+    _panel_row(pg, ny, text, target, tip, "next", ink=SOFT_INK, outline=False, h=56)
+    pg.add(16, BRIEF_H - 70, 1768, 1, shape(TILE_LINE), key="foot_rule")
+    pg.add(16, BRIEF_H - 56, 64, 40, _logo(LOGO_RES, "BFusion logo"), key="foot_logo")
+    _text(pg, W - 16 - 600, BRIEF_H - 48, 600, 26, "BFUSION · Data from OnePlan", st("Segoe UI", 9, MUTED_INK),
+          "foot_right", align="right")
     return pg

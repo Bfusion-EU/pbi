@@ -12209,7 +12209,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | EAC Variance %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 0.05, \"#D64545\", IF ( _v >= 0.0001, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'forecast against budget at completion': ('lo', 0.0001, 0.05).",
+          "description": "Colour of the takeaway number 'forecast against budget at completion': ('lo', 0.0001, 0.05).",
           "references": {
             "measures": [
               {
@@ -12225,7 +12225,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Projects Over Budget]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'projects over budget': ('lo', 1, 5).",
+          "description": "Colour of the takeaway number 'projects over budget': ('lo', 1, 5).",
           "references": {
             "measures": [
               {
@@ -12239,9 +12239,9 @@
         {
           "name": "Story | Brief · Financials 3 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'of the budget spent': no judgement."
+          "description": "Colour of the takeaway number 'of the budget spent': no judgement (white)."
         },
         {
           "name": "Story | Brief · Financials Verdict",
@@ -12338,7 +12338,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | On Schedule %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.6, \"#D64545\", IF ( _v < 0.8, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'of active projects on schedule': ('hi', 0.8, 0.6).",
+          "description": "Colour of the takeaway number 'of active projects on schedule': ('hi', 0.8, 0.6).",
           "references": {
             "measures": [
               {
@@ -12354,7 +12354,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Overdue Tasks]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 20, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'overdue tasks': ('lo', 1, 20).",
+          "description": "Colour of the takeaway number 'overdue tasks': ('lo', 1, 20).",
           "references": {
             "measures": [
               {
@@ -12368,9 +12368,9 @@
         {
           "name": "Story | Brief · Schedule 3 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'milestones in the next 30 days': no judgement."
+          "description": "Colour of the takeaway number 'milestones in the next 30 days': no judgement (white)."
         },
         {
           "name": "Story | Brief · Schedule Verdict",
@@ -12467,7 +12467,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Critical High Risks]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'critical or high risks': ('lo', 1, 5).",
+          "description": "Colour of the takeaway number 'critical or high risks': ('lo', 1, 5).",
           "references": {
             "measures": [
               {
@@ -12483,7 +12483,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Unmitigated Risk %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 0.4, \"#D64545\", IF ( _v >= 0.2, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'of risks without mitigation': ('lo', 0.2, 0.4).",
+          "description": "Colour of the takeaway number 'of risks without mitigation': ('lo', 0.2, 0.4).",
           "references": {
             "measures": [
               {
@@ -12499,7 +12499,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Open Issues]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 10, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'open issues': ('lo', 1, 10).",
+          "description": "Colour of the takeaway number 'open issues': ('lo', 1, 10).",
           "references": {
             "measures": [
               {
@@ -12613,16 +12613,16 @@
         {
           "name": "Story | Brief · Project KPI Grid 1 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'active projects': no judgement."
+          "description": "Colour of the takeaway number 'active projects': no judgement (white)."
         },
         {
           "name": "Story | Brief · Project KPI Grid 2 Colour",
           "dataType": "Text",
           "expression": "VAR _v = [Story | On Track %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.6, \"#D64545\", IF ( _v < 0.8, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'of active projects on track': ('hi', 0.8, 0.6).",
+          "description": "Colour of the takeaway number 'of active projects on track': ('hi', 0.8, 0.6).",
           "references": {
             "measures": [
               {
@@ -12638,7 +12638,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Late Active Projects]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'projects running late': ('lo', 1, 5).",
+          "description": "Colour of the takeaway number 'projects running late': ('lo', 1, 5).",
           "references": {
             "measures": [
               {
@@ -12744,7 +12744,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | On Schedule %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.6, \"#D64545\", IF ( _v < 0.8, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'of active projects on schedule': ('hi', 0.8, 0.6).",
+          "description": "Colour of the takeaway number 'of active projects on schedule': ('hi', 0.8, 0.6).",
           "references": {
             "measures": [
               {
@@ -12760,7 +12760,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Overdue Tasks]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 20, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'overdue tasks': ('lo', 1, 20).",
+          "description": "Colour of the takeaway number 'overdue tasks': ('lo', 1, 20).",
           "references": {
             "measures": [
               {
@@ -12774,9 +12774,9 @@
         {
           "name": "Story | Brief · My Work 3 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'milestones in the next 30 days': no judgement."
+          "description": "Colour of the takeaway number 'milestones in the next 30 days': no judgement (white)."
         },
         {
           "name": "Story | Brief · My Work Verdict",

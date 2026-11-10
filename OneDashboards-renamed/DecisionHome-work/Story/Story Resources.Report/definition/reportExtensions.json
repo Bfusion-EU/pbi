@@ -12209,7 +12209,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v > 1, \"#D64545\", IF ( _v < 0.5, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'utilisation of capacity': band.",
+          "description": "Colour of the takeaway number 'utilisation of capacity': band.",
           "references": {
             "measures": [
               {
@@ -12225,7 +12225,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Over-allocated People]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'people over-allocated': ('lo', 1, 5).",
+          "description": "Colour of the takeaway number 'people over-allocated': ('lo', 1, 5).",
           "references": {
             "measures": [
               {
@@ -12239,9 +12239,9 @@
         {
           "name": "Story | Brief · Resources 3 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'hours of free capacity': no judgement."
+          "description": "Colour of the takeaway number 'hours of free capacity': no judgement (white)."
         },
         {
           "name": "Story | Brief · Resources Verdict",
@@ -12336,16 +12336,16 @@
         {
           "name": "Story | Brief · Selection & Funding Line 1 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'proposals in the pipeline': no judgement."
+          "description": "Colour of the takeaway number 'proposals in the pipeline': no judgement (white)."
         },
         {
           "name": "Story | Brief · Selection & Funding Line 2 Colour",
           "dataType": "Text",
           "expression": "VAR _v = [Story | Aligned Budget %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v < 0.5, \"#D64545\", IF ( _v < 0.7, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'of budget on strongly aligned work': ('hi', 0.7, 0.5).",
+          "description": "Colour of the takeaway number 'of budget on strongly aligned work': ('hi', 0.7, 0.5).",
           "references": {
             "measures": [
               {
@@ -12359,9 +12359,9 @@
         {
           "name": "Story | Brief · Selection & Funding Line 3 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'plans funded in scenario A': no judgement."
+          "description": "Colour of the takeaway number 'plans funded in scenario A': no judgement (white)."
         },
         {
           "name": "Story | Brief · Selection & Funding Line Verdict",
@@ -12446,16 +12446,16 @@
         {
           "name": "Story | Brief · Constraints & Sequencing 1 Colour",
           "dataType": "Text",
-          "expression": "\"#E8612A\"",
+          "expression": "\"#FFFFFF\"",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'hours of effort in scenario A': no judgement."
+          "description": "Colour of the takeaway number 'hours of effort in scenario A': no judgement (white)."
         },
         {
           "name": "Story | Brief · Constraints & Sequencing 2 Colour",
           "dataType": "Text",
           "expression": "VAR _v = [Story | Over-allocated People]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v >= 5, \"#D64545\", IF ( _v >= 1, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'people over-allocated': ('lo', 1, 5).",
+          "description": "Colour of the takeaway number 'people over-allocated': ('lo', 1, 5).",
           "references": {
             "measures": [
               {
@@ -12471,7 +12471,7 @@
           "dataType": "Text",
           "expression": "VAR _v = [Story | Utilisation %]\nRETURN IF ( ISBLANK ( _v ), \"#8A97AB\", IF ( _v > 1, \"#D64545\", IF ( _v < 0.5, \"#E0A100\", \"#2E9E6A\" ) ) )",
           "displayFolder": "Story\\Brief",
-          "description": "Dot colour for the takeaway 'utilisation of capacity': band.",
+          "description": "Colour of the takeaway number 'utilisation of capacity': band.",
           "references": {
             "measures": [
               {

@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "dc4a969dec0386ef7e28",
   "position": {
-    "x": 424.0,
-    "y": 418,
-    "z": 3400,
-    "width": 220.0,
-    "height": 100,
-    "tabOrder": 1200
+    "x": 390.0,
+    "y": 472,
+    "z": 2900,
+    "width": 280.0,
+    "height": 107,
+    "tabOrder": 2100
   },
   "visual": {
     "visualType": "card",
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "30D"
+                  "Value": "32D"
                 }
               }
             },
@@ -62,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#FFFFFF'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Brief · Planning & Scheduling 2 Colour"
                     }
                   }
                 }
