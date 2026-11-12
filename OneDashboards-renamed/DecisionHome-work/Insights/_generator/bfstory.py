@@ -33,7 +33,9 @@ import story_measures  # noqa: E402
 import entry  # noqa: E402
 import roles  # noqa: E402
 import app_links  # noqa: E402
-from entry import back_button, home_button, _crumb_w, _crumb_label, build_map  # noqa: E402
+from entry import (back_button, home_button, _crumb_w, _crumb_label, build_map, _sentence,  # noqa: E402
+                   brief_measures, verdict_pill)
+from pbir import col_solid, NAVY_BTN as _NAVY_BTN  # noqa: E402,F401
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, slicer, headline,  # noqa: E402
                   NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
 from pbir import card, chart, table_style, cf_font  # noqa: E402
@@ -52,10 +54,10 @@ SRC = build.REF                      # OneDashboards - Bfusion.Report (read only
 W, H = 1800, 1058
 BG = pages.BG_TALL                   # chrome.py swaps in the 16:9 footer band of the widened page
 LIMIT = 958                          # top of the footer band of the 16:9 background (orange rule at ~963)
-NAV_Y, NAV_H = 86, 30
-Y_HEAD = 122                         # orange headline under the navigation row
-Y_BODY = 226                         # first section label, under the filter-context bar
-Y_BAR = 182                          # filter-context bar (chrome.py) between headline and body
+NAV_Y, NAV_H = 13, 30                 # breadcrumb row inside the white top bar
+Y_HEAD = 154                         # soft headline band under the title block
+Y_BODY = 262                         # first section label, under the filter-context bar
+Y_BAR = 216                          # filter-context bar (chrome.py) between headline and body
 Y_NEXT = LIMIT - 48                  # Next / Back row
 BODY_END = Y_NEXT - 12
 GAP = 14
@@ -248,14 +250,34 @@ def put(pg, x, y, w, h, vc, key):
     return out
 
 
-def header(pg, key, area, question, subtitle, slicers):
-    pg.add(0, 4, 60, 58, back_button(), key="go_back")       # not "back": next_back() uses that key at the foot
-    home_button(pg, 64, 13)
-    tsize = 24 if len(f"{area} | {question}") <= pages.TITLE_MAX else 20
-    pg.add(116, 8, 906, 46, textbox([[(f"{area} | ", st("DIN", tsize, ORANGE, True)),
-                                       (question, st("DIN", tsize, NAVY, True))]]), key="title")
-    ssize = pages.subtitle_size(subtitle)
-    pg.add(116, 52, 906, pages.SUBTITLE_H, textbox([[(subtitle, st("Segoe UI", ssize, MUTED))]]), key="subtitle")
+TOP_H = 56                           # white top bar: back, house, breadcrumb left; the chapter's pages as tabs right
+PAGE_INK, PAGE_MUTED, RULE = "#0E1C2D", "#5B6576", "#E3E6EC"
+HEAD_SOFT, HEAD_INK = "#FDEEE6", "#7A3410"
+
+
+def chapter_key(key):
+    """The chapter a page belongs to (the first page with its number), or None for Map / Home / drill pages."""
+    c = layout._code(NAMES[key]) if key in NAMES else None
+    return next(k for k, d in PAGES if layout._code(d) and layout._code(d)[0] == c[0]) if c else None
+
+
+def header(pg, key, area, question, subtitle, slicers, eyebrow=None):
+    """Top bar, then the title block: eyebrow (chapter / deep dive), the question in DIN, the subtitle; slicers in a
+    soft tray on the right."""
+    pg.add(0, 0, W, TOP_H, shape("#FFFFFF"), key="topbar")
+    pg.add(0, TOP_H, W, 1, shape(RULE), key="topbar_rule")
+    pg.add(2, 2, 52, 52, back_button(), key="go_back")       # not "back": next_back() uses that key at the foot
+    home_button(pg, 58, 8)
+    if eyebrow is None:
+        chap = chapter_key(key)
+        c = layout._code(NAMES[key]) if chap else None
+        label = layout._code(NAMES[chap])[2].upper() if chap else ""
+        eyebrow = (f"{label} · DEEP DIVE {c[0]}{c[1].upper()}" if c[1] else f"CHAPTER {c[0]} · {label}") if c else area
+    tw = (SLICER_X0 - 32) if slicers else 1768
+    pg.add(16, 64, tw, 24, textbox([[(eyebrow, st("Segoe UI Semibold", 11, ORANGE, True))]]), key="eyebrow")
+    pg.add(12, 84, tw, 44, textbox([[(_sentence(question), st("DIN", 24, PAGE_INK, True))]]), key="title")
+    pg.add(16, 126, tw, 26, textbox([[(subtitle, st("Segoe UI", pages.subtitle_size(subtitle), MUTED))]]),
+           key="subtitle")
     add_slicers(pg, slicers)
 
 
@@ -269,12 +291,14 @@ def add_slicers(pg, slicers):
     pitch = min(188, (W - 16 + 8 - SLICER_X0) // len(slicers))
     assert pitch >= 150, f"{pg.display}: too many slicers ({len(slicers)})"
     x = W - 16 - len(slicers) * pitch + 8
+    if pbir.uid(pg.id, "slicer_tray", "shape") not in {v["name"] for v in pg.visuals}:
+        pg.add(x - 8, 64, W - x, 80, shape("#EBEEF3", radius=12), key="slicer_tray")
     for k, sl in enumerate(slicers):
         if sl[0] == "src":
             vc = src_slicer(sl[1], sl[2])
-            put(pg, x + k * pitch, 10, pitch - 8, 62, vc, f"slicer{k}")
+            put(pg, x + k * pitch, 73, pitch - 8, 62, vc, f"slicer{k}")
         else:
-            pg.add(x + k * pitch, 10, pitch - 8, 62, slicer(sl[0], sl[1]), key=f"slicer{k}")
+            pg.add(x + k * pitch, 73, pitch - 8, 62, slicer(sl[0], sl[1]), key=f"slicer{k}")
 
 
 # The Category field parameter picks what the resource visuals group by (Role, Department, Resource ...). Without a
@@ -302,41 +326,48 @@ def category_errors(built):
 
 
 def nav_row(pg, key):
-    """Breadcrumb (Home › chapter › page) left, chapter strip right — same look as the Insights pack."""
-    c = layout._code(NAMES[key])
-    members = [k for k, d in PAGES if layout._code(d) and layout._code(d)[0] == c[0]]
-    chap = members[0]
-    x = 16
+    """In the top bar: breadcrumb (Map / chapter / page) left, the chapter's pages as tabs right (current: orange
+    underline). Map and Home have the breadcrumb only."""
+    chap = chapter_key(key)
+    x = 116
     pg.add(x, NAV_Y, _crumb_w(HUB_LABEL), NAV_H,
            layout._crumb(HUB_LABEL, PID[HUB_KEY], f"Open the {HUB_LABEL.lower()}"), key="nav_home")
     x += _crumb_w(HUB_LABEL)
-    for k, link in ([(chap, True)] if chap != key else []) + [(key, False)]:
-        pg.add(x, NAV_Y, 18, NAV_H, _crumb_label("›", MUTED, bold=False, size=12), key=f"nav_sep_{k}")
+    for k, link in ([(chap, True)] if chap and chap != key else []) + [(key, False)]:
+        pg.add(x, NAV_Y, 18, NAV_H, _crumb_label("/", "#C3C9D3", bold=False, size=12), key=f"nav_sep_{k}")
         x += 18
-        text = layout._label(NAMES[k])
+        kc = layout._code(NAMES[k])
+        text = (f"{kc[0]} {kc[2]}" if link else kc[2]) if kc else NAMES[k].split("—")[-1].strip()
         if link:
             pg.add(x, NAV_Y, _crumb_w(text), NAV_H, layout._crumb(text, PID[k], "Open this chapter"), key=f"nav_crumb_{k}")
         else:
-            pg.add(x, NAV_Y, _crumb_w(text), NAV_H, layout._alt(_crumb_label(text, NAVY), f"You are here: {text}"),
+            pg.add(x, NAV_Y, _crumb_w(text), NAV_H, layout._alt(_crumb_label(text, PAGE_INK), f"You are here: {text}"),
                    key=f"nav_here_{k}")
         x += _crumb_w(text)
-    if len(members) > 1:
-        labels = [layout._label(NAMES[m]) for m in members]
+    if not chap:
+        return
+    members = [m for m, d in PAGES if layout._code(d) and layout._code(d)[0] == layout._code(NAMES[chap])[0]]
+    if len(members) < 2:
+        return
+
+    def lab(m):
+        mc = layout._code(NAMES[m])
+        return f"{mc[0]}{mc[1]}  {mc[2]}" if mc[1] else f"{mc[0]}  Dashboard"
+    labels = [lab(m) for m in members]
+    size, widths, sx = layout.strip_layout(labels, x, W - 16)
+    if sx < x + 16:                  # too many pages for the names: codes only ("1b"), the name stays in the tooltip
+        labels = ["".join(layout._code(NAMES[m])[:2]) for m in members]
         size, widths, sx = layout.strip_layout(labels, x, W - 16)
-        if sx < x + 8:               # six pages in the chapter: codes only ("1b"), the name stays in the tooltip
-            labels = ["".join(layout._code(NAMES[m])[:2]) for m in members]
-            size, widths, sx = layout.strip_layout(labels, x, W - 16)
-        x = sx
-        for m, w, text in zip(members, widths, labels):
-            cur = m == key
-            full = layout._label(NAMES[m])
-            btn = nav_button(text, PID[m], "You are here" if cur else f"Open {full}",
-                             fill=ORANGE if cur else "#FFFFFF", hover=ORANGE_DK if cur else ORANGE_SOFT,
-                             press=ORANGE_DK if cur else ORANGE_SOFT, font="#FFFFFF" if cur else NAVY, size=size,
-                             outline=None if cur else BORDER)
-            layout._alt(btn, f"{full} (current page)" if cur else f"Open {full}")
-            pg.add(x, NAV_Y, w, NAV_H, btn, key=f"nav_strip_{m}")
-            x += w + 6
+    for m, w, text in zip(members, widths, labels):
+        cur = m == key
+        full = layout._label(NAMES[m])
+        btn = nav_button(text, PID[m], "You are here" if cur else f"Open {full}", fill="#FFFFFF", hover="#F6F7F9",
+                         press="#EEF0F3", font=PAGE_INK if cur else PAGE_MUTED, size=size, radius=0)
+        layout._alt(btn, f"{full} (current page)" if cur else f"Open {full}")
+        pg.add(sx, 0, w, TOP_H - 1, btn, key=f"nav_strip_{m}")
+        if cur:
+            pg.add(sx, TOP_H - 3, w, 3, shape(ORANGE), key=f"nav_under_{m}")
+        sx += w + 6
 
 
 def page_id(key, page):
@@ -347,16 +378,31 @@ KEY_OF = {}                          # page id -> story key, continuation pages 
 
 
 def next_back(pg, key, page=1, of=1, y=None):
+    """Foot of a page: the previous page of the story left, the chapter's position dots centre, Next right."""
     y = Y_NEXT if y is None else y
-    if of > 1:
-        pg.add(W / 2 - 120, y, 240, 36, textbox([[(f"Page {page} of {of}", st("Segoe UI", 11, MUTED))]],
-                                                align="center"), key="pager")
-    back = (page_id(key, page - 1), f"‹  Page {page - 1} of {of}", "Back to the previous screen of this page")         if page > 1 else (PID[HUB_KEY], f"‹  {HUB_LABEL}", "Back to the home page")
-    pg.add(16, y, 220, 36, nav_button(back[1], back[0], back[2], fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE,
-                                      font=NAVY, outline=BORDER), key="back")
+    idx = ORDER.index(key)
+    prev = ORDER[idx - 1] if idx > 0 and ORDER[idx - 1] not in ("map", "home") else None
+    if page > 1:
+        back = (page_id(key, page - 1), f"‹  Page {page - 1} of {of}", "Back to the previous screen of this page")
+    elif prev:
+        pc = layout._code(NAMES[prev])
+        back = (PID[prev], f"‹  {pc[0]}{pc[1]}  {pc[2]}" if pc else f"‹  {NAMES[prev]}", "Back to the previous page")
+    else:
+        back = (PID[HUB_KEY], f"‹  {HUB_LABEL}", "Back to the map")
+    pg.add(16, y, 340, 40, nav_button(back[1], back[0], back[2], fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE_SOFT,
+                                      font=NAVY, outline=BORDER, radius=20,
+                                      size=pbir.fit_size(back[1], 340, (11, 10, 9))), key="back")
+    chap = chapter_key(key)
+    members = [m for m, d in PAGES if chap and layout._code(d) and layout._code(d)[0] == layout._code(NAMES[chap])[0]]
+    if len(members) > 1:
+        widths = [24 if m == key else 8 for m in members]
+        dx = W / 2 - (sum(widths) + 6 * (len(members) - 1)) / 2
+        for m, w in zip(members, widths):
+            pg.add(round(dx, 2), y + 16, w, 8, shape(ORANGE if m == key else "#D3D8E0", radius=4), key=f"dot_{m}")
+            dx += w + 6
     if page < of:
-        pg.add(W - 16 - 360, y, 360, 36, nav_button(f"Continue: page {page + 1} of {of}  ›", page_id(key, page + 1),
-                                                    "Continue on the next screen"), key="next")
+        pg.add(W - 16 - 360, y, 360, 40, nav_button(f"Continue: page {page + 1} of {of}  ›", page_id(key, page + 1),
+                                                    "Continue on the next screen", radius=20), key="next")
     else:
         _story_next(pg, key, y)
 
@@ -364,16 +410,35 @@ def next_back(pg, key, page=1, of=1, y=None):
 def _story_next(pg, key, y=None):
     y = Y_NEXT if y is None else y
     idx = ORDER.index(key)
-    if idx + 1 < len(ORDER):
-        nxt = ORDER[idx + 1]
-        label = NAMES[nxt].split("·", 1)[-1].strip()
-        text = f"Next: {label}  ›"
-        pg.add(W - 16 - 360, y, 360, 36,
-               nav_button(text, PID[nxt], "Continue the story on the next page",
-                          size=pbir.fit_size(text, 360, (11, 10, 9))), key="next")
+    if idx + 1 >= len(ORDER):
+        return
+    nxt = ORDER[idx + 1]
+    nc, kc = layout._code(NAMES[nxt]), layout._code(NAMES[key])
+    if nc and (not kc or nc[0] != kc[0]):
+        text = f"Next chapter: {nc[2]}  ›"
+    elif nc:
+        text = f"Next: {nc[0]}{nc[1]}  {nc[2]}  ›"
+    else:
+        text = f"Next: {NAMES[nxt].split('·', 1)[-1].strip()}  ›"
+    pg.add(W - 16 - 380, y, 380, 40,
+           nav_button(text, PID[nxt], "Continue the story on the next page", fill=NAVY, hover=_NAVY_BTN, press=ORANGE,
+                      font="#FFFFFF", radius=20, size=pbir.fit_size(text, 380, (11, 10, 9))), key="next")
 
 
 QUESTIONS = {}                       # page key -> its header question, for the Questions page
+
+
+def premium_headline(vc):
+    """Headline as a soft orange band with dark text (was a solid orange box)."""
+    v = vc["visual"] if "visual" in vc else vc
+    if v.get("visualType") != "card":
+        return vc
+    vco = v.setdefault("visualContainerObjects", {})
+    vco["background"] = [{"properties": {"show": b(True), "color": col_solid(HEAD_SOFT)}}]
+    vco["border"] = [{"properties": {"show": b(False)}}]
+    lab = v.get("objects", {}).get("labels", [{}])[0].setdefault("properties", {})
+    lab["color"] = col_solid(HEAD_INK)
+    return vc
 
 
 def story_page(key, area, question, subtitle, slicers, headline_vc, page=1, of=1, tall=False):
@@ -384,10 +449,19 @@ def story_page(key, area, question, subtitle, slicers, headline_vc, page=1, of=1
               background_image=BG)
     if page > 1:
         pg.page["visibility"] = "HiddenInViewMode"
-    headline_vc = copy.deepcopy(headline_vc)
+    headline_vc = premium_headline(copy.deepcopy(headline_vc))
     header(pg, key, area, question, subtitle, slicers)
     nav_row(pg, key)
-    put(pg, 16, Y_HEAD, 1768, 56, headline_vc, "headline")
+    chap = chapter_key(key)
+    bm = brief_measures()
+    if chap in bm:                    # the chapter's verdict at the start of the band
+        _cols, verdict, vcol, _texts = bm[chap]
+        pill, ph = verdict_pill(verdict, vcol)
+        pg.add(16, Y_HEAD, 1768, 56, shape(HEAD_SOFT, radius=12), key="headline_band")
+        pg.add(28, Y_HEAD + (56 - ph) / 2, 116, ph, pill, key="verdict")
+        put(pg, 152, Y_HEAD, 1624, 56, headline_vc, "headline")
+    else:
+        put(pg, 16, Y_HEAD, 1768, 56, headline_vc, "headline")
     return pg
 
 
@@ -631,9 +705,10 @@ def build_home():
     header(pg, "home", "BFUSION", "DECISION CENTER",
            "Start with the pulse, act on the list, then open the chapter that answers your question.",
            [(DP("Portfolio Name"), "Portfolio"), (DP("Program Name"), "Program"), (DP("State_Value"), "State")])
-    put(pg, 16, 86, 1768, 72, ticker(), "ticker")
-    put(pg, 16, 168, 1768, 56, grab("exec", "headline"), "headline")
-    y = 236
+    nav_row(pg, "home")
+    put(pg, 16, Y_HEAD, 1768, 72, ticker(), "ticker")
+    put(pg, 16, Y_HEAD + 82, 1768, 56, premium_headline(grab("exec", "headline")), "headline")
+    y = Y_HEAD + 150
     pages.section(pg, y, 1, "What needs attention now?",
                   "The PMO command center ranks projects by what needs a decision; click one to focus every page on it.")
     put(pg, 16, y + SEC_H, 1768, BODY_END - y - SEC_H, src("PMO | Command Center", "bfusionPMOCommandCenter"), "pmo")
@@ -979,7 +1054,8 @@ def build_timesheets():
         header(pg, "timesheets", area, question, subtitle, slicers)
         nav_row(pg, "timesheets")
         for v in head_row:
-            put(pg, v["position"]["x"], Y_HEAD, v["position"]["width"], v["position"]["height"], copy.deepcopy(v), "ts_head")
+            put(pg, v["position"]["x"], Y_HEAD, v["position"]["width"], v["position"]["height"],
+                premium_headline(copy.deepcopy(v)), "ts_head")
         # section labels keep their height; everything under them scales to fill the screen
         free = end - Y_BODY + GAP - SEC_H * len(grp)
         scale = free / sum(by_start[b_[3]][0] - SEC_H for b_ in grp)
@@ -1229,7 +1305,8 @@ def build_drill(d):
     KEY_OF[pid] = d.chrome_key
     pg = Page(pid, d.name, W, pages.TALL, display_option="FitToWidth", background_image=BG)
     header(pg, d.chrome_key, d.area, d.question,
-           f"Drill-through: {d.what} you right-clicked, in any Story report. Back returns you there.", [])
+           f"Drill-through: {d.what} you right-clicked, in any Story report. Back returns you there.", [],
+           eyebrow=f"DRILL-THROUGH · {d.area}")
     put(pg, 16, Y_HEAD, 1768, 56, head(d.headline), "headline")
     free = TALL_END - Y_BODY - len(d.spec) * (SEC_H + GAP) + GAP
     scale = free / sum(b_[2] for b_ in d.spec)
