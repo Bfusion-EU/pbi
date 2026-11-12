@@ -94,7 +94,7 @@ def test_app_links_blank_until_filled(tmp_path, monkeypatch):
     assert app_links.url("ppm", "abc") == ""
     assert app_links.missing() == ["app_id"] + app_links.KEYS
     f.write_text(json.dumps({"app_id": "APP", "reports": {"ppm": "R1"}}), encoding="utf-8")
-    assert app_links.url("ppm", "abc") == "https://app.powerbi.com/groups/me/apps/APP/reports/R1/abc"
+    assert app_links.url("ppm", "abc") == f"https://app.powerbi.com/groups/me/apps/APP/reports/R1/abc?ctid={app_links.TENANT}"
     assert app_links.url("pm", "abc") == ""
 
 
@@ -201,9 +201,10 @@ def test_launcher_links_every_role_and_the_full_story(tmp_path):
     rj = (tmp_path / "Story Launcher.Report" / "definition" / "report.json").read_text(encoding="utf-8")
     assert bfstory.NO_TEST_PROJECTS["name"] in rj and "NIKO Test 2" in rj
     q = roles.MAP_PAGE_ID
-    assert sorted(urls) == sorted([f"https://app.powerbi.com/groups/me/apps/APP/reports/{k.upper()}/{q}"
+    tail = f"?ctid={app_links.TENANT}"
+    assert sorted(urls) == sorted([f"https://app.powerbi.com/groups/me/apps/APP/reports/{k.upper()}/{q}{tail}"
                                    for k in roles.ROLES] +
-                                  [f"https://app.powerbi.com/groups/me/apps/APP/reports/FULL/{q}"])
+                                  [f"https://app.powerbi.com/groups/me/apps/APP/reports/FULL/{q}{tail}"])
 
 
 def test_seventh_deep_dive_raises_instead_of_vanishing():

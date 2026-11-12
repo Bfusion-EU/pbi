@@ -13,7 +13,10 @@ from pathlib import Path
 
 FILE = Path(__file__).resolve().parent / "app_links.json"
 KEYS = ["launcher", "full", "ppm", "modeller", "pm", "resources", "pmo"]
-BASE = "https://app.powerbi.com/groups/me/apps/{app}/reports/{report}/{page}"
+# ctid = the BFusion tenant: a web link opens in a new tab, and without the tenant hint a guest account (Hassan's
+# gmail) lands on its home tenant and is asked to sign in again (seen 2026-11-12).
+TENANT = "7c42405b-10a1-45bf-925d-24ee2b295653"
+BASE = "https://app.powerbi.com/groups/me/apps/{app}/reports/{report}/{page}?ctid=" + TENANT
 
 
 def load():
