@@ -374,36 +374,36 @@ def build_questions():
 # ---------------------------------------------------------------- Map page (Story packs): the whole story on one screen
 # Replaces Welcome, Questions and the chapter briefs (2026-11-10): one card per chapter with its verdict pill and
 # headline, then one row per page of the chapter, so every page is one click from the page the report opens on.
-MAP_BG, MAP_CARD, MAP_LINE, MAP_INK, MAP_MUTED = "#F4F6F9", "#FFFFFF", "#EEF0F3", "#0E1C2D", "#6C757D"
-# Navy hero with the portfolio pulse, white cards lifted over it (premium pass, 2026-11-12). The Service shows the
-# 1800 px page at about 70 %, so body text is 13 pt or more.
-HERO_H, LIFT, MAP_X = 350, 60, 40
-TILE_BG, TILE_EDGE, CODE_BG = "#182A40", "#263A55", "#FDEEE6"
-CARD_TOP, ROW_H = 198, 38              # icon + name + verdict, headline, "Open dashboard"; then one row per deep dive
+MAP_BG, MAP_CARD, MAP_LINE, MAP_INK, MAP_MUTED = "#F5F6F8", "#FFFFFF", "#EEF0F3", "#101828", "#667085"
+# Calm v2 (2026-11-13): navy hero with four big numbers, white cards with a hairline edge, verdict as a coloured dot
+# and word, the dashboard as an orange link, deep dives as a quiet list. No dark outlines, no shadows.
+HERO_H, MAP_X, CARDS_Y, MAP_GAP = 330, 48, 290, 20
+CARD_TOP, ROW_H = 208, 38
+PULSE_LABEL = {"of active projects on track": "projects on track", "of budget on strongly aligned work":
+               "budget on aligned work", "forecast against budget at completion": "forecast vs budget",
+               "utilisation of capacity": "capacity used", "of active projects on schedule": "projects on schedule",
+               "of risks without mitigation": "risks without mitigation", "of benefits due realised":
+               "benefits realised", "governance score": "governance score", "plans funded in scenario A":
+               "plans funded (A)", "scenario A against its target budget": "scenario A vs target"}
+_TAG = {}
+
+
+def verdict_tag(ch, size=11):
+    """'● WATCH' in the verdict colour on a transparent ground: (visual, height)."""
+    _c, verdict, vcol, _t = brief_measures()[ch]
+    if ch not in _TAG:
+        label = layout._code(CTX.names[ch])[2]
+        _TAG[ch] = _brief_measure(f"{label} Verdict Tag", f'"● " & [{verdict}]', None,
+                                  "The verdict with a dot in front, for the Map and the page headline.")
+    v = _value_card(_TAG[ch], size, MAP_MUTED)
+    lab = v["objects"]["labels"][0]["properties"]
+    lab["color"] = _fx(vcol)
+    lab["fontFamily"] = s("Segoe UI Semibold")
+    return layout._alt(v, "Verdict of this chapter"), pbir.card_h(pbir.fs(size))
 
 
 def _map_card_h(ch):
     return CARD_TOP + len(_deep(ch)) * ROW_H + 16
-
-
-def _shadow(v):
-    v.setdefault("visualContainerObjects", {})["dropShadow"] = [{"properties": {
-        "show": b(True), "preset": s("Custom"), "position": s("Outer"), "color": pbir.col_solid(MAP_INK),
-        "transparency": pbir.n(88), "shadowBlur": pbir.n(18), "shadowDistance": pbir.n(4), "angle": pbir.n(90),
-        "shadowSpread": pbir.n(0)}}]
-    return v
-
-
-def verdict_pill(verdict, vcol, size=12):
-    """Rounded verdict pill (ACT / WATCH / ON TRACK / NO DATA) in the verdict colour: (visual, height)."""
-    pill = _value_card(verdict, size, "#FFFFFF", bg=GREY)
-    pill["visualContainerObjects"]["background"] = [{"properties": {"show": b(True), "color": _fx(vcol)}}]
-    pill["visualContainerObjects"]["border"] = [{"properties": {"show": b(True), "color": _fx(vcol),
-                                                                "radius": pbir.n(20)}}]
-    pill["visualContainerObjects"]["padding"] = [{"properties": {"top": pbir.n(0), "bottom": pbir.n(0),
-                                                                 "left": pbir.n(0), "right": pbir.n(0)}}]
-    pill["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI Semibold")
-    return layout._alt(pill, "Verdict of this chapter"), max(40, pbir.card_h(pbir.fs(size)))
 
 
 def _pulse():
@@ -413,92 +413,82 @@ def _pulse():
         items = BRIEF_TAKEAWAYS[ch]
         k = next((i for i, (_m, _l, rule) in enumerate(items) if rule), 0)
         cols, _v, _c, texts = brief_measures()[ch]
-        out.append((texts[k], cols[k], items[k][1]))
+        out.append((texts[k], cols[k], PULSE_LABEL.get(items[k][1], items[k][1])))
         if len(out) == 4:
             break
     return out
 
 
 def _map_card(pg, x, y, w, h, k, ch):
-    """Chapter icon, eyebrow and name, verdict pill, headline, an orange "Open dashboard" bar, then the deep dives as a
-    quiet list (code chip, name, chevron, hairline); every row is one transparent button."""
     code = layout._code(CTX.names[ch])
-    _cols, verdict, vcol, _texts = brief_measures()[ch]
     key = f"c{k}"
-    pg.add(x, y, w, h, _shadow(shape(MAP_CARD, radius=14)), key=f"{key}_bg")
-    _icon(pg, x + 20, y + 20, ch, MAP_INK, key)
-    pill, ph = verdict_pill(verdict, vcol)
-    pg.add(x + w - 20 - 124, y + 22, 124, ph, pill, key=f"{key}_verdict")
-    _text(pg, x + 76, y + 14, w - 76 - 150, 24, f"CHAPTER {code[0]}", st("Segoe UI Semibold", 11, "#8A94A6", True),
-          f"{key}_eye")
-    _text(pg, x + 73, y + 34, w - 73 - 150, 40, code[2], st("DIN", 20, MAP_INK, True), f"{key}_name")
-    hl = _value_card(CTX.headline[ch], 13, "#4B5563", bg=MAP_CARD)
+    pg.add(x, y, w, h, shape(MAP_CARD, radius=16, line="#EAECF0"), key=f"{key}_bg")
+    _text(pg, x + 24, y + 18, 220, 24, f"CHAPTER {code[0]}", st("Segoe UI Semibold", 10, "#98A2B3", True), f"{key}_eye")
+    tag, th = verdict_tag(ch)
+    pg.add(x + w - 24 - 140, y + 12, 140, th, tag, key=f"{key}_verdict")
+    _text(pg, x + 21, y + 44, w - 42, 40, code[2], st("DIN", 20, MAP_INK, True), f"{key}_name")
+    hl = _value_card(CTX.headline[ch], 12, MAP_MUTED, bg=MAP_CARD)
     hl["objects"]["labels"][0]["properties"]["fontFamily"] = s("Segoe UI")
-    pg.add(x + 14, y + 76, w - 28, 64, layout._alt(hl, "Headline of this chapter"), key=f"{key}_hl")
+    pg.add(x + 14, y + 86, w - 28, 80, layout._alt(hl, "Headline of this chapter"), key=f"{key}_hl")
     tip = f"Open {CTX.names[ch]}"
-    pg.add(x + 20, y + 146, w - 40, 44,
-           layout._alt(nav_button("Open dashboard   →", CTX.pid[ch], tip, size=13, align="left", margin=18, radius=9),
-                       tip), key=f"{key}_main")
+    pg.add(x + 18, y + 168, w - 36, 34, layout._alt(_ghost("Open the dashboard  →", CTX.pid[ch], tip, font=ORANGE,
+                                                          size=12, margin=6, hover=ORANGE), tip), key=f"{key}_main")
     deep = _deep(ch)
+    if deep:
+        pg.add(x + 24, y + CARD_TOP - 1, w - 48, 1, shape(MAP_LINE), key=f"{key}_top_rule")
     for j, m in enumerate(deep):
         c = layout._code(CTX.names[m])
         ry = y + CARD_TOP + j * ROW_H
-        pg.add(x + 22, ry + 9, 38, 20, shape(CODE_BG, radius=5), key=f"{key}_d{j}_chip")
-        _text(pg, x + 22, ry + 7, 38, 24, f"{c[0]}{c[1]}", st("Segoe UI Semibold", 10, ORANGE, True), f"{key}_d{j}_code",
-              align="center")
-        _text(pg, x + w - 46, ry + 2, 24, 32, "›", st("Segoe UI", 14, "#A0A8B6"), f"{key}_d{j}_chev", align="center")
+        _text(pg, x + 24, ry + 7, 34, 26, f"{c[0]}{c[1]}", st("Segoe UI Semibold", 10, ORANGE, True), f"{key}_d{j}_code")
+        _text(pg, x + w - 44, ry + 3, 22, 30, "›", st("Segoe UI", 13, "#D0D5DD"), f"{key}_d{j}_chev", align="center")
         if j < len(deep) - 1:
-            pg.add(x + 20, ry + ROW_H - 1, w - 40, 1, shape(MAP_LINE), key=f"{key}_d{j}_rule")
+            pg.add(x + 24, ry + ROW_H - 1, w - 48, 1, shape(MAP_LINE), key=f"{key}_d{j}_rule")
         tip = f"Open {CTX.names[m]}"
-        pg.add(x + 20, ry, w - 40, ROW_H, layout._alt(_ghost(c[2], CTX.pid[m], tip, font=MAP_INK, size=13, margin=50,
+        pg.add(x + 18, ry, w - 36, ROW_H, layout._alt(_ghost(c[2], CTX.pid[m], tip, font="#344054", size=12, margin=46,
                                                              hover=ORANGE), tip), key=f"{key}_d{j}")
 
 
 def build_map():
-    """The page the Story opens on: navy hero with the pulse, one lifted card per chapter."""
-    G = 18
+    """The page the Story opens on: navy hero with four big numbers, one calm card per chapter."""
     chaps = CTX.chapters
     cols = 4 if len(chaps) > 6 else min(3, len(chaps))     # full pack 4 x 2; a role report 3 + 2 (or one row)
     rows = [chaps[i:i + cols] for i in range(0, len(chaps), cols)]
     hs = [max(_map_card_h(c) for c in r) for r in rows]
-    top = HERO_H - LIFT
-    bottom = top + sum(hs) + G * (len(rows) - 1)
-    foot = bottom + 24
+    foot = CARDS_Y + sum(hs) + MAP_GAP * (len(rows) - 1) + 24
     pg = Page(CTX.pid["map"], CTX.names["map"], W, foot + 52, background_colour=MAP_BG, display_option="FitToPage")
     pg.page["objects"]["outspace"] = [{"properties": {"color": pbir.col_solid(MAP_BG), "transparency": pbir.n(0)}}]
     pg.add(0, 0, W, HERO_H, shape(INK), key="hero")
-    pg.add(0, 0, W, 5, shape(ORANGE), key="top_bar")
-    pg.add(MAP_X, 34, 96, 60, _logo(LOGO_RES, "BFusion logo"), key="logo")
-    _text(pg, 160, 28, 1000, 28, f"{CTX.title.upper()} · MAP", st("Segoe UI Semibold", 12, ORANGE, True), "eyebrow")
-    _text(pg, 156, 54, 1100, 66, "Where do you want to go?", st("DIN", 40, "#FFFFFF", True), "title")
-    n_pages = len(chaps) + sum(len(_deep(c)) for c in chaps)
-    _text(pg, 160, 120, 1200, 32, f"{len(chaps)} chapters · {n_pages} pages. Open a chapter dashboard, or go straight "
-          "to one of its deep dives.", st("Segoe UI", 14, SOFT_INK), "subtitle")
-    vh = pbir.card_h(pbir.fs(24))
+    pg.add(MAP_X, 34, 80, 50, _logo(LOGO_RES, "BFusion logo"), key="logo")
+    _text(pg, MAP_X + 100, 46, 900, 28, f"{CTX.title.upper()} · MAP", st("Segoe UI Semibold", 11, "#98A2B3", True),
+          "eyebrow")
+    _text(pg, MAP_X - 4, 100, 1300, 66, "Where do you want to go?", st("DIN", 40, "#FFFFFF", True), "title")
+    vh = pbir.card_h(pbir.fs(26))
     for i, (text, colour, label) in enumerate(_pulse()):
-        tx = 160 + i * 296
-        pg.add(tx, 166, 280, 112, shape(TILE_BG, radius=12, line=TILE_EDGE), key=f"pulse{i}_bg")
-        val = _value_card(text, 24, "#FFFFFF", bg=TILE_BG)
+        px = MAP_X + i * 270
+        val = _value_card(text, 26, "#FFFFFF", bg=INK)
         val["objects"]["labels"][0]["properties"]["color"] = _fx(colour)
-        pg.add(tx + 10, 170, 260, vh, layout._alt(val, label), key=f"pulse{i}_val")
-        _text(pg, tx + 14, 170 + vh - 8, 252, 44, label, st("Segoe UI", 11, SOFT_INK), f"pulse{i}_lbl", align="center")
+        pg.add(px, 180, 250, vh, layout._alt(val, label), key=f"pulse{i}_val")
+        _text(pg, px, 180 + vh - 6, 250, 30, label, st("Segoe UI", 11, "#98A2B3"), f"pulse{i}_lbl", align="center")
+        if i:
+            pg.add(px - 10, 190, 1, vh + 14, shape("#22344D"), key=f"pulse{i}_sep")
     x_r = W - MAP_X
     if "home" in CTX.pid:
-        hw = max(250, pbir.button_w("Decision center  ›", 14, pad=52))
-        pg.add(x_r - hw, 42, hw, 54, nav_button("Decision center  ›", CTX.pid["home"], "Open the decision center",
-                                                size=14, radius=27), key="go_home")
-        x_r -= hw + 16
+        hw = max(230, pbir.button_w("Decision center  →", 13, pad=52))
+        pg.add(x_r - hw, 36, hw, 48, nav_button("Decision center  →", CTX.pid["home"], "Open the decision center",
+                                                fill="#1B2B42", hover="#22344D", press=ORANGE, font="#FFFFFF",
+                                                size=13, radius=24), key="go_home")
+        x_r -= hw + 14
     if CTX.home_url is not None:                       # a role report: the house opens the Launcher
-        home_button(pg, x_r - 54, 42, size=54)
-    y = top
-    cw = (W - 2 * MAP_X - G * (cols - 1)) / cols
+        home_button(pg, x_r - 48, 36, size=48)
+    y = CARDS_Y
+    cw = (W - 2 * MAP_X - MAP_GAP * (cols - 1)) / cols
     for r, h in zip(rows, hs):
         for k, ch in enumerate(r):
-            _map_card(pg, round(MAP_X + k * (cw + G), 2), y, round(cw, 2), h, chaps.index(ch), ch)
-        y += h + G
-    _text(pg, MAP_X, foot, 700, 28, "Every page of the story, one click away.", st("Segoe UI", 12, "#8A94A6"),
+            _map_card(pg, round(MAP_X + k * (cw + MAP_GAP), 2), y, round(cw, 2), h, chaps.index(ch), ch)
+        y += h + MAP_GAP
+    _text(pg, MAP_X, foot, 700, 28, "Every page of the story, one click away.", st("Segoe UI", 11, "#98A2B3"),
           "foot_left")
-    _text(pg, W - MAP_X - 600, foot, 600, 28, "BFUSION · Data from OnePlan", st("Segoe UI", 12, "#8A94A6"),
+    _text(pg, W - MAP_X - 600, foot, 600, 28, "BFUSION · Data from OnePlan", st("Segoe UI", 11, "#98A2B3"),
           "foot_right", align="right")
     return pg
 

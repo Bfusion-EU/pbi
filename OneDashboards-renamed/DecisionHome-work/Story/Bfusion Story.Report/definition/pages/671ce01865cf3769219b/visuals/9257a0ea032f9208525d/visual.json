@@ -3,10 +3,10 @@
   "name": "9257a0ea032f9208525d",
   "position": {
     "x": 1684,
-    "y": 73,
-    "z": 2300,
-    "width": 180,
-    "height": 62,
+    "y": 92,
+    "z": 2200,
+    "width": 172,
+    "height": 60,
     "tabOrder": 1500
   },
   "visual": {
@@ -51,17 +51,24 @@
       "header": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'wf_standard-font_light, helvetica, arial, sans-serif'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
             "textSize": {
               "expr": {
                 "Literal": {
-                  "Value": "16D"
+                  "Value": "11D"
                 }
               }
             },
@@ -69,9 +76,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 9,
-                      "Percent": 0
+                    "Literal": {
+                      "Value": "'#98A2B3'"
                     }
                   }
                 }
@@ -86,14 +92,43 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'wf_standard-font_light, helvetica, arial, sans-serif'"
+                  "Value": "'Segoe UI Semibold'"
                 }
               }
             },
             "textSize": {
               "expr": {
                 "Literal": {
-                  "Value": "16D"
+                  "Value": "12D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#344054'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineStyle": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BottomOnly'"
+                }
+              }
+            },
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D0D5DD'"
+                    }
+                  }
                 }
               }
             }
@@ -152,14 +187,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "transparency": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
+                  "Value": "false"
                 }
               }
             }
@@ -169,10 +197,10 @@
       "border": [
         {
           "properties": {
-            "width": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "1D"
+                  "Value": "false"
                 }
               }
             }

@@ -3,10 +3,10 @@
   "name": "284300b2915646380423",
   "position": {
     "x": 96,
-    "y": 298,
+    "y": 316,
     "z": 2200,
     "width": 878.0,
-    "height": 614,
+    "height": 640,
     "tabOrder": 800
   },
   "visual": {
@@ -289,7 +289,18 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
                 }
               }
             }
@@ -328,6 +339,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Strategic Sunburst visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAECF0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

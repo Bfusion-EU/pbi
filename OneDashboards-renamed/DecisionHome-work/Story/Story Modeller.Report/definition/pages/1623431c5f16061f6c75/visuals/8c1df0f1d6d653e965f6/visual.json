@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "8c1df0f1d6d653e965f6",
   "position": {
-    "x": 457.33000000000004,
-    "y": 312,
-    "z": 3500,
-    "width": 124,
-    "height": 40,
-    "tabOrder": 1600
+    "x": 438.66999999999996,
+    "y": 302,
+    "z": 3100,
+    "width": 140,
+    "height": 44,
+    "tabOrder": 1200
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Brief · Portfolio Verdict"
+                  "Property": "Story | Brief · Portfolio Verdict Tag"
                 }
               },
-              "queryRef": "_Measures.Story | Brief · Portfolio Verdict",
-              "nativeQueryRef": "Story | Brief · Portfolio Verdict"
+              "queryRef": "_Measures.Story | Brief · Portfolio Verdict Tag",
+              "nativeQueryRef": "Story | Brief · Portfolio Verdict Tag"
             }
           ]
         }
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "13D"
                 }
               }
             },
@@ -62,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#FFFFFF'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Brief · Portfolio Verdict Colour"
                     }
                   }
                 }
@@ -113,24 +119,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Brief · Portfolio Verdict Colour"
-                    }
-                  }
+                  "Value": "false"
                 }
               }
             }
@@ -143,65 +132,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Brief · Portfolio Verdict Colour"
-                    }
-                  }
-                }
-              }
-            },
-            "radius": {
-              "expr": {
-                "Literal": {
-                  "Value": "20D"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "padding": [
-        {
-          "properties": {
-            "top": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "bottom": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "left": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "right": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
+                  "Value": "false"
                 }
               }
             }

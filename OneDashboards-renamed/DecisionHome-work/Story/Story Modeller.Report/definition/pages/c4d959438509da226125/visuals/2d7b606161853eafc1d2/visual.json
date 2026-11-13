@@ -3,10 +3,10 @@
   "name": "2d7b606161853eafc1d2",
   "position": {
     "x": 986.0,
-    "y": 298,
+    "y": 316,
     "z": 2300,
     "width": 878.0,
-    "height": 614,
+    "height": 640,
     "tabOrder": 900
   },
   "visual": {
@@ -176,7 +176,18 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
                 }
               }
             }
@@ -203,6 +214,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Pareto Analysis visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAECF0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

@@ -3,10 +3,10 @@
   "name": "38785e7e9de47cd7f362",
   "position": {
     "x": 96,
-    "y": 1164,
-    "z": 4300,
+    "y": 1217,
+    "z": 4100,
     "width": 1053.6,
-    "height": 432,
+    "height": 452,
     "tabOrder": 2600
   },
   "visual": {
@@ -498,11 +498,17 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 0,
-                      "Percent": -0.1
+                    "Literal": {
+                      "Value": "'#EAECF0'"
                     }
                   }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }
@@ -516,6 +522,30 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Hierarchical Gantt visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
                 }
               }
             }

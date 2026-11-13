@@ -31,7 +31,8 @@ FOOTER_TOP = {1058: 958}             # page height -> top of its footer band (th
 BG_FILE = Path(__file__).resolve().parent / "assets" / BG_WIDE
 TILE, STEP, TOP = 56, 74, 16
 FILTER_MEASURE = "Story | Filter Context"
-RAIL_BG, RAIL_INK = "#141C2F", "#8C98B3"
+RAIL_BG, RAIL_INK = "#0E1C2D", "#8C98B3"
+CANVAS = "#F5F6F8"                    # painted page colour (calm v2)
 # icon, chapter key (None = decision center), short label
 RAIL = [("questions", "map", "Map"), ("cc", "home", "Decision"), ("exec", "exec", "Executive"), ("portfolio", "portfolio", "Portfolio"),
         ("finance", "finance", "Financials"), ("resources", "resources", "Resources"),
@@ -120,11 +121,13 @@ def _slim(v):
 
 
 def _filter_bar(pg, y, chapter, no_strip=False):
-    v = _slim(headline(FILTER_MEASURE, bg="#F4F5F7", border=BORDER, size=10, colour=MUTED))
+    v = _slim(headline(FILTER_MEASURE, bg=CANVAS, border=CANVAS, size=10, colour="#98A2B3"))
+    v["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
     strip = chapter in confidence.CHAPTER_CHECKS and not no_strip
     pg.add(16, y, BAR_W if strip else 1768, bar_h(), layout._alt(v, "Filters applied to this page"), key="filter_bar")
     if strip:
-        s_ = _slim(headline(confidence.strip(chapter), bg="#FFFFFF", border=BORDER, size=10))
+        s_ = _slim(headline(confidence.strip(chapter), bg=CANVAS, border=CANVAS, size=10))
+        s_["visualContainerObjects"]["border"] = [{"properties": {"show": b(False)}}]
         s_["objects"]["labels"][0]["properties"]["color"] = pbir.measure_colour(confidence.strip_colour(chapter))
         pg.add(16 + BAR_W + 10, y, 1768 - BAR_W - 10, bar_h(),
                layout._alt(s_, "Data confidence: share of active projects that have the data this chapter uses"),
@@ -153,8 +156,8 @@ def apply(built, pid, key_of, names, chapters, bar_y, rail=None, art=None):
             img = bg["image"]["image"]
             img["name"] = pbir.s(BG_WIDE)
             img["url"]["expr"]["ResourcePackageItem"]["ItemName"] = BG_WIDE
-        _rail(pg, current, pid, FOOTER_TOP.get(pg.page["height"], round(pg.page["height"] * (0.928 if banded else 1))),
-              rail)
+        limit = FOOTER_TOP.get(pg.page["height"], round(pg.page["height"] * 0.928)) if banded else pg.page["height"] + 8
+        _rail(pg, current, pid, limit, rail)
 
 
 def register(out):

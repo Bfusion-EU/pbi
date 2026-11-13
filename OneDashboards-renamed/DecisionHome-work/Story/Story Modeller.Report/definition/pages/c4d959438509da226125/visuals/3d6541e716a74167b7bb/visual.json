@@ -3,10 +3,10 @@
   "name": "3d6541e716a74167b7bb",
   "position": {
     "x": 96,
-    "y": 962,
+    "y": 1006,
     "z": 2500,
     "width": 878.0,
-    "height": 695,
+    "height": 723,
     "tabOrder": 1100
   },
   "visual": {
@@ -198,7 +198,18 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
                 }
               }
             }
@@ -270,6 +281,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Selection Waterfall visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAECF0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

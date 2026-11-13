@@ -3,10 +3,10 @@
   "name": "1d034736c2398720420e",
   "position": {
     "x": 96,
-    "y": 298,
-    "z": 4000,
+    "y": 316,
+    "z": 3800,
     "width": 957.82,
-    "height": 600,
+    "height": 642,
     "tabOrder": 2300
   },
   "visual": {
@@ -396,13 +396,19 @@
       "background": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "color": {
               "solid": {
                 "color": {
                   "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 0,
-                      "Percent": -0.1
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
                     }
                   }
                 }
@@ -418,6 +424,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Org Structure visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAECF0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

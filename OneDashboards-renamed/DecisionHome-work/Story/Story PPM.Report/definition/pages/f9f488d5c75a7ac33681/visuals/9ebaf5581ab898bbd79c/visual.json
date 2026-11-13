@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "9ebaf5581ab898bbd79c",
   "position": {
-    "x": 108,
-    "y": 162.0,
-    "z": 3700,
-    "width": 116,
-    "height": 40,
+    "x": 88,
+    "y": 180,
+    "z": 3500,
+    "width": 124,
+    "height": 44,
     "tabOrder": 2100
   },
   "visual": {
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Brief · Executive Summary Verdict"
+                  "Property": "Story | Brief · Executive Summary Verdict Tag"
                 }
               },
-              "queryRef": "_Measures.Story | Brief · Executive Summary Verdict",
-              "nativeQueryRef": "Story | Brief · Executive Summary Verdict"
+              "queryRef": "_Measures.Story | Brief · Executive Summary Verdict Tag",
+              "nativeQueryRef": "Story | Brief · Executive Summary Verdict Tag"
             }
           ]
         }
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "13D"
                 }
               }
             },
@@ -62,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#FFFFFF'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Brief · Executive Summary Verdict Colour"
                     }
                   }
                 }
@@ -113,24 +119,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Brief · Executive Summary Verdict Colour"
-                    }
-                  }
+                  "Value": "false"
                 }
               }
             }
@@ -143,65 +132,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Brief · Executive Summary Verdict Colour"
-                    }
-                  }
-                }
-              }
-            },
-            "radius": {
-              "expr": {
-                "Literal": {
-                  "Value": "20D"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "padding": [
-        {
-          "properties": {
-            "top": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "bottom": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "left": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "right": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
+                  "Value": "false"
                 }
               }
             }

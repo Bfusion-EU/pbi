@@ -3,10 +3,10 @@
   "name": "e7a2bbad8cd25554f63d",
   "position": {
     "x": 986.0,
-    "y": 962,
+    "y": 1006,
     "z": 2600,
     "width": 878.0,
-    "height": 695,
+    "height": 723,
     "tabOrder": 1200
   },
   "visual": {
@@ -250,7 +250,18 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
                 }
               }
             }
@@ -264,6 +275,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Waterline Modeler visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAECF0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

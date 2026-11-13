@@ -3,10 +3,10 @@
   "name": "1931d3b6460adbc4caaf",
   "position": {
     "x": 1496,
-    "y": 73,
-    "z": 2300,
-    "width": 180,
-    "height": 62,
+    "y": 92,
+    "z": 2200,
+    "width": 172,
+    "height": 60,
     "tabOrder": 1300
   },
   "visual": {
@@ -52,6 +52,44 @@
       "header": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "textSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#98A2B3'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "items": [
+        {
+          "properties": {
             "fontFamily": {
               "expr": {
                 "Literal": {
@@ -71,29 +109,27 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F2A44'"
+                      "Value": "'#344054'"
                     }
                   }
                 }
               }
-            }
-          }
-        }
-      ],
-      "items": [
-        {
-          "properties": {
-            "fontFamily": {
+            },
+            "outlineStyle": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'BottomOnly'"
                 }
               }
             },
-            "textSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "12D"
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D0D5DD'"
+                    }
+                  }
                 }
               }
             }

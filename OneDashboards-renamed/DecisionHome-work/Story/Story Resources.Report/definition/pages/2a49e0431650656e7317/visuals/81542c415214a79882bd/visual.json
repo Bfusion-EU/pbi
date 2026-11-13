@@ -3,10 +3,10 @@
   "name": "81542c415214a79882bd",
   "position": {
     "x": 96,
-    "y": 774,
+    "y": 811,
     "z": 2400,
     "width": 1768.0,
-    "height": 406,
+    "height": 423,
     "tabOrder": 1100
   },
   "visual": {
@@ -240,7 +240,18 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
                 }
               }
             }
@@ -279,6 +290,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Capacity Planning visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAECF0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

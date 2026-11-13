@@ -34,7 +34,7 @@ import entry  # noqa: E402
 import roles  # noqa: E402
 import app_links  # noqa: E402
 from entry import (back_button, home_button, _crumb_w, _crumb_label, build_map, _sentence,  # noqa: E402
-                   brief_measures, verdict_pill)
+                   brief_measures, verdict_tag)
 from pbir import col_solid, NAVY_BTN as _NAVY_BTN  # noqa: E402,F401
 from pbir import (Page, P, M, C, s, b, uid, st, textbox, shape, nav_button, slicer, headline,  # noqa: E402
                   NAVY, NAVY_BTN, ORANGE, ORANGE_DK, ORANGE_SOFT, BORDER, MUTED)
@@ -53,11 +53,11 @@ SRC = build.REF                      # OneDashboards - Bfusion.Report (read only
 # dive whose sections do not fit on one screen continues on hidden pages "(2/2)", reached with Continue / Previous.
 W, H = 1800, 1058
 BG = pages.BG_TALL                   # chrome.py swaps in the 16:9 footer band of the widened page
-LIMIT = 958                          # top of the footer band of the 16:9 background (orange rule at ~963)
+LIMIT = H - 40                       # painted canvas, no footer band (calm v2)
 NAV_Y, NAV_H = 13, 30                 # breadcrumb row inside the white top bar
-Y_HEAD = 154                         # soft headline band under the title block
-Y_BODY = 262                         # first section label, under the filter-context bar
-Y_BAR = 216                          # filter-context bar (chrome.py) between headline and body
+Y_HEAD = 172                         # plain headline under the title block
+Y_BODY = 280                         # first section label
+Y_BAR = 226                          # one quiet line: filter context and data confidence
 Y_NEXT = LIMIT - 48                  # Next / Back row
 BODY_END = Y_NEXT - 12
 GAP = 14
@@ -253,6 +253,43 @@ def put(pg, x, y, w, h, vc, key):
 TOP_H = 56                           # white top bar: back, house, breadcrumb left; the chapter's pages as tabs right
 PAGE_INK, PAGE_MUTED, RULE = "#0E1C2D", "#5B6576", "#E3E6EC"
 HEAD_SOFT, HEAD_INK = "#FDEEE6", "#7A3410"
+CANVAS, PANEL_LINE = "#F5F6F8", "#EAECF0"
+
+
+def calm_slicer(v):
+    """One slicer style everywhere (copied source slicers included): grey label, dark value, hairline underline, no
+    box, no border."""
+    o = v.setdefault("objects", {})
+    o["header"] = [{"properties": {"show": b(True), "fontFamily": s("Segoe UI"), "textSize": pbir.n(pbir.fs(9)),
+                                   "fontColor": col_solid("#98A2B3")}}]
+    o["items"] = [{"properties": {"fontFamily": s("Segoe UI Semibold"), "textSize": pbir.n(pbir.fs(10)),
+                                  "fontColor": col_solid("#344054"), "outlineStyle": s("BottomOnly"),
+                                  "outlineColor": col_solid("#D0D5DD")}}]
+    vco = v.setdefault("visualContainerObjects", {})
+    vco["background"] = [{"properties": {"show": b(False)}}]
+    vco["border"] = [{"properties": {"show": b(False)}}]
+    vco.pop("dropShadow", None)
+    return v
+
+
+NO_PANEL = {"textbox", "actionButton", "shape", "image", "slicer"}
+
+
+def calm_panel(container):
+    """A band visual as a white panel with a hairline edge; tables get a light header instead of the navy one."""
+    v = container["visual"]
+    if v.get("visualType", "") in NO_PANEL:
+        return container
+    vco = v.setdefault("visualContainerObjects", {})
+    vco["background"] = [{"properties": {"show": b(True), "color": col_solid("#FFFFFF")}}]
+    vco["border"] = [{"properties": {"show": b(True), "color": col_solid(PANEL_LINE), "radius": pbir.n(12)}}]
+    vco.pop("dropShadow", None)
+    ch = v.get("objects", {}).get("columnHeaders")
+    if ch:
+        p = ch[0].setdefault("properties", {})
+        p["backColor"] = col_solid("#F8F9FB")
+        p["fontColor"] = col_solid("#667085")
+    return container
 
 
 def chapter_key(key):
@@ -262,21 +299,21 @@ def chapter_key(key):
 
 
 def header(pg, key, area, question, subtitle, slicers, eyebrow=None):
-    """Top bar, then the title block: eyebrow (chapter / deep dive), the question in DIN, the subtitle; slicers in a
-    soft tray on the right."""
+    """Top bar, then the title block: eyebrow (chapter / deep dive), the question in DIN, the subtitle; quiet slicers
+    on the right."""
     pg.add(0, 0, W, TOP_H, shape("#FFFFFF"), key="topbar")
-    pg.add(0, TOP_H, W, 1, shape(RULE), key="topbar_rule")
-    pg.add(2, 2, 52, 52, back_button(), key="go_back")       # not "back": next_back() uses that key at the foot
-    home_button(pg, 58, 8)
+    pg.add(0, TOP_H, W, 1, shape(PANEL_LINE), key="topbar_rule")
+    pg.add(4, 6, 44, 44, back_button(), key="go_back")       # not "back": next_back() uses that key at the foot
+    home_button(pg, 54, 10, size=36)
     if eyebrow is None:
         chap = chapter_key(key)
         c = layout._code(NAMES[key]) if chap else None
         label = layout._code(NAMES[chap])[2].upper() if chap else ""
         eyebrow = (f"{label} · DEEP DIVE {c[0]}{c[1].upper()}" if c[1] else f"CHAPTER {c[0]} · {label}") if c else area
     tw = (SLICER_X0 - 32) if slicers else 1768
-    pg.add(16, 64, tw, 24, textbox([[(eyebrow, st("Segoe UI Semibold", 11, ORANGE, True))]]), key="eyebrow")
-    pg.add(12, 84, tw, 44, textbox([[(_sentence(question), st("DIN", 24, PAGE_INK, True))]]), key="title")
-    pg.add(16, 126, tw, 26, textbox([[(subtitle, st("Segoe UI", pages.subtitle_size(subtitle), MUTED))]]),
+    pg.add(16, 74, tw, 24, textbox([[(eyebrow, st("Segoe UI Semibold", 10, ORANGE, True))]]), key="eyebrow")
+    pg.add(12, 96, tw, 44, textbox([[(_sentence(question), st("DIN", 24, "#101828", True))]]), key="title")
+    pg.add(16, 140, tw, 26, textbox([[(subtitle, st("Segoe UI", pages.subtitle_size(subtitle), "#667085"))]]),
            key="subtitle")
     add_slicers(pg, slicers)
 
@@ -285,20 +322,19 @@ SLICER_X0 = 1030                     # the title box ends at 1022
 
 
 def add_slicers(pg, slicers):
-    """Header slicers, right-aligned. Up to four are 180 wide; a fifth makes all of them narrower (144)."""
+    """Header slicers, right-aligned beside the title, all in the calm style. Up to four are 180 wide; a fifth makes
+    all of them narrower (144)."""
     if not slicers:
         return
     pitch = min(188, (W - 16 + 8 - SLICER_X0) // len(slicers))
     assert pitch >= 150, f"{pg.display}: too many slicers ({len(slicers)})"
     x = W - 16 - len(slicers) * pitch + 8
-    if pbir.uid(pg.id, "slicer_tray", "shape") not in {v["name"] for v in pg.visuals}:
-        pg.add(x - 8, 64, W - x, 80, shape("#EBEEF3", radius=12), key="slicer_tray")
     for k, sl in enumerate(slicers):
         if sl[0] == "src":
-            vc = src_slicer(sl[1], sl[2])
-            put(pg, x + k * pitch, 73, pitch - 8, 62, vc, f"slicer{k}")
+            out = put(pg, x + k * pitch, 92, pitch - 16, 60, src_slicer(sl[1], sl[2]), f"slicer{k}")
         else:
-            pg.add(x + k * pitch, 73, pitch - 8, 62, slicer(sl[0], sl[1]), key=f"slicer{k}")
+            out = pg.add(x + k * pitch, 92, pitch - 16, 60, slicer(sl[0], sl[1]), key=f"slicer{k}")
+        calm_slicer(out["visual"])
 
 
 # The Category field parameter picks what the resource visuals group by (Role, Department, Resource ...). Without a
@@ -352,7 +388,7 @@ def nav_row(pg, key):
 
     def lab(m):
         mc = layout._code(NAMES[m])
-        return f"{mc[0]}{mc[1]}  {mc[2]}" if mc[1] else f"{mc[0]}  Dashboard"
+        return mc[2] if mc[1] else "Dashboard"
     labels = [lab(m) for m in members]
     size, widths, sx = layout.strip_layout(labels, x, W - 16)
     if sx < x + 16:                  # too many pages for the names: codes only ("1b"), the name stays in the tooltip
@@ -362,11 +398,11 @@ def nav_row(pg, key):
         cur = m == key
         full = layout._label(NAMES[m])
         btn = nav_button(text, PID[m], "You are here" if cur else f"Open {full}", fill="#FFFFFF", hover="#F6F7F9",
-                         press="#EEF0F3", font=PAGE_INK if cur else PAGE_MUTED, size=size, radius=0)
+                         press="#EEF0F3", font="#101828" if cur else "#667085", size=size, radius=0)
         layout._alt(btn, f"{full} (current page)" if cur else f"Open {full}")
         pg.add(sx, 0, w, TOP_H - 1, btn, key=f"nav_strip_{m}")
         if cur:
-            pg.add(sx, TOP_H - 3, w, 3, shape(ORANGE), key=f"nav_under_{m}")
+            pg.add(sx, TOP_H - 2, w, 2, shape(ORANGE), key=f"nav_under_{m}")
         sx += w + 6
 
 
@@ -378,31 +414,33 @@ KEY_OF = {}                          # page id -> story key, continuation pages 
 
 
 def next_back(pg, key, page=1, of=1, y=None):
-    """Foot of a page: the previous page of the story left, the chapter's position dots centre, Next right."""
+    """Foot of a page: the previous page of the story left, the chapter's position dots centre, Next right — text links
+    on the canvas, no boxes."""
     y = Y_NEXT if y is None else y
     idx = ORDER.index(key)
     prev = ORDER[idx - 1] if idx > 0 and ORDER[idx - 1] not in ("map", "home") else None
     if page > 1:
-        back = (page_id(key, page - 1), f"‹  Page {page - 1} of {of}", "Back to the previous screen of this page")
+        back = (page_id(key, page - 1), f"←  Page {page - 1} of {of}", "Back to the previous screen of this page")
     elif prev:
         pc = layout._code(NAMES[prev])
-        back = (PID[prev], f"‹  {pc[0]}{pc[1]}  {pc[2]}" if pc else f"‹  {NAMES[prev]}", "Back to the previous page")
+        back = (PID[prev], f"←  {pc[0]}{pc[1]}  {pc[2]}" if pc else f"←  {NAMES[prev]}", "Back to the previous page")
     else:
-        back = (PID[HUB_KEY], f"‹  {HUB_LABEL}", "Back to the map")
-    pg.add(16, y, 340, 40, nav_button(back[1], back[0], back[2], fill="#FFFFFF", hover=ORANGE_SOFT, press=ORANGE_SOFT,
-                                      font=NAVY, outline=BORDER, radius=20,
-                                      size=pbir.fit_size(back[1], 340, (11, 10, 9))), key="back")
+        back = (PID[HUB_KEY], f"←  {HUB_LABEL}", "Back to the map")
+    pg.add(16, y, 420, 40, nav_button(back[1], back[0], back[2], fill=CANVAS, hover="#ECEEF2", press="#E4E7EC",
+                                      font="#475467", radius=20, align="left", margin=8,
+                                      size=pbir.fit_size(back[1], 420, (11, 10, 9))), key="back")
     chap = chapter_key(key)
     members = [m for m, d in PAGES if chap and layout._code(d) and layout._code(d)[0] == layout._code(NAMES[chap])[0]]
     if len(members) > 1:
-        widths = [24 if m == key else 8 for m in members]
+        widths = [22 if m == key else 6 for m in members]
         dx = W / 2 - (sum(widths) + 6 * (len(members) - 1)) / 2
         for m, w in zip(members, widths):
-            pg.add(round(dx, 2), y + 16, w, 8, shape(ORANGE if m == key else "#D3D8E0", radius=4), key=f"dot_{m}")
+            pg.add(round(dx, 2), y + 17, w, 6, shape(ORANGE if m == key else "#D0D5DD", radius=3), key=f"dot_{m}")
             dx += w + 6
     if page < of:
-        pg.add(W - 16 - 360, y, 360, 40, nav_button(f"Continue: page {page + 1} of {of}  ›", page_id(key, page + 1),
-                                                    "Continue on the next screen", radius=20), key="next")
+        pg.add(W - 16 - 420, y, 420, 40, nav_button(f"Continue: page {page + 1} of {of}  →", page_id(key, page + 1),
+                                                    "Continue on the next screen", fill=CANVAS, hover="#FDEEE6",
+                                                    press="#FBDCCB", font=ORANGE, radius=20, align="right"), key="next")
     else:
         _story_next(pg, key, y)
 
@@ -415,29 +453,30 @@ def _story_next(pg, key, y=None):
     nxt = ORDER[idx + 1]
     nc, kc = layout._code(NAMES[nxt]), layout._code(NAMES[key])
     if nc and (not kc or nc[0] != kc[0]):
-        text = f"Next chapter: {nc[2]}  ›"
+        text = f"Next chapter: {nc[2]}  →"
     elif nc:
-        text = f"Next: {nc[0]}{nc[1]}  {nc[2]}  ›"
+        text = f"Next: {nc[0]}{nc[1]}  {nc[2]}  →"
     else:
-        text = f"Next: {NAMES[nxt].split('·', 1)[-1].strip()}  ›"
-    pg.add(W - 16 - 380, y, 380, 40,
-           nav_button(text, PID[nxt], "Continue the story on the next page", fill=NAVY, hover=_NAVY_BTN, press=ORANGE,
-                      font="#FFFFFF", radius=20, size=pbir.fit_size(text, 380, (11, 10, 9))), key="next")
+        text = f"Next: {NAMES[nxt].split('·', 1)[-1].strip()}  →"
+    pg.add(W - 16 - 420, y, 420, 40,
+           nav_button(text, PID[nxt], "Continue the story on the next page", fill=CANVAS, hover="#FDEEE6",
+                      press="#FBDCCB", font=ORANGE, radius=20, align="right", margin=8,
+                      size=pbir.fit_size(text, 420, (11, 10, 9))), key="next")
 
 
 QUESTIONS = {}                       # page key -> its header question, for the Questions page
 
 
 def premium_headline(vc):
-    """Headline as a soft orange band with dark text (was a solid orange box)."""
+    """Headline as plain dark text on the canvas (calm v2): no box, no border."""
     v = vc["visual"] if "visual" in vc else vc
     if v.get("visualType") != "card":
         return vc
     vco = v.setdefault("visualContainerObjects", {})
-    vco["background"] = [{"properties": {"show": b(True), "color": col_solid(HEAD_SOFT)}}]
+    vco["background"] = [{"properties": {"show": b(False)}}]
     vco["border"] = [{"properties": {"show": b(False)}}]
     lab = v.get("objects", {}).get("labels", [{}])[0].setdefault("properties", {})
-    lab["color"] = col_solid(HEAD_INK)
+    lab["color"] = col_solid("#101828")
     return vc
 
 
@@ -446,7 +485,7 @@ def story_page(key, area, question, subtitle, slicers, headline_vc, page=1, of=1
     pid = page_id(key, page)
     KEY_OF[pid] = key
     pg = Page(pid, NAMES[key] if page == 1 else f"{NAMES[key]} ({page}/{of})", W, pages.TALL if tall else H,
-              background_image=BG)
+              background_colour=CANVAS)
     if page > 1:
         pg.page["visibility"] = "HiddenInViewMode"
     headline_vc = premium_headline(copy.deepcopy(headline_vc))
@@ -454,14 +493,12 @@ def story_page(key, area, question, subtitle, slicers, headline_vc, page=1, of=1
     nav_row(pg, key)
     chap = chapter_key(key)
     bm = brief_measures()
-    if chap in bm:                    # the chapter's verdict at the start of the band
-        _cols, verdict, vcol, _texts = bm[chap]
-        pill, ph = verdict_pill(verdict, vcol)
-        pg.add(16, Y_HEAD, 1768, 56, shape(HEAD_SOFT, radius=12), key="headline_band")
-        pg.add(28, Y_HEAD + (56 - ph) / 2, 116, ph, pill, key="verdict")
-        put(pg, 152, Y_HEAD, 1624, 56, headline_vc, "headline")
+    if chap in bm:                    # the chapter's verdict as a coloured dot and word before the sentence
+        tag, th = verdict_tag(chap)
+        pg.add(8, Y_HEAD + 8, 124, th, tag, key="verdict")
+        put(pg, 136, Y_HEAD, 1648, 54, headline_vc, "headline")
     else:
-        put(pg, 16, Y_HEAD, 1768, 56, headline_vc, "headline")
+        put(pg, 16, Y_HEAD, 1768, 54, headline_vc, "headline")
     return pg
 
 
@@ -483,20 +520,28 @@ def band(pg, y, num, question, explain, h, items, weights=None):
         if callable(it):
             it(pg, x, vy, w, h)
         elif it[0] == "src":
-            put(pg, x, vy, w, h, src(it[1], it[2]), f"b{num}_{k}")
+            calm_panel(put(pg, x, vy, w, h, src(it[1], it[2]), f"b{num}_{k}"))
         else:
-            put(pg, x, vy, w, h, grab(it[1], it[2]), f"b{num}_{k}")
+            calm_panel(put(pg, x, vy, w, h, grab(it[1], it[2]), f"b{num}_{k}"))
         x += w + gap
     return y + SEC_H + h + GAP
 
 
 def pulse(pg, y, ins_key, question, explain):
+    """The ① KPI cards of the chapter in ONE white panel, split by hairlines (not one box per number)."""
     pages.section(pg, y, 1, question, explain)
     cards = kpis(ins_key)
-    n = len(cards)
-    w = (1768 - 10 * (n - 1)) / n
+    n_ = len(cards)
+    w = 1768 / n_
+    pg.add(16, y + SEC_H, 1768, pages.KPI_H, shape("#FFFFFF", radius=16, line=PANEL_LINE), key="kpi_panel")
     for k, vc in enumerate(cards):
-        put(pg, 16 + k * (w + 10), y + SEC_H, w, pages.KPI_H, vc, f"kpi_{k}")
+        vco = vc["visual"].setdefault("visualContainerObjects", {})
+        vco["background"] = [{"properties": {"show": b(False)}}]
+        vco["border"] = [{"properties": {"show": b(False)}}]
+        vco.pop("dropShadow", None)
+        put(pg, round(16 + k * w + 2, 2), y + SEC_H, round(w - 4, 2), pages.KPI_H, vc, f"kpi_{k}")
+        if k:
+            pg.add(round(16 + k * w, 2), y + SEC_H + 18, 1, pages.KPI_H - 36, shape("#F0F2F5"), key=f"kpi_sep{k}")
     return y + SEC_H + pages.KPI_H + GAP
 
 
@@ -700,7 +745,7 @@ WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "e
 
 def build_home():
     n = WORDS[len(CHAPTERS)]
-    pg = Page(PID["home"], NAMES["home"], W, H, background_image=BG)
+    pg = Page(PID["home"], NAMES["home"], W, H, background_colour=CANVAS)
     KEY_OF[pg.id] = "home"
     header(pg, "home", "BFUSION", "DECISION CENTER",
            "Start with the pulse, act on the list, then open the chapter that answers your question.",
@@ -1049,7 +1094,7 @@ def build_timesheets():
         pid = page_id("timesheets", i)
         KEY_OF[pid] = "timesheets"
         pg = Page(pid, NAMES["timesheets"] if i == 1 else f"{NAMES['timesheets']} ({i}/{of})", W,
-                  pages.TALL if tall else H, background_image=BG)
+                  pages.TALL if tall else H, background_colour=CANVAS)
         QUESTIONS["timesheets"] = question
         header(pg, "timesheets", area, question, subtitle, slicers)
         nav_row(pg, "timesheets")
@@ -1296,14 +1341,14 @@ def _person_tasks(pg, x, y, w, h):
         P(C("DimTask", "StartDate"), "Start"), P(C("DimTask", "EndDate"), "Finish"), P(units, "Assigned units")]},
         "Assigned tasks — latest finish last", table_style(), sort=[(C("DimTask", "EndDate"), "Ascending")])
     pg.add(x, y, w, h, v, key="v_person_tasks")
-TALL_END = round(pages.TALL * 0.928) - 12   # footer band of the tall background
+TALL_END = pages.TALL - 70                  # end of a tall page's body (painted canvas)
 TALL_NEXT = TALL_END - 48                   # Back / Next row of a tall deep dive
 
 
 def build_drill(d):
     pid = uid("bfstory-page", d.key)
     KEY_OF[pid] = d.chrome_key
-    pg = Page(pid, d.name, W, pages.TALL, display_option="FitToWidth", background_image=BG)
+    pg = Page(pid, d.name, W, pages.TALL, display_option="FitToWidth", background_colour=CANVAS)
     header(pg, d.chrome_key, d.area, d.question,
            f"Drill-through: {d.what} you right-clicked, in any Story report. Back returns you there.", [],
            eyebrow=f"DRILL-THROUGH · {d.area}")

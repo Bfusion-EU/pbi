@@ -3,10 +3,10 @@
   "name": "0e7f6064e366e33fcdee",
   "position": {
     "x": 96,
-    "y": 761,
+    "y": 797,
     "z": 2500,
     "width": 1768.0,
-    "height": 374,
+    "height": 390,
     "tabOrder": 1100
   },
   "visual": {
@@ -228,7 +228,18 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
                 }
               }
             }
@@ -255,6 +266,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'BFusion Financial Overview visual'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAECF0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

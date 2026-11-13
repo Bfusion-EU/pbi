@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "72e8172fc5e10670e638",
   "position": {
-    "x": 457.33000000000004,
-    "y": 620,
-    "z": 8200,
-    "width": 124,
-    "height": 40,
-    "tabOrder": 4100
+    "x": 438.66999999999996,
+    "y": 622,
+    "z": 7000,
+    "width": 140,
+    "height": 44,
+    "tabOrder": 3800
   },
   "visual": {
     "visualType": "card",
@@ -24,11 +24,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Story | Brief · Governance & Data Trust Verdict"
+                  "Property": "Story | Brief · Governance & Data Trust Verdict Tag"
                 }
               },
-              "queryRef": "_Measures.Story | Brief · Governance & Data Trust Verdict",
-              "nativeQueryRef": "Story | Brief · Governance & Data Trust Verdict"
+              "queryRef": "_Measures.Story | Brief · Governance & Data Trust Verdict Tag",
+              "nativeQueryRef": "Story | Brief · Governance & Data Trust Verdict Tag"
             }
           ]
         }
@@ -54,7 +54,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "13D"
                 }
               }
             },
@@ -62,8 +62,14 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#FFFFFF'"
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Schema": "extension",
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Story | Brief · Governance & Data Trust Verdict Colour"
                     }
                   }
                 }
@@ -113,24 +119,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Brief · Governance & Data Trust Verdict Colour"
-                    }
-                  }
+                  "Value": "false"
                 }
               }
             }
@@ -143,65 +132,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Schema": "extension",
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "Story | Brief · Governance & Data Trust Verdict Colour"
-                    }
-                  }
-                }
-              }
-            },
-            "radius": {
-              "expr": {
-                "Literal": {
-                  "Value": "20D"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "padding": [
-        {
-          "properties": {
-            "top": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "bottom": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "left": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
-                }
-              }
-            },
-            "right": {
-              "expr": {
-                "Literal": {
-                  "Value": "0D"
+                  "Value": "false"
                 }
               }
             }

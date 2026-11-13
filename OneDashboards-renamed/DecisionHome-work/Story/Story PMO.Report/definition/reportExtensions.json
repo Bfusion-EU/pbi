@@ -13110,6 +13110,86 @@
               }
             ]
           }
+        },
+        {
+          "name": "Story | Brief · Executive Summary Verdict Tag",
+          "dataType": "Text",
+          "expression": "\"● \" & [Story | Brief · Executive Summary Verdict]",
+          "displayFolder": "Story\\Brief",
+          "description": "The verdict with a dot in front, for the Map and the page headline.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Executive Summary Verdict"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Schedule Verdict Tag",
+          "dataType": "Text",
+          "expression": "\"● \" & [Story | Brief · Schedule Verdict]",
+          "displayFolder": "Story\\Brief",
+          "description": "The verdict with a dot in front, for the Map and the page headline.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Schedule Verdict"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Risk Verdict Tag",
+          "dataType": "Text",
+          "expression": "\"● \" & [Story | Brief · Risk Verdict]",
+          "displayFolder": "Story\\Brief",
+          "description": "The verdict with a dot in front, for the Map and the page headline.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Risk Verdict"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Governance & Data Trust Verdict Tag",
+          "dataType": "Text",
+          "expression": "\"● \" & [Story | Brief · Governance & Data Trust Verdict]",
+          "displayFolder": "Story\\Brief",
+          "description": "The verdict with a dot in front, for the Map and the page headline.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Governance & Data Trust Verdict"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Story | Brief · Timesheets vs Plan Verdict Tag",
+          "dataType": "Text",
+          "expression": "\"● \" & [Story | Brief · Timesheets vs Plan Verdict]",
+          "displayFolder": "Story\\Brief",
+          "description": "The verdict with a dot in front, for the Map and the page headline.",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Measures",
+                "name": "Story | Brief · Timesheets vs Plan Verdict"
+              }
+            ]
+          }
         }
       ]
     }
